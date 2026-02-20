@@ -4,13 +4,14 @@ import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { DatabaseRole, VisualRole, GuestUser } from "@/types/auth";
+import { getAuthCallbackURL } from "@/lib/utils/url";
 
 export async function signInWithGoogle(next: string = "/dashboard") {
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"}/auth/callback?next=${encodeURIComponent(next)}`,
+      redirectTo: getAuthCallbackURL(next),
     },
   });
 
