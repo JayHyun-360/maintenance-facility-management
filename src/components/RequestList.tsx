@@ -2,27 +2,25 @@
 
 import { useEffect, useState } from "react";
 import { getUserRequests } from "@/actions/maintenance";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Wrench, Calendar, MapPin, User, AlertCircle } from "lucide-react";
-
-interface Request {
-  id: string;
-  title: string;
-  description: string;
-  category: string;
-  urgency: string;
-  location_building: string;
-  location_room: string | null;
-  status: string;
-  created_at: string;
-  requester: {
-    name: string;
-    email: string;
-  } | null;
-}
+import {
+  Loader2,
+  Wrench,
+  Calendar,
+  MapPin,
+  User,
+  AlertCircle,
+} from "lucide-react";
+import { MaintenanceRequest } from "@/types/maintenance";
 
 interface RequestListProps {
   userId: string;
@@ -30,7 +28,7 @@ interface RequestListProps {
 }
 
 export function RequestList({ userId, refreshTrigger }: RequestListProps) {
-  const [requests, setRequests] = useState<Request[]>([]);
+  const [requests, setRequests] = useState<MaintenanceRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,10 +36,10 @@ export function RequestList({ userId, refreshTrigger }: RequestListProps) {
     async function fetchRequests() {
       setLoading(true);
       setError(null);
-      
+
       try {
         const result = await getUserRequests(userId);
-        
+
         if (result.error) {
           setError(result.error);
         } else {
@@ -116,7 +114,9 @@ export function RequestList({ userId, refreshTrigger }: RequestListProps) {
         <CardContent>
           <Alert className="border-red-200 bg-red-50">
             <AlertCircle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800">{error}</AlertDescription>
+            <AlertDescription className="text-red-800">
+              {error}
+            </AlertDescription>
           </Alert>
         </CardContent>
       </Card>

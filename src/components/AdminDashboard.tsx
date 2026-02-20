@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import { WorkOrders } from "@/components/WorkOrders";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { FacilitiesManagement } from "@/components/FacilitiesManagement";
+import { Reports } from "@/components/Reports";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Wrench, Users, Building, BarChart3 } from "lucide-react";
@@ -18,7 +26,11 @@ interface AdminDashboardProps {
   profiles: any[];
 }
 
-export function AdminDashboard({ user, profile, profiles }: AdminDashboardProps) {
+export function AdminDashboard({
+  user,
+  profile,
+  profiles,
+}: AdminDashboardProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white shadow">
@@ -46,7 +58,10 @@ export function AdminDashboard({ user, profile, profiles }: AdminDashboardProps)
                 <BarChart3 className="h-4 w-4" />
                 Overview
               </TabsTrigger>
-              <TabsTrigger value="work-orders" className="flex items-center gap-2">
+              <TabsTrigger
+                value="work-orders"
+                className="flex items-center gap-2"
+              >
                 <Wrench className="h-4 w-4" />
                 Work Orders
               </TabsTrigger>
@@ -54,7 +69,10 @@ export function AdminDashboard({ user, profile, profiles }: AdminDashboardProps)
                 <Users className="h-4 w-4" />
                 Users
               </TabsTrigger>
-              <TabsTrigger value="facilities" className="flex items-center gap-2">
+              <TabsTrigger
+                value="facilities"
+                className="flex items-center gap-2"
+              >
                 <Building className="h-4 w-4" />
                 Facilities
               </TabsTrigger>
@@ -128,14 +146,20 @@ export function AdminDashboard({ user, profile, profiles }: AdminDashboardProps)
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-blue-600">0</div>
+                        <div className="text-2xl font-bold text-blue-600">
+                          0
+                        </div>
                         <div className="text-sm text-gray-500">
                           Pending Requests
                         </div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-green-600">0</div>
-                        <div className="text-sm text-gray-500">Completed Today</div>
+                        <div className="text-2xl font-bold text-green-600">
+                          0
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          Completed Today
+                        </div>
                       </div>
                       <div className="text-center">
                         <div className="text-2xl font-bold text-purple-600">
@@ -219,7 +243,9 @@ export function AdminDashboard({ user, profile, profiles }: AdminDashboardProps)
                               {profile.department || "N/A"}
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {new Date(profile.created_at).toLocaleDateString()}
+                              {new Date(
+                                profile.created_at,
+                              ).toLocaleDateString()}
                             </td>
                           </tr>
                         ))}
@@ -236,23 +262,11 @@ export function AdminDashboard({ user, profile, profiles }: AdminDashboardProps)
             </TabsContent>
 
             <TabsContent value="facilities">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Facility Management</CardTitle>
-                  <CardDescription>
-                    Configure and manage facility settings
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center py-8 text-gray-500">
-                    <Building className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p className="text-lg font-medium mb-2">Facility Management</p>
-                    <p className="text-sm">
-                      Facility management features coming soon
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+              <FacilitiesManagement />
+            </TabsContent>
+
+            <TabsContent value="reports">
+              <Reports />
             </TabsContent>
           </Tabs>
         </div>

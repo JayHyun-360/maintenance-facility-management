@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { createMaintenanceRequest } from "@/actions/maintenance";
+import { useState, useEffect } from "react";
+import { createMaintenanceRequest, getFacilities } from "@/actions/maintenance";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,9 +12,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Wrench, AlertCircle, CheckCircle } from "lucide-react";
+import { CATEGORIES, URGENCY_LEVELS } from "@/types/maintenance";
 
 interface RequestFormProps {
   onSuccess?: () => void;
@@ -25,32 +32,29 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [facilities, setFacilities] = useState<{ id: string; name: string }[]>(
+    [],
+  );
+  const [loadingFacilities, setLoadingFacilities] = useState(true);
 
-  const categories = [
-    "Plumbing",
-    "Electrical", 
-    "HVAC",
-    "Cleaning",
-    "Carpentry",
-    "Others"
-  ];
+  useEffect(() => {
+    async function fetchFacilities() {
+      try {
+        const result = await getFacilities();
+        if (result.success && result.data) {
+          setFacilities(result.data);
+        } else {
+          console.error("Failed to fetch facilities:", result.error);
+        }
+      } catch (err) {
+        console.error("Error fetching facilities:", err);
+      } finally {
+        setLoadingFacilities(false);
+      }
+    }
 
-  const urgencyLevels = [
-    "Low",
-    "Medium", 
-    "High",
-    "Emergency"
-  ];
-
-  const buildings = [
-    "Main Building",
-    "Science Building",
-    "Library",
-    "Gymnasium",
-    "Cafeteria",
-    "Administration",
-    "Others"
-  ];
+    fetchFacilities();
+  }, []);
 
   async function handleSubmit(formData: FormData) {
     setIsSubmitting(true);
@@ -59,7 +63,7 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
 
     try {
       const result = await createMaintenanceRequest(formData);
-      
+
       if (result.error) {
         setError(result.error);
       } else {
@@ -67,7 +71,7 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
         // Clear form
         const form = document.getElementById("request-form") as HTMLFormElement;
         if (form) form.reset();
-        
+
         // Call success callback after a delay
         setTimeout(() => {
           if (onSuccess) onSuccess();
@@ -95,10 +99,12 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
         {error && (
           <Alert className="mb-4 border-red-200 bg-red-50">
             <AlertCircle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800">{error}</AlertDescription>
+            <AlertDescription className="text-red-800">
+              {error}
+            </AlertDescription>
           </Alert>
         )}
-        
+
         {success && (
           <Alert className="mb-4 border-green-200 bg-green-50">
             <CheckCircle className="h-4 w-4 text-green-600" />
@@ -129,7 +135,7 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map((category) => (
+                  {CATEGORIES.map((category) => (
                     <SelectItem key={category} value={category}>
                       {category}
                     </SelectItem>
@@ -151,6 +157,17 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
             />
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="supporting_reasons">Supporting Reasons</Label>
+            <textarea
+              id="supporting_reasons"
+              name="supporting_reasons"
+              className="w-full min-h-[80px] px-3 py-2 border border-input bg-background text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 rounded-md"
+              placeholder="Additional information or reasons supporting this request"
+              disabled={isSubmitting}
+            />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="space-y-2">
               <Label htmlFor="urgency">Urgency *</Label>
@@ -159,7 +176,7 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
                   <SelectValue placeholder="Select urgency" />
                 </SelectTrigger>
                 <SelectContent>
-                  {urgencyLevels.map((level) => (
+                  {URGENCY_LEVELS.map((level) => (
                     <SelectItem key={level} value={level}>
                       {level}
                     </SelectItem>
@@ -170,18 +187,28 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
 
             <div className="space-y-2">
               <Label htmlFor="location_building">Building *</Label>
-              <Select name="location_building" required disabled={isSubmitting}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select building" />
-                </SelectTrigger>
-                <SelectContent>
-                  {buildings.map((building) => (
-                    <SelectItem key={building} value={building}>
-                      {building}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {loadingFacilities ? (
+                <div className="flex items-center justify-center h-10 border rounded-md bg-gray-50">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                </div>
+              ) : (
+                <Select
+                  name="location_building"
+                  required
+                  disabled={isSubmitting}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select building" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {facilities.map((facility) => (
+                      <SelectItem key={facility.id} value={facility.name}>
+                        {facility.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
             </div>
 
             <div className="space-y-2">
@@ -197,9 +224,9 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
           </div>
 
           <div className="flex gap-2 pt-4">
-            <Button 
-              type="submit" 
-              disabled={isSubmitting}
+            <Button
+              type="submit"
+              disabled={isSubmitting || loadingFacilities}
               className="flex-1"
             >
               {isSubmitting ? (
@@ -211,11 +238,11 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
                 "Submit Request"
               )}
             </Button>
-            
+
             {onCancel && (
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={onCancel}
                 disabled={isSubmitting}
               >
