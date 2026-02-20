@@ -17,6 +17,28 @@ export async function signInWithGoogle(
 
   console.log("🚀 Starting Google OAuth sign-in:", { next, role });
 
+  // Check if Google OAuth is configured
+  const googleClientId = process.env.NEXT_PUBLIC_SUPABASE_GOOGLE_CLIENT_ID;
+  const googleClientSecret = process.env.SUPABASE_GOOGLE_CLIENT_SECRET;
+
+  if (
+    !googleClientId ||
+    googleClientId.includes("your_google_client_id_here") ||
+    !googleClientSecret ||
+    googleClientSecret.includes("your_google_client_secret_here")
+  ) {
+    console.error("❌ Google OAuth not configured properly");
+    console.log("🔧 Current env vars:", {
+      hasClientId: !!googleClientId,
+      hasClientSecret: !!googleClientSecret,
+      clientIdValue: googleClientId?.substring(0, 10) + "...",
+    });
+    return {
+      error:
+        "Google OAuth is not configured. In local development, ensure NEXT_PUBLIC_SUPABASE_GOOGLE_CLIENT_ID and SUPABASE_GOOGLE_CLIENT_SECRET are set in .env.local. In production, these should be set in your Vercel environment variables.",
+    };
+  }
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {

@@ -14,6 +14,7 @@ export async function GET(request: Request) {
     error,
     roleHint,
     origin,
+    fullUrl: request.url,
   });
 
   // Handle OAuth errors
@@ -34,7 +35,7 @@ export async function GET(request: Request) {
       if (exchangeError) {
         console.error("❌ Auth code exchange error:", exchangeError);
         return NextResponse.redirect(
-          `${origin}/auth/error?error=${encodeURIComponent(exchangeError.message)}`,
+          `${origin}/auth/error?error=${encodeURIComponent(`Code exchange failed: ${exchangeError.message}`)}`,
         );
       }
 

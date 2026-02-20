@@ -127,6 +127,7 @@ export function UserPortal({
               <Label htmlFor="guest-name">Name *</Label>
               <Input
                 id="guest-name"
+                name="guest-name"
                 type="text"
                 value={guestName}
                 onChange={(e) => setGuestName(e.target.value)}
@@ -137,10 +138,11 @@ export function UserPortal({
             <div>
               <Label htmlFor="guest-visual-role">Visual Role *</Label>
               <Select
+                name="guest-visual-role"
                 value={guestVisualRole || ""}
                 onValueChange={(value: VisualRole) => setGuestVisualRole(value)}
               >
-                <SelectTrigger>
+                <SelectTrigger id="guest-visual-role">
                   <SelectValue placeholder="Select your role" />
                 </SelectTrigger>
                 <SelectContent>
@@ -161,10 +163,11 @@ export function UserPortal({
                 Education Level (Optional)
               </Label>
               <Select
+                name="guest-education"
                 value={guestEducationLevel}
                 onValueChange={setGuestEducationLevel}
               >
-                <SelectTrigger>
+                <SelectTrigger id="guest-education">
                   <SelectValue placeholder="Select education level" />
                 </SelectTrigger>
                 <SelectContent>
@@ -184,6 +187,7 @@ export function UserPortal({
                 </Label>
                 <Input
                   id="guest-department"
+                  name="guest-department"
                   type="text"
                   value={guestDepartment}
                   onChange={(e) => setGuestDepartment(e.target.value)}
@@ -330,7 +334,7 @@ export function UserPortal({
                 onClick={handlePreviousStep}
                 className="flex-1"
               >
-                Previous
+                Back
               </Button>
             )}
 
