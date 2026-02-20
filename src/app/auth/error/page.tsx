@@ -1,12 +1,19 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { AlertCircle, ArrowLeft } from "lucide-react";
 
-export default function AuthErrorPage() {
+function AuthErrorContent() {
   const searchParams = useSearchParams();
   const error = searchParams.get("error");
 
@@ -23,7 +30,7 @@ export default function AuthErrorPage() {
       case "mismatched_redirect_uri":
         return "Redirect URI mismatch. Please check your application configuration.";
       default:
-        return errorCode 
+        return errorCode
           ? `Authentication error: ${errorCode}`
           : "An unknown authentication error occurred.";
     }
@@ -48,7 +55,7 @@ export default function AuthErrorPage() {
             <p className="font-medium mb-1">Error Code:</p>
             <p className="font-mono text-xs">{error || "Unknown"}</p>
           </div>
-          
+
           <div className="space-y-2">
             <Button asChild className="w-full">
               <Link href="/login">
@@ -56,19 +63,34 @@ export default function AuthErrorPage() {
                 Back to Login
               </Link>
             </Button>
-            
+
             <Button variant="outline" asChild className="w-full">
-              <Link href="/">
-                Go to Homepage
-              </Link>
+              <Link href="/">Go to Homepage</Link>
             </Button>
           </div>
-          
+
           <div className="text-center text-xs text-gray-500">
             <p>If this problem persists, please contact support.</p>
           </div>
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function AuthErrorPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+            <p className="mt-2 text-gray-600">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <AuthErrorContent />
+    </Suspense>
   );
 }
