@@ -40,10 +40,9 @@ CREATE POLICY "Users can update their own notifications" ON notifications
 CREATE POLICY "Admins can manage all notifications" ON notifications
     FOR ALL USING (
         EXISTS (
-            SELECT 1 FROM auth.users 
-            WHERE auth.users.id = auth.uid() 
-            AND (auth.users.user_metadata->>'database_role' = 'Admin' 
-                 OR auth.users.app_metadata->>'role' = 'Admin')
+            SELECT 1 FROM profiles 
+            WHERE profiles.id = auth.uid() 
+            AND profiles.database_role = 'Admin'
         )
     );
 
@@ -54,15 +53,14 @@ BEGIN
     -- Notify all admins
     INSERT INTO notifications (user_id, title, message, type, metadata)
     SELECT 
-        au.id,
+        profiles.id,
         'New Maintenance Request',
         'A new maintenance request has been submitted: ' || NEW.description,
         'info',
         jsonb_build_object('request_id', NEW.id, 'requester', NEW.requester_name)
-    FROM auth.users au
-    WHERE (au.user_metadata->>'database_role' = 'Admin' 
-           OR au.app_metadata->>'role' = 'Admin')
-    AND au.id != NEW.requester_id; -- Don't notify the requester
+    FROM profiles
+    WHERE profiles.database_role = 'Admin'
+    AND profiles.id != NEW.requester_id; -- Don't notify the requester
     
     RETURN NEW;
 END;
