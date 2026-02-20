@@ -68,6 +68,9 @@ export async function GET(request: Request) {
             },
           });
 
+          // Wait a moment for the updateUser to trigger and complete
+          await new Promise((resolve) => setTimeout(resolve, 300));
+
           // Update database role via RPC (backup method)
           const { error: roleUpdateError } = await supabase.rpc(
             "update_user_role",
@@ -84,18 +87,30 @@ export async function GET(request: Request) {
           }
         }
 
-        // Wait a moment for the sync_user_role trigger to complete
-        await new Promise((resolve) => setTimeout(resolve, 100));
+        // Use the new wait_for_profile_sync function to ensure database has settled
+        const { data: syncResult, error: syncError } = await supabase.rpc(
+          "wait_for_profile_sync",
+          {
+            user_id: user.id,
+            max_attempts: 15, // Wait up to 3 seconds (15 * 200ms)
+          },
+        );
+
+        if (syncError) {
+          console.error("❌ Profile sync RPC error:", syncError);
+        } else {
+          console.log("🔄 Profile sync result:", syncResult);
+        }
 
         // Profile creation is now handled by the sync_user_role trigger
-        // But add manual fallback if trigger fails
+        // But add manual fallback if trigger failed or sync didn't complete
         const { data: fallbackProfile } = await supabase
           .from("profiles")
           .select("database_role, visual_role")
           .eq("id", user.id)
           .single();
 
-        if (!fallbackProfile) {
+        if (!fallbackProfile || syncError || !syncResult) {
           console.log(
             "⚠️ Trigger failed, performing manual profile creation fallback",
           );

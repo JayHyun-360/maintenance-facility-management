@@ -142,7 +142,7 @@ export function UserPortal({
                 value={guestVisualRole || ""}
                 onValueChange={(value: VisualRole) => setGuestVisualRole(value)}
               >
-                <SelectTrigger id="guest-visual-role">
+                <SelectTrigger>
                   <SelectValue placeholder="Select your role" />
                 </SelectTrigger>
                 <SelectContent>
@@ -167,7 +167,7 @@ export function UserPortal({
                 value={guestEducationLevel}
                 onValueChange={setGuestEducationLevel}
               >
-                <SelectTrigger id="guest-education">
+                <SelectTrigger>
                   <SelectValue placeholder="Select education level" />
                 </SelectTrigger>
                 <SelectContent>
