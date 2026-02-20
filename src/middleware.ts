@@ -43,12 +43,22 @@ export async function middleware(request: NextRequest) {
   // Protected routes
   const protectedRoutes = ["/dashboard", "/admin/dashboard"];
   const adminRoutes = ["/admin/dashboard"];
-  const publicRoutes = ["/login", "/auth/callback"];
+  const publicRoutes = ["/login", "/auth/callback", "/auth/error"];
+  const staticRoutes = ["/api", "/_next", "/favicon.ico"];
+
+  // Skip middleware for static routes and public routes
+  if (
+    staticRoutes.some((route) => pathname.startsWith(route)) ||
+    publicRoutes.some((route) => pathname.startsWith(route))
+  ) {
+    return response;
+  }
 
   // Redirect unauthenticated users from protected routes
   if (!user && protectedRoutes.some((route) => pathname.startsWith(route))) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
+    url.searchParams.set("redirect", pathname);
     return NextResponse.redirect(url);
   }
 
@@ -91,8 +101,10 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
+     * - api (API routes)
+     * - auth/callback (OAuth callback)
+     * - static assets (images, fonts, etc.)
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api|auth/callback|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff|woff2|ttf|eot)$).*)",
   ],
 };

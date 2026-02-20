@@ -18,7 +18,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Wrench, Users, Building, BarChart3 } from "lucide-react";
+import { Wrench, Users, Building, BarChart3, LogOut } from "lucide-react";
+import { signOut } from "@/actions/auth";
 
 interface AdminDashboardProps {
   user: {
@@ -51,6 +52,12 @@ export function AdminDashboard({
               <span className="text-sm text-gray-600">
                 Admin: {profile?.name || user.email}
               </span>
+              <form action={signOut}>
+                <Button type="submit" variant="outline" size="sm">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </form>
             </div>
           </div>
         </div>
