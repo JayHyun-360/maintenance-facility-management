@@ -30,14 +30,18 @@ import {
   AlertCircle,
   CheckCircle,
   X,
+  Download,
 } from "lucide-react";
 import { MaintenanceRequest, WORK_EVALUATIONS } from "@/types/maintenance";
+import { PDFGenerator } from "@/lib/pdf-generator";
+import { useToast } from "@/hooks/use-toast";
 
 export function WorkOrders() {
   const [requests, setRequests] = useState<MaintenanceRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const { showToast } = useToast();
   const [completionModal, setCompletionModal] = useState<{
     isOpen: boolean;
     requestId: string;
@@ -139,6 +143,22 @@ export function WorkOrders() {
     await updateStatus(completionModal.requestId, "Completed", completionData);
     setCompletionModal({ isOpen: false, requestId: "", currentTitle: "" });
     setCompletionData({ action_taken: "", work_evaluation: "" });
+  }
+
+  async function handleDownloadPDF(request: MaintenanceRequest) {
+    try {
+      const pdfData = {
+        request,
+        requesterName: request.requester?.name || "Unknown",
+        generatedAt: new Date().toLocaleString(),
+      };
+
+      PDFGenerator.downloadPDF(pdfData);
+      showToast("PDF downloaded successfully!", "default");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      showToast("Failed to generate PDF", "destructive");
+    }
   }
 
   function getStatusColor(status: string) {
@@ -324,6 +344,17 @@ export function WorkOrders() {
                     </Select>
                     {updatingId === request.id && (
                       <Loader2 className="h-4 w-4 animate-spin" />
+                    )}
+                    {request.status === "Completed" && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDownloadPDF(request)}
+                        className="ml-2"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        PDF
+                      </Button>
                     )}
                   </div>
                 </div>
