@@ -10,7 +10,7 @@ export async function signInWithGoogle(next: string = "/dashboard") {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/callback?next=${encodeURIComponent(next)}`,
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000"}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });
 
@@ -35,7 +35,7 @@ export async function signUpWithEmail(
     options: {
       data: {
         name,
-        database_role: role,
+        database_role: role.toLowerCase(),
       },
     },
   });
@@ -54,8 +54,15 @@ export async function signUpWithEmail(
     });
 
     if (profileError) {
+      console.error("Profile creation error:", profileError);
       return { error: profileError.message };
     }
+
+    // Update JWT metadata for proper role checking
+    await supabase.rpc("update_user_role", {
+      user_id: data.user.id,
+      new_role: role,
+    });
 
     // Auto-authenticate after successful signup
     if (role === "Admin") {
@@ -124,6 +131,7 @@ export async function signInAsGuest(guestData: GuestUser) {
     });
 
     if (profileError) {
+      console.error("Guest profile creation error:", profileError);
       return { error: profileError.message };
     }
   }
