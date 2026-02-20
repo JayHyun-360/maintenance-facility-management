@@ -53,16 +53,18 @@ export async function GET(request: Request) {
           user_metadata: user.user_metadata,
         });
 
-        // If we have a role hint, update the user's app_metadata
+        // If we have a role hint, update the user's app_metadata and database role
         if (roleHint && (roleHint === "admin" || roleHint === "user")) {
           console.log("🎯 Updating user role from hint:", roleHint);
+
+          // Update app_metadata with role
           await supabase.auth.updateUser({
             data: {
-              role_hint: roleHint,
+              role: roleHint, // Store role in app_metadata
             },
           });
 
-          // Also update the database role via RPC
+          // Update database role via RPC
           const { error: roleUpdateError } = await supabase.rpc(
             "update_user_role",
             {
@@ -103,7 +105,7 @@ export async function GET(request: Request) {
               full_name:
                 userMetadata?.name || userMetadata?.full_name || "Unknown",
               email: user.email,
-              database_role: appMetadata?.role === "admin" ? "Admin" : "User",
+              database_role: roleHint === "admin" ? "Admin" : "User", // Use role hint from OAuth
               visual_role: userMetadata?.visual_role,
               educational_level: userMetadata?.educational_level,
               department: userMetadata?.department,
@@ -123,16 +125,23 @@ export async function GET(request: Request) {
           // Re-fetch profile to get the most up-to-date role
           const { data: updatedProfile } = await supabase
             .from("profiles")
-            .select("database_role")
+            .select("database_role, visual_role")
             .eq("id", user.id)
             .single();
 
           const userRole =
             updatedProfile?.database_role ||
-            (user.app_metadata?.role === "admin" ? "Admin" : "User");
+            (user.app_metadata?.role === "admin" ? "Admin" : "User") ||
+            (roleHint === "admin" ? "Admin" : "User"); // Use roleHint as fallback
 
-          redirectUrl =
-            userRole === "Admin" ? "/admin/dashboard" : "/dashboard";
+          // For User role, check if visual role is set
+          if (userRole === "User" && !updatedProfile?.visual_role) {
+            // User without visual role - redirect to dashboard for profile completion
+            redirectUrl = "/dashboard";
+          } else {
+            redirectUrl =
+              userRole === "Admin" ? "/admin/dashboard" : "/dashboard";
+          }
 
           console.log("🎯 Final redirect decision:", { userRole, redirectUrl });
         }
