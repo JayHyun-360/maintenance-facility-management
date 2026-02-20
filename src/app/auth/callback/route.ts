@@ -86,8 +86,51 @@ export async function GET(request: Request) {
         // Wait a moment for the sync_user_role trigger to complete
         await new Promise((resolve) => setTimeout(resolve, 100));
 
-        // Profile creation is now handled entirely by the sync_user_role trigger
-        // No manual profile insertion needed to avoid race conditions
+        // Profile creation is now handled by the sync_user_role trigger
+        // But add manual fallback if trigger fails
+        const { data: fallbackProfile } = await supabase
+          .from("profiles")
+          .select("database_role, visual_role")
+          .eq("id", user.id)
+          .single();
+
+        if (!fallbackProfile) {
+          console.log(
+            "⚠️ Trigger failed, performing manual profile creation fallback",
+          );
+
+          // Manual insertion as emergency fallback
+          const databaseRole = roleHint === "admin" ? "Admin" : "User";
+          const userMetadata = user.user_metadata;
+
+          try {
+            const { error: fallbackError } = await supabase
+              .from("profiles")
+              .insert({
+                id: user.id,
+                full_name:
+                  userMetadata?.name ||
+                  userMetadata?.full_name ||
+                  user.email ||
+                  "Unknown",
+                email: user.email,
+                database_role: databaseRole,
+                visual_role: userMetadata?.visual_role,
+                educational_level: userMetadata?.educational_level,
+                department: userMetadata?.department,
+                is_guest: false, // Google OAuth users are not guests
+              });
+
+            if (fallbackError) {
+              console.error("❌ Manual fallback also failed:", fallbackError);
+              // Continue anyway - user will be authenticated but profile missing
+            } else {
+              console.log("✅ Manual fallback profile creation successful");
+            }
+          } catch (error) {
+            console.error("❌ Manual fallback exception:", error);
+          }
+        }
 
         // Determine redirect based on role
         let redirectUrl = next;
