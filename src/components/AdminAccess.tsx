@@ -13,7 +13,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { signInWithGoogle, signUpWithEmail, signInWithEmail } from "@/actions";
+import {
+  signInWithGoogle,
+  signUpWithEmail,
+  signInWithEmail,
+} from "@/actions/auth";
 
 interface AdminAccessProps {
   adminGoogleLoading: boolean;

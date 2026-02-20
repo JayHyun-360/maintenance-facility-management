@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { signInWithGoogle, signInAsGuest } from "@/actions";
+import { signInWithGoogle, signInAsGuest } from "@/actions/auth";
 
 interface UserPortalProps {
   userGoogleLoading: boolean;
