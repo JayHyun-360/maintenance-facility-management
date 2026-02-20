@@ -4,6 +4,7 @@ import { useState } from "react";
 import { WorkOrders } from "@/components/WorkOrders";
 import { FacilitiesManagement } from "@/components/FacilitiesManagement";
 import { Reports } from "@/components/Reports";
+import { NotificationBell } from "@/components/NotificationBell";
 import {
   Card,
   CardContent,
@@ -42,6 +43,7 @@ export function AdminDashboard({
               </h1>
             </div>
             <div className="flex items-center space-x-4">
+              <NotificationBell />
               <span className="text-sm text-gray-600">
                 Admin: {profile?.name || user.email}
               </span>

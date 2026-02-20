@@ -30,7 +30,7 @@ import {
 } from "lucide-react";
 import { MaintenanceRequest } from "@/types/maintenance";
 import { PDFGenerator } from "@/lib/pdf-generator";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { updateRequestStatus } from "@/actions/maintenance";
 
 interface RequestListProps {
@@ -43,7 +43,6 @@ export function RequestList({ userId, refreshTrigger }: RequestListProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const { showToast } = useToast();
 
   useEffect(() => {
     async function fetchRequests() {
@@ -104,10 +103,10 @@ export function RequestList({ userId, refreshTrigger }: RequestListProps) {
       };
 
       PDFGenerator.downloadPDF(pdfData);
-      showToast("PDF downloaded successfully!", "default");
+      toast.success("PDF downloaded successfully!");
     } catch (error) {
       console.error("Error generating PDF:", error);
-      showToast("Failed to generate PDF", "destructive");
+      toast.error("Failed to generate PDF");
     }
   }
 

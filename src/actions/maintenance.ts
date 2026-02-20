@@ -7,6 +7,10 @@ import {
   Facility,
   RequestAnalytics,
 } from "@/types/maintenance";
+import {
+  notifyAdminsNewRequest,
+  notifyUserRequestCompletion,
+} from "@/actions/notifications";
 
 export async function createMaintenanceRequest(formData: FormData) {
   const supabase = await createClient();
@@ -52,6 +56,23 @@ export async function createMaintenanceRequest(formData: FormData) {
       console.error("Error creating maintenance request:", error);
       return { success: false, error: "Failed to create maintenance request" };
     }
+
+    // Get user profile for email notification
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("name")
+      .eq("id", user.id)
+      .single();
+
+    // Send email notification to admins
+    await notifyAdminsNewRequest({
+      id: data.id,
+      description: data.description,
+      requester_name: profile?.name || user.email || "Unknown",
+      category: data.category,
+      priority: data.urgency,
+      facility: data.location_building,
+    });
 
     revalidatePath("/dashboard");
     return { success: true, data };
@@ -164,6 +185,27 @@ export async function updateRequestStatus(
     if (error) {
       console.error("Error updating request status:", error);
       return { success: false, error: "Failed to update request status" };
+    }
+
+    // Send email notification to user if request is completed
+    if (status === "Completed") {
+      // Get requester profile for email
+      const { data: requesterProfile } = await supabase
+        .from("profiles")
+        .select("email, name")
+        .eq("id", data.requester_id)
+        .single();
+
+      if (requesterProfile?.email) {
+        await notifyUserRequestCompletion({
+          id: data.id,
+          description: data.description,
+          requester_email: requesterProfile.email,
+          requester_name: requesterProfile.name || requesterProfile.email,
+          action_taken: completionData?.action_taken,
+          work_evaluation: completionData?.work_evaluation,
+        });
+      }
     }
 
     revalidatePath("/admin/dashboard");

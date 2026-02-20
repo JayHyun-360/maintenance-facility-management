@@ -34,14 +34,13 @@ import {
 } from "lucide-react";
 import { MaintenanceRequest, WORK_EVALUATIONS } from "@/types/maintenance";
 import { PDFGenerator } from "@/lib/pdf-generator";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 export function WorkOrders() {
   const [requests, setRequests] = useState<MaintenanceRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const { showToast } = useToast();
   const [completionModal, setCompletionModal] = useState<{
     isOpen: boolean;
     requestId: string;
@@ -154,10 +153,10 @@ export function WorkOrders() {
       };
 
       PDFGenerator.downloadPDF(pdfData);
-      showToast("PDF downloaded successfully!", "default");
+      toast.success("PDF downloaded successfully!");
     } catch (error) {
       console.error("Error generating PDF:", error);
-      showToast("Failed to generate PDF", "destructive");
+      toast.error("Failed to generate PDF");
     }
   }
 

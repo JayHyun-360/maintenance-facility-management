@@ -3,7 +3,14 @@
 import { useState } from "react";
 import { RequestForm } from "@/components/RequestForm";
 import { RequestList } from "@/components/RequestList";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { NotificationBell } from "@/components/NotificationBell";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Wrench, List, Plus } from "lucide-react";
@@ -26,7 +33,7 @@ export function UserDashboard({ user, profile }: UserDashboardProps) {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   const handleRequestSuccess = () => {
-    setRefreshTrigger(prev => prev + 1);
+    setRefreshTrigger((prev) => prev + 1);
     setActiveTab("requests");
   };
 
@@ -41,6 +48,7 @@ export function UserDashboard({ user, profile }: UserDashboardProps) {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
+              <NotificationBell />
               <span className="text-sm text-gray-600">
                 Welcome, {profile?.name || user.email}
               </span>
@@ -51,13 +59,20 @@ export function UserDashboard({ user, profile }: UserDashboardProps) {
 
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="space-y-6"
+          >
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <Wrench className="h-4 w-4" />
                 Overview
               </TabsTrigger>
-              <TabsTrigger value="new-request" className="flex items-center gap-2">
+              <TabsTrigger
+                value="new-request"
+                className="flex items-center gap-2"
+              >
                 <Plus className="h-4 w-4" />
                 New Request
               </TabsTrigger>
@@ -77,7 +92,7 @@ export function UserDashboard({ user, profile }: UserDashboardProps) {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button 
+                    <Button
                       className="w-full"
                       onClick={() => setActiveTab("new-request")}
                     >
@@ -94,8 +109,8 @@ export function UserDashboard({ user, profile }: UserDashboardProps) {
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       className="w-full"
                       onClick={() => setActiveTab("requests")}
                     >
@@ -129,8 +144,12 @@ export function UserDashboard({ user, profile }: UserDashboardProps) {
                     <CardContent>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-sm font-medium text-gray-500">Name</p>
-                          <p className="text-sm text-gray-900">{profile.name}</p>
+                          <p className="text-sm font-medium text-gray-500">
+                            Name
+                          </p>
+                          <p className="text-sm text-gray-900">
+                            {profile.name}
+                          </p>
                         </div>
                         <div>
                           <p className="text-sm font-medium text-gray-500">
