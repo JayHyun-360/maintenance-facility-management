@@ -57,19 +57,22 @@ export async function GET(request: Request) {
         if (roleHint && (roleHint === "admin" || roleHint === "user")) {
           console.log("🎯 Updating user role from hint:", roleHint);
 
-          // Update app_metadata with role
+          const databaseRole = roleHint === "admin" ? "Admin" : "User";
+
+          // Update app_metadata with role for middleware/circuit breaker pattern
           await supabase.auth.updateUser({
             data: {
               role: roleHint, // Store role in app_metadata
+              database_role: databaseRole, // Store in user_metadata for trigger
             },
           });
 
-          // Update database role via RPC
+          // Update database role via RPC (backup method)
           const { error: roleUpdateError } = await supabase.rpc(
             "update_user_role",
             {
               user_id: user.id,
-              new_role: roleHint === "admin" ? "Admin" : "User",
+              new_role: databaseRole,
             },
           );
 
