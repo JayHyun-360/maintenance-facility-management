@@ -1,127 +1,153 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { signInWithGoogle, signUpWithEmail, signInWithEmail, signInAsGuest } from '@/actions/auth'
-import { DatabaseRole, VisualRole, GuestUser } from '@/types/auth'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  signInWithGoogle,
+  signUpWithEmail,
+  signInWithEmail,
+  signInAsGuest,
+} from "@/actions/auth";
+import { DatabaseRole, VisualRole, GuestUser } from "@/types/auth";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export default function LoginPage() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const error = searchParams.get('error')
-  
-  const [loading, setLoading] = useState(false)
-  const [formError, setFormError] = useState<string | null>(null)
-  
+function LoginPageContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const error = searchParams.get("error");
+
+  const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+
   // Admin signup state
-  const [adminEmail, setAdminEmail] = useState('')
-  const [adminPassword, setAdminPassword] = useState('')
-  const [adminName, setAdminName] = useState('')
-  
+  const [adminEmail, setAdminEmail] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
+  const [adminName, setAdminName] = useState("");
+
   // Admin login state
-  const [loginEmail, setLoginEmail] = useState('')
-  const [loginPassword, setLoginPassword] = useState('')
-  
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+
   // Guest login state
-  const [guestName, setGuestName] = useState('')
-  const [guestVisualRole, setGuestVisualRole] = useState<VisualRole | null>(null)
-  const [guestEducationLevel, setGuestEducationLevel] = useState('')
-  const [guestDepartment, setGuestDepartment] = useState('')
+  const [guestName, setGuestName] = useState("");
+  const [guestVisualRole, setGuestVisualRole] = useState<VisualRole | null>(
+    null,
+  );
+  const [guestEducationLevel, setGuestEducationLevel] = useState("");
+  const [guestDepartment, setGuestDepartment] = useState("");
 
   const handleGoogleSignIn = async (role: DatabaseRole) => {
-    setLoading(true)
-    setFormError(null)
-    
-    const result = await signInWithGoogle(role === 'Admin' ? '/admin/dashboard' : '/dashboard')
-    
+    setLoading(true);
+    setFormError(null);
+
+    const result = await signInWithGoogle(
+      role === "Admin" ? "/admin/dashboard" : "/dashboard",
+    );
+
     if (result.error) {
-      setFormError(result.error)
+      setFormError(result.error);
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const handleAdminSignUp = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setFormError(null)
-    
+    e.preventDefault();
+    setLoading(true);
+    setFormError(null);
+
     if (!adminEmail || !adminPassword || !adminName) {
-      setFormError('All fields are required')
-      setLoading(false)
-      return
+      setFormError("All fields are required");
+      setLoading(false);
+      return;
     }
-    
-    const result = await signUpWithEmail(adminEmail, adminPassword, adminName, 'Admin')
-    
+
+    const result = await signUpWithEmail(
+      adminEmail,
+      adminPassword,
+      adminName,
+      "Admin",
+    );
+
     if (result.error) {
-      setFormError(result.error)
+      setFormError(result.error);
     } else if (result.success) {
-      router.push('/login?message=admin_signup_success')
+      router.push("/login?message=admin_signup_success");
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const handleAdminLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setFormError(null)
-    
+    e.preventDefault();
+    setLoading(true);
+    setFormError(null);
+
     if (!loginEmail || !loginPassword) {
-      setFormError('Email and password are required')
-      setLoading(false)
-      return
+      setFormError("Email and password are required");
+      setLoading(false);
+      return;
     }
-    
-    const result = await signInWithEmail(loginEmail, loginPassword)
-    
+
+    const result = await signInWithEmail(loginEmail, loginPassword);
+
     if (result.error) {
-      setFormError(result.error)
+      setFormError(result.error);
     } else if (result.success) {
-      router.push('/admin/dashboard')
+      router.push("/admin/dashboard");
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const handleGuestLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setFormError(null)
-    
+    e.preventDefault();
+    setLoading(true);
+    setFormError(null);
+
     if (!guestName || !guestVisualRole) {
-      setFormError('Name and visual role are required')
-      setLoading(false)
-      return
+      setFormError("Name and visual role are required");
+      setLoading(false);
+      return;
     }
-    
-    if (guestEducationLevel === 'College' && !guestDepartment) {
-      setFormError('Department is required for College education level')
-      setLoading(false)
-      return
+
+    if (guestEducationLevel === "College" && !guestDepartment) {
+      setFormError("Department is required for College education level");
+      setLoading(false);
+      return;
     }
-    
+
     const guestData: GuestUser = {
       name: guestName,
       visual_role: guestVisualRole,
       educational_level: guestEducationLevel || undefined,
       department: guestDepartment || undefined,
-    }
-    
-    const result = await signInAsGuest(guestData)
-    
+    };
+
+    const result = await signInAsGuest(guestData);
+
     if (result.error) {
-      setFormError(result.error)
+      setFormError(result.error);
     } else if (result.success) {
-      router.push('/dashboard')
+      router.push("/dashboard");
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -138,9 +164,9 @@ export default function LoginPage() {
         {error && (
           <Alert variant="destructive">
             <AlertDescription>
-              {error === 'auth_callback_error' 
-                ? 'Authentication failed. Please try again.' 
-                : 'An error occurred during authentication.'}
+              {error === "auth_callback_error"
+                ? "Authentication failed. Please try again."
+                : "An error occurred during authentication."}
             </AlertDescription>
           </Alert>
         )}
@@ -156,7 +182,7 @@ export default function LoginPage() {
             <TabsTrigger value="admin">Admin Access</TabsTrigger>
             <TabsTrigger value="guest">Guest/User Portal</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="admin" className="space-y-6">
             <Card>
               <CardHeader>
@@ -167,14 +193,14 @@ export default function LoginPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-4">
-                  <Button 
-                    onClick={() => handleGoogleSignIn('Admin')}
+                  <Button
+                    onClick={() => handleGoogleSignIn("Admin")}
                     disabled={loading}
                     className="w-full"
                   >
-                    {loading ? 'Signing in...' : 'Sign in with Google (Admin)'}
+                    {loading ? "Signing in..." : "Sign in with Google (Admin)"}
                   </Button>
-                  
+
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
                       <span className="w-full border-t" />
@@ -192,7 +218,7 @@ export default function LoginPage() {
                     <TabsTrigger value="login">Login</TabsTrigger>
                     <TabsTrigger value="signup">Sign Up</TabsTrigger>
                   </TabsList>
-                  
+
                   <TabsContent value="login">
                     <form onSubmit={handleAdminLogin} className="space-y-4">
                       <div>
@@ -215,12 +241,16 @@ export default function LoginPage() {
                           required
                         />
                       </div>
-                      <Button type="submit" disabled={loading} className="w-full">
-                        {loading ? 'Signing in...' : 'Sign In'}
+                      <Button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full"
+                      >
+                        {loading ? "Signing in..." : "Sign In"}
                       </Button>
                     </form>
                   </TabsContent>
-                  
+
                   <TabsContent value="signup">
                     <form onSubmit={handleAdminSignUp} className="space-y-4">
                       <div>
@@ -253,8 +283,14 @@ export default function LoginPage() {
                           required
                         />
                       </div>
-                      <Button type="submit" disabled={loading} className="w-full">
-                        {loading ? 'Creating account...' : 'Create Admin Account'}
+                      <Button
+                        type="submit"
+                        disabled={loading}
+                        className="w-full"
+                      >
+                        {loading
+                          ? "Creating account..."
+                          : "Create Admin Account"}
                       </Button>
                     </form>
                   </TabsContent>
@@ -262,7 +298,7 @@ export default function LoginPage() {
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="guest" className="space-y-6">
             <Card>
               <CardHeader>
@@ -272,14 +308,14 @@ export default function LoginPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Button 
-                  onClick={() => handleGoogleSignIn('User')}
+                <Button
+                  onClick={() => handleGoogleSignIn("User")}
                   disabled={loading}
                   className="w-full"
                 >
-                  {loading ? 'Signing in...' : 'Sign in with Google'}
+                  {loading ? "Signing in..." : "Sign in with Google"}
                 </Button>
-                
+
                 <div className="relative">
                   <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
@@ -302,10 +338,15 @@ export default function LoginPage() {
                       required
                     />
                   </div>
-                  
+
                   <div>
                     <Label htmlFor="guest-visual-role">Visual Role</Label>
-                    <Select value={guestVisualRole || ''} onValueChange={(value: VisualRole) => setGuestVisualRole(value)}>
+                    <Select
+                      value={guestVisualRole || ""}
+                      onValueChange={(value: VisualRole) =>
+                        setGuestVisualRole(value)
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
@@ -316,10 +357,15 @@ export default function LoginPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
+
                   <div>
-                    <Label htmlFor="guest-education">Education Level (Optional)</Label>
-                    <Select value={guestEducationLevel} onValueChange={setGuestEducationLevel}>
+                    <Label htmlFor="guest-education">
+                      Education Level (Optional)
+                    </Label>
+                    <Select
+                      value={guestEducationLevel}
+                      onValueChange={setGuestEducationLevel}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select education level" />
                       </SelectTrigger>
@@ -332,23 +378,25 @@ export default function LoginPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  
-                  {guestEducationLevel === 'College' && (
+
+                  {guestEducationLevel === "College" && (
                     <div>
-                      <Label htmlFor="guest-department">Department (Required for College)</Label>
+                      <Label htmlFor="guest-department">
+                        Department (Required for College)
+                      </Label>
                       <Input
                         id="guest-department"
                         type="text"
                         value={guestDepartment}
                         onChange={(e) => setGuestDepartment(e.target.value)}
-                        required={guestEducationLevel === 'College'}
+                        required={guestEducationLevel === "College"}
                         placeholder="e.g., Computer Science, Engineering, etc."
                       />
                     </div>
                   )}
-                  
+
                   <Button type="submit" disabled={loading} className="w-full">
-                    {loading ? 'Signing in...' : 'Continue as Guest'}
+                    {loading ? "Signing in..." : "Continue as Guest"}
                   </Button>
                 </form>
               </CardContent>
@@ -357,5 +405,13 @@ export default function LoginPage() {
         </Tabs>
       </div>
     </div>
-  )
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginPageContent />
+    </Suspense>
+  );
 }
