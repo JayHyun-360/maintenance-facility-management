@@ -35,7 +35,8 @@ function LoginPageContent() {
   const error = searchParams.get("error");
 
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
+  const [adminGoogleLoading, setAdminGoogleLoading] = useState(false);
+  const [userGoogleLoading, setUserGoogleLoading] = useState(false);
   const [emailLoading, setEmailLoading] = useState(false);
   const [guestLoading, setGuestLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -58,17 +59,30 @@ function LoginPageContent() {
   const [guestDepartment, setGuestDepartment] = useState("");
 
   const handleGoogleSignIn = async (role: DatabaseRole) => {
-    setGoogleLoading(true);
+    // Set appropriate loading state based on role
+    if (role === "Admin") {
+      setAdminGoogleLoading(true);
+    } else {
+      setUserGoogleLoading(true);
+    }
+
     setFormError(null);
 
     const result = await signInWithGoogle(
       role === "Admin" ? "/admin/dashboard" : "/dashboard",
+      role,
     );
 
     if (result.error) {
       setFormError(result.error);
     }
-    setGoogleLoading(false);
+
+    // Reset appropriate loading state
+    if (role === "Admin") {
+      setAdminGoogleLoading(false);
+    } else {
+      setUserGoogleLoading(false);
+    }
   };
 
   const handleAdminSignUp = async (e: React.FormEvent) => {
@@ -202,10 +216,10 @@ function LoginPageContent() {
                 <div className="space-y-4">
                   <Button
                     onClick={() => handleGoogleSignIn("Admin")}
-                    disabled={googleLoading}
+                    disabled={adminGoogleLoading}
                     className="w-full bg-[#006633] hover:bg-[#004d26] text-white"
                   >
-                    {googleLoading
+                    {adminGoogleLoading
                       ? "Signing in..."
                       : "Sign in with Google (Admin)"}
                   </Button>
@@ -319,10 +333,10 @@ function LoginPageContent() {
               <CardContent className="space-y-4">
                 <Button
                   onClick={() => handleGoogleSignIn("User")}
-                  disabled={googleLoading}
+                  disabled={userGoogleLoading}
                   className="w-full bg-[#006633] hover:bg-[#004d26] text-white"
                 >
-                  {googleLoading ? "Signing in..." : "Sign in with Google"}
+                  {userGoogleLoading ? "Signing in..." : "Sign in with Google"}
                 </Button>
 
                 <div className="relative">

@@ -6,19 +6,33 @@ import { redirect } from "next/navigation";
 import { DatabaseRole, VisualRole, GuestUser } from "@/types/auth";
 import { getAuthCallbackURL } from "@/lib/utils/url";
 
-export async function signInWithGoogle(next: string = "/dashboard") {
+export async function signInWithGoogle(
+  next: string = "/dashboard",
+  role: DatabaseRole = "User",
+) {
   const supabase = await createClient();
+
+  console.log("🚀 Starting Google OAuth sign-in:", { next, role });
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
       redirectTo: getAuthCallbackURL(next),
+      queryParams: {
+        role_hint: role.toLowerCase(), // Pass role hint to callback
+      },
     },
   });
 
   if (error) {
+    console.error("❌ Google OAuth error:", error);
     return { error: error.message };
   }
 
+  console.log("✅ Google OAuth initiated successfully:", {
+    provider: data.provider,
+    url: data.url,
+  });
   return { data };
 }
 

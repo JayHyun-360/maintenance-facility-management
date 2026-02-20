@@ -6,9 +6,19 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/";
   const error = searchParams.get("error");
+  const roleHint = searchParams.get("role_hint"); // Get role hint from OAuth
+
+  console.log("🔍 Auth callback received:", {
+    hasCode: !!code,
+    next,
+    error,
+    roleHint,
+    origin,
+  });
 
   // Handle OAuth errors
   if (error) {
+    console.error("❌ OAuth error returned:", error);
     return NextResponse.redirect(
       `${origin}/auth/error?error=${encodeURIComponent(error)}`,
     );
@@ -16,16 +26,19 @@ export async function GET(request: Request) {
 
   if (code) {
     try {
+      console.log("🔄 Exchanging code for session...");
       const supabase = await createClient();
       const { error: exchangeError } =
         await supabase.auth.exchangeCodeForSession(code);
 
       if (exchangeError) {
-        console.error("Auth code exchange error:", exchangeError);
+        console.error("❌ Auth code exchange error:", exchangeError);
         return NextResponse.redirect(
           `${origin}/auth/error?error=${encodeURIComponent(exchangeError.message)}`,
         );
       }
+
+      console.log("✅ Code exchange successful");
 
       // Get user data to check role
       const {
@@ -33,6 +46,38 @@ export async function GET(request: Request) {
       } = await supabase.auth.getUser();
 
       if (user) {
+        console.log("👤 User authenticated:", {
+          id: user.id,
+          email: user.email,
+          app_metadata: user.app_metadata,
+          user_metadata: user.user_metadata,
+        });
+
+        // If we have a role hint, update the user's app_metadata
+        if (roleHint && (roleHint === "admin" || roleHint === "user")) {
+          console.log("🎯 Updating user role from hint:", roleHint);
+          await supabase.auth.updateUser({
+            data: {
+              role_hint: roleHint,
+            },
+          });
+
+          // Also update the database role via RPC
+          const { error: roleUpdateError } = await supabase.rpc(
+            "update_user_role",
+            {
+              user_id: user.id,
+              new_role: roleHint === "admin" ? "Admin" : "User",
+            },
+          );
+
+          if (roleUpdateError) {
+            console.error("⚠️ Role update error:", roleUpdateError);
+          } else {
+            console.log("✅ Role updated successfully:", roleHint);
+          }
+        }
+
         // Wait a moment for the sync_user_role trigger to complete
         await new Promise((resolve) => setTimeout(resolve, 100));
 
@@ -43,8 +88,11 @@ export async function GET(request: Request) {
           .eq("id", user.id)
           .single();
 
+        console.log("📋 Profile check:", { profile });
+
         // If no profile exists, create one
         if (!profile) {
+          console.log("🆕 Creating new profile for user");
           const userMetadata = user.user_metadata;
           const appMetadata = user.app_metadata;
 
@@ -62,8 +110,10 @@ export async function GET(request: Request) {
             });
 
           if (insertError) {
-            console.error("Profile creation error:", insertError);
+            console.error("❌ Profile creation error:", insertError);
             // Continue anyway, the trigger might handle it
+          } else {
+            console.log("✅ Profile created successfully");
           }
         }
 
@@ -80,8 +130,11 @@ export async function GET(request: Request) {
           const userRole =
             updatedProfile?.database_role ||
             (user.app_metadata?.role === "admin" ? "Admin" : "User");
+
           redirectUrl =
             userRole === "Admin" ? "/admin/dashboard" : "/dashboard";
+
+          console.log("🎯 Final redirect decision:", { userRole, redirectUrl });
         }
 
         const forwardedHost = request.headers.get("x-forwarded-host");
@@ -93,16 +146,20 @@ export async function GET(request: Request) {
             ? `https://${forwardedHost}`
             : origin;
 
-        return NextResponse.redirect(`${baseUrl}${redirectUrl}`);
+        const finalUrl = `${baseUrl}${redirectUrl}`;
+        console.log("🚀 Redirecting to:", finalUrl);
+
+        return NextResponse.redirect(finalUrl);
       }
     } catch (error) {
-      console.error("Auth callback error:", error);
+      console.error("❌ Auth callback error:", error);
       return NextResponse.redirect(
         `${origin}/auth/error?error=${encodeURIComponent("Authentication failed")}`,
       );
     }
   }
 
+  console.error("❌ No authorization code received");
   return NextResponse.redirect(
     `${origin}/auth/error?error=${encodeURIComponent("No authorization code received")}`,
   );
