@@ -83,41 +83,8 @@ export async function GET(request: Request) {
         // Wait a moment for the sync_user_role trigger to complete
         await new Promise((resolve) => setTimeout(resolve, 100));
 
-        // Check if profile exists, create if missing
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("database_role")
-          .eq("id", user.id)
-          .single();
-
-        console.log("📋 Profile check:", { profile });
-
-        // If no profile exists, create one
-        if (!profile) {
-          console.log("🆕 Creating new profile for user");
-          const userMetadata = user.user_metadata;
-          const appMetadata = user.app_metadata;
-
-          const { error: insertError } = await supabase
-            .from("profiles")
-            .insert({
-              id: user.id,
-              full_name:
-                userMetadata?.name || userMetadata?.full_name || "Unknown",
-              email: user.email,
-              database_role: roleHint === "admin" ? "Admin" : "User", // Use role hint from OAuth
-              visual_role: userMetadata?.visual_role,
-              educational_level: userMetadata?.educational_level,
-              department: userMetadata?.department,
-            });
-
-          if (insertError) {
-            console.error("❌ Profile creation error:", insertError);
-            // Continue anyway, the trigger might handle it
-          } else {
-            console.log("✅ Profile created successfully");
-          }
-        }
+        // Profile creation is now handled entirely by the sync_user_role trigger
+        // No manual profile insertion needed to avoid race conditions
 
         // Determine redirect based on role
         let redirectUrl = next;
@@ -129,10 +96,9 @@ export async function GET(request: Request) {
             .eq("id", user.id)
             .single();
 
+          // Consistently use app_metadata for role checking (circuit breaker pattern)
           const userRole =
-            updatedProfile?.database_role ||
-            (user.app_metadata?.role === "admin" ? "Admin" : "User") ||
-            (roleHint === "admin" ? "Admin" : "User"); // Use roleHint as fallback
+            user.app_metadata?.role === "admin" ? "Admin" : "User";
 
           // For User role, check if visual role is set
           if (userRole === "User" && !updatedProfile?.visual_role) {

@@ -64,12 +64,8 @@ export async function middleware(request: NextRequest) {
 
   // Check admin role for admin routes
   if (user && adminRoutes.some((route) => pathname.startsWith(route))) {
-    // Check JWT metadata first (most reliable), then fallback to user metadata
-    const jwtRole = user.app_metadata?.role;
-    const userRole =
-      jwtRole === "admin"
-        ? "Admin"
-        : user.user_metadata?.database_role || user.user_metadata?.role;
+    // Consistently use app_metadata for role checking (circuit breaker pattern)
+    const userRole = user.app_metadata?.role === "admin" ? "Admin" : "User";
 
     if (userRole !== "Admin") {
       const url = request.nextUrl.clone();
@@ -80,12 +76,8 @@ export async function middleware(request: NextRequest) {
 
   // Redirect authenticated users away from login page
   if (user && pathname === "/login") {
-    // Check JWT metadata first (most reliable), then fallback to user metadata
-    const jwtRole = user.app_metadata?.role;
-    const userRole =
-      jwtRole === "admin"
-        ? "Admin"
-        : user.user_metadata?.database_role || user.user_metadata?.role;
+    // Consistently use app_metadata for role checking (circuit breaker pattern)
+    const userRole = user.app_metadata?.role === "admin" ? "Admin" : "User";
     const url = request.nextUrl.clone();
     url.pathname = userRole === "Admin" ? "/admin/dashboard" : "/dashboard";
     return NextResponse.redirect(url);

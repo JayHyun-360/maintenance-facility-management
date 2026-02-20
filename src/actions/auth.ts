@@ -135,6 +135,7 @@ export async function signInAsGuest(guestData: GuestUser) {
         visual_role: guestData.visual_role,
         educational_level: guestData.educational_level,
         department: guestData.department,
+        is_guest: true, // Set guest flag for trigger to handle
       },
     },
   });
@@ -143,22 +144,8 @@ export async function signInAsGuest(guestData: GuestUser) {
     return { error: error.message };
   }
 
-  // Create guest profile
-  if (data.user) {
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: data.user.id,
-      full_name: guestData.name,
-      database_role: "User",
-      visual_role: guestData.visual_role,
-      educational_level: guestData.educational_level,
-      department: guestData.department,
-    });
-
-    if (profileError) {
-      console.error("Guest profile creation error:", profileError);
-      return { error: profileError.message };
-    }
-  }
+  // Profile creation is now handled by the sync_user_role trigger
+  // No manual profile insertion needed to avoid race conditions
 
   revalidatePath("/login");
   return { success: true, data };
