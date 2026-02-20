@@ -1,10 +1,10 @@
-import { createServerClient } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
-  })
+  });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,25 +12,64 @@ export async function middleware(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          return request.cookies.getAll()
+          return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+          cookiesToSet.forEach(({ name, value, options }) =>
+            request.cookies.set(name, value),
+          );
           supabaseResponse = NextResponse.next({
             request,
-          })
+          });
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          )
+            supabaseResponse.cookies.set(name, value, options),
+          );
         },
       },
+    },
+  );
+
+  // Get user and check role
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { pathname } = request.nextUrl;
+
+  // Protected routes
+  const protectedRoutes = ["/dashboard", "/admin/dashboard"];
+  const adminRoutes = ["/admin/dashboard"];
+  const publicRoutes = ["/login", "/auth/callback"];
+
+  // Redirect unauthenticated users from protected routes
+  if (!user && protectedRoutes.some((route) => pathname.startsWith(route))) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  // Check admin role for admin routes
+  if (user && adminRoutes.some((route) => pathname.startsWith(route))) {
+    const userRole =
+      user.user_metadata?.database_role || user.app_metadata?.role;
+
+    if (userRole !== "Admin") {
+      const url = request.nextUrl.clone();
+      url.pathname = "/dashboard"; // Redirect regular users to user dashboard
+      return NextResponse.redirect(url);
     }
-  )
+  }
 
-  // IMPORTANT: Avoid writing any logic between createServerClient and
-  // the return statement. The supabaseResponse should be returned as is.
+  // Redirect authenticated users away from login page
+  if (user && pathname === "/login") {
+    const userRole =
+      user.user_metadata?.database_role || user.app_metadata?.role;
+    const url = request.nextUrl.clone();
+    url.pathname = userRole === "Admin" ? "/admin/dashboard" : "/dashboard";
+    return NextResponse.redirect(url);
+  }
 
-  return supabaseResponse
+  return supabaseResponse;
 }
 
 export const config = {
@@ -42,6 +81,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * Feel free to modify this pattern to include more paths.
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
-}
+};
