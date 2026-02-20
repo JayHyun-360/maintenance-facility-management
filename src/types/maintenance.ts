@@ -7,10 +7,16 @@ export interface MaintenanceRequest {
   urgency: string;
   location_building: string;
   location_room?: string | null;
-  status: 'Pending' | 'In Progress' | 'Completed';
+  status: "Pending" | "In Progress" | "Completed";
   requester_id: string;
   action_taken?: string | null;
-  work_evaluation?: 'Outstanding' | 'Very Satisfactory' | 'Satisfactory' | 'Poor' | null;
+  work_evaluation?:
+    | "Outstanding"
+    | "Very Satisfactory"
+    | "Satisfactory"
+    | "Poor"
+    | null;
+  completed_at?: string | null;
   created_at: string;
   updated_at: string;
   requester?: {
@@ -41,7 +47,11 @@ export interface WorkOrderFormData {
 
 export interface WorkOrderCompletionData {
   action_taken: string;
-  work_evaluation: 'Outstanding' | 'Very Satisfactory' | 'Satisfactory' | 'Poor';
+  work_evaluation:
+    | "Outstanding"
+    | "Very Satisfactory"
+    | "Satisfactory"
+    | "Poor";
 }
 
 export interface RequestAnalytics {
@@ -56,7 +66,7 @@ export interface RequestAnalytics {
   };
   work_quality_distribution: {
     Outstanding: number;
-    'Very Satisfactory': number;
+    "Very Satisfactory": number;
     Satisfactory: number;
     Poor: number;
   };
@@ -70,31 +80,22 @@ export interface RequestAnalytics {
 }
 
 export const CATEGORIES = [
-  'Plumbing',
-  'Electrical',
-  'HVAC',
-  'Cleaning',
-  'Carpentry',
-  'Personnel Services',
-  'Others'
+  "Plumbing",
+  "Electrical",
+  "HVAC",
+  "Cleaning",
+  "Carpentry",
+  "Personnel Services",
+  "Others",
 ] as const;
 
-export const URGENCY_LEVELS = [
-  'Emergency',
-  'High',
-  'Medium',
-  'Low'
-] as const;
+export const URGENCY_LEVELS = ["Emergency", "High", "Medium", "Low"] as const;
 
 export const WORK_EVALUATIONS = [
-  'Outstanding',
-  'Very Satisfactory',
-  'Satisfactory',
-  'Poor'
+  "Outstanding",
+  "Very Satisfactory",
+  "Satisfactory",
+  "Poor",
 ] as const;
 
-export const VISUAL_ROLES = [
-  'Teacher',
-  'Staff',
-  'Student'
-] as const;
+export const VISUAL_ROLES = ["Teacher", "Staff", "Student"] as const;
