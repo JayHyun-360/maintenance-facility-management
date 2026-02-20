@@ -36,6 +36,12 @@ export async function signInWithGoogle(
     provider: data.provider,
     url: data.url,
   });
+
+  // CRITICAL: Redirect to OAuth URL instead of returning data
+  if (data.url) {
+    redirect(data.url);
+  }
+
   return { data };
 }
 
