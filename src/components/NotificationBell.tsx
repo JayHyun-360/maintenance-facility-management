@@ -1,13 +1,14 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Bell, Check, X } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
-import { Notification } from '@/types/notifications';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { toast } from 'sonner';
+import { useState, useEffect } from "react";
+import { Bell, Check, X } from "lucide-react";
+import { createClient } from "@/lib/supabase/client";
+import { Notification } from "@/types/notifications";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
+import { EmptyNotifications } from "@/components/EmptyStates";
 
 export function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -18,65 +19,71 @@ export function NotificationBell() {
 
   const fetchNotifications = async () => {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
+        .from("notifications")
+        .select("*")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
         .limit(50);
 
       if (error) throw error;
-      
+
       setNotifications(data || []);
-      setUnreadCount(data?.filter(n => !n.is_read).length || 0);
+      setUnreadCount(data?.filter((n) => !n.is_read).length || 0);
     } catch (error) {
-      console.error('Error fetching notifications:', error);
-      toast.error('Failed to load notifications');
+      console.error("Error fetching notifications:", error);
+      toast.error("Failed to load notifications");
     }
   };
 
   const markAsRead = async (notificationId: string) => {
     try {
       const { error } = await supabase
-        .from('notifications')
+        .from("notifications")
         .update({ is_read: true })
-        .eq('id', notificationId);
+        .eq("id", notificationId);
 
       if (error) throw error;
 
-      setNotifications(prev => 
-        prev.map(n => n.id === notificationId ? { ...n, is_read: true } : n)
+      setNotifications((prev) =>
+        prev.map((n) =>
+          n.id === notificationId ? { ...n, is_read: true } : n,
+        ),
       );
-      setUnreadCount(prev => Math.max(0, prev - 1));
+      setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (error) {
-      console.error('Error marking notification as read:', error);
-      toast.error('Failed to mark notification as read');
+      console.error("Error marking notification as read:", error);
+      toast.error("Failed to mark notification as read");
     }
   };
 
   const markAllAsRead = async () => {
     setIsLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
       if (!user) return;
 
       const { error } = await supabase
-        .from('notifications')
+        .from("notifications")
         .update({ is_read: true })
-        .eq('user_id', user.id)
-        .eq('is_read', false);
+        .eq("user_id", user.id)
+        .eq("is_read", false);
 
       if (error) throw error;
 
-      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
       setUnreadCount(0);
-      toast.success('All notifications marked as read');
+      toast.success("All notifications marked as read");
     } catch (error) {
-      console.error('Error marking all notifications as read:', error);
-      toast.error('Failed to mark all notifications as read');
+      console.error("Error marking all notifications as read:", error);
+      toast.error("Failed to mark all notifications as read");
     } finally {
       setIsLoading(false);
     }
@@ -85,82 +92,86 @@ export function NotificationBell() {
   const deleteNotification = async (notificationId: string) => {
     try {
       const { error } = await supabase
-        .from('notifications')
+        .from("notifications")
         .delete()
-        .eq('id', notificationId);
+        .eq("id", notificationId);
 
       if (error) throw error;
 
-      const notification = notifications.find(n => n.id === notificationId);
-      setNotifications(prev => prev.filter(n => n.id !== notificationId));
+      const notification = notifications.find((n) => n.id === notificationId);
+      setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
       if (notification && !notification.is_read) {
-        setUnreadCount(prev => Math.max(0, prev - 1));
+        setUnreadCount((prev) => Math.max(0, prev - 1));
       }
-      toast.success('Notification deleted');
+      toast.success("Notification deleted");
     } catch (error) {
-      console.error('Error deleting notification:', error);
-      toast.error('Failed to delete notification');
+      console.error("Error deleting notification:", error);
+      toast.error("Failed to delete notification");
     }
   };
 
   // Real-time subscription
   useEffect(() => {
     const channel = supabase
-      .channel('notifications')
+      .channel("notifications")
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'notifications'
+          event: "INSERT",
+          schema: "public",
+          table: "notifications",
         },
         (payload) => {
           const newNotification = payload.new as Notification;
-          setNotifications(prev => [newNotification, ...prev]);
-          setUnreadCount(prev => prev + 1);
-          
+          setNotifications((prev) => [newNotification, ...prev]);
+          setUnreadCount((prev) => prev + 1);
+
           // Show toast notification
           toast(newNotification.title, {
             description: newNotification.message,
             action: {
-              label: 'View',
-              onClick: () => setIsOpen(true)
-            }
+              label: "View",
+              onClick: () => setIsOpen(true),
+            },
           });
-        }
+        },
       )
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'notifications'
+          event: "UPDATE",
+          schema: "public",
+          table: "notifications",
         },
         (payload) => {
           const updatedNotification = payload.new as Notification;
-          setNotifications(prev => 
-            prev.map(n => n.id === updatedNotification.id ? updatedNotification : n)
+          setNotifications((prev) =>
+            prev.map((n) =>
+              n.id === updatedNotification.id ? updatedNotification : n,
+            ),
           );
-          
+
           if (updatedNotification.is_read) {
-            setUnreadCount(prev => Math.max(0, prev - 1));
+            setUnreadCount((prev) => Math.max(0, prev - 1));
           }
-        }
+        },
       )
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: 'DELETE',
-          schema: 'public',
-          table: 'notifications'
+          event: "DELETE",
+          schema: "public",
+          table: "notifications",
         },
         (payload) => {
           const deletedNotification = payload.old as Notification;
-          setNotifications(prev => prev.filter(n => n.id !== deletedNotification.id));
+          setNotifications((prev) =>
+            prev.filter((n) => n.id !== deletedNotification.id),
+          );
           if (!deletedNotification.is_read) {
-            setUnreadCount(prev => Math.max(0, prev - 1));
+            setUnreadCount((prev) => Math.max(0, prev - 1));
           }
-        }
+        },
       )
       .subscribe();
 
@@ -174,16 +185,16 @@ export function NotificationBell() {
     fetchNotifications();
   }, []);
 
-  const getNotificationIcon = (type: Notification['type']) => {
+  const getNotificationIcon = (type: Notification["type"]) => {
     switch (type) {
-      case 'success':
-        return '✅';
-      case 'warning':
-        return '⚠️';
-      case 'error':
-        return '❌';
+      case "success":
+        return "✅";
+      case "warning":
+        return "⚠️";
+      case "error":
+        return "❌";
       default:
-        return 'ℹ️';
+        return "ℹ️";
     }
   };
 
@@ -197,11 +208,11 @@ export function NotificationBell() {
       >
         <Bell className="h-5 w-5" />
         {unreadCount > 0 && (
-          <Badge 
-            variant="destructive" 
+          <Badge
+            variant="destructive"
             className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs"
           >
-            {unreadCount > 99 ? '99+' : unreadCount}
+            {unreadCount > 99 ? "99+" : unreadCount}
           </Badge>
         )}
       </Button>
@@ -234,24 +245,28 @@ export function NotificationBell() {
 
           <div className="max-h-80 overflow-y-auto">
             {notifications.length === 0 ? (
-              <div className="p-4 text-center text-muted-foreground">
-                No notifications
+              <div className="p-4">
+                <EmptyNotifications />
               </div>
             ) : (
               notifications.map((notification) => (
                 <div
                   key={notification.id}
                   className={`p-4 border-b last:border-b-0 hover:bg-muted/50 transition-colors ${
-                    !notification.is_read ? 'bg-muted/30' : ''
+                    !notification.is_read ? "bg-muted/30" : ""
                   }`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-sm">{getNotificationIcon(notification.type)}</span>
-                        <h4 className={`text-sm font-medium truncate ${
-                          !notification.is_read ? 'font-semibold' : ''
-                        }`}>
+                        <span className="text-sm">
+                          {getNotificationIcon(notification.type)}
+                        </span>
+                        <h4
+                          className={`text-sm font-medium truncate ${
+                            !notification.is_read ? "font-semibold" : ""
+                          }`}
+                        >
                           {notification.title}
                         </h4>
                       </div>

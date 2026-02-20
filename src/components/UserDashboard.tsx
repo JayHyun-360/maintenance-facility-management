@@ -37,6 +37,10 @@ export function UserDashboard({ user, profile }: UserDashboardProps) {
     setActiveTab("requests");
   };
 
+  const handleCreateFirstRequest = () => {
+    setActiveTab("new-request");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white shadow">
@@ -183,7 +187,11 @@ export function UserDashboard({ user, profile }: UserDashboardProps) {
 
               {/* Recent Requests Preview */}
               <div className="mt-8">
-                <RequestList userId={user.id} refreshTrigger={refreshTrigger} />
+                <RequestList
+                  userId={user.id}
+                  refreshTrigger={refreshTrigger}
+                  onCreateFirstRequest={handleCreateFirstRequest}
+                />
               </div>
             </TabsContent>
 
@@ -192,7 +200,11 @@ export function UserDashboard({ user, profile }: UserDashboardProps) {
             </TabsContent>
 
             <TabsContent value="requests">
-              <RequestList userId={user.id} refreshTrigger={refreshTrigger} />
+              <RequestList
+                userId={user.id}
+                refreshTrigger={refreshTrigger}
+                onCreateFirstRequest={handleCreateFirstRequest}
+              />
             </TabsContent>
           </Tabs>
         </div>

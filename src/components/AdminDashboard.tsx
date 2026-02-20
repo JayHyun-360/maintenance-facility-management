@@ -5,6 +5,9 @@ import { WorkOrders } from "@/components/WorkOrders";
 import { FacilitiesManagement } from "@/components/FacilitiesManagement";
 import { Reports } from "@/components/Reports";
 import { NotificationBell } from "@/components/NotificationBell";
+import { EmptyUsers } from "@/components/EmptyStates";
+import { ResponsiveTable } from "@/components/ResponsiveTable";
+import { MobileUserCard } from "@/components/MobileUserCard";
 import {
   Card,
   CardContent,
@@ -13,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Wrench, Users, Building, BarChart3 } from "lucide-react";
 
@@ -189,74 +193,64 @@ export function AdminDashboard({
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Name
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Email
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Database Role
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Visual Role
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Education Level
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Department
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Joined
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {profiles?.map((profile: any) => (
-                          <tr key={profile.id}>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                              {profile.name || "N/A"}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {profile.email || "N/A"}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              <span
+                    {!profiles || profiles.length === 0 ? (
+                      <EmptyUsers />
+                    ) : (
+                      <ResponsiveTable
+                        data={profiles}
+                        columns={[
+                          {
+                            key: "name",
+                            label: "Name",
+                            render: (value) => value || "N/A",
+                          },
+                          {
+                            key: "email",
+                            label: "Email",
+                            render: (value) => value || "No email",
+                          },
+                          {
+                            key: "database_role",
+                            label: "Database Role",
+                            render: (value) => (
+                              <Badge
                                 className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                  profile.database_role === "Admin"
+                                  value === "Admin"
                                     ? "bg-purple-100 text-purple-800"
                                     : "bg-blue-100 text-blue-800"
                                 }`}
                               >
-                                {profile.database_role || "N/A"}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {profile.visual_role || "Not set"}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {profile.educational_level || "Not set"}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {profile.department || "N/A"}
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                              {new Date(
-                                profile.created_at,
-                              ).toLocaleDateString()}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                    {(!profiles || profiles.length === 0) && (
-                      <div className="text-center py-8 text-gray-500">
-                        No profiles found
-                      </div>
+                                {value || "N/A"}
+                              </Badge>
+                            ),
+                          },
+                          {
+                            key: "visual_role",
+                            label: "Visual Role",
+                            render: (value) => value || "Not set",
+                          },
+                          {
+                            key: "educational_level",
+                            label: "Education Level",
+                            render: (value) => value || "Not set",
+                          },
+                          {
+                            key: "department",
+                            label: "Department",
+                            render: (value) => value || "N/A",
+                          },
+                          {
+                            key: "created_at",
+                            label: "Joined",
+                            render: (value) =>
+                              new Date(value).toLocaleDateString(),
+                          },
+                        ]}
+                        emptyMessage="No profiles found"
+                        mobileCardComponent={(profile) => (
+                          <MobileUserCard key={profile.id} profile={profile} />
+                        )}
+                      />
                     )}
                   </div>
                 </CardContent>

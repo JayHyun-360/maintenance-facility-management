@@ -32,13 +32,20 @@ import { MaintenanceRequest } from "@/types/maintenance";
 import { PDFGenerator } from "@/lib/pdf-generator";
 import { toast } from "sonner";
 import { updateRequestStatus } from "@/actions/maintenance";
+import { RequestListSkeleton } from "@/components/LoadingStates";
+import { EmptyRequests } from "@/components/EmptyStates";
 
 interface RequestListProps {
   userId: string;
   refreshTrigger?: number;
+  onCreateFirstRequest?: () => void;
 }
 
-export function RequestList({ userId, refreshTrigger }: RequestListProps) {
+export function RequestList({
+  userId,
+  refreshTrigger,
+  onCreateFirstRequest,
+}: RequestListProps) {
   const [requests, setRequests] = useState<MaintenanceRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -103,21 +110,25 @@ export function RequestList({ userId, refreshTrigger }: RequestListProps) {
       };
 
       PDFGenerator.downloadPDF(pdfData);
-      toast.success("PDF downloaded successfully!");
+      toast.success("PDF downloaded successfully!", {
+        description: `Request "${request.title}" has been downloaded to your device.`,
+      });
     } catch (error) {
       console.error("Error generating PDF:", error);
-      toast.error("Failed to generate PDF");
+      toast.error("Failed to generate PDF", {
+        description: "There was an error creating the PDF. Please try again.",
+      });
     }
   }
 
   function getStatusColor(status: string) {
     switch (status) {
       case "Pending":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+        return "dls-status-pending";
       case "In Progress":
-        return "bg-blue-100 text-blue-800 border-blue-200";
+        return "dls-status-progress";
       case "Completed":
-        return "bg-green-100 text-green-800 border-green-200";
+        return "dls-status-completed";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
@@ -126,35 +137,20 @@ export function RequestList({ userId, refreshTrigger }: RequestListProps) {
   function getUrgencyColor(urgency: string) {
     switch (urgency) {
       case "Emergency":
-        return "bg-red-100 text-red-800 border-red-200";
+        return "dls-urgency-emergency";
       case "High":
-        return "bg-orange-100 text-orange-800 border-orange-200";
+        return "dls-urgency-high";
       case "Medium":
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
+        return "dls-urgency-medium";
       case "Low":
-        return "bg-gray-100 text-gray-800 border-gray-200";
+        return "dls-urgency-low";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
   }
 
   if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Wrench className="h-5 w-5" />
-            My Maintenance Requests
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin" />
-            <span className="ml-2">Loading requests...</span>
-          </div>
-        </CardContent>
-      </Card>
-    );
+    return <RequestListSkeleton />;
   }
 
   if (error) {
@@ -189,20 +185,13 @@ export function RequestList({ userId, refreshTrigger }: RequestListProps) {
       </CardHeader>
       <CardContent>
         {requests.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">
-            <Wrench className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-            <p className="text-lg font-medium mb-2">No requests yet</p>
-            <p className="text-sm">
-              Submit your first maintenance request to get started
-            </p>
-            <Button className="mt-4">Create Your First Request</Button>
-          </div>
+          <EmptyRequests onCreateFirst={onCreateFirstRequest || (() => {})} />
         ) : (
           <div className="space-y-4">
             {requests.map((request) => (
               <div
                 key={request.id}
-                className="border rounded-lg p-4 space-y-3 hover:bg-gray-50 transition-colors"
+                className="border rounded-lg p-4 space-y-3 hover:bg-gray-50 transition-colors dls-card fade-in"
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">

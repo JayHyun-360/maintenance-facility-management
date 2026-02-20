@@ -22,6 +22,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Wrench, AlertCircle, CheckCircle } from "lucide-react";
 import { CATEGORIES, URGENCY_LEVELS } from "@/types/maintenance";
+import { toast } from "sonner";
 
 interface RequestFormProps {
   onSuccess?: () => void;
@@ -66,8 +67,17 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
 
       if (result.error) {
         setError(result.error);
+        toast.error("Failed to submit request", {
+          description:
+            result.error ||
+            "There was an error submitting your maintenance request. Please check the form and try again.",
+        });
       } else {
         setSuccess(true);
+        toast.success("Maintenance request submitted!", {
+          description:
+            "Your request has been successfully submitted and will be reviewed by the maintenance team.",
+        });
         // Clear form
         const form = document.getElementById("request-form") as HTMLFormElement;
         if (form) form.reset();
