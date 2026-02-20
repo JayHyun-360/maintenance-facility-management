@@ -48,13 +48,28 @@ export async function signUpWithEmail(
   if (data.user) {
     const { error: profileError } = await supabase.from("profiles").insert({
       id: data.user.id,
-      name,
+      full_name: name,
       email,
       database_role: role,
     });
 
     if (profileError) {
       return { error: profileError.message };
+    }
+
+    // Auto-authenticate after successful signup
+    if (role === "Admin") {
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) {
+        return { error: signInError.message };
+      }
+
+      revalidatePath("/admin/dashboard");
+      return { success: true, data, redirectTo: "/admin/dashboard" };
     }
   }
 
@@ -101,7 +116,7 @@ export async function signInAsGuest(guestData: GuestUser) {
   if (data.user) {
     const { error: profileError } = await supabase.from("profiles").insert({
       id: data.user.id,
-      name: guestData.name,
+      full_name: guestData.name,
       database_role: "User",
       visual_role: guestData.visual_role,
       educational_level: guestData.educational_level,
@@ -138,7 +153,7 @@ export async function completeProfile(
   const { error } = await supabase
     .from("profiles")
     .update({
-      name: profileData.name,
+      full_name: profileData.name,
       visual_role: profileData.visual_role,
       educational_level: profileData.educational_level,
       department: profileData.department,

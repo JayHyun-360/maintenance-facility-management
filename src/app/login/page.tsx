@@ -35,6 +35,9 @@ function LoginPageContent() {
   const error = searchParams.get("error");
 
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [guestLoading, setGuestLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
 
   // Admin signup state
@@ -55,7 +58,7 @@ function LoginPageContent() {
   const [guestDepartment, setGuestDepartment] = useState("");
 
   const handleGoogleSignIn = async (role: DatabaseRole) => {
-    setLoading(true);
+    setGoogleLoading(true);
     setFormError(null);
 
     const result = await signInWithGoogle(
@@ -65,17 +68,17 @@ function LoginPageContent() {
     if (result.error) {
       setFormError(result.error);
     }
-    setLoading(false);
+    setGoogleLoading(false);
   };
 
   const handleAdminSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setEmailLoading(true);
     setFormError(null);
 
     if (!adminEmail || !adminPassword || !adminName) {
       setFormError("All fields are required");
-      setLoading(false);
+      setEmailLoading(false);
       return;
     }
 
@@ -89,19 +92,23 @@ function LoginPageContent() {
     if (result.error) {
       setFormError(result.error);
     } else if (result.success) {
-      router.push("/login?message=admin_signup_success");
+      if (result.redirectTo) {
+        router.push(result.redirectTo);
+      } else {
+        router.push("/login?message=admin_signup_success");
+      }
     }
-    setLoading(false);
+    setEmailLoading(false);
   };
 
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setEmailLoading(true);
     setFormError(null);
 
     if (!loginEmail || !loginPassword) {
       setFormError("Email and password are required");
-      setLoading(false);
+      setEmailLoading(false);
       return;
     }
 
@@ -112,23 +119,23 @@ function LoginPageContent() {
     } else if (result.success) {
       router.push("/admin/dashboard");
     }
-    setLoading(false);
+    setEmailLoading(false);
   };
 
   const handleGuestLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setGuestLoading(true);
     setFormError(null);
 
     if (!guestName || !guestVisualRole) {
       setFormError("Name and visual role are required");
-      setLoading(false);
+      setGuestLoading(false);
       return;
     }
 
     if (guestEducationLevel === "College" && !guestDepartment) {
       setFormError("Department is required for College education level");
-      setLoading(false);
+      setGuestLoading(false);
       return;
     }
 
@@ -146,7 +153,7 @@ function LoginPageContent() {
     } else if (result.success) {
       router.push("/dashboard");
     }
-    setLoading(false);
+    setGuestLoading(false);
   };
 
   return (
@@ -195,10 +202,12 @@ function LoginPageContent() {
                 <div className="space-y-4">
                   <Button
                     onClick={() => handleGoogleSignIn("Admin")}
-                    disabled={loading}
-                    className="w-full"
+                    disabled={googleLoading}
+                    className="w-full bg-[#006633] hover:bg-[#004d26] text-white"
                   >
-                    {loading ? "Signing in..." : "Sign in with Google (Admin)"}
+                    {googleLoading
+                      ? "Signing in..."
+                      : "Sign in with Google (Admin)"}
                   </Button>
 
                   <div className="relative">
@@ -243,10 +252,10 @@ function LoginPageContent() {
                       </div>
                       <Button
                         type="submit"
-                        disabled={loading}
-                        className="w-full"
+                        disabled={emailLoading}
+                        className="w-full bg-[#006633] hover:bg-[#004d26] text-white"
                       >
-                        {loading ? "Signing in..." : "Sign In"}
+                        {emailLoading ? "Signing in..." : "Sign In"}
                       </Button>
                     </form>
                   </TabsContent>
@@ -285,10 +294,10 @@ function LoginPageContent() {
                       </div>
                       <Button
                         type="submit"
-                        disabled={loading}
-                        className="w-full"
+                        disabled={emailLoading}
+                        className="w-full bg-[#006633] hover:bg-[#004d26] text-white"
                       >
-                        {loading
+                        {emailLoading
                           ? "Creating account..."
                           : "Create Admin Account"}
                       </Button>
@@ -310,10 +319,10 @@ function LoginPageContent() {
               <CardContent className="space-y-4">
                 <Button
                   onClick={() => handleGoogleSignIn("User")}
-                  disabled={loading}
-                  className="w-full"
+                  disabled={googleLoading}
+                  className="w-full bg-[#006633] hover:bg-[#004d26] text-white"
                 >
-                  {loading ? "Signing in..." : "Sign in with Google"}
+                  {googleLoading ? "Signing in..." : "Sign in with Google"}
                 </Button>
 
                 <div className="relative">
@@ -395,8 +404,12 @@ function LoginPageContent() {
                     </div>
                   )}
 
-                  <Button type="submit" disabled={loading} className="w-full">
-                    {loading ? "Signing in..." : "Continue as Guest"}
+                  <Button
+                    type="submit"
+                    disabled={guestLoading}
+                    className="w-full bg-[#006633] hover:bg-[#004d26] text-white"
+                  >
+                    {guestLoading ? "Signing in..." : "Continue as Guest"}
                   </Button>
                 </form>
               </CardContent>
