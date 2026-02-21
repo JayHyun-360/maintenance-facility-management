@@ -105,7 +105,7 @@ export function RequestList({
     try {
       const pdfData = {
         request,
-        requesterName: request.requester?.name || "Unknown",
+        requesterName: request.requester?.full_name || "Unknown",
         generatedAt: new Date().toLocaleString(),
       };
 
@@ -208,7 +208,8 @@ export function RequestList({
                     )}
                     <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
                       <span>
-                        Requested by: {request.requester?.name || "Unknown"}
+                        Requested by:{" "}
+                        {request.requester?.full_name || "Unknown"}
                       </span>
                       <span>•</span>
                       <span>{request.requester?.email || "No email"}</span>
