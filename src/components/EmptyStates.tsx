@@ -1,5 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Wrench, FileText, Users, Building, Plus, Search } from "lucide-react";
 
 interface EmptyStateProps {
@@ -14,12 +20,12 @@ interface EmptyStateProps {
   illustration?: "wrench" | "document" | "users" | "building" | "search";
 }
 
-export function EmptyState({ 
-  title, 
-  description, 
-  icon, 
-  action, 
-  illustration = "wrench" 
+export function EmptyState({
+  title,
+  description,
+  icon,
+  action,
+  illustration = "wrench",
 }: EmptyStateProps) {
   const getIllustration = () => {
     switch (illustration) {
@@ -69,7 +75,9 @@ export function EmptyState({
           </div>
         );
       default:
-        return icon || <Wrench className="h-12 w-12 text-gray-300 mx-auto mb-4" />;
+        return (
+          icon || <Wrench className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+        );
     }
   };
 
@@ -79,8 +87,8 @@ export function EmptyState({
       <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
       <p className="text-gray-600 mb-6 max-w-md mx-auto">{description}</p>
       {action && (
-        <Button 
-          onClick={action.onClick} 
+        <Button
+          onClick={action.onClick}
           variant={action.variant || "default"}
           className="min-w-[160px]"
         >
@@ -91,13 +99,17 @@ export function EmptyState({
   );
 }
 
-export function EmptyWorkOrders({ onCreateRequest }: { onCreateRequest?: () => void }) {
+export function EmptyWorkOrders({
+  onCreateRequest,
+}: {
+  onCreateRequest?: () => void;
+}) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Wrench className="h-5 w-5" />
-          Work Orders
+          Maintenance Requests
         </CardTitle>
         <CardDescription>
           Manage all maintenance requests and update their status
@@ -108,18 +120,26 @@ export function EmptyWorkOrders({ onCreateRequest }: { onCreateRequest?: () => v
           title="No work orders yet"
           description="Maintenance requests will appear here once users submit them. The system is ready to handle requests efficiently."
           illustration="wrench"
-          action={onCreateRequest ? {
-            label: "Create Sample Request",
-            onClick: onCreateRequest,
-            variant: "outline"
-          } : undefined}
+          action={
+            onCreateRequest
+              ? {
+                  label: "Create Sample Request",
+                  onClick: onCreateRequest,
+                  variant: "outline",
+                }
+              : undefined
+          }
         />
       </CardContent>
     </Card>
   );
 }
 
-export function EmptyRequests({ onCreateFirst }: { onCreateFirst: () => void }) {
+export function EmptyRequests({
+  onCreateFirst,
+}: {
+  onCreateFirst: () => void;
+}) {
   return (
     <EmptyState
       title="No requests yet"
@@ -127,7 +147,7 @@ export function EmptyRequests({ onCreateFirst }: { onCreateFirst: () => void }) 
       illustration="wrench"
       action={{
         label: "Create Your First Request",
-        onClick: onCreateFirst
+        onClick: onCreateFirst,
       }}
     />
   );
@@ -143,7 +163,11 @@ export function EmptyUsers() {
   );
 }
 
-export function EmptyFacilities({ onAddFacility }: { onAddFacility: () => void }) {
+export function EmptyFacilities({
+  onAddFacility,
+}: {
+  onAddFacility: () => void;
+}) {
   return (
     <EmptyState
       title="No facilities configured"
@@ -151,7 +175,7 @@ export function EmptyFacilities({ onAddFacility }: { onAddFacility: () => void }
       illustration="building"
       action={{
         label: "Add Your First Facility",
-        onClick: onAddFacility
+        onClick: onAddFacility,
       }}
     />
   );
