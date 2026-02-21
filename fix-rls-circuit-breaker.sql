@@ -13,7 +13,7 @@ CREATE POLICY "Users can view their own requests" ON maintenance_requests
 
 CREATE POLICY "Admins can view all requests" ON maintenance_requests
     FOR SELECT USING (
-        (auth.jwt() ->> 'role') = 'admin'
+        (auth.jwt() ->> 'role') = 'Admin'
     );
 
 CREATE POLICY "Users can insert their own requests" ON maintenance_requests
@@ -21,7 +21,7 @@ CREATE POLICY "Users can insert their own requests" ON maintenance_requests
 
 CREATE POLICY "Admins can update all requests" ON maintenance_requests
     FOR UPDATE USING (
-        (auth.jwt() ->> 'role') = 'admin'
+        (auth.jwt() ->> 'role') = 'Admin'
     );
 
 -- Step 2: Fix Profiles RLS Policies (if they exist)
@@ -37,7 +37,7 @@ CREATE POLICY "Users can view their own profile" ON profiles
 
 CREATE POLICY "Admins can view all profiles" ON profiles
     FOR SELECT USING (
-        (auth.jwt() ->> 'role') = 'admin'
+        (auth.jwt() ->> 'role') = 'Admin'
     );
 
 CREATE POLICY "Users can insert their own profile" ON profiles
@@ -48,7 +48,7 @@ CREATE POLICY "Users can update their own profile" ON profiles
 
 CREATE POLICY "Admins can manage all profiles" ON profiles
     FOR ALL USING (
-        (auth.jwt() ->> 'role') = 'admin'
+        (auth.jwt() ->> 'role') = 'Admin'
     );
 
 -- Step 3: Verify the policies are correctly applied

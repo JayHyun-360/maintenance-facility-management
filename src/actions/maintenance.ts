@@ -99,6 +99,7 @@ export async function getAllRequests(): Promise<{
   const supabase = await createClient();
 
   try {
+    console.log("Fetching all requests...");
     const { data, error } = await supabase
       .from("maintenance_requests")
       .select(
@@ -109,15 +110,21 @@ export async function getAllRequests(): Promise<{
       )
       .order("created_at", { ascending: false });
 
+    console.log("Fetch result:", { data, error });
+
     if (error) {
       console.error("Error fetching all requests:", error);
-      return { success: false, error: "Failed to fetch requests" };
+      return {
+        success: false,
+        error: `Failed to fetch requests: ${error.message}`,
+      };
     }
 
+    console.log("Successfully fetched requests:", data?.length || 0);
     return { success: true, data: data as MaintenanceRequest[] };
   } catch (error) {
-    console.error("Unexpected error:", error);
-    return { success: false, error: "An unexpected error occurred" };
+    console.error("Unexpected error in getAllRequests:", error);
+    return { success: false, error: `An unexpected error occurred: ${error}` };
   }
 }
 
