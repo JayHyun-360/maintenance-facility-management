@@ -65,15 +65,27 @@ export function WorkOrders() {
       const result = await getAllRequests();
 
       if (result.error) {
-        setError(result.error);
+        // Handle specific error codes
+        if (
+          result.error.includes("403") ||
+          result.error.includes("Forbidden")
+        ) {
+          setError("Access denied. Please check your permissions.");
+        } else if (
+          result.error.includes("406") ||
+          result.error.includes("Not Acceptable")
+        ) {
+          setError("Access configuration error. Please try refreshing.");
+        } else {
+          setError(result.error);
+        }
       } else {
         setRequests(result.data || []);
-        // CRITICAL FIX: Don't show error for empty results - show empty state instead
-        if (result.error && result.data && result.data.length === 0) {
-          setError(null); // Clear error for empty results
-        }
+        // CRITICAL FIX: Empty arrays are valid, not errors
+        // Only show error if there's an actual error, not if data is empty
       }
     } catch (err) {
+      console.error("Fetch error:", err);
       setError("Failed to load requests");
     } finally {
       setLoading(false);
@@ -219,7 +231,17 @@ export function WorkOrders() {
             <Alert className="mb-4 border-red-200 bg-red-50">
               <AlertCircle className="h-4 w-4 text-red-600" />
               <AlertDescription className="text-red-800">
-                {error}
+                <div className="flex items-center justify-between">
+                  <span>{error}</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => fetchRequests()}
+                    className="ml-2"
+                  >
+                    Retry
+                  </Button>
+                </div>
               </AlertDescription>
             </Alert>
           )}
