@@ -35,8 +35,11 @@ async function UserDashboardPage() {
   // Get user profile
   const { data: profile } = await getUserProfile(user.id);
 
-  // Check if profile needs completion
-  if (profile && !profile.visual_role) {
+  // CRITICAL FIX: Check if user is Admin - Admins bypass profile completion
+  const isAdmin = user.app_metadata?.role === "admin";
+
+  // Check if profile needs completion (only for Users, not Admins)
+  if (profile && !profile.visual_role && !isAdmin) {
     return (
       <div className="min-h-screen bg-gray-50">
         <div className="bg-white shadow">

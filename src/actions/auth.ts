@@ -191,23 +191,46 @@ export async function completeProfile(
 ) {
   const supabase = await createClient();
 
-  const { error } = await supabase
-    .from("profiles")
-    .update({
-      full_name: profileData.name,
-      visual_role: profileData.visual_role,
-      educational_level: profileData.educational_level,
-      department: profileData.department,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", userId);
+  console.log("🔧 Completing profile for user:", {
+    userId,
+    profileData,
+  });
 
-  if (error) {
-    return { error: error.message };
+  try {
+    const { data, error } = await supabase
+      .from("profiles")
+      .update({
+        full_name: profileData.name,
+        visual_role: profileData.visual_role,
+        educational_level: profileData.educational_level,
+        department: profileData.department,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", userId)
+      .select();
+
+    console.log("📝 Profile update result:", {
+      data,
+      error,
+    });
+
+    if (error) {
+      console.error("❌ Profile update error:", {
+        error,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+      });
+      return { error: error.message };
+    }
+
+    console.log("✅ Profile completed successfully:", data);
+    revalidatePath("/dashboard");
+    return { success: true, data };
+  } catch (error) {
+    console.error("❌ Profile update exception:", error);
+    return { error: "Failed to update profile due to server error" };
   }
-
-  revalidatePath("/dashboard");
-  return { success: true };
 }
 
 export async function getAllProfiles() {

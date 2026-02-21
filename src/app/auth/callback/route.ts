@@ -54,22 +54,24 @@ export async function GET(request: Request) {
           user_metadata: user.user_metadata,
         });
 
-        // If we have a role hint, update the user's app_metadata and database role
+        // CRITICAL FIX: Only update role if we have a valid role hint
         if (roleHint && (roleHint === "admin" || roleHint === "user")) {
           console.log("🎯 Updating user role from hint:", roleHint);
 
           const databaseRole = roleHint === "admin" ? "Admin" : "User";
 
-          // Update app_metadata with role for middleware/circuit breaker pattern
+          // CRITICAL FIX: Update user_metadata first (for trigger), then app_metadata (for middleware)
           await supabase.auth.updateUser({
             data: {
-              role: roleHint, // Store role in app_metadata
-              database_role: databaseRole, // Store in user_metadata for trigger
+              // Store in user_metadata for trigger to pick up
+              database_role: databaseRole,
+              // Also store in app_metadata for circuit breaker pattern
+              role: roleHint,
             },
           });
 
-          // Wait a moment for the updateUser to trigger and complete
-          await new Promise((resolve) => setTimeout(resolve, 300));
+          // Wait a moment for updateUser to trigger and complete
+          await new Promise((resolve) => setTimeout(resolve, 500));
 
           // Update database role via RPC (backup method)
           const { error: roleUpdateError } = await supabase.rpc(
@@ -92,7 +94,7 @@ export async function GET(request: Request) {
           "wait_for_profile_sync",
           {
             user_id: user.id,
-            max_attempts: 15, // Wait up to 3 seconds (15 * 200ms)
+            max_attempts: 20, // Wait up to 4 seconds (20 * 200ms)
           },
         );
 
@@ -148,7 +150,7 @@ export async function GET(request: Request) {
           }
         }
 
-        // Determine redirect based on role
+        // CRITICAL FIX: Determine redirect based on role
         let redirectUrl = next;
         if (next === "/" || next === "/dashboard") {
           // Re-fetch profile to get the most up-to-date role
@@ -162,16 +164,25 @@ export async function GET(request: Request) {
           const userRole =
             user.app_metadata?.role === "admin" ? "Admin" : "User";
 
-          // For User role, check if visual role is set
-          if (userRole === "User" && !updatedProfile?.visual_role) {
-            // User without visual role - redirect to dashboard for profile completion
-            redirectUrl = "/dashboard";
+          // CRITICAL FIX: Admins bypass profile completion, go directly to admin dashboard
+          if (userRole === "Admin") {
+            redirectUrl = "/admin/dashboard";
+            console.log("🎯 Admin user, redirecting to admin dashboard");
           } else {
-            redirectUrl =
-              userRole === "Admin" ? "/admin/dashboard" : "/dashboard";
+            // For User role, check if visual role is set
+            if (!updatedProfile?.visual_role) {
+              // User without visual role - redirect to dashboard for profile completion
+              redirectUrl = "/dashboard";
+              console.log(
+                "🎯 User without visual role, redirecting to profile completion",
+              );
+            } else {
+              redirectUrl = "/dashboard";
+              console.log(
+                "🎯 User with visual role, redirecting to user dashboard",
+              );
+            }
           }
-
-          console.log("🎯 Final redirect decision:", { userRole, redirectUrl });
         }
 
         const forwardedHost = request.headers.get("x-forwarded-host");
