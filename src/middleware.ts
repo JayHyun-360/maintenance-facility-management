@@ -64,10 +64,10 @@ export async function middleware(request: NextRequest) {
 
   // Check admin role for admin routes
   if (user && adminRoutes.some((route) => pathname.startsWith(route))) {
-    // CRITICAL FIX: Use correct Supabase User properties
-    // app_metadata exists, raw_user_meta_data is user_metadata in Supabase types
+    // CRITICAL FIX: Use consistent role checking
+    // Check both possible metadata locations for Admin role
     const userRole =
-      user.app_metadata?.role === "admin" ||
+      user.app_metadata?.role === "Admin" ||
       user.user_metadata?.database_role === "Admin"
         ? "Admin"
         : "User";
@@ -81,10 +81,10 @@ export async function middleware(request: NextRequest) {
 
   // Redirect authenticated users away from login page
   if (user && pathname === "/login") {
-    // CRITICAL FIX: Use correct Supabase User properties
-    // app_metadata exists, raw_user_meta_data is user_metadata in Supabase types
+    // CRITICAL FIX: Use consistent role checking
+    // Check both possible metadata locations for Admin role
     const userRole =
-      user.app_metadata?.role === "admin" ||
+      user.app_metadata?.role === "Admin" ||
       user.user_metadata?.database_role === "Admin"
         ? "Admin"
         : "User";
