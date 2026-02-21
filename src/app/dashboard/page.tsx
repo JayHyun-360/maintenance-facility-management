@@ -21,7 +21,6 @@ import { signOut, completeProfile, getUserProfile } from "@/actions/auth";
 import { Suspense } from "react";
 import { VisualRole } from "@/types/auth";
 import { UserDashboard } from "@/components/UserDashboard";
-import type { User } from "@/lib/supabase/types";
 
 async function UserDashboardPage() {
   const supabase = await createClient();
