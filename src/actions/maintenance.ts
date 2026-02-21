@@ -2,10 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import {
-  MaintenanceRequest,
-  RequestAnalytics,
-} from "@/types/maintenance";
+import { MaintenanceRequest, RequestAnalytics } from "@/types/maintenance";
 import {
   notifyAdminsNewRequest,
   notifyUserRequestCompletion,
@@ -316,10 +313,19 @@ export async function getAnalyticsData(): Promise<{
   };
   error?: string;
 }> {
+  // Import createClient for service role usage
+  const { createClient } = require("@supabase/supabase-js");
+
   // Use service role client to bypass RLS for analytics
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    },
   );
 
   try {
@@ -330,7 +336,10 @@ export async function getAnalyticsData(): Promise<{
 
     if (error) {
       console.error("Analytics Fetch Error:", error);
-      return { success: false, error: `Failed to fetch analytics data: ${error.message}` };
+      return {
+        success: false,
+        error: `Failed to fetch analytics data: ${error.message}`,
+      };
     }
 
     // Handle empty data case
@@ -370,7 +379,7 @@ export async function getAnalyticsData(): Promise<{
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     const recentRequests = requests.filter(
-      (r) => new Date(r.created_at) >= thirtyDaysAgo
+      (r) => new Date(r.created_at) >= thirtyDaysAgo,
     );
 
     const timeSeriesData: Record<string, number> = {};
