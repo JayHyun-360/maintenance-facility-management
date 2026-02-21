@@ -20,7 +20,7 @@ FROM pg_policies
 WHERE tablename = 'maintenance_requests'
 ORDER BY policyname;
 
--- Step 2: Check current RLS policies on facilities
+-- Step 2: Check current RLS policies on facilities (if table exists)
 SELECT 
     'facilities_policies'::TEXT as step,
     schemaname,
@@ -44,8 +44,7 @@ SELECT
     'rls_status'::TEXT as step,
     schemaname,
     tablename,
-    rowsecurity as rls_enabled,
-    forcerlspolicy as force_rls
+    rowsecurity as rls_enabled
 FROM pg_tables 
 WHERE tablename IN ('maintenance_requests', 'facilities')
 AND schemaname = 'public';
