@@ -44,10 +44,10 @@ export function EmptyState({
       case "fileText":
         return (
           <div className="relative mx-auto w-24 h-24 mb-6">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center">
-              <Wrench className="h-12 w-12 text-green-600" />
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center">
+              <FileText className="h-12 w-12 text-gray-600" />
             </div>
-            <div className="absolute -top-1 -right-1 w-6 h-6 bg-green-500 rounded-full animate-pulse" />
+            <div className="absolute -top-1 -right-1 w-6 h-6 bg-gray-500 rounded-full animate-pulse" />
           </div>
         );
       case "document":
@@ -88,7 +88,7 @@ export function EmptyState({
         );
       default:
         return (
-          icon || <Wrench className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+          icon || <FileText className="h-12 w-12 text-gray-300 mx-auto mb-4" />
         );
     }
   };
