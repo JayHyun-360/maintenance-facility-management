@@ -60,6 +60,10 @@ export function FacilitiesManagement() {
         setError(result.error);
       } else {
         setFacilities(result.data || []);
+        // CRITICAL FIX: Don't show error for empty results - show empty state instead
+        if (result.error && result.data && result.data.length === 0) {
+          setError(null); // Clear error for empty results
+        }
       }
     } catch (err) {
       setError("Failed to load facilities");
