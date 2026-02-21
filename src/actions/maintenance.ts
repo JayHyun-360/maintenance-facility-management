@@ -325,6 +325,157 @@ export async function getAnalyticsData(): Promise<{
   };
   error?: string;
 }> {
+  // Import createClient directly for service role usage
+  const { createClient } = await import("@supabase/supabase-js");
+
+  // Use service role client to bypass RLS for analytics
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    },
+  );
+
+  try {
+    // Get all requests - service role bypasses RLS
+    const { data: requests, error } = await supabase
+      .from("maintenance_requests")
+      .select("*");
+
+    if (error) {
+      console.error("Analytics Fetch Error:", error);
+      return {
+        success: false,
+        error: `Failed to fetch analytics data: ${error.message}`,
+      };
+    }
+
+    // Handle empty data case
+    if (!requests || requests.length === 0) {
+      return {
+        success: true,
+        data: {
+          statusCounts: {
+            Pending: 0,
+            "In Progress": 0,
+            Completed: 0,
+            Cancelled: 0,
+            Reviewed: 0,
+          },
+          timeSeriesData: [],
+          categoryCounts: {},
+          priorityMonthly: {
+            High: 0,
+            Medium: 0,
+            Low: 0,
+          },
+        },
+      };
+    }
+
+    // Status Counts
+    const statusCounts = {
+      Pending: requests.filter((r) => r.status === "Pending").length,
+      "In Progress": requests.filter((r) => r.status === "In Progress").length,
+      Completed: requests.filter((r) => r.status === "Completed").length,
+      Cancelled: requests.filter((r) => r.status === "Cancelled").length,
+      Reviewed: requests.filter((r) => r.status === "Reviewed").length,
+    };
+
+    // Time-Series Data (Last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const recentRequests = requests.filter(
+      (r) => new Date(r.created_at) >= thirtyDaysAgo,
+    );
+
+    const timeSeriesData: Record<string, number> = {};
+    recentRequests.forEach((request) => {
+      const date = new Date(request.created_at).toISOString().split("T")[0];
+      timeSeriesData[date] = (timeSeriesData[date] || 0) + 1;
+    });
+
+    // Fill missing dates with 0
+    const timeSeries = [];
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split("T")[0];
+      timeSeries.push({
+        date: dateStr,
+        count: timeSeriesData[dateStr] || 0,
+      });
+    }
+
+    // Category Counts
+    const categoryCounts: Record<string, number> = {};
+    requests.forEach((r) => {
+      categoryCounts[r.category] = (categoryCounts[r.category] || 0) + 1;
+    });
+
+    // Priority Monthly Filter (Current month only)
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    const currentMonthRequests = requests.filter((r) => {
+      const requestDate = new Date(r.created_at);
+      return (
+        requestDate.getMonth() === currentMonth &&
+        requestDate.getFullYear() === currentYear
+      );
+    });
+
+    const priorityMonthly = {
+      High: currentMonthRequests.filter(
+        (r) => r.urgency === "High" || r.urgency === "Emergency",
+      ).length,
+      Medium: currentMonthRequests.filter((r) => r.urgency === "Medium").length,
+      Low: currentMonthRequests.filter((r) => r.urgency === "Low").length,
+    };
+
+    return {
+      success: true,
+      data: {
+        statusCounts,
+        timeSeriesData: timeSeries,
+        categoryCounts,
+        priorityMonthly,
+      },
+    };
+  } catch (error) {
+    console.error("Analytics Fetch Error:", error);
+    return { success: false, error: `An unexpected error occurred: ${error}` };
+  }
+}
+
+export async function getAnalyticsData(): Promise<{
+  success: boolean;
+  data?: {
+    statusCounts: {
+      Pending: number;
+      "In Progress": number;
+      Completed: number;
+      Cancelled: number;
+      Reviewed: number;
+    };
+    timeSeriesData: Array<{
+      date: string;
+      count: number;
+    }>;
+    categoryCounts: Record<string, number>;
+    priorityMonthly: {
+      High: number;
+      Medium: number;
+      Low: number;
+    };
+  };
+  error?: string;
+}> {
   const supabase = await createClient();
 
   try {
