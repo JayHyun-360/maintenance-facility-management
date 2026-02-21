@@ -21,6 +21,7 @@ import { signOut, completeProfile, getUserProfile } from "@/actions/auth";
 import { Suspense } from "react";
 import { VisualRole } from "@/types/auth";
 import { UserDashboard } from "@/components/UserDashboard";
+import type { User } from "@/lib/supabase/types";
 
 async function UserDashboardPage() {
   const supabase = await createClient();
@@ -36,7 +37,10 @@ async function UserDashboardPage() {
   const { data: profile } = await getUserProfile(user.id);
 
   // CRITICAL FIX: Check if user is Admin - Admins bypass profile completion
-  const isAdmin = user.app_metadata?.role === "admin";
+  // Use correct Supabase User properties: app_metadata exists, raw_user_meta_data is user_metadata
+  const isAdmin =
+    user.app_metadata?.role === "admin" ||
+    user.user_metadata?.database_role === "Admin";
 
   // Check if profile needs completion (only for Users, not Admins)
   if (profile && !profile.visual_role && !isAdmin) {

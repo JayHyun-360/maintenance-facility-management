@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
-import { NextResponse, type NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import type { User } from "@/lib/supabase/types";
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -64,8 +65,13 @@ export async function middleware(request: NextRequest) {
 
   // Check admin role for admin routes
   if (user && adminRoutes.some((route) => pathname.startsWith(route))) {
-    // Consistently use app_metadata for role checking (circuit breaker pattern)
-    const userRole = user.app_metadata?.role === "admin" ? "Admin" : "User";
+    // CRITICAL FIX: Use correct Supabase User properties
+    // app_metadata exists, raw_user_meta_data is user_metadata in Supabase types
+    const userRole =
+      user.app_metadata?.role === "admin" ||
+      user.user_metadata?.database_role === "Admin"
+        ? "Admin"
+        : "User";
 
     if (userRole !== "Admin") {
       const url = request.nextUrl.clone();
@@ -76,8 +82,13 @@ export async function middleware(request: NextRequest) {
 
   // Redirect authenticated users away from login page
   if (user && pathname === "/login") {
-    // Consistently use app_metadata for role checking (circuit breaker pattern)
-    const userRole = user.app_metadata?.role === "admin" ? "Admin" : "User";
+    // CRITICAL FIX: Use correct Supabase User properties
+    // app_metadata exists, raw_user_meta_data is user_metadata in Supabase types
+    const userRole =
+      user.app_metadata?.role === "admin" ||
+      user.user_metadata?.database_role === "Admin"
+        ? "Admin"
+        : "User";
     const url = request.nextUrl.clone();
     url.pathname = userRole === "Admin" ? "/admin/dashboard" : "/dashboard";
     return NextResponse.redirect(url);
