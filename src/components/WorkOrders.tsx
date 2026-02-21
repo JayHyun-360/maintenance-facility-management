@@ -64,25 +64,24 @@ export function WorkOrders() {
     try {
       const result = await getAllRequests();
 
-      if (result.error) {
+      if (result.success) {
+        setRequests(result.data || []);
+        // Empty arrays are valid, not errors
+      } else {
         // Handle specific error codes
         if (
-          result.error.includes("403") ||
-          result.error.includes("Forbidden")
+          result.error?.includes("403") ||
+          result.error?.includes("Forbidden")
         ) {
           setError("Access denied. Please check your permissions.");
         } else if (
-          result.error.includes("406") ||
-          result.error.includes("Not Acceptable")
+          result.error?.includes("406") ||
+          result.error?.includes("Not Acceptable")
         ) {
           setError("Access configuration error. Please try refreshing.");
         } else {
-          setError(result.error);
+          setError(result.error || "Failed to load requests");
         }
-      } else {
-        setRequests(result.data || []);
-        // CRITICAL FIX: Empty arrays are valid, not errors
-        // Only show error if there's an actual error, not if data is empty
       }
     } catch (err) {
       console.error("Fetch error:", err);
@@ -124,9 +123,7 @@ export function WorkOrders() {
         completionData,
       );
 
-      if (result.error) {
-        setError(result.error);
-      } else {
+      if (result.success) {
         // Update the request in the local state
         setRequests((prev) =>
           prev.map((req) =>
@@ -143,6 +140,8 @@ export function WorkOrders() {
               : req,
           ),
         );
+      } else {
+        setError(result.error || "Failed to update status");
       }
     } catch (err) {
       setError("Failed to update status");
