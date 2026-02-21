@@ -214,165 +214,161 @@ export function WorkOrders() {
   }
 
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Wrench className="h-5 w-5" />
-            Work Orders
-          </CardTitle>
-          <CardDescription>
-            Manage all maintenance requests and update their status
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {error && (
-            <Alert className="mb-4 border-red-200 bg-red-50">
-              <AlertCircle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="text-red-800">
-                <div className="flex items-center justify-between">
-                  <span>{error}</span>
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h2 className="text-2xl font-bold flex items-center gap-2">
+          <Wrench className="h-6 w-6" />
+          Work Orders
+        </h2>
+        <p className="text-gray-600">
+          Manage all maintenance requests and update their status
+        </p>
+      </div>
+
+      {/* Error Alert */}
+      {error && (
+        <Alert className="border-red-200 bg-red-50">
+          <AlertCircle className="h-4 w-4 text-red-600" />
+          <AlertDescription className="text-red-800">
+            <div className="flex items-center justify-between">
+              <span>{error}</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => fetchRequests()}
+                className="ml-2"
+              >
+                Retry
+              </Button>
+            </div>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {requests.length === 0 ? (
+        <EmptyWorkOrders />
+      ) : (
+        <div className="space-y-4">
+          {requests.map((request) => (
+            <div
+              key={request.id}
+              className="border rounded-lg p-4 space-y-3 hover:bg-gray-50 transition-colors dls-card fade-in"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h3 className="font-medium text-gray-900 mb-1">
+                    {request.title}
+                  </h3>
+                  <p className="text-sm text-gray-600 line-clamp-2">
+                    {request.description}
+                  </p>
+                  {request.supporting_reasons && (
+                    <p className="text-sm text-gray-500 mt-1 italic">
+                      Supporting: {request.supporting_reasons}
+                    </p>
+                  )}
+                  <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
+                    <span>
+                      Requested by: {request.requester?.full_name || "Unknown"}
+                    </span>
+                    <span>•</span>
+                    <span>{request.requester?.email || "No email"}</span>
+                    {request.requester?.visual_role && (
+                      <>
+                        <span>•</span>
+                        <span>{request.requester.visual_role}</span>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2 ml-4">
+                  <Badge className={getStatusColor(request.status)}>
+                    {request.status}
+                  </Badge>
+                  <Badge className={getUrgencyColor(request.urgency)}>
+                    {request.urgency}
+                  </Badge>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 text-sm text-gray-500">
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  {new Date(request.created_at).toLocaleDateString()}
+                </div>
+                <div className="flex items-center gap-1">
+                  <MapPin className="h-4 w-4" />
+                  {request.location_building}
+                  {request.location_room && ` - ${request.location_room}`}
+                </div>
+                <div className="flex items-center gap-1">
+                  <User className="h-4 w-4" />
+                  {request.category}
+                </div>
+              </div>
+
+              {request.status === "Completed" && request.action_taken && (
+                <div className="bg-green-50 border border-green-200 rounded-md p-3">
+                  <div className="text-sm">
+                    <p className="font-medium text-green-800">Action Taken:</p>
+                    <p className="text-green-700">{request.action_taken}</p>
+                    {request.work_evaluation && (
+                      <p className="mt-1">
+                        <span className="font-medium text-green-800">
+                          Evaluation:
+                        </span>
+                        <span className="ml-1 text-green-700">
+                          {request.work_evaluation}
+                        </span>
+                      </p>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 pt-2">
+                <span className="text-sm font-medium text-gray-700">
+                  Change Status:
+                </span>
+                <Select
+                  value={request.status}
+                  onValueChange={(value) =>
+                    handleStatusChange(
+                      request.id,
+                      value as "Pending" | "In Progress" | "Completed",
+                    )
+                  }
+                  disabled={updatingId === request.id}
+                >
+                  <SelectTrigger className="w-32">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Pending">Pending</SelectItem>
+                    <SelectItem value="In Progress">In Progress</SelectItem>
+                    <SelectItem value="Completed">Completed</SelectItem>
+                  </SelectContent>
+                </Select>
+                {updatingId === request.id && (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                )}
+                {request.status === "Completed" && (
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => fetchRequests()}
+                    onClick={() => handleDownloadPDF(request)}
                     className="ml-2"
                   >
-                    Retry
+                    <Download className="h-4 w-4 mr-2" />
+                    PDF
                   </Button>
-                </div>
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {requests.length === 0 ? (
-            <EmptyWorkOrders />
-          ) : (
-            <div className="space-y-4">
-              {requests.map((request) => (
-                <div
-                  key={request.id}
-                  className="border rounded-lg p-4 space-y-3 hover:bg-gray-50 transition-colors dls-card fade-in"
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900 mb-1">
-                        {request.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 line-clamp-2">
-                        {request.description}
-                      </p>
-                      {request.supporting_reasons && (
-                        <p className="text-sm text-gray-500 mt-1 italic">
-                          Supporting: {request.supporting_reasons}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
-                        <span>
-                          Requested by:{" "}
-                          {request.requester?.full_name || "Unknown"}
-                        </span>
-                        <span>•</span>
-                        <span>{request.requester?.email || "No email"}</span>
-                        {request.requester?.visual_role && (
-                          <>
-                            <span>•</span>
-                            <span>{request.requester.visual_role}</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-2 ml-4">
-                      <Badge className={getStatusColor(request.status)}>
-                        {request.status}
-                      </Badge>
-                      <Badge className={getUrgencyColor(request.urgency)}>
-                        {request.urgency}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-4 text-sm text-gray-500">
-                    <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
-                      {new Date(request.created_at).toLocaleDateString()}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <MapPin className="h-4 w-4" />
-                      {request.location_building}
-                      {request.location_room && ` - ${request.location_room}`}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <User className="h-4 w-4" />
-                      {request.category}
-                    </div>
-                  </div>
-
-                  {request.status === "Completed" && request.action_taken && (
-                    <div className="bg-green-50 border border-green-200 rounded-md p-3">
-                      <div className="text-sm">
-                        <p className="font-medium text-green-800">
-                          Action Taken:
-                        </p>
-                        <p className="text-green-700">{request.action_taken}</p>
-                        {request.work_evaluation && (
-                          <p className="mt-1">
-                            <span className="font-medium text-green-800">
-                              Evaluation:
-                            </span>
-                            <span className="ml-1 text-green-700">
-                              {request.work_evaluation}
-                            </span>
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex items-center gap-2 pt-2">
-                    <span className="text-sm font-medium text-gray-700">
-                      Change Status:
-                    </span>
-                    <Select
-                      value={request.status}
-                      onValueChange={(value) =>
-                        handleStatusChange(
-                          request.id,
-                          value as "Pending" | "In Progress" | "Completed",
-                        )
-                      }
-                      disabled={updatingId === request.id}
-                    >
-                      <SelectTrigger className="w-32">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Pending">Pending</SelectItem>
-                        <SelectItem value="In Progress">In Progress</SelectItem>
-                        <SelectItem value="Completed">Completed</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    {updatingId === request.id && (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    )}
-                    {request.status === "Completed" && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDownloadPDF(request)}
-                        className="ml-2"
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        PDF
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
+                )}
+              </div>
             </div>
-          )}
-        </CardContent>
-      </Card>
+          ))}
+        </div>
+      )}
 
       {/* Completion Modal */}
       {completionModal.isOpen && (
@@ -475,6 +471,6 @@ export function WorkOrders() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
