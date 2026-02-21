@@ -16,6 +16,7 @@ import {
   AlertCircle,
   FileText,
   Users,
+  Home,
   Plus,
   Search,
 } from "lucide-react";
@@ -72,7 +73,7 @@ export function EmptyState({
         return (
           <div className="relative mx-auto w-24 h-24 mb-6">
             <div className="absolute inset-0 bg-gradient-to-br from-orange-100 to-orange-200 rounded-full flex items-center justify-center">
-              <Building className="h-12 w-12 text-orange-600" />
+              <Home className="h-12 w-12 text-orange-600" />
             </div>
             <div className="absolute -top-1 -right-1 w-6 h-6 bg-orange-500 rounded-full animate-pulse" />
           </div>
