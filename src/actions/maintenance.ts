@@ -301,3 +301,116 @@ export async function getRequestAnalytics(): Promise<{
     return { success: false, error: "An unexpected error occurred" };
   }
 }
+
+export async function getAnalyticsData(): Promise<{
+  success: boolean;
+  data?: {
+    statusCounts: {
+      Pending: number;
+      "In Progress": number;
+      Completed: number;
+      Cancelled: number;
+      Reviewed: number;
+    };
+    timeSeriesData: Array<{
+      date: string;
+      count: number;
+    }>;
+    categoryCounts: Record<string, number>;
+    priorityMonthly: {
+      High: number;
+      Medium: number;
+      Low: number;
+    };
+  };
+  error?: string;
+}> {
+  const supabase = await createClient();
+
+  try {
+    // Get all requests
+    const { data: requests, error } = await supabase
+      .from("maintenance_requests")
+      .select("*");
+
+    if (error) {
+      console.error("Error fetching analytics data:", error);
+      return { success: false, error: "Failed to fetch analytics data" };
+    }
+
+    // Status Counts
+    const statusCounts = {
+      Pending: requests?.filter((r) => r.status === "Pending").length || 0,
+      "In Progress":
+        requests?.filter((r) => r.status === "In Progress").length || 0,
+      Completed: requests?.filter((r) => r.status === "Completed").length || 0,
+      Cancelled: requests?.filter((r) => r.status === "Cancelled").length || 0,
+      Reviewed: requests?.filter((r) => r.status === "Reviewed").length || 0,
+    };
+
+    // Time-Series Data (Last 30 days)
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const recentRequests =
+      requests?.filter((r) => new Date(r.created_at) >= thirtyDaysAgo) || [];
+
+    const timeSeriesData: Record<string, number> = {};
+    recentRequests.forEach((request) => {
+      const date = new Date(request.created_at).toISOString().split("T")[0];
+      timeSeriesData[date] = (timeSeriesData[date] || 0) + 1;
+    });
+
+    // Fill missing dates with 0
+    const timeSeries = [];
+    for (let i = 29; i >= 0; i--) {
+      const date = new Date();
+      date.setDate(date.getDate() - i);
+      const dateStr = date.toISOString().split("T")[0];
+      timeSeries.push({
+        date: dateStr,
+        count: timeSeriesData[dateStr] || 0,
+      });
+    }
+
+    // Category Counts
+    const categoryCounts: Record<string, number> = {};
+    requests?.forEach((r) => {
+      categoryCounts[r.category] = (categoryCounts[r.category] || 0) + 1;
+    });
+
+    // Priority Monthly Filter (Current month only)
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    const currentMonthRequests =
+      requests?.filter((r) => {
+        const requestDate = new Date(r.created_at);
+        return (
+          requestDate.getMonth() === currentMonth &&
+          requestDate.getFullYear() === currentYear
+        );
+      }) || [];
+
+    const priorityMonthly = {
+      High: currentMonthRequests.filter(
+        (r) => r.urgency === "High" || r.urgency === "Emergency",
+      ).length,
+      Medium: currentMonthRequests.filter((r) => r.urgency === "Medium").length,
+      Low: currentMonthRequests.filter((r) => r.urgency === "Low").length,
+    };
+
+    return {
+      success: true,
+      data: {
+        statusCounts,
+        timeSeriesData: timeSeries,
+        categoryCounts,
+        priorityMonthly,
+      },
+    };
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    return { success: false, error: "An unexpected error occurred" };
+  }
+}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { WorkOrders } from "@/components/WorkOrders";
-import { Reports } from "@/components/Reports";
+import { ReportsDashboard } from "@/components/ReportsDashboard";
 import { NotificationBell } from "@/components/NotificationBell";
 import { EmptyUsers } from "@/components/EmptyStates";
 import { ResponsiveTable } from "@/components/ResponsiveTable";
@@ -294,7 +294,7 @@ export function AdminDashboard({
             </TabsContent>
 
             <TabsContent value="reports">
-              <Reports />
+              <ReportsDashboard />
             </TabsContent>
           </Tabs>
         </div>
