@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createMaintenanceRequest, getFacilities } from "@/actions/maintenance";
+import { createMaintenanceRequest } from "@/actions/maintenance";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -33,29 +33,6 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
-  const [facilities, setFacilities] = useState<{ id: string; name: string }[]>(
-    [],
-  );
-  const [loadingFacilities, setLoadingFacilities] = useState(true);
-
-  useEffect(() => {
-    async function fetchFacilities() {
-      try {
-        const result = await getFacilities();
-        if (result.success && result.data) {
-          setFacilities(result.data);
-        } else {
-          console.error("Failed to fetch facilities:", result.error);
-        }
-      } catch (err) {
-        console.error("Error fetching facilities:", err);
-      } finally {
-        setLoadingFacilities(false);
-      }
-    }
-
-    fetchFacilities();
-  }, []);
 
   async function handleSubmit(formData: FormData) {
     setIsSubmitting(true);
@@ -197,28 +174,25 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
 
             <div className="space-y-2">
               <Label htmlFor="location_building">Building *</Label>
-              {loadingFacilities ? (
-                <div className="flex items-center justify-center h-10 border rounded-md bg-gray-50">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                </div>
-              ) : (
-                <Select
-                  name="location_building"
-                  required
-                  disabled={isSubmitting}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select building" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {facilities.map((facility) => (
-                      <SelectItem key={facility.id} value={facility.name}>
-                        {facility.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
+              <Select name="location_building" required disabled={isSubmitting}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select building" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Main Building">Main Building</SelectItem>
+                  <SelectItem value="Science Building">
+                    Science Building
+                  </SelectItem>
+                  <SelectItem value="Library">Library</SelectItem>
+                  <SelectItem value="Gymnasium">Gymnasium</SelectItem>
+                  <SelectItem value="Cafeteria">Cafeteria</SelectItem>
+                  <SelectItem value="Administration">Administration</SelectItem>
+                  <SelectItem value="Auditorium">Auditorium</SelectItem>
+                  <SelectItem value="Technology Building">
+                    Technology Building
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
@@ -234,11 +208,7 @@ export function RequestForm({ onSuccess, onCancel }: RequestFormProps) {
           </div>
 
           <div className="flex gap-2 pt-4">
-            <Button
-              type="submit"
-              disabled={isSubmitting || loadingFacilities}
-              className="flex-1"
-            >
+            <Button type="submit" disabled={isSubmitting} className="flex-1">
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

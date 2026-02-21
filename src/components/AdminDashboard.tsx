@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { WorkOrders } from "@/components/WorkOrders";
-import { FacilitiesManagement } from "@/components/FacilitiesManagement";
 import { Reports } from "@/components/Reports";
 import { NotificationBell } from "@/components/NotificationBell";
 import { EmptyUsers } from "@/components/EmptyStates";
@@ -18,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Wrench, Users, Building, BarChart3, LogOut } from "lucide-react";
+import { Wrench, Users, BarChart3, LogOut } from "lucide-react";
 import { signOut } from "@/actions/auth";
 
 interface AdminDashboardProps {
@@ -67,32 +66,42 @@ export function AdminDashboard({
         <div className="px-4 py-6 sm:px-0">
           <Tabs defaultValue="overview" className="space-y-6">
             <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="overview" className="flex items-center gap-2">
+              <TabsTrigger
+                value="overview"
+                className="flex items-center gap-2"
+                data-value="overview"
+              >
                 <BarChart3 className="h-4 w-4" />
                 Overview
               </TabsTrigger>
               <TabsTrigger
                 value="work-orders"
                 className="flex items-center gap-2"
+                data-value="work-orders"
               >
                 <Wrench className="h-4 w-4" />
                 Work Orders
               </TabsTrigger>
-              <TabsTrigger value="users" className="flex items-center gap-2">
+              <TabsTrigger
+                value="users"
+                className="flex items-center gap-2"
+                data-value="users"
+              >
                 <Users className="h-4 w-4" />
                 Users
               </TabsTrigger>
               <TabsTrigger
-                value="facilities"
+                value="reports"
                 className="flex items-center gap-2"
+                data-value="reports"
               >
-                <Building className="h-4 w-4" />
-                Facilities
+                <BarChart3 className="h-4 w-4" />
+                Reports
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <Card>
                   <CardHeader>
                     <CardTitle>All Requests</CardTitle>
@@ -101,7 +110,19 @@ export function AdminDashboard({
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button className="w-full">Manage Requests</Button>
+                    <Button
+                      className="w-full"
+                      onClick={() => {
+                        const tabsElement = document.querySelector(
+                          '[data-value="work-orders"]',
+                        );
+                        if (tabsElement) {
+                          (tabsElement as HTMLElement).click();
+                        }
+                      }}
+                    >
+                      Manage Requests
+                    </Button>
                   </CardContent>
                 </Card>
 
@@ -113,22 +134,19 @@ export function AdminDashboard({
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button variant="outline" className="w-full">
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        const tabsElement = document.querySelector(
+                          '[data-value="users"]',
+                        );
+                        if (tabsElement) {
+                          (tabsElement as HTMLElement).click();
+                        }
+                      }}
+                    >
                       Manage Users
-                    </Button>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Facility Management</CardTitle>
-                    <CardDescription>
-                      Configure facilities and equipment
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <Button variant="outline" className="w-full">
-                      Manage Facilities
                     </Button>
                   </CardContent>
                 </Card>
@@ -141,7 +159,18 @@ export function AdminDashboard({
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <Button variant="outline" className="w-full">
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        const tabsElement = document.querySelector(
+                          '[data-value="reports"]',
+                        );
+                        if (tabsElement) {
+                          (tabsElement as HTMLElement).click();
+                        }
+                      }}
+                    >
                       View Reports
                     </Button>
                   </CardContent>
@@ -262,10 +291,6 @@ export function AdminDashboard({
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-
-            <TabsContent value="facilities">
-              <FacilitiesManagement />
             </TabsContent>
 
             <TabsContent value="reports">

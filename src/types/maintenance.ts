@@ -26,15 +26,6 @@ export interface MaintenanceRequest {
   } | null;
 }
 
-export interface Facility {
-  id: string;
-  name: string;
-  description?: string | null;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface WorkOrderFormData {
   title: string;
   description: string;
