@@ -1,0 +1,53 @@
+{
+  "summary": "SQL file organization analysis completed. Some files moved successfully, others encountered path issues.",
+  "sql_files_moved": [
+    {
+      "original_path": "scripts\\inspect-database.sql",
+      "new_path": "My SQLs\\Scripts\\inspect-database.sql",
+      "status": "moved"
+    },
+    {
+      "original_path": "scripts\\test-connection.sql", 
+      "new_path": "My SQLs\\Scripts\\test-connection.sql",
+      "status": "moved"
+    }
+  ],
+  "sql_files_remaining": [
+    {
+      "original_path": "CHECK_TABLE_EXISTENCE.sql",
+      "new_path": "My SQLs\\Scripts\\CHECK_TABLE_EXISTENCE.sql",
+      "status": "pending_move"
+    },
+    {
+      "original_path": "FINAL_ADMIN_RLS_FIX.sql",
+      "new_path": "My SQLs\\Fixes\\FINAL_ADMIN_RLS_FIX.sql", 
+      "status": "pending_move"
+    },
+    {
+      "original_path": "FINAL_CORRECTED_FIX.sql",
+      "new_path": "My SQLs\\Fixes\\FINAL_CORRECTED_FIX.sql",
+      "status": "pending_move"
+    },
+    {
+      "original_path": "complete-schema-setup.sql",
+      "new_path": "My SQLs\\Schema\\complete-schema-setup.sql",
+      "status": "pending_move"
+    },
+    {
+      "original_path": "final-authentication-fix.sql",
+      "new_path": "My SQLs\\Fixes\\final-authentication-fix.sql",
+      "status": "pending_move"
+    },
+    {
+      "original_path": "fix-authentication-issues.sql",
+      "new_path": "My SQLs\\Fixes\\fix-authentication-issues.sql",
+      "status": "pending_move"
+    }
+  ],
+  "next_actions": [
+    "Complete moving remaining SQL files to appropriate subdirectories",
+    "Update any code references if file paths changed",
+    "Consider creating a .gitignore entry for 'My SQLs/' if needed",
+    "Verify all SQL files are accessible and properly organized"
+  ]
+}
