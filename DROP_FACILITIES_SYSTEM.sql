@@ -12,15 +12,15 @@ DROP TABLE IF EXISTS public.facilities CASCADE;
 DROP FUNCTION IF EXISTS get_facility_stats() CASCADE;
 DROP FUNCTION IF EXISTS update_facility_usage() CASCADE;
 
--- Step 4: Clean up any references in system tables
-DELETE FROM pg_policies WHERE tablename = 'facilities';
-DELETE FROM pg_tables WHERE tablename = 'facilities';
+-- Step 4: Note: pg_policies is a system view and cannot be directly modified
+-- The DROP TABLE and DROP POLICY statements above are sufficient
 
 -- Step 5: Verify removal
 SELECT 
     'facilities_table_exists' as check_name,
     EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = 'facilities') as status;
 
+-- Note: This query will return 0 if table doesn't exist, which is expected
 SELECT 
     'facility_policies_exist' as check_name, 
     COUNT(*) as count
