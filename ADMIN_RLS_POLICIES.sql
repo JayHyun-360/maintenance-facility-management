@@ -101,17 +101,17 @@ CREATE POLICY "Admins can delete all facilities" ON facilities
 -- Step 5: Create User policies for maintenance_requests (for regular users)
 CREATE POLICY "Users can view their own maintenance_requests" ON maintenance_requests
     FOR SELECT USING (
-        auth.uid() = user_id
+        auth.uid() = requester_id
     );
 
 CREATE POLICY "Users can create maintenance_requests" ON maintenance_requests
     FOR INSERT WITH CHECK (
-        auth.uid() = user_id
+        auth.uid() = requester_id
     );
 
 CREATE POLICY "Users can update their own maintenance_requests" ON maintenance_requests
     FOR UPDATE USING (
-        auth.uid() = user_id
+        auth.uid() = requester_id
     );
 
 -- Step 6: Create User policies for facilities (read-only for regular users)
