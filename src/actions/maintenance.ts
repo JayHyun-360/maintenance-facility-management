@@ -105,7 +105,7 @@ export async function getAllRequests(): Promise<{
       .select(
         `
         *,
-        requester:profiles(name, email, visual_role)
+        requester:profiles(full_name, email, visual_role)
       `,
       )
       .order("created_at", { ascending: false });

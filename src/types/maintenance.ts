@@ -20,7 +20,7 @@ export interface MaintenanceRequest {
   created_at: string;
   updated_at: string;
   requester?: {
-    name: string;
+    full_name: string;
     email: string;
     visual_role?: string;
   } | null;
