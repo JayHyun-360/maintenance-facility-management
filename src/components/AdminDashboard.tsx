@@ -36,6 +36,8 @@ export function AdminDashboard({
   profile,
   profiles,
 }: AdminDashboardProps) {
+  const [activeTab, setActiveTab] = useState("overview");
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white shadow">
@@ -64,7 +66,11 @@ export function AdminDashboard({
 
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <Tabs defaultValue="overview" className="space-y-6">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="space-y-6"
+          >
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger
                 value="overview"
@@ -112,14 +118,7 @@ export function AdminDashboard({
                   <CardContent>
                     <Button
                       className="w-full"
-                      onClick={() => {
-                        const tabsElement = document.querySelector(
-                          '[data-value="work-orders"]',
-                        );
-                        if (tabsElement) {
-                          (tabsElement as HTMLElement).click();
-                        }
-                      }}
+                      onClick={() => setActiveTab("work-orders")}
                     >
                       Manage Requests
                     </Button>
@@ -137,14 +136,7 @@ export function AdminDashboard({
                     <Button
                       variant="outline"
                       className="w-full"
-                      onClick={() => {
-                        const tabsElement = document.querySelector(
-                          '[data-value="users"]',
-                        );
-                        if (tabsElement) {
-                          (tabsElement as HTMLElement).click();
-                        }
-                      }}
+                      onClick={() => setActiveTab("users")}
                     >
                       Manage Users
                     </Button>
@@ -162,14 +154,7 @@ export function AdminDashboard({
                     <Button
                       variant="outline"
                       className="w-full"
-                      onClick={() => {
-                        const tabsElement = document.querySelector(
-                          '[data-value="reports"]',
-                        );
-                        if (tabsElement) {
-                          (tabsElement as HTMLElement).click();
-                        }
-                      }}
+                      onClick={() => setActiveTab("reports")}
                     >
                       View Reports
                     </Button>
