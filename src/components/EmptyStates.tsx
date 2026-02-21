@@ -6,7 +6,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Wrench, FileText, Users, Building, Plus, Search } from "lucide-react";
+import {
+  Loader2,
+  RefreshCw,
+  Clock,
+  CheckCircle,
+  XCircle,
+  Eye,
+  AlertCircle,
+  FileText,
+  Users,
+  Plus,
+  Search,
+} from "lucide-react";
 
 interface EmptyStateProps {
   title: string;
@@ -17,7 +29,7 @@ interface EmptyStateProps {
     onClick: () => void;
     variant?: "default" | "outline" | "secondary" | "ghost" | "destructive";
   };
-  illustration?: "wrench" | "document" | "users" | "building" | "search";
+  illustration?: "fileText" | "document" | "users" | "building" | "search";
 }
 
 export function EmptyState({
@@ -25,11 +37,11 @@ export function EmptyState({
   description,
   icon,
   action,
-  illustration = "wrench",
+  illustration = "fileText",
 }: EmptyStateProps) {
   const getIllustration = () => {
     switch (illustration) {
-      case "wrench":
+      case "fileText":
         return (
           <div className="relative mx-auto w-24 h-24 mb-6">
             <div className="absolute inset-0 bg-gradient-to-br from-green-100 to-green-200 rounded-full flex items-center justify-center">
@@ -108,18 +120,18 @@ export function EmptyWorkOrders({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Wrench className="h-5 w-5" />
+          <FileText className="h-5 w-5" />
           Maintenance Requests
         </CardTitle>
         <CardDescription>
-          Manage all maintenance requests and update their status
+          View and manage all maintenance requests in the system
         </CardDescription>
       </CardHeader>
       <CardContent>
         <EmptyState
           title="No work orders yet"
           description="Maintenance requests will appear here once users submit them. The system is ready to handle requests efficiently."
-          illustration="wrench"
+          illustration="fileText"
           action={
             onCreateRequest
               ? {
@@ -144,7 +156,7 @@ export function EmptyRequests({
     <EmptyState
       title="No requests yet"
       description="Submit your first maintenance request to get started. Our team will respond promptly to your needs."
-      illustration="wrench"
+      illustration="fileText"
       action={{
         label: "Create Your First Request",
         onClick: onCreateFirst,
