@@ -7,7 +7,7 @@ export interface MaintenanceRequest {
   urgency: string;
   location_building: string;
   location_room?: string | null;
-  status: "Pending" | "In Progress" | "Completed";
+  status: "Pending" | "In Progress" | "Completed" | "Cancelled" | "Reviewed";
   requester_id: string;
   action_taken?: string | null;
   work_evaluation?:

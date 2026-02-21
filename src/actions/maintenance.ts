@@ -137,17 +137,17 @@ export async function updateRequestStatus(
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return { error: "User not authenticated" };
+    return { success: false, error: "User not authenticated" };
   }
 
   // Check if user is admin
   const userRole = user.user_metadata?.database_role || user.app_metadata?.role;
   if (userRole !== "Admin") {
-    return { error: "Unauthorized: Admin access required" };
+    return { success: false, error: "Unauthorized: Admin access required" };
   }
 
   if (!["Pending", "In Progress", "Completed"].includes(status)) {
-    return { error: "Invalid status" };
+    return { success: false, error: "Invalid status" };
   }
 
   try {
@@ -168,7 +168,7 @@ export async function updateRequestStatus(
 
     if (error) {
       console.error("Error updating request status:", error);
-      return { error: "Failed to update request status" };
+      return { success: false, error: "Failed to update request status" };
     }
 
     // Send email notification to user if request is completed
@@ -208,7 +208,7 @@ export async function getRequestAnalytics(): Promise<{
   const supabase = await createClient();
 
   try {
-    // Get all requests with requester information
+    // Get all typedRequests with requester information
     const { data: requests, error } = await supabase.from(
       "maintenance_requests",
     ).select(`
@@ -221,55 +221,62 @@ export async function getRequestAnalytics(): Promise<{
       return { success: false, error: "Failed to fetch analytics data" };
     }
 
+    const typedRequests: MaintenanceRequest[] = requests || [];
+
     // Calculate analytics
-    const totalRequests = requests?.length || 0;
-    const pendingRequests =
-      requests?.filter((r) => r.status === "Pending").length || 0;
-    const inProgressRequests =
-      requests?.filter((r) => r.status === "In Progress").length || 0;
-    const completedRequests =
-      requests?.filter((r) => r.status === "Completed").length || 0;
+    const totalRequests = typedRequests.length;
+    const pendingRequests = typedRequests.filter(
+      (r) => r.status === "Pending",
+    ).length;
+    const inProgressRequests = typedRequests.filter(
+      (r) => r.status === "In Progress",
+    ).length;
+    const completedRequests = typedRequests.filter(
+      (r) => r.status === "Completed",
+    ).length;
 
     // Requests by visual role
     const requestsByVisualRole = {
-      Teacher:
-        requests?.filter((r) => r.requester?.visual_role === "Teacher")
-          .length || 0,
+      Teacher: typedRequests.filter(
+        (r) => r.requester?.visual_role === "Teacher",
+      ).length,
       Staff:
-        requests?.filter((r) => r.requester?.visual_role === "Staff").length ||
-        0,
-      Student:
-        requests?.filter((r) => r.requester?.visual_role === "Student")
+        typedRequests.filter((r) => r.requester?.visual_role === "Staff")
           .length || 0,
+      Student: typedRequests.filter(
+        (r) => r.requester?.visual_role === "Student",
+      ).length,
     };
 
     // Work quality distribution
     const workQualityDistribution = {
       Outstanding:
-        requests?.filter((r) => r.work_evaluation === "Outstanding").length ||
-        0,
+        typedRequests?.filter((r) => r.work_evaluation === "Outstanding")
+          .length || 0,
       "Very Satisfactory":
-        requests?.filter((r) => r.work_evaluation === "Very Satisfactory")
+        typedRequests?.filter((r) => r.work_evaluation === "Very Satisfactory")
           .length || 0,
       Satisfactory:
-        requests?.filter((r) => r.work_evaluation === "Satisfactory").length ||
-        0,
-      Poor: requests?.filter((r) => r.work_evaluation === "Poor").length || 0,
+        typedRequests?.filter((r) => r.work_evaluation === "Satisfactory")
+          .length || 0,
+      Poor:
+        typedRequests?.filter((r) => r.work_evaluation === "Poor").length || 0,
     };
 
     // Requests by category
     const requestsByCategory: Record<string, number> = {};
-    requests?.forEach((r) => {
+    typedRequests?.forEach((r) => {
       requestsByCategory[r.category] =
         (requestsByCategory[r.category] || 0) + 1;
     });
 
     // Requests by urgency
     const requestsByUrgency = {
-      Emergency: requests?.filter((r) => r.urgency === "Emergency").length || 0,
-      High: requests?.filter((r) => r.urgency === "High").length || 0,
-      Medium: requests?.filter((r) => r.urgency === "Medium").length || 0,
-      Low: requests?.filter((r) => r.urgency === "Low").length || 0,
+      Emergency:
+        typedRequests?.filter((r) => r.urgency === "Emergency").length || 0,
+      High: typedRequests?.filter((r) => r.urgency === "High").length || 0,
+      Medium: typedRequests?.filter((r) => r.urgency === "Medium").length || 0,
+      Low: typedRequests?.filter((r) => r.urgency === "Low").length || 0,
     };
 
     const analytics: RequestAnalytics = {
@@ -342,8 +349,10 @@ export async function getAnalyticsData(): Promise<{
       };
     }
 
+    const typedRequests: MaintenanceRequest[] = requests || [];
+
     // Handle empty data case
-    if (!requests || requests.length === 0) {
+    if (!typedRequests || typedRequests.length === 0) {
       return {
         success: true,
         data: {
@@ -367,18 +376,19 @@ export async function getAnalyticsData(): Promise<{
 
     // Status Counts
     const statusCounts = {
-      Pending: requests.filter((r) => r.status === "Pending").length,
-      "In Progress": requests.filter((r) => r.status === "In Progress").length,
-      Completed: requests.filter((r) => r.status === "Completed").length,
-      Cancelled: requests.filter((r) => r.status === "Cancelled").length,
-      Reviewed: requests.filter((r) => r.status === "Reviewed").length,
+      Pending: typedRequests.filter((r) => r.status === "Pending").length,
+      "In Progress": typedRequests.filter((r) => r.status === "In Progress")
+        .length,
+      Completed: typedRequests.filter((r) => r.status === "Completed").length,
+      Cancelled: typedRequests.filter((r) => r.status === "Cancelled").length,
+      Reviewed: typedRequests.filter((r) => r.status === "Reviewed").length,
     };
 
     // Time-Series Data (Last 30 days)
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const recentRequests = requests.filter(
+    const recentRequests = typedRequests.filter(
       (r) => new Date(r.created_at) >= thirtyDaysAgo,
     );
 
@@ -402,7 +412,7 @@ export async function getAnalyticsData(): Promise<{
 
     // Category Counts
     const categoryCounts: Record<string, number> = {};
-    requests.forEach((r) => {
+    typedRequests.forEach((r) => {
       categoryCounts[r.category] = (categoryCounts[r.category] || 0) + 1;
     });
 
@@ -410,7 +420,7 @@ export async function getAnalyticsData(): Promise<{
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
 
-    const currentMonthRequests = requests.filter((r) => {
+    const currentMonthRequests = typedRequests.filter((r) => {
       const requestDate = new Date(r.created_at);
       return (
         requestDate.getMonth() === currentMonth &&
