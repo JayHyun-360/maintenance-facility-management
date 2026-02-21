@@ -89,65 +89,70 @@ export async function GET(request: Request) {
           }
         }
 
-        // Use the new wait_for_profile_sync function to ensure database has settled
-        const { data: syncResult, error: syncError } = await supabase.rpc(
-          "wait_for_profile_sync",
-          {
-            user_id: user.id,
-            max_attempts: 20, // Wait up to 4 seconds (20 * 200ms)
-          },
-        );
-
-        if (syncError) {
-          console.error("❌ Profile sync RPC error:", syncError);
-        } else {
-          console.log("🔄 Profile sync result:", syncResult);
-        }
-
-        // Profile creation is now handled by the sync_user_role trigger
-        // But add manual fallback if trigger failed or sync didn't complete
-        const { data: fallbackProfile } = await supabase
-          .from("profiles")
-          .select("database_role, visual_role")
-          .eq("id", user.id)
-          .single();
-
-        if (!fallbackProfile || syncError || !syncResult) {
-          console.log(
-            "⚠️ Trigger failed, performing manual profile creation fallback",
+        try {
+          // Use the new wait_for_profile_sync function to ensure database has settled
+          const { data: syncResult, error: syncError } = await supabase.rpc(
+            "wait_for_profile_sync",
+            {
+              user_id: user.id,
+              max_attempts: 20, // Wait up to 4 seconds (20 * 200ms)
+            },
           );
 
-          // Manual insertion as emergency fallback
-          const databaseRole = roleHint === "admin" ? "Admin" : "User";
-          const userMetadata = user.user_metadata;
-
-          try {
-            const { error: fallbackError } = await supabase
-              .from("profiles")
-              .insert({
-                id: user.id,
-                full_name:
-                  userMetadata?.name ||
-                  userMetadata?.full_name ||
-                  user.email ||
-                  "Unknown",
-                email: user.email,
-                database_role: databaseRole,
-                visual_role: userMetadata?.visual_role,
-                educational_level: userMetadata?.educational_level,
-                department: userMetadata?.department,
-                is_guest: false, // Google OAuth users are not guests
-              });
-
-            if (fallbackError) {
-              console.error("❌ Manual fallback also failed:", fallbackError);
-              // Continue anyway - user will be authenticated but profile missing
-            } else {
-              console.log("✅ Manual fallback profile creation successful");
-            }
-          } catch (error) {
-            console.error("❌ Manual fallback exception:", error);
+          if (syncError) {
+            console.error("❌ Profile sync RPC error:", syncError);
+          } else {
+            console.log("🔄 Profile sync result:", syncResult);
           }
+
+          // Profile creation is now handled by the updated trigger
+          // But add manual fallback if trigger failed or sync didn't complete
+          const { data: fallbackProfile } = await supabase
+            .from("profiles")
+            .select("database_role, visual_role")
+            .eq("id", user.id)
+            .single();
+
+          if (!fallbackProfile || syncError || !syncResult) {
+            console.log(
+              "⚠️ Trigger failed, performing manual profile creation fallback",
+            );
+
+            // Manual insertion as emergency fallback
+            const databaseRole = roleHint === "admin" ? "Admin" : "User";
+            const userMetadata = user.user_metadata;
+
+            try {
+              const { error: fallbackError } = await supabase
+                .from("profiles")
+                .insert({
+                  id: user.id,
+                  full_name:
+                    userMetadata?.name ||
+                    userMetadata?.full_name ||
+                    userMetadata?.user_name ||
+                    user.email ||
+                    "Unknown",
+                  email: user.email,
+                  database_role: databaseRole,
+                  visual_role: userMetadata?.visual_role,
+                  educational_level: userMetadata?.educational_level,
+                  department: userMetadata?.department,
+                  is_guest: false, // Google OAuth users are not guests
+                });
+
+              if (fallbackError) {
+                console.error("❌ Manual fallback also failed:", fallbackError);
+                // Continue anyway - user will be authenticated but profile missing
+              } else {
+                console.log("✅ Manual fallback profile creation successful");
+              }
+            } catch (error) {
+              console.error("❌ Manual fallback exception:", error);
+            }
+          }
+        } catch (error) {
+          console.error("❌ Profile sync exception:", error);
         }
 
         // CRITICAL FIX: Determine redirect based on role
