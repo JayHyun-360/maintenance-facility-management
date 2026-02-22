@@ -21,7 +21,7 @@ BEGIN
     )
     WHERE id = NEW.id;
     
-    -- Log the role assignment for debugging
+    -- Log: role assignment for debugging
     INSERT INTO auth_logs (user_id, action, metadata)
     VALUES (
         NEW.id, 
@@ -36,7 +36,7 @@ BEGIN
         metadata = EXCLUDED.metadata,
         timestamp = NOW();
     
-    RETURN NEW;
+    RETURN NULL;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
