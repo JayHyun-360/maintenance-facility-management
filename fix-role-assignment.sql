@@ -41,34 +41,35 @@ DROP TRIGGER IF EXISTS trigger_sync_user_role ON auth.users;
 CREATE TRIGGER trigger_sync_user_role
     AFTER INSERT OR UPDATE ON auth.users
     FOR EACH ROW
-    BEGIN
-        -- Update profiles table with role from auth.users metadata
-        UPDATE profiles 
-        SET database_role = COALESCE(
-            NEW.user_metadata->>'database_role',
-            CASE 
-                WHEN NEW.app_metadata->>'role' = 'admin' THEN 'Admin'
-                ELSE 'User'
-            END
-        )
-        WHERE id = NEW.id;
-        
-        -- Log role assignment for debugging
-        INSERT INTO auth_logs (user_id, action, metadata)
-        VALUES (
-            NEW.id, 
-            'role_sync', 
-            jsonb_build_object(
-                'database_role', COALESCE(NEW.user_metadata->>'database_role', 'not_set'),
-                'app_role', NEW.app_metadata->>'role',
-                'trigger_time', NOW()
+    WHEN (NEW.id IS NOT NULL) THEN
+        BEGIN
+            -- Update profiles table with role from auth.users metadata
+            UPDATE profiles 
+            SET database_role = COALESCE(
+                NEW.user_metadata->>'database_role',
+                CASE 
+                    WHEN NEW.app_metadata->>'role' = 'admin' THEN 'Admin'
+                    ELSE 'User'
+                END
             )
-        )
-        ON CONFLICT (user_id, action) DO UPDATE SET
-            metadata = EXCLUDED.metadata,
-            timestamp = NOW();
-    END;
-END;
+            WHERE id = NEW.id;
+            
+            -- Log role assignment for debugging
+            INSERT INTO auth_logs (user_id, action, metadata)
+            VALUES (
+                NEW.id, 
+                'role_sync', 
+                jsonb_build_object(
+                    'database_role', COALESCE(NEW.user_metadata->>'database_role', 'not_set'),
+                    'app_role', NEW.app_metadata->>'role',
+                    'trigger_time', NOW()
+                )
+            )
+            ON CONFLICT (user_id, action) DO UPDATE SET
+                metadata = EXCLUDED.metadata,
+                timestamp = NOW();
+        END;
+    END IF;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Step 3: Create auth_logs table if it doesn't exist
