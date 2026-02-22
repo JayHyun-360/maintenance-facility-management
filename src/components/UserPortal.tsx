@@ -61,6 +61,7 @@ export function UserPortal({
     if (result.error) {
       setFormError(result.error);
     }
+    // Note: signInWithGoogle now redirects directly, no need to handle URL
     setUserGoogleLoading(false);
   };
 

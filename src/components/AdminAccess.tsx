@@ -51,10 +51,8 @@ export function AdminAccess({
 
     if (result.error) {
       setFormError(result.error);
-    } else if (typeof result.url === "string") {
-      // Redirect to Google OAuth
-      window.location.href = result.url;
     }
+    // Note: signInWithGoogle now redirects directly, no need to handle URL
     setAdminGoogleLoading(false);
   };
 

@@ -13,12 +13,9 @@ CREATE TABLE IF NOT EXISTS auth_logs (
 -- Step 2: Create index for auth_logs
 CREATE INDEX IF NOT EXISTS idx_auth_logs_user_action ON auth_logs(user_id, action);
 
--- Step 3: Create simple stored procedure
-CREATE OR REPLACE PROCEDURE sync_user_role(
-    p_user_id UUID,
-    p_user_metadata JSONB,
-    p_app_metadata JSONB
-)
+-- Step 3: Create trigger function
+CREATE OR REPLACE FUNCTION sync_user_role_trigger()
+RETURNS TRIGGER
 LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
@@ -27,32 +24,33 @@ BEGIN
     UPDATE profiles 
     SET database_role = 
         CASE 
-            WHEN p_app_metadata->>'role' = 'admin' THEN 'Admin'
+            WHEN NEW.app_metadata->>'role' = 'admin' THEN 'Admin'
             ELSE 'User'
         END
-    WHERE id = p_user_id;
+    WHERE id = NEW.id;
     
     -- Log the role assignment
     INSERT INTO auth_logs (user_id, action, metadata)
     VALUES (
-        p_user_id, 
+        NEW.id, 
         'role_sync', 
         jsonb_build_object(
-            'database_role', COALESCE(p_user_metadata->>'database_role', 'not_set'),
-            'app_role', p_app_metadata->>'role',
+            'database_role', COALESCE(NEW.user_metadata->>'database_role', 'not_set'),
+            'app_role', NEW.app_metadata->>'role',
             'trigger_time', NOW()
         )
     )
     ON CONFLICT (user_id, action) DO UPDATE SET
         metadata = EXCLUDED.metadata,
         timestamp = NOW();
+    
+    RETURN NEW;
 END;
 $$;
 
--- Step 4: Create trigger that calls the procedure
+-- Step 4: Create trigger that calls the function
 DROP TRIGGER IF EXISTS trigger_sync_user_role ON auth.users;
 CREATE TRIGGER trigger_sync_user_role
     AFTER INSERT OR UPDATE ON auth.users
     FOR EACH ROW
-    EXECUTE PROCEDURE sync_user_role(NEW.id, NEW.user_metadata, NEW.app_metadata);
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+    EXECUTE FUNCTION sync_user_role_trigger();

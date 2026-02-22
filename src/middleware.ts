@@ -58,19 +58,18 @@ export async function middleware(request: NextRequest) {
   if (!user && protectedRoutes.some((route) => pathname.startsWith(route))) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
-    url.searchParams.set("redirect", pathname);
+
+    // Prevent redirect loops: only set redirect if it's different from current path
+    if (pathname !== "/login") {
+      url.searchParams.set("redirect", pathname);
+    }
     return NextResponse.redirect(url);
   }
 
   // Check admin role for admin routes
   if (user && adminRoutes.some((route) => pathname.startsWith(route))) {
-    // CRITICAL FIX: Use consistent role checking
-    // Check both possible metadata locations for Admin role
-    const userRole =
-      user.app_metadata?.role === "Admin" ||
-      user.user_metadata?.database_role === "Admin"
-        ? "Admin"
-        : "User";
+    // CRITICAL FIX: Use only app_metadata.role for circuit breaker pattern
+    const userRole = user.app_metadata?.role === "Admin" ? "Admin" : "User";
 
     if (userRole !== "Admin") {
       const url = request.nextUrl.clone();
@@ -81,15 +80,13 @@ export async function middleware(request: NextRequest) {
 
   // Redirect authenticated users away from login page
   if (user && pathname === "/login") {
-    // CRITICAL FIX: Use consistent role checking
-    // Check both possible metadata locations for Admin role
-    const userRole =
-      user.app_metadata?.role === "Admin" ||
-      user.user_metadata?.database_role === "Admin"
-        ? "Admin"
-        : "User";
+    // CRITICAL FIX: Use only app_metadata.role for circuit breaker pattern
+    const userRole = user.app_metadata?.role === "Admin" ? "Admin" : "User";
     const url = request.nextUrl.clone();
-    url.pathname = userRole === "Admin" ? "/admin/dashboard" : "/dashboard";
+    const redirectPath =
+      userRole === "Admin" ? "/admin/dashboard" : "/dashboard";
+
+    url.pathname = redirectPath;
     return NextResponse.redirect(url);
   }
 

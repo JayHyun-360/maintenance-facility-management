@@ -70,8 +70,29 @@ export async function GET(request: Request) {
             },
           });
 
-          // Wait a moment for updateUser to trigger and complete
-          await new Promise((resolve) => setTimeout(resolve, 500));
+          // Wait for role metadata to be properly set before redirecting
+          let retries = 0;
+          const maxRetries = 10;
+          let userRole = user.app_metadata?.role;
+
+          while (!userRole && retries < maxRetries) {
+            console.log(
+              `🔄 Waiting for role metadata... attempt ${retries + 1}/${maxRetries}`,
+            );
+            await new Promise((resolve) => setTimeout(resolve, 300));
+
+            // Re-fetch user to get updated metadata
+            const { data: updatedUser } = await supabase.auth.getUser();
+            userRole = updatedUser.user?.app_metadata?.role;
+            retries++;
+          }
+
+          if (!userRole) {
+            console.error(
+              "❌ Role metadata not set after retries, defaulting to User",
+            );
+            userRole = "user";
+          }
 
           // Update database role via RPC (backup method)
           const { error: roleUpdateError } = await supabase.rpc(
