@@ -28,6 +28,7 @@ interface UserPortalProps {
   setUserGoogleLoading: (loading: boolean) => void;
   setGuestLoading: (loading: boolean) => void;
   setFormError: (error: string | null) => void;
+  captchaToken?: string;
 }
 
 export function UserPortal({
@@ -36,6 +37,7 @@ export function UserPortal({
   setUserGoogleLoading,
   setGuestLoading,
   setFormError,
+  captchaToken,
 }: UserPortalProps) {
   // Guest login state
   const [guestName, setGuestName] = useState("");
@@ -111,7 +113,7 @@ export function UserPortal({
       department: guestDepartment || undefined,
     };
 
-    const result = await signInAsGuest(guestData);
+    const result = await signInAsGuest(guestData, captchaToken);
 
     if (result.error) {
       setFormError(result.error);

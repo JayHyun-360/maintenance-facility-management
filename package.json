@@ -16,6 +16,7 @@
     "supabase:status": "npx supabase status"
   },
   "dependencies": {
+    "@hcaptcha/react-hcaptcha": "^2.0.2",
     "@radix-ui/react-switch": "^1.2.6",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.97.0",

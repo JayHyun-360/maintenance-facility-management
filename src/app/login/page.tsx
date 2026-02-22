@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AdminAccess } from "@/components/AdminAccess";
 import { UserPortal } from "@/components/UserPortal";
+import { HCaptcha } from "@hcaptcha/react-hcaptcha";
 
 function LoginPageContent() {
   const router = useRouter();
@@ -17,6 +18,9 @@ function LoginPageContent() {
   const [emailLoading, setEmailLoading] = useState(false);
   const [guestLoading, setGuestLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | undefined>(
+    undefined,
+  );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -46,6 +50,14 @@ function LoginPageContent() {
           </Alert>
         )}
 
+        {/* hCaptcha */}
+        <div className="flex justify-center mb-6">
+          <HCaptcha
+            sitekey="9ba0caa8-6558-48f2-a5ae-5e525cf200fe"
+            onVerify={(token) => setCaptchaToken(token)}
+          />
+        </div>
+
         <Tabs defaultValue="admin" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="admin">Admin Access</TabsTrigger>
@@ -69,6 +81,7 @@ function LoginPageContent() {
               setUserGoogleLoading={setUserGoogleLoading}
               setGuestLoading={setGuestLoading}
               setFormError={setFormError}
+              captchaToken={captchaToken}
             />
           </TabsContent>
         </Tabs>

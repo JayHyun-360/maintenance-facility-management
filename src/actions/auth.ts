@@ -146,7 +146,10 @@ export async function signInWithEmail(email: string, password: string) {
   return { success: true, data };
 }
 
-export async function signInAsGuest(guestData: GuestUser) {
+export async function signInAsGuest(
+  guestData: GuestUser,
+  captchaToken?: string,
+) {
   const supabase = await createClient();
 
   // Sign in anonymously
@@ -158,6 +161,7 @@ export async function signInAsGuest(guestData: GuestUser) {
         educational_level: guestData.educational_level,
         department: guestData.department,
         is_guest: true, // Set guest flag for trigger to handle
+        captchaToken: captchaToken, // Pass hCaptcha token
       },
     },
   });
