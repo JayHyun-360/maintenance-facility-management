@@ -113,7 +113,7 @@ export async function getUserRequests(userId: string): Promise<{
       .select(
         `
         *,
-        requester:profiles(name, email, visual_role)
+        requester:profiles(full_name, email, visual_role)
       `,
       )
       .eq("requester_id", userId)
