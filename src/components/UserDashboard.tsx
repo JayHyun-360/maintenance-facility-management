@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Wrench, List, Plus } from "lucide-react";
+import { AnonymousUpgrade } from "@/components/AnonymousUpgrade";
 
 interface UserDashboardProps {
   user: {
@@ -209,6 +210,21 @@ export function UserDashboard({ user, profile }: UserDashboardProps) {
           </Tabs>
         </div>
       </div>
+
+      {/* Anonymous Account Link Option - Only show for guest users */}
+      {user.email && user.email.includes("anonymous") && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="text-center">
+            <p className="text-sm text-gray-600 mb-4">
+              Using guest access? Link your account to save your data
+              permanently.
+            </p>
+            <AnonymousUpgrade
+              onUpgradeComplete={() => window.location.reload()}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
