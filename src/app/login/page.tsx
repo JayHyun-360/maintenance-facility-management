@@ -26,14 +26,13 @@ function LoginPageContent() {
   const [captchaToken, setCaptchaToken] = useState<string | undefined>(
     undefined,
   );
-  const [showCaptcha, setShowCaptcha] = useState(true);
+  const [showCaptcha, setShowCaptcha] = useState(false);
   const [userType, setUserType] = useState<string>("guest");
+  const [activeTab, setActiveTab] = useState<string>("admin");
 
   // Check if we should show captcha based on user type and login history
   useEffect(() => {
     const checkLoginStatus = async () => {
-      // For guest users, always show captcha
-      // For permanent users, only show captcha on first login
       const supabase = createSupabaseClient();
       const {
         data: { user },
@@ -49,17 +48,24 @@ function LoginPageContent() {
           setUserType(currentUserType);
 
           // Show captcha for guests always, or for permanent users on first login
-          if (currentUserType === "guest" || !firstLoginCompleted) {
+          // But only if they're on the guest tab
+          if (
+            activeTab === "guest" &&
+            (currentUserType === "guest" || !firstLoginCompleted)
+          ) {
             setShowCaptcha(true);
           } else {
             setShowCaptcha(false);
           }
         }
+      } else {
+        // No authenticated user - show captcha only on guest tab
+        setShowCaptcha(activeTab === "guest");
       }
     };
 
     checkLoginStatus();
-  }, []);
+  }, [activeTab]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -99,7 +105,7 @@ function LoginPageContent() {
           </div>
         )}
 
-        <Tabs defaultValue="admin" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="admin">Admin Access</TabsTrigger>
             <TabsTrigger value="guest">Guest/User Portal</TabsTrigger>
