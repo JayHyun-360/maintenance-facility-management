@@ -4,7 +4,7 @@
 console.log(" Auth actions module loaded");
 
 import { createClient } from "@/lib/supabase/server";
-import { verifyCaptcha } from "@/lib/hcaptcha";
+import { verifyCaptchaDebug } from "@/lib/hcaptcha-debug";
 import { z } from "zod";
 import { completeFirstLogin } from "./login-tracking";
 import { revalidatePath } from "next/cache";
@@ -158,7 +158,7 @@ export async function signInAsGuest(
     return { error: "Captcha token is required" };
   }
 
-  const captchaResult = await verifyCaptcha(captchaToken);
+  const captchaResult = await verifyCaptchaDebug(captchaToken);
   if (!captchaResult.success) {
     return { error: captchaResult.error || "Captcha verification failed" };
   }
