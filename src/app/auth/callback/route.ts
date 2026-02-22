@@ -110,9 +110,24 @@ export async function GET(request: Request) {
           }
         }
 
-        // Simple delay to allow database operations to complete
-        // Updated: Fixed sync function issues
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        try {
+          // Temporarily disabled sync function due to syntax issues
+          // const { data: syncResult, error: syncError } = await supabase.rpc(
+          //   "wait_for_profile_sync",
+          //   {
+          //     user_id: user.id,
+          //     max_attempts: 20, // Wait up to 4 seconds (20 * 200ms)
+          //   },
+          // );
+
+          // if (syncError) {
+          //   console.error("❌ Profile sync RPC error:", syncError);
+          // } else {
+          //   console.log("🔄 Profile sync result:", syncResult);
+          // }
+
+          // Simple delay instead
+          await new Promise((resolve) => setTimeout(resolve, 1000));
 
           // Profile creation is now handled by the updated trigger
           // But add manual fallback if trigger failed or sync didn't complete
