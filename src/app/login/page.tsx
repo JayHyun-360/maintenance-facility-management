@@ -11,6 +11,7 @@ import {
   getUserLoginStatus,
   completeFirstLogin,
 } from "@/actions/login-tracking";
+import { createClient as createSupabaseClient } from "@/lib/supabase/client";
 
 function LoginPageContent() {
   const router = useRouter();
@@ -33,19 +34,26 @@ function LoginPageContent() {
     const checkLoginStatus = async () => {
       // For guest users, always show captcha
       // For permanent users, only show captcha on first login
-      const result = await getUserLoginStatus("temp"); // Will be updated after login
+      const supabase = createSupabaseClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-      if (result.success) {
-        const data = result.data;
-        const firstLoginCompleted = data?.firstLoginCompleted || false;
-        const currentUserType = data?.userType || "guest";
-        setUserType(currentUserType);
+      if (user) {
+        const result = await getUserLoginStatus(user.id);
 
-        // Show captcha for guests always, or for permanent users on first login
-        if (currentUserType === "guest" || !firstLoginCompleted) {
-          setShowCaptcha(true);
-        } else {
-          setShowCaptcha(false);
+        if (result.success) {
+          const data = result.data;
+          const firstLoginCompleted = data?.firstLoginCompleted || false;
+          const currentUserType = data?.userType || "guest";
+          setUserType(currentUserType);
+
+          // Show captcha for guests always, or for permanent users on first login
+          if (currentUserType === "guest" || !firstLoginCompleted) {
+            setShowCaptcha(true);
+          } else {
+            setShowCaptcha(false);
+          }
         }
       }
     };
