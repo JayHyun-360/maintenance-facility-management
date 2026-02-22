@@ -52,7 +52,7 @@ export function AdminAccess({
     if (result.error) {
       setFormError(result.error);
     }
-    // Note: signInWithGoogle now redirects directly, no need to handle URL
+    // Note: signInWithGoogle now redirects directly via server action, no need to handle URL
     setAdminGoogleLoading(false);
   };
 
