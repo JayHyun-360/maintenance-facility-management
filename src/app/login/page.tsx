@@ -47,22 +47,40 @@ export default function LoginPage() {
 
       if (error) throw error;
 
-      // After successful anonymous sign-in, update the profile with test metadata
+      // After successful anonymous sign-in, create the profile with test metadata
       if (data?.user?.id) {
-        const { error: updateError } = await supabase
-          .from("profiles")
-          .update({
-            full_name:
-              selectedRole === "admin" ? "Admin Test User" : "User Test User",
-            database_role: selectedRole,
-            visual_role: selectedRole === "admin" ? "Staff" : "Teacher",
-            is_test_account: true, // Mark as test account
-          })
-          .eq("id", data.user.id);
+        // First, try to insert the profile (in case it doesn't exist)
+        const { error: insertError } = await supabase.from("profiles").insert({
+          id: data.user.id,
+          full_name:
+            selectedRole === "admin" ? "Admin Test User" : "User Test User",
+          database_role: selectedRole,
+          visual_role: selectedRole === "admin" ? "Staff" : "Teacher",
+          is_anonymous: true,
+          is_test_account: true, // Mark as test account
+        });
 
-        if (updateError) {
-          console.error("Profile update error:", updateError);
-          // Don't throw error, still allow login
+        if (insertError) {
+          console.log(
+            "Profile insert error (might already exist):",
+            insertError,
+          );
+
+          // If insert fails, try update instead
+          const { error: updateError } = await supabase
+            .from("profiles")
+            .update({
+              full_name:
+                selectedRole === "admin" ? "Admin Test User" : "User Test User",
+              database_role: selectedRole,
+              visual_role: selectedRole === "admin" ? "Staff" : "Teacher",
+              is_test_account: true,
+            })
+            .eq("id", data.user.id);
+
+          if (updateError) {
+            console.error("Profile update error:", updateError);
+          }
         }
 
         // Also update user metadata for role routing
@@ -76,7 +94,6 @@ export default function LoginPage() {
 
         if (metadataError) {
           console.error("Metadata update error:", metadataError);
-          // Don't throw error, still allow login
         }
       }
     } catch (error) {
