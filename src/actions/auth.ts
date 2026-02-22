@@ -4,6 +4,7 @@
 console.log(" Auth actions module loaded");
 
 import { createClient } from "@/lib/supabase/server";
+import { verifyCaptcha } from "@/lib/hcaptcha";
 import { z } from "zod";
 import { completeFirstLogin } from "./login-tracking";
 import { revalidatePath } from "next/cache";
@@ -152,6 +153,16 @@ export async function signInAsGuest(
   guestData: GuestUser,
   captchaToken?: string,
 ) {
+  // Verify captcha token first
+  if (!captchaToken) {
+    return { error: "Captcha token is required" };
+  }
+
+  const captchaResult = await verifyCaptcha(captchaToken);
+  if (!captchaResult.success) {
+    return { error: captchaResult.error || "Captcha verification failed" };
+  }
+
   const supabase = await createClient();
 
   // Sign in anonymously
@@ -163,7 +174,7 @@ export async function signInAsGuest(
         educational_level: guestData.educational_level,
         department: guestData.department,
         is_guest: true, // Set guest flag for trigger to handle
-        captchaToken: captchaToken, // Pass hCaptcha token
+        captchaToken: captchaToken, // Pass hCaptcha token for logging
       },
     },
   });
