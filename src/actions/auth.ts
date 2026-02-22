@@ -50,7 +50,6 @@ export async function signInWithGoogle(
       queryParams: {
         role_hint: role.toLowerCase(), // Pass role hint to callback
         prompt: "select_account", // Force account selection
-        access_type: "offline", // Enable refresh tokens
       },
     },
   });
