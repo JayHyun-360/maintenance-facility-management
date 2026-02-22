@@ -77,6 +77,8 @@ function LoginPageContent() {
   );
 }
 
+export const dynamic = "force-dynamic";
+
 export default function LoginPage() {
   return (
     <Suspense fallback={<div>Loading login page...</div>}>
