@@ -42,21 +42,43 @@ export default function LoginPage() {
   const handleTestSignIn = async () => {
     setLoading(true);
     try {
-      // Use anonymous sign-in for test accounts (no email verification needed)
-      const { error } = await supabase.auth.signInAnonymously({
-        options: {
-          data: {
+      // Use anonymous sign-in for test accounts
+      const { data, error } = await supabase.auth.signInAnonymously();
+
+      if (error) throw error;
+
+      // After successful anonymous sign-in, update the profile with test metadata
+      if (data?.user?.id) {
+        const { error: updateError } = await supabase
+          .from("profiles")
+          .update({
             full_name:
               selectedRole === "admin" ? "Admin Test User" : "User Test User",
             database_role: selectedRole,
             visual_role: selectedRole === "admin" ? "Staff" : "Teacher",
-            is_anonymous: true,
             is_test_account: true, // Mark as test account
-          },
-        } as any,
-      });
+          })
+          .eq("id", data.user.id);
 
-      if (error) throw error;
+        if (updateError) {
+          console.error("Profile update error:", updateError);
+          // Don't throw error, still allow login
+        }
+
+        // Also update user metadata for role routing
+        const { error: metadataError } = await supabase.auth.updateUser({
+          data: {
+            database_role: selectedRole,
+            visual_role: selectedRole === "admin" ? "Staff" : "Teacher",
+            is_test_account: true,
+          },
+        } as any);
+
+        if (metadataError) {
+          console.error("Metadata update error:", metadataError);
+          // Don't throw error, still allow login
+        }
+      }
     } catch (error) {
       console.error("Test sign in error:", error);
       alert("Error setting up test account. Please try again.");
