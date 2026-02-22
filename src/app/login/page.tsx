@@ -28,10 +28,16 @@ function LoginPageContent() {
   );
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [userType, setUserType] = useState<string>("guest");
+  const [isLoading, setIsLoading] = useState(true);
+  const [loginStatusChecked, setLoginStatusChecked] = useState(false);
 
   // Check if we should show captcha based on user type and login history
   useEffect(() => {
     const checkLoginStatus = async () => {
+      // Avoid repeated API calls
+      if (loginStatusChecked) return;
+
+      setIsLoading(true);
       const supabase = createSupabaseClient();
       const {
         data: { user },
@@ -54,16 +60,24 @@ function LoginPageContent() {
           } else {
             setShowCaptcha(false);
           }
+        } else {
+          console.error("Failed to check login status:", result.error);
+          // Show captcha as fallback for security
+          setShowCaptcha(true);
+          setFormError("Unable to verify login status. Captcha required.");
         }
       } else {
         // No authenticated user - show captcha for initial login attempts
         // This covers first-time users and new guest account creation
         setShowCaptcha(true);
       }
+
+      setIsLoading(false);
+      setLoginStatusChecked(true);
     };
 
     checkLoginStatus();
-  }, []);
+  }, [loginStatusChecked]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -94,13 +108,19 @@ function LoginPageContent() {
         )}
 
         {/* hCaptcha - Show conditionally based on user type and login history */}
-        {showCaptcha && (
+        {isLoading ? (
           <div className="flex justify-center mb-6">
-            <HCaptcha
-              sitekey="9ba0caa8-6558-48f2-a5ae-5e525cf200fe"
-              onVerify={(token) => setCaptchaToken(token)}
-            />
+            <div className="animate-pulse bg-gray-200 h-16 w-64 rounded"></div>
           </div>
+        ) : (
+          showCaptcha && (
+            <div className="flex justify-center mb-6">
+              <HCaptcha
+                sitekey="9ba0caa8-6558-48f2-a5ae-5e525cf200fe"
+                onVerify={(token) => setCaptchaToken(token)}
+              />
+            </div>
+          )
         )}
 
         <Tabs defaultValue="admin" className="w-full">

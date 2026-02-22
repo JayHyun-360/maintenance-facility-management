@@ -106,6 +106,15 @@ export function UserPortal({
       return;
     }
 
+    // Validate captcha token before submission
+    if (!captchaToken) {
+      setFormError(
+        "Please complete the captcha verification before signing in.",
+      );
+      setGuestLoading(false);
+      return;
+    }
+
     const guestData: GuestUser = {
       name: guestName,
       visual_role: guestVisualRole,
