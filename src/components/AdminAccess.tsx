@@ -47,11 +47,11 @@ export function AdminAccess({
     setAdminGoogleLoading(true);
     setFormError(null);
 
-    const result = await signInWithGoogle("/admin/dashboard", "Admin", true);
+    const result = await signInWithGoogle("/admin/dashboard", "Admin");
 
     if (result.error) {
       setFormError(result.error);
-    } else if (result.url) {
+    } else if (result.url && typeof result.url === "string") {
       // Redirect to Google OAuth
       window.location.href = result.url;
     }
