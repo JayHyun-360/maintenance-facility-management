@@ -16,10 +16,11 @@ import { getAuthCallbackURL } from "@/lib/utils/url";
 export async function signInWithGoogle(
   next: string = "/dashboard",
   role: DatabaseRole = "User",
+  forceRole: boolean = false, // New parameter to force role selection
 ) {
   const supabase = await createClient();
 
-  console.log("🚀 Starting Google OAuth sign-in:", { next, role });
+  console.log("🚀 Starting Google OAuth sign-in:", { next, role, forceRole });
 
   // Check if Google OAuth is configured
   const googleClientId = process.env.NEXT_PUBLIC_SUPABASE_GOOGLE_CLIENT_ID;
@@ -48,7 +49,8 @@ export async function signInWithGoogle(
     options: {
       redirectTo: getAuthCallbackURL(next),
       queryParams: {
-        role_hint: role.toLowerCase(), // Pass role hint to callback
+        role_hint: forceRole ? role.toLowerCase() : "select", // Force role or allow selection
+        force_role: forceRole ? "true" : "false", // Additional parameter to force role
       },
     },
   });

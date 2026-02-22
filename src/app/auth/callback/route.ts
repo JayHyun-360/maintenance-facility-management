@@ -7,12 +7,14 @@ export async function GET(request: Request) {
   const next = searchParams.get("next") ?? "/";
   const error = searchParams.get("error");
   const roleHint = searchParams.get("role_hint"); // Get role hint from OAuth
+  const forceRole = searchParams.get("force_role") === "true"; // Check if role should be forced
 
   console.log("🔍 Auth callback received:", {
     hasCode: !!code,
     next,
     error,
     roleHint,
+    forceRole,
     origin,
     fullUrl: request.url,
   });
@@ -54,7 +56,17 @@ export async function GET(request: Request) {
           user_metadata: user.user_metadata,
         });
 
-        // CRITICAL FIX: Only update role if we have a valid role hint
+        // CRITICAL FIX: Check if role selection is needed
+        if (forceRole && (!roleHint || roleHint === "select")) {
+          console.log(
+            "🔄 Role selection required - redirecting to selection page",
+          );
+          return NextResponse.redirect(
+            `${origin}/auth/select-role?next=${encodeURIComponent(next)}&email=${encodeURIComponent(user.email || "")}`,
+          );
+        }
+
+        // CRITICAL FIX: Only update role if we have a valid role hint or force_role
         if (roleHint && (roleHint === "admin" || roleHint === "user")) {
           console.log("🎯 Updating user role from hint:", roleHint);
 
@@ -87,6 +99,11 @@ export async function GET(request: Request) {
           } else {
             console.log("✅ Role updated successfully:", roleHint);
           }
+        } else if (forceRole && roleHint === "select") {
+          console.log(
+            "🔄 Force role selection requested - keeping current role",
+          );
+          // Don't update role, let user choose in UI
         }
 
         try {
