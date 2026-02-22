@@ -29,6 +29,7 @@ interface UserPortalProps {
   setGuestLoading: (loading: boolean) => void;
   setFormError: (error: string | null) => void;
   captchaToken?: string;
+  resetCaptcha?: () => void;
 }
 
 export function UserPortal({
@@ -38,6 +39,7 @@ export function UserPortal({
   setGuestLoading,
   setFormError,
   captchaToken,
+  resetCaptcha,
 }: UserPortalProps) {
   // Guest login state
   const [guestName, setGuestName] = useState("");
@@ -123,6 +125,11 @@ export function UserPortal({
     };
 
     const result = await signInAsGuest(guestData, captchaToken);
+
+    // Reset captcha after submission attempt
+    if (resetCaptcha) {
+      resetCaptcha();
+    }
 
     if (result.error) {
       setFormError(result.error);

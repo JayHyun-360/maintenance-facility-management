@@ -9,6 +9,7 @@ import { z } from "zod";
 import { completeFirstLogin } from "./login-tracking";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { DatabaseRole, VisualRole, GuestUser } from "@/types/auth";
 import { getAuthCallbackURL } from "@/lib/utils/url";
 
@@ -158,7 +159,15 @@ export async function signInAsGuest(
     return { error: "Captcha token is required" };
   }
 
-  const captchaResult = await verifyCaptchaDebug(captchaToken);
+  // Extract remote IP from headers for better verification
+  const headersList = await headers();
+  const remoteIp =
+    headersList.get("x-forwarded-for") ||
+    headersList.get("x-real-ip") ||
+    headersList.get("cf-connecting-ip") ||
+    undefined;
+
+  const captchaResult = await verifyCaptchaDebug(captchaToken, remoteIp);
   if (!captchaResult.success) {
     return { error: captchaResult.error || "Captcha verification failed" };
   }

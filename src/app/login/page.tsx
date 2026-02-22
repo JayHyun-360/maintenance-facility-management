@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense, useEffect } from "react";
+import { useState, Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -30,6 +30,17 @@ function LoginPageContent() {
   const [userType, setUserType] = useState<string>("guest");
   const [isLoading, setIsLoading] = useState(true);
   const [loginStatusChecked, setLoginStatusChecked] = useState(false);
+
+  // Add ref for HCaptcha component
+  const captchaRef = useRef<any>(null);
+
+  // Function to reset captcha
+  const resetCaptcha = () => {
+    setCaptchaToken(undefined);
+    if (captchaRef.current) {
+      captchaRef.current.resetCaptcha();
+    }
+  };
 
   // Check if we should show captcha based on user type and login history
   useEffect(() => {
@@ -116,8 +127,44 @@ function LoginPageContent() {
           showCaptcha && (
             <div className="flex justify-center mb-6">
               <HCaptcha
-                sitekey="9ba0caa8-6558-48f2-a5ae-5e525cf200fe"
-                onVerify={(token) => setCaptchaToken(token)}
+                ref={captchaRef}
+                sitekey={
+                  process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ||
+                  "9ba0caa8-6558-48f2-a5ae-5e525cf200fe"
+                }
+                onVerify={(token) => {
+                  console.log(
+                    "✅ [CAPTCHA] Verification successful, token received",
+                  );
+                  setCaptchaToken(token);
+                }}
+                onError={(error) => {
+                  console.error("❌ [CAPTCHA] Component error:", error);
+                  setFormError(
+                    "Captcha verification failed. Please try again.",
+                  );
+                  resetCaptcha();
+                }}
+                onExpire={() => {
+                  console.warn("⚠️ [CAPTCHA] Token expired");
+                  setFormError("Captcha expired. Please complete again.");
+                  resetCaptcha();
+                }}
+                onChalExpired={() => {
+                  console.warn("⚠️ [CAPTCHA] Challenge expired");
+                  setFormError("Captcha challenge expired. Please try again.");
+                  resetCaptcha();
+                }}
+                onClose={() => {
+                  console.log("🔒 [CAPTCHA] User closed captcha widget");
+                  setCaptchaToken(undefined);
+                }}
+                onLoad={() => {
+                  console.log("📥 [CAPTCHA] Widget loaded successfully");
+                }}
+                size="normal"
+                theme="light"
+                tabIndex={0}
               />
             </div>
           )
@@ -147,6 +194,7 @@ function LoginPageContent() {
               setGuestLoading={setGuestLoading}
               setFormError={setFormError}
               captchaToken={captchaToken}
+              resetCaptcha={resetCaptcha}
             />
           </TabsContent>
         </Tabs>
