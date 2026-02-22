@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { signInWithGoogle, signInAsGuest } from "@/actions/auth";
+import { AnonymousUpgrade } from "@/components/AnonymousUpgrade";
 
 interface UserPortalProps {
   userGoogleLoading: boolean;
@@ -235,128 +236,139 @@ export function UserPortal({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Guest/User Portal</CardTitle>
-        <CardDescription>
-          Access the user portal for facility requests and viewing
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Google Sign-In Button - NOT inside a form */}
-        <Button
-          type="button"
-          onClick={handleGoogleSignIn}
-          disabled={userGoogleLoading}
-          className="w-full bg-[#006633] hover:bg-[#004d26] text-white"
-        >
-          {userGoogleLoading ? "Signing in..." : "Sign in with Google"}
-        </Button>
-
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              Or continue as guest
-            </span>
-          </div>
-        </div>
-
-        {/* Step Indicator */}
-        <div className="flex items-center justify-between">
-          <div
-            className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
-              currentStep >= 1
-                ? "bg-[#006633] text-white"
-                : "bg-gray-200 text-gray-500"
-            }`}
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle>Guest/User Portal</CardTitle>
+          <CardDescription>
+            Access the user portal for facility requests and viewing
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Google Sign-In Button - NOT inside a form */}
+          <Button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={userGoogleLoading}
+            className="w-full bg-[#006633] hover:bg-[#004d26] text-white"
           >
-            1
+            {userGoogleLoading ? "Signing in..." : "Sign in with Google"}
+          </Button>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-background px-2 text-muted-foreground">
+                Or continue as guest
+              </span>
+            </div>
           </div>
-          <div
-            className={`flex-1 h-1 mx-2 ${
-              currentStep >= 2 ? "bg-[#006633]" : "bg-gray-200"
-            }`}
-          />
-          <div
-            className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
-              currentStep >= 2
-                ? "bg-[#006633] text-white"
-                : "bg-gray-200 text-gray-500"
-            }`}
+
+          {/* Step Indicator */}
+          <div className="flex items-center justify-between">
+            <div
+              className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
+                currentStep >= 1
+                  ? "bg-[#006633] text-white"
+                  : "bg-gray-200 text-gray-500"
+              }`}
+            >
+              1
+            </div>
+            <div
+              className={`flex-1 h-1 mx-2 ${
+                currentStep >= 2 ? "bg-[#006633]" : "bg-gray-200"
+              }`}
+            />
+            <div
+              className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
+                currentStep >= 2
+                  ? "bg-[#006633] text-white"
+                  : "bg-gray-200 text-gray-500"
+              }`}
+            >
+              2
+            </div>
+            <div
+              className={`flex-1 h-1 mx-2 ${
+                currentStep >= 3 ? "bg-[#006633]" : "bg-gray-200"
+              }`}
+            />
+            <div
+              className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
+                currentStep >= 3
+                  ? "bg-[#006633] text-white"
+                  : "bg-gray-200 text-gray-500"
+              }`}
+            >
+              3
+            </div>
+          </div>
+
+          {/* Step Labels */}
+          <div className="flex justify-between text-xs text-gray-600">
+            <span className="text-center">Basic Info</span>
+            <span className="text-center">Education</span>
+            <span className="text-center">Review</span>
+          </div>
+
+          <form
+            onSubmit={
+              currentStep === 3
+                ? handleGuestLogin
+                : (e) => {
+                    e.preventDefault();
+                    handleNextStep();
+                  }
+            }
+            className="space-y-4"
           >
-            2
-          </div>
-          <div
-            className={`flex-1 h-1 mx-2 ${
-              currentStep >= 3 ? "bg-[#006633]" : "bg-gray-200"
-            }`}
-          />
-          <div
-            className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
-              currentStep >= 3
-                ? "bg-[#006633] text-white"
-                : "bg-gray-200 text-gray-500"
-            }`}
-          >
-            3
-          </div>
-        </div>
+            {renderStepContent()}
 
-        {/* Step Labels */}
-        <div className="flex justify-between text-xs text-gray-600">
-          <span className="text-center">Basic Info</span>
-          <span className="text-center">Education</span>
-          <span className="text-center">Review</span>
-        </div>
+            {/* Navigation Buttons */}
+            <div className="flex gap-2">
+              {currentStep > 1 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handlePreviousStep}
+                  className="flex-1"
+                >
+                  Back
+                </Button>
+              )}
 
-        <form
-          onSubmit={
-            currentStep === 3
-              ? handleGuestLogin
-              : (e) => {
-                  e.preventDefault();
-                  handleNextStep();
-                }
-          }
-          className="space-y-4"
-        >
-          {renderStepContent()}
+              {currentStep < 3 ? (
+                <Button
+                  type="submit"
+                  className="flex-1 bg-[#006633] hover:bg-[#004d26] text-white"
+                >
+                  Next
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  disabled={guestLoading}
+                  className="flex-1 bg-[#006633] hover:bg-[#004d26] text-white"
+                >
+                  {guestLoading ? "Signing in..." : "Continue as Guest"}
+                </Button>
+              )}
+            </div>
+          </form>
+        </CardContent>
+      </Card>
 
-          {/* Navigation Buttons */}
-          <div className="flex gap-2">
-            {currentStep > 1 && (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handlePreviousStep}
-                className="flex-1"
-              >
-                Back
-              </Button>
-            )}
-
-            {currentStep < 3 ? (
-              <Button
-                type="submit"
-                className="flex-1 bg-[#006633] hover:bg-[#004d26] text-white"
-              >
-                Next
-              </Button>
-            ) : (
-              <Button
-                type="submit"
-                disabled={guestLoading}
-                className="flex-1 bg-[#006633] hover:bg-[#004d26] text-white"
-              >
-                {guestLoading ? "Signing in..." : "Continue as Guest"}
-              </Button>
-            )}
-          </div>
-        </form>
-      </CardContent>
-    </Card>
+      {/* Anonymous Account Upgrade Option */}
+      <div className="mt-6 text-center">
+        <p className="text-sm text-gray-600 mb-4">
+          Already using guest access? Upgrade your account to save your data
+          permanently.
+        </p>
+        <AnonymousUpgrade onUpgradeComplete={() => window.location.reload()} />
+      </div>
+    </>
   );
 }
