@@ -124,14 +124,14 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FEFFD3] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center">
         <div className="text-gray-600">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FEFFD3]">
+    <div className="min-h-screen bg-[#F5F5DC]">
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
