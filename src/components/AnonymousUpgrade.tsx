@@ -5,16 +5,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Mail, Lock, UserCheck, AlertCircle } from "lucide-react";
-import { linkEmailToAnonymousUser, setPasswordForAnonymousUser } from "@/actions/anonymous-upgrade";
+import {
+  linkEmailToAnonymousUser,
+  setPasswordForAnonymousUser,
+} from "@/actions/anonymous-upgrade";
 
 interface AnonymousUpgradeProps {
   currentEmail?: string | null;
   onUpgradeComplete?: () => void;
 }
 
-export function AnonymousUpgrade({ currentEmail, onUpgradeComplete }: AnonymousUpgradeProps) {
+export function AnonymousUpgrade({
+  currentEmail,
+  onUpgradeComplete,
+}: AnonymousUpgradeProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -30,20 +42,20 @@ export function AnonymousUpgrade({ currentEmail, onUpgradeComplete }: AnonymousU
     setSuccess(null);
 
     const result = await linkEmailToAnonymousUser(email);
-    
+
     if (result.success) {
       setSuccess(result.data?.message || "Email linked successfully!");
       setStep("password");
     } else {
       setError(result.error || "Failed to link email");
     }
-    
+
     setLoading(false);
   };
 
   const handleSetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       setError("Passwords do not match");
       return;
@@ -59,7 +71,7 @@ export function AnonymousUpgrade({ currentEmail, onUpgradeComplete }: AnonymousU
     setSuccess(null);
 
     const result = await setPasswordForAnonymousUser(password);
-    
+
     if (result.success) {
       setSuccess(result.data?.message || "Password set successfully!");
       setStep("complete");
@@ -67,7 +79,7 @@ export function AnonymousUpgrade({ currentEmail, onUpgradeComplete }: AnonymousU
     } else {
       setError(result.error || "Failed to set password");
     }
-    
+
     setLoading(false);
   };
 
@@ -76,10 +88,11 @@ export function AnonymousUpgrade({ currentEmail, onUpgradeComplete }: AnonymousU
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <UserCheck className="h-5 w-5" />
-          Upgrade Your Account
+          Link Your Account
         </CardTitle>
         <CardDescription>
-          Convert your guest session to a permanent account by linking your email and setting a password.
+          Convert your guest session to a permanent account by linking your
+          email and setting a password.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -93,7 +106,9 @@ export function AnonymousUpgrade({ currentEmail, onUpgradeComplete }: AnonymousU
         {success && (
           <Alert className="border-green-200 bg-green-50">
             <UserCheck className="h-4 w-4 text-green-600" />
-            <AlertDescription className="text-green-800">{success}</AlertDescription>
+            <AlertDescription className="text-green-800">
+              {success}
+            </AlertDescription>
           </Alert>
         )}
 
@@ -156,13 +171,16 @@ export function AnonymousUpgrade({ currentEmail, onUpgradeComplete }: AnonymousU
               <UserCheck className="h-8 w-8 text-green-600" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-green-800">Account Upgraded!</h3>
+              <h3 className="text-lg font-semibold text-green-800">
+                Account Upgraded!
+              </h3>
               <p className="text-gray-600">
-                Your guest session has been converted to a permanent account. You can now sign in with your email and password.
+                Your guest session has been converted to a permanent account.
+                You can now sign in with your email and password.
               </p>
             </div>
-            <Button 
-              onClick={() => window.location.reload()} 
+            <Button
+              onClick={() => window.location.reload()}
               className="w-full"
               variant="outline"
             >

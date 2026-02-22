@@ -363,10 +363,10 @@ export function UserPortal({
         </CardContent>
       </Card>
 
-      {/* Anonymous Account Upgrade Option */}
+      {/* Anonymous Account Link Option */}
       <div className="mt-6 text-center">
         <p className="text-sm text-gray-600 mb-4">
-          Already using guest access? Upgrade your account to save your data
+          Already using guest access? Link your account to save your data
           permanently.
         </p>
         <AnonymousUpgrade onUpgradeComplete={() => window.location.reload()} />
