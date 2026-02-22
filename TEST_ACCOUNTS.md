@@ -2,43 +2,43 @@
 
 ## 📋 Current Status
 
-The test accounts use **smart sign-in with automatic creation**. They will be created automatically on first use - no manual setup required.
+The test accounts use **anonymous authentication** to avoid email verification issues. They work immediately without any setup required.
 
-## 🔄 Smart Sign-In Process
+## 🔄 Anonymous Test Authentication
 
 ### How Test Accounts Work:
 
 1. **User selects role** (User/Admin toggle on login page)
 2. **Clicks "Continue with Test Account"**
 3. **System automatically**:
-   - Attempts to sign in with test credentials
-   - If account doesn't exist → Creates it via `signUp()`
+   - Uses `signInAnonymously()` (no email verification needed)
+   - Passes test metadata (name, role, visual role)
    - Triggers `handle_new_user()` function
    - Creates profile in `public.profiles` table
    - Sets `auth.users.app_metadata.role` for routing
-   - Completes sign-in and redirects to dashboard
+   - Redirects to appropriate dashboard
 
-### 🎯 Test Credentials:
+### 🎯 Test Account Details:
 
-| Role  | Email               | Password   | Database Role | Visual Role |
-| ----- | ------------------- | ---------- | ------------- | ----------- |
-| User  | UserTest@gmail.com  | User12345  | user          | Teacher     |
-| Admin | AdminTest@gmail.com | Admin12345 | admin         | Staff       |
+| Role  | Name            | Database Role | Visual Role | Account Type |
+| ----- | --------------- | ------------- | ----------- | ------------ |
+| User  | User Test User  | user          | Teacher     | Anonymous    |
+| Admin | Admin Test User | admin         | Staff       | Anonymous    |
 
 ## ✅ Expected Behavior:
 
-**First Time Login:**
+**Every Login:**
 
-- "Test account not found, creating..." in console
-- Creates new profile automatically via trigger
+- Instant sign-in (no email verification)
+- Creates/uses anonymous profile with test metadata
 - Sets proper metadata for role-based routing
 - Redirects to correct dashboard (`/dashboard` or `/admin/dashboard`)
 
-**Subsequent Logins:**
+**Special Features:**
 
-- Signs in directly (account already exists)
-- Uses existing profile from database
-- Maintains same role and metadata
+- `is_test_account: true` flag for identification
+- `is_anonymous: true` for proper categorization
+- Consistent user experience
 
 ## 🚀 Testing Steps:
 
@@ -49,31 +49,39 @@ The test accounts use **smart sign-in with automatic creation**. They will be cr
 5. Select "Admin" role → Click "Continue with Test Account"
 6. Should redirect to `/admin/dashboard` as "Admin Test User"
 
-## 🎯 Why This Approach:
+## 🎯 Why Anonymous Authentication:
 
 **✅ Benefits:**
 
-- **One-Click Testing**: No extra modals or forms
-- **Automatic Setup**: Creates accounts on-demand
-- **Consistent UX**: Same flow as real users
-- **Error Handling**: Graceful fallback if account doesn't exist
-- **Professional**: Clean testing experience
+- **No Email Verification**: Bypasses email confirmation requirements
+- **Instant Setup**: Works immediately without database configuration
+- **Consistent UX**: Same flow as guest accounts
+- **Clean Testing**: Professional developer experience
+- **Metadata Support**: Full role and profile information
 
 **❌ Avoids:**
 
-- Manual database setup
-- Extra modals showing credentials
-- Redundant form filling
-- User confusion
+- Email verification delays
+- Fake email domain issues
+- Manual account creation
+- Admin API permission problems
 
 ## 📝 Database Verification:
 
-After first login, you can verify profiles exist:
+After login, you can verify test profiles exist:
 
 ```sql
 SELECT id, full_name, database_role, visual_role, is_anonymous, created_at
 FROM public.profiles
-WHERE email IN ('AdminTest@gmail.com', 'UserTest@gmail.com');
+WHERE raw_user_meta_data->>'is_test_account' = 'true';
 ```
 
-**The test accounts are designed for seamless development testing with automatic creation!**
+## 🔍 Identifying Test Accounts:
+
+Test accounts are marked with:
+
+- `is_anonymous: true` in profiles table
+- `is_test_account: true` in user metadata
+- Predictable names: "User Test User" / "Admin Test User"
+
+**The test accounts use anonymous authentication for instant, reliable testing!**

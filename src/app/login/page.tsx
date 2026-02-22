@@ -42,51 +42,21 @@ export default function LoginPage() {
   const handleTestSignIn = async () => {
     setLoading(true);
     try {
-      // Use test credentials based on selected role
-      const testCredentials =
-        selectedRole === "admin"
-          ? { email: "AdminTest@gmail.com", password: "Admin12345" }
-          : { email: "UserTest@gmail.com", password: "User12345" };
-
-      // First, try to sign in normally
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: testCredentials.email,
-        password: testCredentials.password,
+      // Use anonymous sign-in for test accounts (no email verification needed)
+      const { error } = await supabase.auth.signInAnonymously({
+        options: {
+          data: {
+            full_name:
+              selectedRole === "admin" ? "Admin Test User" : "User Test User",
+            database_role: selectedRole,
+            visual_role: selectedRole === "admin" ? "Staff" : "Teacher",
+            is_anonymous: true,
+            is_test_account: true, // Mark as test account
+          },
+        } as any,
       });
 
-      if (signInError) {
-        // If sign-in fails (account doesn't exist), create it first
-        console.log("Test account not found, creating...");
-
-        const { error: signUpError } = await supabase.auth.signUp({
-          email: testCredentials.email,
-          password: testCredentials.password,
-          options: {
-            data: {
-              full_name:
-                selectedRole === "admin" ? "Admin Test User" : "User Test User",
-              database_role: selectedRole,
-              visual_role: selectedRole === "admin" ? "Staff" : "Teacher",
-              is_anonymous: false,
-            },
-          } as any,
-        });
-
-        if (signUpError) {
-          throw signUpError;
-        }
-
-        // Now sign in with the newly created account
-        const { error: retrySignInError } =
-          await supabase.auth.signInWithPassword({
-            email: testCredentials.email,
-            password: testCredentials.password,
-          });
-
-        if (retrySignInError) {
-          throw retrySignInError;
-        }
-      }
+      if (error) throw error;
     } catch (error) {
       console.error("Test sign in error:", error);
       alert("Error setting up test account. Please try again.");
