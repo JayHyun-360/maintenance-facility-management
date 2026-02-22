@@ -110,21 +110,8 @@ export async function GET(request: Request) {
           }
         }
 
-        try {
-          // Use the new wait_for_profile_sync function to ensure database has settled
-          const { data: syncResult, error: syncError } = await supabase.rpc(
-            "wait_for_profile_sync",
-            {
-              user_id: user.id,
-              max_attempts: 20, // Wait up to 4 seconds (20 * 200ms)
-            },
-          );
-
-          if (syncError) {
-            console.error("❌ Profile sync RPC error:", syncError);
-          } else {
-            console.log("🔄 Profile sync result:", syncResult);
-          }
+        // Simple delay to allow database operations to complete
+          await new Promise((resolve) => setTimeout(resolve, 1000));
 
           // Profile creation is now handled by the updated trigger
           // But add manual fallback if trigger failed or sync didn't complete
@@ -134,7 +121,7 @@ export async function GET(request: Request) {
             .eq("id", user.id)
             .single();
 
-          if (!fallbackProfile || syncError || !syncResult) {
+          if (!fallbackProfile) {
             console.log(
               "⚠️ Trigger failed, performing manual profile creation fallback",
             );
