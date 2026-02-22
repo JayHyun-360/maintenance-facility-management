@@ -17,10 +17,11 @@ export async function createClient() {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options),
             );
-          } catch {
-            // The `setAll` method was called from a Server Component.
-            // This can be ignored if you have middleware refreshing
-            // user sessions.
+          } catch (error) {
+            // Log the error for debugging - this is critical for PKCE flow
+            // In Route Handlers (like auth callback), cookie setting should work
+            // If this fails, the session will not be established
+            console.error("❌ Failed to set auth cookies:", error);
           }
         },
       },

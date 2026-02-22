@@ -227,6 +227,15 @@ export async function GET(request: Request) {
         console.log("🚀 Redirecting to:", finalUrl);
 
         return NextResponse.redirect(finalUrl);
+      } else {
+        // Code exchange succeeded but getUser() returned null
+        // This means cookies were not properly set - critical PKCE failure
+        console.error(
+          "❌ Session not established after code exchange - cookies may have failed to set",
+        );
+        return NextResponse.redirect(
+          `${origin}/auth/error?error=${encodeURIComponent("Session establishment failed - please try again")}`,
+        );
       }
     } catch (error) {
       console.error("❌ Auth callback error:", error);
