@@ -39,6 +39,38 @@ export default function LoginPage() {
     }
   };
 
+  const handleTestSignIn = async () => {
+    setLoading(true);
+    try {
+      // Use test credentials based on selected role
+      const testCredentials =
+        selectedRole === "admin"
+          ? { email: "AdminTest@gmail.com", password: "Admin12345" }
+          : { email: "UserTest@gmail.com", password: "User12345" };
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email: testCredentials.email,
+        password: testCredentials.password,
+        options: {
+          data: {
+            full_name:
+              selectedRole === "admin" ? "Admin Test User" : "User Test User",
+            database_role: selectedRole,
+            visual_role: selectedRole === "admin" ? "Staff" : "Teacher",
+            is_anonymous: false,
+          },
+        } as any,
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      console.error("Test sign in error:", error);
+      alert("Error signing in with test account");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleGuestSignIn = async () => {
     if (!guestData.fullName.trim()) {
       alert("Please enter your name");
@@ -157,6 +189,20 @@ export default function LoginPage() {
             className="w-full bg-gray-100 text-gray-700 rounded-lg py-3 px-4 font-medium hover:bg-gray-200 transition-colors disabled:opacity-50"
           >
             Continue as Guest
+          </button>
+        </div>
+
+        {/* Test Account Section */}
+        <div className="mb-4">
+          <h3 className="text-sm font-medium text-gray-700 mb-2">
+            Test Account
+          </h3>
+          <button
+            onClick={handleTestSignIn}
+            disabled={loading}
+            className="w-full bg-green-100 text-green-800 rounded-lg py-3 px-4 font-medium hover:bg-green-200 transition-colors disabled:opacity-50"
+          >
+            Continue with Test Account
           </button>
         </div>
       </div>
