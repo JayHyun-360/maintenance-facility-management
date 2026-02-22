@@ -36,40 +36,49 @@ BEGIN
         metadata = EXCLUDED.metadata,
         timestamp = NOW();
     
+-- Step 1: Create stored procedure for role synchronization
+CREATE OR REPLACE PROCEDURE sync_user_role(
+    p_user_id UUID,
+    p_user_metadata JSONB,
+    p_app_metadata JSONB
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Update profiles table with role from auth.users metadata
+    UPDATE profiles 
+    SET database_role = COALESCE(
+        p_user_metadata->>'database_role',
+        CASE 
+            WHEN p_app_metadata->>'role' = 'admin' THEN 'Admin'
+            ELSE 'User'
+        END
+    )
+    WHERE id = p_user_id;
+    
+    -- Log role assignment for debugging
+    INSERT INTO auth_logs (user_id, action, metadata)
+    VALUES (
+        p_user_id, 
+        'role_sync', 
+        jsonb_build_object(
+            'database_role', COALESCE(p_user_metadata->>'database_role', 'not_set'),
+            'app_role', p_app_metadata->>'role',
+            'trigger_time', NOW()
+        )
+    )
+    ON CONFLICT (user_id, action) DO UPDATE SET
+        metadata = EXCLUDED.metadata,
+        timestamp = NOW();
+END;
+$$;
+
 -- Step 2: Create direct trigger without function dependency
 DROP TRIGGER IF EXISTS trigger_sync_user_role ON auth.users;
 CREATE TRIGGER trigger_sync_user_role
     AFTER INSERT OR UPDATE ON auth.users
     FOR EACH ROW
-    WHEN (NEW.id IS NOT NULL) THEN
-        BEGIN
-            -- Update profiles table with role from auth.users metadata
-            UPDATE profiles 
-            SET database_role = COALESCE(
-                NEW.user_metadata->>'database_role',
-                CASE 
-                    WHEN NEW.app_metadata->>'role' = 'admin' THEN 'Admin'
-                    ELSE 'User'
-                END
-            )
-            WHERE id = NEW.id;
-            
-            -- Log role assignment for debugging
-            INSERT INTO auth_logs (user_id, action, metadata)
-            VALUES (
-                NEW.id, 
-                'role_sync', 
-                jsonb_build_object(
-                    'database_role', COALESCE(NEW.user_metadata->>'database_role', 'not_set'),
-                    'app_role', NEW.app_metadata->>'role',
-                    'trigger_time', NOW()
-                )
-            )
-            ON CONFLICT (user_id, action) DO UPDATE SET
-                metadata = EXCLUDED.metadata,
-                timestamp = NOW();
-        END;
-    END IF;
+    EXECUTE PROCEDURE sync_user_role(NEW.id, NEW.user_metadata, NEW.app_metadata);
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Step 3: Create auth_logs table if it doesn't exist
