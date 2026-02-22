@@ -1,9 +1,11 @@
 "use server";
 
 // Log that auth actions are being loaded
-console.log("🔐 Auth actions module loaded");
+console.log(" Auth actions module loaded");
 
 import { createClient } from "@/lib/supabase/server";
+import { z } from "zod";
+import { completeFirstLogin } from "./login-tracking";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { DatabaseRole, VisualRole, GuestUser } from "@/types/auth";
@@ -170,7 +172,12 @@ export async function signInAsGuest(
     return { error: error.message };
   }
 
-  // Profile creation is now handled by the sync_user_role trigger
+  // Mark first login as completed for guest users
+  if (captchaToken) {
+    await completeFirstLogin(data.user?.id || "");
+  }
+
+  // Profile creation is now handled by sync_user_role trigger
   // No manual profile insertion needed to avoid race conditions
 
   revalidatePath("/login");

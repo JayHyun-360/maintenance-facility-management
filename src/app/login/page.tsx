@@ -1,12 +1,16 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AdminAccess } from "@/components/AdminAccess";
 import { UserPortal } from "@/components/UserPortal";
 import { HCaptcha } from "@hcaptcha/react-hcaptcha";
+import {
+  getUserLoginStatus,
+  completeFirstLogin,
+} from "@/actions/login-tracking";
 
 function LoginPageContent() {
   const router = useRouter();
@@ -21,6 +25,33 @@ function LoginPageContent() {
   const [captchaToken, setCaptchaToken] = useState<string | undefined>(
     undefined,
   );
+  const [showCaptcha, setShowCaptcha] = useState(true);
+  const [userType, setUserType] = useState<string>("guest");
+
+  // Check if we should show captcha based on user type and login history
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      // For guest users, always show captcha
+      // For permanent users, only show captcha on first login
+      const result = await getUserLoginStatus("temp"); // Will be updated after login
+
+      if (result.success) {
+        const data = result.data;
+        const firstLoginCompleted = data?.firstLoginCompleted || false;
+        const currentUserType = data?.userType || "guest";
+        setUserType(currentUserType);
+
+        // Show captcha for guests always, or for permanent users on first login
+        if (currentUserType === "guest" || !firstLoginCompleted) {
+          setShowCaptcha(true);
+        } else {
+          setShowCaptcha(false);
+        }
+      }
+    };
+
+    checkLoginStatus();
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -50,13 +81,15 @@ function LoginPageContent() {
           </Alert>
         )}
 
-        {/* hCaptcha */}
-        <div className="flex justify-center mb-6">
-          <HCaptcha
-            sitekey="9ba0caa8-6558-48f2-a5ae-5e525cf200fe"
-            onVerify={(token) => setCaptchaToken(token)}
-          />
-        </div>
+        {/* hCaptcha - Show conditionally based on user type and login history */}
+        {showCaptcha && (
+          <div className="flex justify-center mb-6">
+            <HCaptcha
+              sitekey="9ba0caa8-6558-48f2-a5ae-5e525cf200fe"
+              onVerify={(token) => setCaptchaToken(token)}
+            />
+          </div>
+        )}
 
         <Tabs defaultValue="admin" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
