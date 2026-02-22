@@ -13,8 +13,9 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Wrench, List, Plus } from "lucide-react";
+import { Wrench, List, Plus, LogOut } from "lucide-react";
 import { AnonymousUpgrade } from "@/components/AnonymousUpgrade";
+import { signOut } from "@/actions/auth";
 
 interface UserDashboardProps {
   user: {
@@ -57,6 +58,12 @@ export function UserDashboard({ user, profile }: UserDashboardProps) {
               <span className="text-sm text-gray-600">
                 Welcome, {profile?.name || user.email}
               </span>
+              <form action={signOut}>
+                <Button type="submit" variant="outline" size="sm">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </form>
             </div>
           </div>
         </div>

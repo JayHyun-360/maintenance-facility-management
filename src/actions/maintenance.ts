@@ -68,6 +68,46 @@ export async function getUserRequests(userId: string): Promise<{
   const supabase = await createClient();
 
   try {
+    console.log("🔍 [DEBUG] getUserRequests called with userId:", userId);
+
+    // First check if user is authenticated
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+    console.log("🔍 [DEBUG] Auth check:", {
+      user: user ? { id: user.id, email: user.email } : null,
+      authError,
+      providedUserId: userId,
+    });
+
+    if (authError) {
+      console.error("❌ [ERROR] Authentication error:", authError);
+      return {
+        success: false,
+        error: "Authentication failed. Please sign in again.",
+      };
+    }
+
+    if (!user) {
+      console.error("❌ [ERROR] No authenticated user found");
+      return {
+        success: false,
+        error: "User not authenticated. Please sign in again.",
+      };
+    }
+
+    // Check if the authenticated user matches the provided userId
+    if (user.id !== userId) {
+      console.error("❌ [ERROR] User ID mismatch:", {
+        authenticatedUserId: user.id,
+        providedUserId: userId,
+      });
+      return { success: false, error: "Unauthorized: User ID mismatch" };
+    }
+
+    console.log("🔍 [DEBUG] Fetching requests for user:", userId);
+
     const { data, error } = await supabase
       .from("maintenance_requests")
       .select(
@@ -79,15 +119,42 @@ export async function getUserRequests(userId: string): Promise<{
       .eq("requester_id", userId)
       .order("created_at", { ascending: false });
 
+    console.log("🔍 [DEBUG] Query result:", {
+      dataCount: data?.length || 0,
+      error: error
+        ? { message: error.message, code: error.code, details: error.details }
+        : null,
+    });
+
     if (error) {
-      console.error("Error fetching user requests:", error);
-      return { success: false, error: "Failed to fetch requests" };
+      console.error("❌ [ERROR] Database query error:", error);
+
+      // Check for RLS-related errors
+      if (
+        error.code === "42501" ||
+        error.message.includes("permission denied")
+      ) {
+        return {
+          success: false,
+          error:
+            "Permission denied. You may not have access to view these requests.",
+        };
+      }
+
+      return {
+        success: false,
+        error: `Failed to fetch requests: ${error.message}`,
+      };
     }
 
+    console.log(
+      "✅ [SUCCESS] Successfully fetched requests:",
+      data?.length || 0,
+    );
     return { success: true, data: data as MaintenanceRequest[] };
   } catch (error) {
-    console.error("Unexpected error:", error);
-    return { success: false, error: "An unexpected error occurred" };
+    console.error("❌ [ERROR] Unexpected error in getUserRequests:", error);
+    return { success: false, error: `An unexpected error occurred: ${error}` };
   }
 }
 
