@@ -45,8 +45,8 @@ CREATE OR REPLACE PROCEDURE sync_user_role(
 LANGUAGE plpgsql
 AS $$
 BEGIN
-    -- Use PERFORM for UPDATE that doesn't return rows
-    PERFORM UPDATE profiles 
+    -- Update profiles table with role from auth.users metadata
+    UPDATE profiles 
     SET database_role = COALESCE(
         p_user_metadata->>'database_role',
         CASE 
