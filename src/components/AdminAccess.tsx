@@ -51,7 +51,7 @@ export function AdminAccess({
 
     if (result.error) {
       setFormError(result.error);
-    } else if (result.url && typeof result.url === "string") {
+    } else if (typeof result.url === "string") {
       // Redirect to Google OAuth
       window.location.href = result.url;
     }
