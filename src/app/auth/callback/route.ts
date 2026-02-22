@@ -111,7 +111,8 @@ export async function GET(request: Request) {
         }
 
         // Simple delay to allow database operations to complete
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Updated: Fixed sync function issues
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
           // Profile creation is now handled by the updated trigger
           // But add manual fallback if trigger failed or sync didn't complete
