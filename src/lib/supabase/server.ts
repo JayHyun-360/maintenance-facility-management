@@ -13,6 +13,11 @@ export const createServerClient = async () => {
           cookie: cookieStore.toString(),
         },
       },
+      auth: {
+        flowType: "pkce", // Use PKCE flow for better security
+        autoRefreshToken: true,
+        persistSession: true,
+      },
     },
   );
 };

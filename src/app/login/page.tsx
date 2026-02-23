@@ -32,11 +32,13 @@ declare global {
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"email" | "google" | "guest">("email");
+  const [activeTab, setActiveTab] = useState<"email" | "google" | "guest">(
+    "email",
+  );
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
-  
+
   const [emailData, setEmailData] = useState<EmailFormData>({
     email: "",
     password: "",
@@ -58,8 +60,8 @@ export default function LoginPage() {
 
   // Load hCaptcha script
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://js.hcaptcha.com/1/api.js';
+    const script = document.createElement("script");
+    script.src = "https://js.hcaptcha.com/1/api.js";
     script.async = true;
     script.defer = true;
     document.head.appendChild(script);
@@ -76,7 +78,7 @@ export default function LoginPage() {
     if (window.hcaptcha) {
       window.hcaptcha.reset();
     }
-    setEmailData(prev => ({ ...prev, captchaToken: "" }));
+    setEmailData((prev) => ({ ...prev, captchaToken: "" }));
   };
 
   // Validate email form
@@ -106,7 +108,7 @@ export default function LoginPage() {
   // Handle email sign in
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateEmailForm()) return;
 
     setLoading(true);
@@ -144,7 +146,7 @@ export default function LoginPage() {
   // Handle email sign up
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateEmailForm()) return;
 
     setLoading(true);
@@ -169,7 +171,9 @@ export default function LoginPage() {
         return;
       }
 
-      setSuccessMessage("Account created! Please check your email to confirm your account.");
+      setSuccessMessage(
+        "Account created! Please check your email to confirm your account.",
+      );
       setShowSignUp(false);
     } catch (error) {
       console.error("Unexpected sign up error:", error);
@@ -183,7 +187,7 @@ export default function LoginPage() {
   // Handle forgot password
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!emailData.email.trim()) {
       setErrors({ email: "Email is required for password reset" });
       return;
@@ -194,9 +198,12 @@ export default function LoginPage() {
     setSuccessMessage("");
 
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(emailData.email, {
-        redirectTo: `${window.location.origin}/reset-password`,
-      });
+      const { error } = await supabase.auth.resetPasswordForEmail(
+        emailData.email,
+        {
+          redirectTo: `${window.location.origin}/reset-password`,
+        },
+      );
 
       if (error) {
         handleAuthError(error);
@@ -224,6 +231,11 @@ export default function LoginPage() {
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: "offline",
+            prompt: "consent",
+          },
+          skipBrowserRedirect: false, // Let Supabase handle the redirect
         },
       });
 
@@ -233,7 +245,10 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error("Unexpected Google sign in error:", error);
-      setErrors({ general: "An unexpected error occurred during sign-in. Please try again." });
+      setErrors({
+        general:
+          "An unexpected error occurred during sign-in. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
@@ -246,7 +261,10 @@ export default function LoginPage() {
       return;
     }
 
-    if (guestData.educationalLevel === "College" && !guestData.department.trim()) {
+    if (
+      guestData.educationalLevel === "College" &&
+      !guestData.department.trim()
+    ) {
       alert("Department is required for College level");
       return;
     }
@@ -276,7 +294,10 @@ export default function LoginPage() {
       router.push("/dashboard");
     } catch (error) {
       console.error("Unexpected guest sign in error:", error);
-      setErrors({ general: "An unexpected error occurred during guest sign-in. Please try again." });
+      setErrors({
+        general:
+          "An unexpected error occurred during guest sign-in. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
@@ -285,36 +306,56 @@ export default function LoginPage() {
   // Handle authentication errors
   const handleAuthError = (error: any) => {
     console.error("Auth error:", error);
-    
+
     switch (error.message) {
       case "Invalid login credentials":
         setErrors({ general: "Invalid email or password. Please try again." });
         break;
       case "Email not confirmed":
-        setErrors({ general: "Please check your email and confirm your account before signing in." });
+        setErrors({
+          general:
+            "Please check your email and confirm your account before signing in.",
+        });
         break;
       case "User already registered":
-        setErrors({ general: "An account with this email already exists. Please sign in instead." });
+        setErrors({
+          general:
+            "An account with this email already exists. Please sign in instead.",
+        });
         break;
       case "captcha_verification_failed":
-        setErrors({ captcha: "Captcha verification failed. Please try again." });
+        setErrors({
+          captcha: "Captcha verification failed. Please try again.",
+        });
         break;
       case "rate_limit_exceeded":
-        setErrors({ general: "Too many attempts. Please wait a moment and try again." });
+        setErrors({
+          general: "Too many attempts. Please wait a moment and try again.",
+        });
         break;
       case "signup_disabled":
-        setErrors({ general: "Email sign up is currently disabled. Please use Google sign in or guest access." });
+        setErrors({
+          general:
+            "Email sign up is currently disabled. Please use Google sign in or guest access.",
+        });
         break;
       case "password_reset_disabled":
-        setErrors({ general: "Password reset is currently disabled. Please contact support." });
+        setErrors({
+          general:
+            "Password reset is currently disabled. Please contact support.",
+        });
         break;
       default:
         if (error.message.includes("provider is not enabled")) {
-          setErrors({ 
-            general: "This sign-in method is not configured. For local development, please:\n\n1. Ensure Google OAuth is configured in your Supabase project\n2. Or use the production environment at https://maintenance-facility-management.vercel.app\n\nContact administrator if the issue persists." 
+          setErrors({
+            general:
+              "This sign-in method is not configured. For local development, please:\n\n1. Ensure Google OAuth is configured in your Supabase project\n2. Or use the production environment at https://maintenance-facility-management.vercel.app\n\nContact administrator if the issue persists.",
           });
         } else if (error.message.includes("access_denied")) {
-          setErrors({ general: "Access denied. Please try again or use a different sign-in method." });
+          setErrors({
+            general:
+              "Access denied. Please try again or use a different sign-in method.",
+          });
         } else {
           setErrors({ general: `Authentication error: ${error.message}` });
         }
@@ -328,8 +369,8 @@ export default function LoginPage() {
     };
 
     window.onHCaptchaVerify = (token: string) => {
-      setEmailData(prev => ({ ...prev, captchaToken: token }));
-      setErrors(prev => ({ ...prev, captcha: "" }));
+      setEmailData((prev) => ({ ...prev, captchaToken: token }));
+      setErrors((prev) => ({ ...prev, captcha: "" }));
     };
 
     window.onHCaptchaError = (error: any) => {
@@ -338,7 +379,7 @@ export default function LoginPage() {
     };
 
     window.onHCaptchaExpire = () => {
-      setEmailData(prev => ({ ...prev, captchaToken: "" }));
+      setEmailData((prev) => ({ ...prev, captchaToken: "" }));
       setErrors({ captcha: "Captcha expired. Please verify again." });
     };
   }, []);
@@ -408,7 +449,9 @@ export default function LoginPage() {
               <input
                 type="email"
                 value={emailData.email}
-                onChange={(e) => setEmailData({ ...emailData, email: e.target.value })}
+                onChange={(e) =>
+                  setEmailData({ ...emailData, email: e.target.value })
+                }
                 className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
                   errors.email ? "border-red-500" : "border-gray-300"
                 }`}
@@ -427,7 +470,9 @@ export default function LoginPage() {
               <input
                 type="password"
                 value={emailData.password}
-                onChange={(e) => setEmailData({ ...emailData, password: e.target.value })}
+                onChange={(e) =>
+                  setEmailData({ ...emailData, password: e.target.value })
+                }
                 className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
                   errors.password ? "border-red-500" : "border-gray-300"
                 }`}
@@ -458,7 +503,9 @@ export default function LoginPage() {
                 <input
                   type="checkbox"
                   checked={emailData.rememberMe}
-                  onChange={(e) => setEmailData({ ...emailData, rememberMe: e.target.checked })}
+                  onChange={(e) =>
+                    setEmailData({ ...emailData, rememberMe: e.target.checked })
+                  }
                   className="mr-2"
                 />
                 <span className="text-sm text-gray-600">Remember me</span>
@@ -502,7 +549,9 @@ export default function LoginPage() {
               <input
                 type="email"
                 value={emailData.email}
-                onChange={(e) => setEmailData({ ...emailData, email: e.target.value })}
+                onChange={(e) =>
+                  setEmailData({ ...emailData, email: e.target.value })
+                }
                 className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
                   errors.email ? "border-red-500" : "border-gray-300"
                 }`}
@@ -521,7 +570,9 @@ export default function LoginPage() {
               <input
                 type="password"
                 value={emailData.password}
-                onChange={(e) => setEmailData({ ...emailData, password: e.target.value })}
+                onChange={(e) =>
+                  setEmailData({ ...emailData, password: e.target.value })
+                }
                 className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
                   errors.password ? "border-red-500" : "border-gray-300"
                 }`}
@@ -577,7 +628,9 @@ export default function LoginPage() {
               <input
                 type="email"
                 value={emailData.email}
-                onChange={(e) => setEmailData({ ...emailData, email: e.target.value })}
+                onChange={(e) =>
+                  setEmailData({ ...emailData, email: e.target.value })
+                }
                 className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
                   errors.email ? "border-red-500" : "border-gray-300"
                 }`}

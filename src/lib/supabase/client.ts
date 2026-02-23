@@ -8,6 +8,14 @@ export const createClient = () => {
     clientInstance = createSupabaseClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        auth: {
+          flowType: "pkce", // Use PKCE flow for better security
+          autoRefreshToken: true,
+          persistSession: true,
+          detectSessionInUrl: true, // Important for OAuth callback handling
+        },
+      },
     );
   }
   return clientInstance;

@@ -3,12 +3,22 @@ import { NextResponse } from "next/server";
 import { isValidEmail, sanitizeEmail, extractDomain } from "@/lib/utils";
 
 export async function GET(request: Request) {
-  const { searchParams, origin } = new URL(request.url);
+  const { searchParams, origin, hash } = new URL(request.url);
   const code = searchParams.get("code");
-  const accessToken = searchParams.get("access_token");
-  const refreshToken = searchParams.get("refresh_token");
-  const databaseRole = searchParams.get("database_role");
   const next = searchParams.get("next") ?? "/";
+
+  // Parse URL fragment for access token (Supabase OAuth returns tokens in fragments)
+  let accessToken = searchParams.get("access_token");
+  let refreshToken = searchParams.get("refresh_token");
+  let databaseRole = searchParams.get("database_role");
+
+  // If not in query params, parse from URL fragment
+  if (!accessToken && hash) {
+    const fragmentParams = new URLSearchParams(hash.slice(1)); // Remove # and parse
+    accessToken = fragmentParams.get("access_token");
+    refreshToken = fragmentParams.get("refresh_token");
+    databaseRole = fragmentParams.get("database_role");
+  }
 
   const supabase = await createServerClient();
   let error = null;
@@ -17,6 +27,7 @@ export async function GET(request: Request) {
     hasCode: !!code,
     hasAccessToken: !!accessToken,
     hasRefreshToken: !!refreshToken,
+    hash: hash ? "present" : "absent",
   });
 
   // Helper function to determine if user should be admin
@@ -83,6 +94,9 @@ export async function GET(request: Request) {
     }
   } else {
     console.log("No code or access token found in callback");
+    console.log("Full URL:", request.url);
+    console.log("Search params:", Object.fromEntries(searchParams.entries()));
+    console.log("Hash:", hash);
     error = { message: "No authentication parameters found" };
   }
 
