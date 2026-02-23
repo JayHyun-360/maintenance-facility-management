@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export default function AuthCallback() {
+function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const supabase = createClient();
@@ -12,11 +12,11 @@ export default function AuthCallback() {
   useEffect(() => {
     const handleAuthCallback = async () => {
       console.log("=== CLIENT-SIDE AUTH CALLBACK ===");
-      
+
       // Get the full URL including fragments
       const fullUrl = window.location.href;
       const url = new URL(fullUrl);
-      
+
       console.log("Full URL:", fullUrl);
       console.log("Hash:", url.hash);
       console.log("Search params:", Object.fromEntries(searchParams.entries()));
@@ -33,16 +33,17 @@ export default function AuthCallback() {
 
       if (data.session) {
         console.log("Session found:", data.session);
-        
+
         // Get user to determine role and redirect
         const { data: userData } = await supabase.auth.getUser();
         if (userData.user) {
           console.log("User authenticated:", userData.user.email);
-          
+
           // Determine user role based on email
           const email = userData.user.email || "";
-          const isAdmin = email.includes("@admin") || email.includes("yourdomain.com");
-          
+          const isAdmin =
+            email.includes("@admin") || email.includes("yourdomain.com");
+
           // Check if profile exists
           const { data: profile } = await supabase
             .from("profiles")
@@ -63,7 +64,7 @@ export default function AuthCallback() {
       } else {
         // No session found, try to get from URL manually
         console.log("No session found, attempting manual extraction...");
-        
+
         const hash = url.hash.slice(1); // Remove #
         const fragmentParams = new URLSearchParams(hash);
         const accessToken = fragmentParams.get("access_token");
@@ -78,7 +79,9 @@ export default function AuthCallback() {
 
           if (sessionError) {
             console.error("Error setting session:", sessionError);
-            router.push(`/auth/error?message=${encodeURIComponent(sessionError.message)}`);
+            router.push(
+              `/auth/error?message=${encodeURIComponent(sessionError.message)}`,
+            );
             return;
           }
 
@@ -106,5 +109,24 @@ export default function AuthCallback() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function AuthCallback() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+            <h1 className="text-xl font-semibold text-gray-900 mb-2">
+              Loading...
+            </h1>
+          </div>
+        </div>
+      }
+    >
+      <AuthCallbackContent />
+    </Suspense>
   );
 }
