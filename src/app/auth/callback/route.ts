@@ -34,29 +34,16 @@ export async function GET(request: Request) {
     } = await supabase.auth.getUser();
 
     if (user) {
-      // If no database_role provided, try to get from user metadata or default to 'user'
-      let role = databaseRole;
-      if (!role) {
-        role = user.user_metadata?.role || user.app_metadata?.role || "user";
-      }
+      // Default all users to 'user' role for now
+      // Admin access can be configured separately
+      const role = "user";
 
-      // Update user metadata with selected role
+      // Update user metadata with role
       await supabase.auth.updateUser({
         data: { app_metadata: { role } },
       });
 
-      // For admin users, go directly to welcome screen (profile will be created there)
-      if (role === "admin") {
-        // Redirect directly to admin welcome screen
-        const welcomeUrl = new URL("/welcome-admin", origin);
-        welcomeUrl.searchParams.set(
-          "name",
-          user.user_metadata?.full_name || user.email?.split("@")[0] || "Admin",
-        );
-        return NextResponse.redirect(welcomeUrl);
-      }
-
-      // For regular users, check if profile exists
+      // Check if profile exists
       try {
         const { data: existingProfile, error: profileError } = await supabase
           .from("profiles")
@@ -67,7 +54,7 @@ export async function GET(request: Request) {
         if (profileError || !existingProfile) {
           // New user - redirect to profile creation
           const profileCreationUrl = new URL("/profile-creation", origin);
-          profileCreationUrl.searchParams.set("role", role || "user");
+          profileCreationUrl.searchParams.set("role", role);
           profileCreationUrl.searchParams.set(
             "name",
             user.user_metadata?.full_name ||
@@ -77,7 +64,7 @@ export async function GET(request: Request) {
           return NextResponse.redirect(profileCreationUrl);
         }
 
-        // Existing user - redirect directly to appropriate dashboard
+        // Existing user - redirect to dashboard
         const redirectUrl = "/dashboard";
         const forwardedHost = request.headers.get("x-forwarded-host");
         const isLocalEnv = process.env.NODE_ENV === "development";
@@ -95,7 +82,7 @@ export async function GET(request: Request) {
         console.error("Profile check error:", err);
         // If profile check fails, assume new user and redirect to profile creation
         const profileCreationUrl = new URL("/profile-creation", origin);
-        profileCreationUrl.searchParams.set("role", role || "user");
+        profileCreationUrl.searchParams.set("role", role);
         profileCreationUrl.searchParams.set(
           "name",
           user.user_metadata?.full_name || user.email?.split("@")[0] || "User",

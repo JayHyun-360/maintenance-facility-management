@@ -2,11 +2,10 @@
 
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import type { DatabaseRole, VisualRole } from "@/types/database";
+import type { VisualRole } from "@/types/database";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
-  const [selectedRole, setSelectedRole] = useState<DatabaseRole>("user");
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [guestData, setGuestData] = useState({
     fullName: "",
@@ -24,9 +23,6 @@ export default function LoginPage() {
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: {
-            database_role: selectedRole,
-          },
         },
       });
 
@@ -56,30 +52,20 @@ export default function LoginPage() {
   const handleTestSignIn = async () => {
     setLoading(true);
     try {
-      // Create temporary test session based on selected role
-      const testSessionData =
-        selectedRole === "admin"
-          ? {
-              full_name: "Admin Test User",
-              database_role: "admin",
-              visual_role: "Staff",
-              is_anonymous: true,
-              is_test_account: true,
-            }
-          : {
-              full_name: "User Test User",
-              database_role: "user",
-              visual_role: "Teacher",
-              is_anonymous: true,
-              is_test_account: true,
-            };
+      // Create temporary test session (user role only)
+      const testSessionData = {
+        full_name: "User Test User",
+        database_role: "user",
+        visual_role: "Teacher",
+        is_anonymous: true,
+        is_test_account: true,
+      };
 
       // Store test session in sessionStorage for dashboard access
       sessionStorage.setItem("testSession", JSON.stringify(testSessionData));
 
-      // Redirect to appropriate dashboard immediately (no database storage needed)
-      window.location.href =
-        selectedRole === "admin" ? "/admin/dashboard" : "/dashboard";
+      // Redirect to dashboard immediately (no database storage needed)
+      window.location.href = "/dashboard";
     } catch (error) {
       console.error("Test sign in error:", error);
       alert("Error setting up test account. Please try again.");
@@ -108,7 +94,7 @@ export default function LoginPage() {
         options: {
           data: {
             full_name: guestData.fullName,
-            database_role: selectedRole,
+            database_role: "user",
             visual_role: guestData.visualRole,
             educational_level: guestData.educationalLevel || null,
             department: guestData.department || null,
@@ -132,7 +118,7 @@ export default function LoginPage() {
       // CRITICAL: Update user metadata to ensure role is set
       if (data.user) {
         const { error: updateError } = await supabase.auth.updateUser({
-          data: { app_metadata: { role: selectedRole } },
+          data: { app_metadata: { role: "user" } },
         });
 
         if (updateError) {
@@ -157,35 +143,6 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
           Maintenance Portal
         </h1>
-
-        {/* Role Selection */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Login Role
-          </label>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setSelectedRole("user")}
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
-                selectedRole === "user"
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              User
-            </button>
-            <button
-              onClick={() => setSelectedRole("admin")}
-              className={`flex-1 py-2 px-4 rounded-lg font-medium transition-colors ${
-                selectedRole === "admin"
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-            >
-              Admin
-            </button>
-          </div>
-        </div>
 
         {/* Google Sign-In Section */}
         <div className="mb-4">
