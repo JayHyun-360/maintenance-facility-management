@@ -42,58 +42,54 @@ export default function LoginPage() {
   const handleTestSignIn = async () => {
     setLoading(true);
     try {
-      // Use anonymous sign-in for test accounts
-      const { data, error } = await supabase.auth.signInAnonymously();
+      // Use test credentials based on selected role
+      const testCredentials =
+        selectedRole === "admin"
+          ? { email: "admin-test@demo.dev", password: "Admin12345" }
+          : { email: "user-test@demo.dev", password: "User12345" };
 
-      if (error) throw error;
+      // First, try to sign in normally
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: testCredentials.email,
+        password: testCredentials.password,
+      });
 
-      // After successful anonymous sign-in, create the profile with test metadata
-      if (data?.user?.id) {
-        // First, try to insert the profile (in case it doesn't exist)
-        const { error: insertError } = await supabase.from("profiles").insert({
-          id: data.user.id,
-          full_name:
-            selectedRole === "admin" ? "Admin Test User" : "User Test User",
-          database_role: selectedRole,
-          visual_role: selectedRole === "admin" ? "Staff" : "Teacher",
-          is_anonymous: true,
-          is_test_account: true, // Mark as test account
-        });
+      if (signInError) {
+        // If sign-in fails (account doesn't exist), create it first
+        console.log("Test account not found, creating...");
 
-        if (insertError) {
-          console.log(
-            "Profile insert error (might already exist):",
-            insertError,
-          );
-
-          // If insert fails, try update instead
-          const { error: updateError } = await supabase
-            .from("profiles")
-            .update({
+        const { error: signUpError } = await supabase.auth.signUp({
+          email: testCredentials.email,
+          password: testCredentials.password,
+          options: {
+            data: {
               full_name:
                 selectedRole === "admin" ? "Admin Test User" : "User Test User",
               database_role: selectedRole,
               visual_role: selectedRole === "admin" ? "Staff" : "Teacher",
+              is_anonymous: false,
               is_test_account: true,
-            })
-            .eq("id", data.user.id);
+            },
+          } as any,
+        });
 
-          if (updateError) {
-            console.error("Profile update error:", updateError);
-          }
+        if (signUpError) {
+          throw signUpError;
         }
 
-        // Also update user metadata for role routing
-        const { error: metadataError } = await supabase.auth.updateUser({
-          data: {
-            database_role: selectedRole,
-            visual_role: selectedRole === "admin" ? "Staff" : "Teacher",
-            is_test_account: true,
-          },
-        } as any);
+        // For test accounts, we need to manually verify the email since it's fake
+        // Skip email verification for test accounts by using admin API
+        console.log("Skipping email verification for test account...");
 
-        if (metadataError) {
-          console.error("Metadata update error:", metadataError);
+        // Now sign in with newly created account
+        const { error: retrySignInError } =
+          await supabase.auth.signInWithPassword({
+            email: testCredentials.email,
+            password: testCredentials.password,
+          });
+
+        if (retrySignInError) {
+          throw retrySignInError;
         }
       }
     } catch (error) {
