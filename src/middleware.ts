@@ -5,12 +5,13 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const requestUrl = new URL(request.url);
 
-  // Allow access to login, auth routes, profile creation, welcome pages, and static files
+  // Allow access to login, auth routes, profile creation, welcome pages, reset password, and static files
   if (
     pathname.startsWith("/login") ||
     pathname.startsWith("/auth") ||
     pathname.startsWith("/profile-creation") ||
     pathname.startsWith("/welcome-") ||
+    pathname.startsWith("/reset-password") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api")
   ) {
