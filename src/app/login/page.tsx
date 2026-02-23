@@ -49,31 +49,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleTestSignIn = async () => {
-    setLoading(true);
-    try {
-      // Create temporary test session (user role only)
-      const testSessionData = {
-        full_name: "User Test User",
-        database_role: "user",
-        visual_role: "Teacher",
-        is_anonymous: true,
-        is_test_account: true,
-      };
-
-      // Store test session in sessionStorage for dashboard access
-      sessionStorage.setItem("testSession", JSON.stringify(testSessionData));
-
-      // Redirect to dashboard immediately (no database storage needed)
-      window.location.href = "/dashboard";
-    } catch (error) {
-      console.error("Test sign in error:", error);
-      alert("Error setting up test account. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleGuestSignIn = async () => {
     if (!guestData.fullName.trim()) {
       alert("Please enter your name");
@@ -176,20 +151,6 @@ export default function LoginPage() {
           </button>
         </div>
 
-        {/* Test Sign-In Section */}
-        <div className="mb-4">
-          <h3 className="text-sm font-medium text-gray-700 mb-2">
-            Test Account (Local Development)
-          </h3>
-          <button
-            onClick={handleTestSignIn}
-            disabled={loading}
-            className="w-full bg-green-100 text-green-700 rounded-lg py-3 px-4 font-medium hover:bg-green-200 transition-colors disabled:opacity-50"
-          >
-            {loading ? "Setting up..." : "Continue with Test Account"}
-          </button>
-        </div>
-
         {/* Guest Sign-In Section */}
         <div className="mb-4">
           <h3 className="text-sm font-medium text-gray-700 mb-2">
@@ -204,123 +165,109 @@ export default function LoginPage() {
           </button>
         </div>
 
-        {/* Test Account Section */}
-        <div className="mb-4">
-          <h3 className="text-sm font-medium text-gray-700 mb-2">
-            Test Account
-          </h3>
-          <button
-            onClick={handleTestSignIn}
-            disabled={loading}
-            className="w-full bg-green-100 text-green-800 rounded-lg py-3 px-4 font-medium hover:bg-green-200 transition-colors disabled:opacity-50"
-          >
-            Continue with Test Account
-          </button>
-        </div>
-      </div>
+        {/* Guest Modal */}
+        {showGuestModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+              <h2 className="text-xl font-bold text-gray-900 mb-4">
+                Guest Information
+              </h2>
 
-      {/* Guest Modal */}
-      {showGuestModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
-              Guest Information
-            </h2>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  value={guestData.fullName}
-                  onChange={(e) =>
-                    setGuestData({ ...guestData, fullName: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="Enter your full name"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Visual Role
-                </label>
-                <select
-                  value={guestData.visualRole}
-                  onChange={(e) =>
-                    setGuestData({
-                      ...guestData,
-                      visualRole: e.target.value as VisualRole,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="Teacher">Teacher</option>
-                  <option value="Staff">Staff</option>
-                  <option value="Student">Student</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Educational Level
-                </label>
-                <select
-                  value={guestData.educationalLevel}
-                  onChange={(e) =>
-                    setGuestData({
-                      ...guestData,
-                      educationalLevel: e.target.value,
-                      department: "",
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="">Select Level</option>
-                  <option value="Elementary">Elementary</option>
-                  <option value="High School">High School</option>
-                  <option value="College">College</option>
-                </select>
-              </div>
-
-              {guestData.educationalLevel === "College" && (
+              <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Department *
+                    Full Name *
                   </label>
                   <input
                     type="text"
-                    value={guestData.department}
+                    value={guestData.fullName}
                     onChange={(e) =>
-                      setGuestData({ ...guestData, department: e.target.value })
+                      setGuestData({ ...guestData, fullName: e.target.value })
                     }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="Enter your department"
+                    placeholder="Enter your full name"
                   />
                 </div>
-              )}
-            </div>
 
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => setShowGuestModal(false)}
-                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleGuestSignIn}
-                disabled={loading}
-                className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
-              >
-                {loading ? "Signing in..." : "Continue"}
-              </button>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Visual Role
+                  </label>
+                  <select
+                    value={guestData.visualRole}
+                    onChange={(e) =>
+                      setGuestData({
+                        ...guestData,
+                        visualRole: e.target.value as VisualRole,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="Teacher">Teacher</option>
+                    <option value="Staff">Staff</option>
+                    <option value="Student">Student</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Educational Level
+                  </label>
+                  <select
+                    value={guestData.educationalLevel}
+                    onChange={(e) =>
+                      setGuestData({
+                        ...guestData,
+                        educationalLevel: e.target.value,
+                        department: "",
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="">Select Level</option>
+                    <option value="Elementary">Elementary</option>
+                    <option value="High School">High School</option>
+                    <option value="College">College</option>
+                  </select>
+                </div>
+
+                {guestData.educationalLevel === "College" && (
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Department *
+                    </label>
+                    <input
+                      type="text"
+                      value={guestData.department}
+                      onChange={(e) =>
+                        setGuestData({ ...guestData, department: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      placeholder="Enter your department"
+                    />
+                  </div>
+                )}
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setShowGuestModal(false)}
+                  className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleGuestSignIn}
+                  disabled={loading}
+                  className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+                >
+                  {loading ? "Signing in..." : "Continue"}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
