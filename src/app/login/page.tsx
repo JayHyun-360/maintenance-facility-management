@@ -30,10 +30,24 @@ export default function LoginPage() {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Google OAuth error:", error);
+        if (error.message.includes("provider is not enabled")) {
+          alert(
+            "Google sign-in is not configured. Please contact administrator.",
+          );
+        } else if (error.message.includes("access_denied")) {
+          alert(
+            "Access denied. Please try again or use a different sign-in method.",
+          );
+        } else {
+          alert(`Sign-in error: ${error.message}`);
+        }
+        return;
+      }
     } catch (error) {
-      console.error("Google sign in error:", error);
-      alert("Error signing in with Google");
+      console.error("Unexpected Google sign in error:", error);
+      alert("An unexpected error occurred during sign-in. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -90,7 +104,7 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      const { error } = await supabase.auth.signInAnonymously({
+      const { data, error } = await supabase.auth.signInAnonymously({
         options: {
           data: {
             full_name: guestData.fullName,
@@ -103,10 +117,34 @@ export default function LoginPage() {
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Guest auth error:", error);
+        if (error.message.includes("rate limit")) {
+          alert(
+            "Too many sign-in attempts. Please wait a moment and try again.",
+          );
+        } else {
+          alert(`Guest sign-in error: ${error.message}`);
+        }
+        return;
+      }
+
+      // CRITICAL: Update user metadata to ensure role is set
+      if (data.user) {
+        const { error: updateError } = await supabase.auth.updateUser({
+          data: { app_metadata: { role: selectedRole } },
+        });
+
+        if (updateError) {
+          console.error("Role metadata update error:", updateError);
+          // Don't block sign-in, but log the error
+        }
+      }
     } catch (error) {
-      console.error("Guest sign in error:", error);
-      alert("Error signing in as guest");
+      console.error("Unexpected guest sign in error:", error);
+      alert(
+        "An unexpected error occurred during guest sign-in. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
