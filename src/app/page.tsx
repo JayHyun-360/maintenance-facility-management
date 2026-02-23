@@ -13,22 +13,11 @@ export default function Home() {
         data: { session },
       } = await supabase.auth.getSession();
 
-      if (session) {
-        // Get user role from JWT
-        const jwt = session.access_token;
-        const payload = JSON.parse(atob(jwt.split(".")[1]));
-        const userRole = payload.app_metadata?.role || "user";
-
-        // Redirect based on role
-        if (userRole === "admin") {
-          window.location.href = "/admin/dashboard";
-        } else {
-          window.location.href = "/dashboard";
-        }
-      } else {
+      if (!session) {
         // Redirect to login if not authenticated
         window.location.href = "/login";
       }
+      // Note: For authenticated users, middleware will handle role-based redirects
     };
 
     checkAuth();
