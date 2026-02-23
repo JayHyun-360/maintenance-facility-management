@@ -69,7 +69,9 @@ function ProfileCreationContent() {
       }
 
       // Create profile in database
-      const { error: profileError } = await supabase.from("profiles").upsert({
+      const { error: profileError } = await (
+        supabase.from("profiles") as any
+      ).upsert({
         id: user.id,
         full_name: fullName,
         database_role: role,

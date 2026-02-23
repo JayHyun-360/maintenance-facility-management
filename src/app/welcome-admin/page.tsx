@@ -27,17 +27,17 @@ export default function WelcomeAdmin() {
 
           // Create admin profile if it doesn't exist
           try {
-            const { error: profileError } = await supabase
-              .from("profiles")
-              .upsert({
-                id: user.id,
-                full_name: fullName,
-                database_role: "admin",
-                visual_role: "Staff",
-                educational_level: null,
-                department: null,
-                is_anonymous: false,
-              });
+            const { error: profileError } = await (
+              supabase.from("profiles") as any
+            ).upsert({
+              id: user.id,
+              full_name: fullName,
+              database_role: "admin",
+              visual_role: "Staff",
+              educational_level: null,
+              department: null,
+              is_anonymous: false,
+            });
 
             if (profileError) {
               console.error("Admin profile creation error:", profileError);

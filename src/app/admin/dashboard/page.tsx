@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import type {
   Profile,
   MaintenanceRequest,
+  MaintenanceRequestUpdate,
   RequestStatus,
   AuditLog,
 } from "@/types/database";
@@ -155,8 +156,9 @@ export default function AdminDashboard() {
     if (!user) return;
 
     // Update the request status
-    const { error: updateError } = await supabase
-      .from("maintenance_requests")
+    const { error: updateError } = await (
+      supabase.from("maintenance_requests") as any
+    )
       .update({ status: newStatus })
       .eq("id", requestId);
 
@@ -166,7 +168,9 @@ export default function AdminDashboard() {
     }
 
     // Log the change to audit_logs (server action simulation)
-    const { error: auditError } = await supabase.from("audit_logs").insert({
+    const { error: auditError } = await (
+      supabase.from("audit_logs") as any
+    ).insert({
       request_id: requestId,
       actor_id: user.id,
       action: `Status changed to ${newStatus}`,

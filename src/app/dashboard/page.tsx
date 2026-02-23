@@ -148,7 +148,9 @@ export default function UserDashboard() {
     } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { error } = await supabase.from("maintenance_requests").insert({
+    const { error } = await (
+      supabase.from("maintenance_requests") as any
+    ).insert({
       requester_id: user.id,
       nature: formData.nature,
       urgency: formData.urgency,
@@ -183,8 +185,7 @@ export default function UserDashboard() {
           ? "system"
           : "light";
 
-    const { error } = await supabase
-      .from("profiles")
+    const { error } = await (supabase.from("profiles") as any)
       .update({ theme_preference: newTheme })
       .eq("id", profile.id);
 
