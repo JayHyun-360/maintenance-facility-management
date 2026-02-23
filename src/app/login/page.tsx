@@ -42,56 +42,30 @@ export default function LoginPage() {
   const handleTestSignIn = async () => {
     setLoading(true);
     try {
-      // Use test credentials based on selected role
-      const testCredentials =
+      // Create temporary test session based on selected role
+      const testSessionData =
         selectedRole === "admin"
-          ? { email: "admin-test@demo.dev", password: "Admin12345" }
-          : { email: "user-test@demo.dev", password: "User12345" };
-
-      // First, try to sign in normally
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email: testCredentials.email,
-        password: testCredentials.password,
-      });
-
-      if (signInError) {
-        // If sign-in fails (account doesn't exist), create it first
-        console.log("Test account not found, creating...");
-
-        const { error: signUpError } = await supabase.auth.signUp({
-          email: testCredentials.email,
-          password: testCredentials.password,
-          options: {
-            data: {
-              full_name:
-                selectedRole === "admin" ? "Admin Test User" : "User Test User",
-              database_role: selectedRole,
-              visual_role: selectedRole === "admin" ? "Staff" : "Teacher",
-              is_anonymous: false,
+          ? {
+              full_name: "Admin Test User",
+              database_role: "admin",
+              visual_role: "Staff",
+              is_anonymous: true,
               is_test_account: true,
-            },
-          } as any,
-        });
+            }
+          : {
+              full_name: "User Test User",
+              database_role: "user",
+              visual_role: "Teacher",
+              is_anonymous: true,
+              is_test_account: true,
+            };
 
-        if (signUpError) {
-          throw signUpError;
-        }
+      // Store test session in sessionStorage for dashboard access
+      sessionStorage.setItem("testSession", JSON.stringify(testSessionData));
 
-        // For test accounts, we need to manually verify the email since it's fake
-        // Skip email verification for test accounts by using admin API
-        console.log("Skipping email verification for test account...");
-
-        // Now sign in with newly created account
-        const { error: retrySignInError } =
-          await supabase.auth.signInWithPassword({
-            email: testCredentials.email,
-            password: testCredentials.password,
-          });
-
-        if (retrySignInError) {
-          throw retrySignInError;
-        }
-      }
+      // Redirect to appropriate dashboard immediately (no database storage needed)
+      window.location.href =
+        selectedRole === "admin" ? "/admin/dashboard" : "/dashboard";
     } catch (error) {
       console.error("Test sign in error:", error);
       alert("Error setting up test account. Please try again.");

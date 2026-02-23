@@ -156,6 +156,17 @@ export interface Database {
 // Utility Types for Application Use
 // ==========================================
 
+export interface TestSession {
+  full_name: string;
+  database_role: "admin" | "user";
+  visual_role: string;
+  is_anonymous: boolean;
+  is_test_account: boolean;
+  requester_name?: string;
+}
+
+// ==========================================
+
 export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 export type ProfileInsert = Database["public"]["Tables"]["profiles"]["Insert"];
 export type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
