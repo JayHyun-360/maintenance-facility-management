@@ -39,18 +39,7 @@ export default function AdminDashboard() {
     if (testSession) {
       try {
         const sessionData = JSON.parse(testSession);
-        setProfile({
-          id: "test-session",
-          full_name: sessionData.full_name,
-          database_role: sessionData.database_role,
-          visual_role: sessionData.visual_role,
-          educational_level: null,
-          department: null,
-          is_anonymous: sessionData.is_anonymous,
-          theme_preference: "light",
-          created_at: new Date().toISOString(),
-          requester_name: sessionData.full_name,
-        });
+        setProfile(sessionData);
 
         // Fetch mock requests for test session
         setRequests([
