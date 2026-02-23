@@ -23,13 +23,6 @@ export async function GET(request: Request) {
   const supabase = await createServerClient();
   let error = null;
 
-  console.log("Auth callback received:", {
-    hasCode: !!code,
-    hasAccessToken: !!accessToken,
-    hasRefreshToken: !!refreshToken,
-    hash: hash ? "present" : "absent",
-  });
-
   // Helper function to determine if user should be admin
   const determineUserRole = (email: string): "admin" | "user" => {
     if (!email || !isValidEmail(email)) {
@@ -71,23 +64,21 @@ export async function GET(request: Request) {
     return "user";
   };
 
-  // Handle authorization code flow (preferred)
-  if (code) {
-    console.log("Processing authorization code flow...");
-    try {
-      const { error: exchangeError, data } =
-        await supabase.auth.exchangeCodeForSession(code);
-      error = exchangeError;
-      if (data) {
-        console.log("Code exchange successful:", data);
-      }
-    } catch (err) {
-      console.error("Code exchange failed:", err);
-      error = { message: "Failed to exchange code for session" };
-    }
-  }
-  // Handle implicit flow with access token (fallback)
-  else if (accessToken) {
+  console.log("=== AUTH CALLBACK DEBUG ===");
+  console.log("Full URL:", request.url);
+  console.log("Origin:", origin);
+  console.log("Hash:", hash);
+  console.log("Search params:", Object.fromEntries(searchParams.entries()));
+  console.log("Parsed values:", {
+    hasCode: !!code,
+    hasAccessToken: !!accessToken,
+    hasRefreshToken: !!refreshToken,
+    code: code?.substring(0, 20) + "...",
+    accessToken: accessToken?.substring(0, 20) + "...",
+  });
+
+  // For implicit flow, prioritize access token from fragment
+  if (accessToken) {
     console.log("Processing implicit flow with access token...");
     try {
       const { error: sessionError, data } = await supabase.auth.setSession({
@@ -102,11 +93,23 @@ export async function GET(request: Request) {
       console.error("Session setting failed:", err);
       error = { message: "Failed to set session" };
     }
+  }
+  // Fallback to authorization code flow
+  else if (code) {
+    console.log("Processing authorization code flow...");
+    try {
+      const { error: exchangeError, data } =
+        await supabase.auth.exchangeCodeForSession(code);
+      error = exchangeError;
+      if (data) {
+        console.log("Code exchange successful:", data);
+      }
+    } catch (err) {
+      console.error("Code exchange failed:", err);
+      error = { message: "Failed to exchange code for session" };
+    }
   } else {
     console.log("No code or access token found in callback");
-    console.log("Full URL:", request.url);
-    console.log("Search params:", Object.fromEntries(searchParams.entries()));
-    console.log("Hash:", hash);
     error = { message: "No authentication parameters found" };
   }
 

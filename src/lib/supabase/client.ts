@@ -1,5 +1,4 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
-import { createCustomStorage } from "./storage";
 
 // Singleton pattern to prevent multiple client instances
 let clientInstance: ReturnType<typeof createSupabaseClient> | null = null;
@@ -11,9 +10,9 @@ export const createClient = () => {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         auth: {
-          // Use custom storage to ensure PKCE verifier persistence
-          storage: createCustomStorage(),
-          flowType: "pkce", // Re-enable PKCE with proper storage
+          // Use implicit flow to avoid PKCE storage issues
+          // This is more reliable for OAuth in Next.js
+          flowType: "implicit",
           autoRefreshToken: true,
           persistSession: true,
           detectSessionInUrl: true, // Important for OAuth callback handling
