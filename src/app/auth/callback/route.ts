@@ -1,5 +1,6 @@
 import { createServerClient } from "@/lib/supabase/server";
 import { NextResponse } from "next/server";
+import { isValidEmail, sanitizeEmail, extractDomain } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
@@ -9,8 +10,49 @@ export async function GET(request: Request) {
   const databaseRole = searchParams.get("database_role");
   const next = searchParams.get("next") ?? "/";
 
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   let error = null;
+
+  // Helper function to determine if user should be admin
+  const determineUserRole = (email: string): "admin" | "user" => {
+    if (!email || !isValidEmail(email)) {
+      console.warn("Invalid email provided for role determination:", email);
+      return "user";
+    }
+
+    const sanitizedEmail = sanitizeEmail(email);
+
+    // Define admin domains and emails from environment variables
+    const adminDomains = (process.env.ADMIN_DOMAINS || "")
+      .split(",")
+      .map((d) => d.trim().toLowerCase())
+      .filter((d) => d.length > 0);
+
+    const adminEmails = (process.env.ADMIN_EMAILS || "")
+      .split(",")
+      .map((e) => e.trim().toLowerCase())
+      .filter((e) => isValidEmail(e));
+
+    const domain = extractDomain(sanitizedEmail);
+
+    // Check if email domain is in admin domains
+    if (domain && adminDomains.includes(domain)) {
+      console.log(
+        `Admin role assigned to ${sanitizedEmail} via domain: ${domain}`,
+      );
+      return "admin";
+    }
+
+    // Check if specific email is in admin emails
+    if (adminEmails.includes(sanitizedEmail)) {
+      console.log(
+        `Admin role assigned to ${sanitizedEmail} via explicit email`,
+      );
+      return "admin";
+    }
+
+    return "user";
+  };
 
   // Handle authorization code flow (preferred)
   if (code) {
@@ -34,9 +76,8 @@ export async function GET(request: Request) {
     } = await supabase.auth.getUser();
 
     if (user) {
-      // Default all users to 'user' role for now
-      // Admin access can be configured separately
-      const role = "user";
+      // Determine user role based on email
+      const role = determineUserRole(user.email || "");
 
       // Update user metadata with role
       await supabase.auth.updateUser({

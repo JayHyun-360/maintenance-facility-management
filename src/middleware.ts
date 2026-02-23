@@ -17,12 +17,12 @@ export async function middleware(request: NextRequest) {
   }
 
   // Check if user is authenticated
-  const supabase = createServerClient();
+  const supabase = await createServerClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!session) {
+  if (!user) {
     // Redirect to login if not authenticated (except for root page which handles client-side)
     if (pathname !== "/") {
       const loginUrl = new URL("/login", request.url);
@@ -31,10 +31,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Get user role from JWT metadata (Circuit Breaker pattern)
-  const jwt = session.access_token;
-  const payload = JSON.parse(atob(jwt.split(".")[1]));
-  const userRole = payload.app_metadata?.role || "user";
+  // Get user role from app metadata (Circuit Breaker pattern)
+  const userRole = user.app_metadata?.role || "user";
 
   // Handle root redirect for authenticated users
   if (pathname === "/") {

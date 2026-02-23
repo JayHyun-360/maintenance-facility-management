@@ -90,17 +90,8 @@ export default function LoginPage() {
         return;
       }
 
-      // CRITICAL: Update user metadata to ensure role is set
-      if (data.user) {
-        const { error: updateError } = await supabase.auth.updateUser({
-          data: { app_metadata: { role: "user" } },
-        });
-
-        if (updateError) {
-          console.error("Role metadata update error:", updateError);
-          // Don't block sign-in, but log the error
-        }
-      }
+      // Role metadata is automatically set by database trigger
+      // No manual update needed - relies on handle_new_user() function
     } catch (error) {
       console.error("Unexpected guest sign in error:", error);
       alert(
@@ -240,7 +231,10 @@ export default function LoginPage() {
                       type="text"
                       value={guestData.department}
                       onChange={(e) =>
-                        setGuestData({ ...guestData, department: e.target.value })
+                        setGuestData({
+                          ...guestData,
+                          department: e.target.value,
+                        })
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                       placeholder="Enter your department"
