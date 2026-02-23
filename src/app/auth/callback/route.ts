@@ -39,15 +39,45 @@ export async function GET(request: Request) {
         data: { app_metadata: { role: databaseRole } },
       });
 
-      // Check if user profile already exists
-      const { data: existingProfile } = await supabase
-        .from("profiles")
-        .select("id, full_name, visual_role, educational_level, department")
-        .eq("id", user.id)
-        .single();
+      try {
+        // Check if user profile already exists
+        const { data: existingProfile, error: profileError } = await supabase
+          .from("profiles")
+          .select("id, full_name, visual_role, educational_level, department")
+          .eq("id", user.id)
+          .single();
 
-      if (!existingProfile) {
-        // New user - redirect to profile creation
+        if (profileError || !existingProfile) {
+          // New user or profile check failed - redirect to profile creation
+          const profileCreationUrl = new URL("/profile-creation", origin);
+          profileCreationUrl.searchParams.set("role", databaseRole);
+          profileCreationUrl.searchParams.set(
+            "name",
+            user.user_metadata?.full_name ||
+              user.email?.split("@")[0] ||
+              "User",
+          );
+          return NextResponse.redirect(profileCreationUrl);
+        }
+
+        // Existing user - redirect directly to appropriate dashboard
+        const redirectUrl =
+          databaseRole === "admin" ? "/admin/dashboard" : "/dashboard";
+        const forwardedHost = request.headers.get("x-forwarded-host");
+        const isLocalEnv = process.env.NODE_ENV === "development";
+
+        if (isLocalEnv) {
+          return NextResponse.redirect(`${origin}${redirectUrl}`);
+        } else if (forwardedHost) {
+          return NextResponse.redirect(
+            `https://${forwardedHost}${redirectUrl}`,
+          );
+        } else {
+          return NextResponse.redirect(`${origin}${redirectUrl}`);
+        }
+      } catch (err) {
+        console.error("Profile check error:", err);
+        // If profile check fails, assume new user and redirect to profile creation
         const profileCreationUrl = new URL("/profile-creation", origin);
         profileCreationUrl.searchParams.set("role", databaseRole);
         profileCreationUrl.searchParams.set(
@@ -55,20 +85,6 @@ export async function GET(request: Request) {
           user.user_metadata?.full_name || user.email?.split("@")[0] || "User",
         );
         return NextResponse.redirect(profileCreationUrl);
-      }
-
-      // Existing user - redirect directly to appropriate dashboard
-      const redirectUrl =
-        databaseRole === "admin" ? "/admin/dashboard" : "/dashboard";
-      const forwardedHost = request.headers.get("x-forwarded-host");
-      const isLocalEnv = process.env.NODE_ENV === "development";
-
-      if (isLocalEnv) {
-        return NextResponse.redirect(`${origin}${redirectUrl}`);
-      } else if (forwardedHost) {
-        return NextResponse.redirect(`https://${forwardedHost}${redirectUrl}`);
-      } else {
-        return NextResponse.redirect(`${origin}${redirectUrl}`);
       }
     }
   }

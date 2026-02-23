@@ -25,7 +25,21 @@ function ProfileCreationContent() {
 
     if (roleParam) setRole(roleParam);
     if (nameParam) setFullName(nameParam);
-  }, [searchParams]);
+
+    // Check if user is authenticated
+    const checkAuth = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        router.push("/login");
+        return;
+      }
+    };
+
+    checkAuth();
+  }, [searchParams, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
