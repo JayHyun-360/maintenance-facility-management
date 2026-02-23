@@ -32,7 +32,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const supabase = createClient();
+  const supabase = createClient()!;
 
   useEffect(() => {
     // Check authentication first
