@@ -227,18 +227,22 @@ export default function LoginPage() {
     setSuccessMessage("");
 
     try {
+      console.log("Initiating Google OAuth...");
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
-          skipBrowserRedirect: false, // Let Supabase handle the redirect
+          // Use default flow - let Supabase handle everything
         },
       });
 
       if (error) {
+        console.error("Google OAuth error:", error);
         handleAuthError(error);
         return;
       }
+
+      console.log("Google OAuth initiated successfully");
     } catch (error) {
       console.error("Unexpected Google sign in error:", error);
       setErrors({

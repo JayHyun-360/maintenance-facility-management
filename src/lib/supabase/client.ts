@@ -10,12 +10,11 @@ export const createClient = () => {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         auth: {
-          // Use implicit flow to avoid PKCE storage issues
-          // This is more reliable for OAuth in Next.js
+          // Use implicit flow for better Next.js compatibility
           flowType: "implicit",
           autoRefreshToken: true,
           persistSession: true,
-          detectSessionInUrl: true, // Important for OAuth callback handling
+          detectSessionInUrl: true, // Critical for OAuth callback handling
         },
       },
     );
