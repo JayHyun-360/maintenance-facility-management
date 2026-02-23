@@ -107,18 +107,7 @@ export async function GET(request: Request) {
 
         // Existing user - redirect to dashboard
         const redirectUrl = "/dashboard";
-        const forwardedHost = request.headers.get("x-forwarded-host");
-        const isLocalEnv = process.env.NODE_ENV === "development";
-
-        if (isLocalEnv) {
-          return NextResponse.redirect(`${origin}${redirectUrl}`);
-        } else if (forwardedHost) {
-          return NextResponse.redirect(
-            `https://${forwardedHost}${redirectUrl}`,
-          );
-        } else {
-          return NextResponse.redirect(`${origin}${redirectUrl}`);
-        }
+        return NextResponse.redirect(`${origin}${redirectUrl}`);
       } catch (err) {
         console.error("Profile check error:", err);
         // If profile check fails, assume new user and redirect to profile creation

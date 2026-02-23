@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const requestUrl = new URL(request.url);
 
   // Allow access to login, auth routes, profile creation, welcome pages, and static files
   if (
@@ -26,7 +27,10 @@ export async function middleware(request: NextRequest) {
     // Redirect to login if not authenticated (except for root page which handles client-side)
     if (pathname !== "/") {
       const loginUrl = new URL("/login", request.url);
-      return NextResponse.redirect(loginUrl);
+      // Prevent redirect loops
+      if (requestUrl.pathname !== "/login") {
+        return NextResponse.redirect(loginUrl);
+      }
     }
     return NextResponse.next();
   }
@@ -40,7 +44,10 @@ export async function middleware(request: NextRequest) {
       userRole === "admin"
         ? new URL("/admin/dashboard", request.url)
         : new URL("/dashboard", request.url);
-    return NextResponse.redirect(redirectUrl);
+    // Prevent redirect loops
+    if (requestUrl.pathname !== redirectUrl.pathname) {
+      return NextResponse.redirect(redirectUrl);
+    }
   }
 
   // Route based on role
@@ -48,13 +55,19 @@ export async function middleware(request: NextRequest) {
     if (userRole !== "admin") {
       // Redirect non-admins to user dashboard
       const dashboardUrl = new URL("/dashboard", request.url);
-      return NextResponse.redirect(dashboardUrl);
+      // Prevent redirect loops
+      if (requestUrl.pathname !== "/dashboard") {
+        return NextResponse.redirect(dashboardUrl);
+      }
     }
   } else if (pathname.startsWith("/dashboard")) {
     if (userRole === "admin") {
       // Redirect admins to admin dashboard
       const adminUrl = new URL("/admin/dashboard", request.url);
-      return NextResponse.redirect(adminUrl);
+      // Prevent redirect loops
+      if (requestUrl.pathname !== "/admin/dashboard") {
+        return NextResponse.redirect(adminUrl);
+      }
     }
   }
 

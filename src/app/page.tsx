@@ -8,7 +8,7 @@ export default function Home() {
   const supabase = createClient();
 
   useEffect(() => {
-    // Simple auth check - let middleware handle redirects
+    // Simple auth check - let middleware handle server-side redirects
     const checkAuth = async () => {
       try {
         const {
@@ -16,8 +16,11 @@ export default function Home() {
         } = await supabase.auth.getSession();
 
         if (!session) {
-          // Redirect to login if not authenticated
-          window.location.href = "/login";
+          // Only redirect if we're not already being redirected by middleware
+          // This prevents race conditions
+          setTimeout(() => {
+            window.location.href = "/login";
+          }, 100);
         }
         // For authenticated users, middleware will handle the redirect
       } catch (error) {
