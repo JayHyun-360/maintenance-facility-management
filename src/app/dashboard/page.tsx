@@ -25,48 +25,62 @@ export default function UserDashboard() {
   const supabase = createClient();
 
   useEffect(() => {
-    // Check for test session first
-    const testSession = sessionStorage.getItem("testSession");
+    // Check authentication first
+    const checkAuth = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-    if (testSession) {
-      try {
-        const sessionData = JSON.parse(testSession);
-        setProfile(sessionData);
-
-        // Fetch mock requests for test session
-        setRequests([
-          {
-            id: "test-req-1",
-            requester_id: "test-session",
-            nature: "Plumbing",
-            urgency: "Urgent",
-            location: "Room 101",
-            description: "Test plumbing request - leaky faucet",
-            status: "Pending",
-            created_at: new Date(Date.now() - 86400000).toISOString(),
-          },
-          {
-            id: "test-req-2",
-            requester_id: "test-session",
-            nature: "Electrical",
-            urgency: "Not Urgent",
-            location: "Room 202",
-            description: "Test electrical request - flickering lights",
-            status: "In Progress",
-            created_at: new Date(Date.now() - 172800000).toISOString(),
-          },
-        ]);
-
-        setLoading(false);
+      if (!session) {
+        window.location.href = "/login";
         return;
-      } catch (error) {
-        console.error("Failed to parse test session:", error);
       }
-    }
 
-    // Original auth flow for real users
-    fetchProfile();
-    fetchRequests();
+      // Check for test session
+      const testSession = sessionStorage.getItem("testSession");
+
+      if (testSession) {
+        try {
+          const sessionData = JSON.parse(testSession);
+          setProfile(sessionData);
+
+          // Fetch mock requests for test session
+          setRequests([
+            {
+              id: "test-req-1",
+              requester_id: "test-session",
+              nature: "Plumbing",
+              urgency: "Urgent",
+              location: "Room 101",
+              description: "Test plumbing request - leaky faucet",
+              status: "Pending",
+              created_at: new Date(Date.now() - 86400000).toISOString(),
+            },
+            {
+              id: "test-req-2",
+              requester_id: "test-session",
+              nature: "Electrical",
+              urgency: "Not Urgent",
+              location: "Room 202",
+              description: "Test electrical request - flickering lights",
+              status: "In Progress",
+              created_at: new Date(Date.now() - 172800000).toISOString(),
+            },
+          ]);
+
+          setLoading(false);
+          return;
+        } catch (error) {
+          console.error("Failed to parse test session:", error);
+        }
+      }
+
+      // Original auth flow for real users
+      fetchProfile();
+      fetchRequests();
+    };
+
+    checkAuth();
   }, []);
 
   const fetchProfile = async () => {

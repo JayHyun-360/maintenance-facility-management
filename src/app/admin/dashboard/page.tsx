@@ -34,71 +34,85 @@ export default function AdminDashboard() {
   const supabase = createClient();
 
   useEffect(() => {
-    // Check for test session first
-    const testSession = sessionStorage.getItem("testSession");
+    // Check authentication first
+    const checkAuth = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-    if (testSession) {
-      try {
-        const sessionData = JSON.parse(testSession);
-        setProfile(sessionData);
-
-        // Fetch mock requests for test session
-        setRequests([
-          {
-            id: "test-admin-req-1",
-            requester_id: "test-session",
-            requester_name: sessionData.full_name,
-            nature: "Plumbing",
-            urgency: "Urgent",
-            location: "Server Room",
-            description: "Test admin request - server maintenance",
-            status: "Pending",
-            created_at: new Date(Date.now() - 86400000).toISOString(),
-            profiles: {
-              id: "test-session",
-              full_name: sessionData.full_name,
-              database_role: sessionData.database_role,
-              visual_role: sessionData.visual_role,
-              educational_level: null,
-              department: null,
-              is_anonymous: sessionData.is_anonymous,
-              theme_preference: "system",
-              created_at: new Date().toISOString(),
-            },
-          },
-          {
-            id: "test-admin-req-2",
-            requester_id: "test-session",
-            requester_name: sessionData.full_name,
-            nature: "Electrical",
-            urgency: "Not Urgent",
-            location: "Office Area",
-            description: "Test admin request - lighting issues",
-            status: "In Progress",
-            created_at: new Date(Date.now() - 172800000).toISOString(),
-            profiles: {
-              id: "test-session",
-              full_name: sessionData.full_name,
-              database_role: sessionData.database_role,
-              visual_role: sessionData.visual_role,
-              educational_level: null,
-              department: null,
-              is_anonymous: sessionData.is_anonymous,
-              theme_preference: "system",
-              created_at: new Date().toISOString(),
-            },
-          },
-        ]);
-
-        setLoading(false);
+      if (!session) {
+        window.location.href = "/login";
         return;
-      } catch (error) {
-        console.error("Failed to parse test session:", error);
       }
-    }
 
-    // Original auth flow for real users
-    fetchRequests();
+      // Check for test session
+      const testSession = sessionStorage.getItem("testSession");
+
+      if (testSession) {
+        try {
+          const sessionData = JSON.parse(testSession);
+          setProfile(sessionData);
+
+          // Fetch mock requests for test session
+          setRequests([
+            {
+              id: "test-admin-req-1",
+              requester_id: "test-session",
+              requester_name: sessionData.full_name,
+              nature: "Plumbing",
+              urgency: "Urgent",
+              location: "Server Room",
+              description: "Test admin request - server maintenance",
+              status: "Pending",
+              created_at: new Date(Date.now() - 86400000).toISOString(),
+              profiles: {
+                id: "test-session",
+                full_name: sessionData.full_name,
+                database_role: sessionData.database_role,
+                visual_role: sessionData.visual_role,
+                educational_level: null,
+                department: null,
+                is_anonymous: sessionData.is_anonymous,
+                theme_preference: "system",
+                created_at: new Date().toISOString(),
+              },
+            },
+            {
+              id: "test-admin-req-2",
+              requester_id: "test-session",
+              requester_name: sessionData.full_name,
+              nature: "Electrical",
+              urgency: "Not Urgent",
+              location: "Office Area",
+              description: "Test admin request - lighting issues",
+              status: "In Progress",
+              created_at: new Date(Date.now() - 172800000).toISOString(),
+              profiles: {
+                id: "test-session",
+                full_name: sessionData.full_name,
+                database_role: sessionData.database_role,
+                visual_role: sessionData.visual_role,
+                educational_level: null,
+                department: null,
+                is_anonymous: sessionData.is_anonymous,
+                theme_preference: "system",
+                created_at: new Date().toISOString(),
+              },
+            },
+          ]);
+
+          setLoading(false);
+          return;
+        } catch (error) {
+          console.error("Failed to parse test session:", error);
+        }
+      }
+
+      // Original auth flow for real users
+      fetchRequests();
+    };
+
+    checkAuth();
   }, []);
 
   const fetchRequests = async () => {
