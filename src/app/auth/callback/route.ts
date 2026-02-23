@@ -39,28 +39,14 @@ export async function GET(request: Request) {
         data: { app_metadata: { role: databaseRole } },
       });
 
-      // For admin users, create profile directly and go to welcome screen
+      // For admin users, go directly to welcome screen (profile will be created there)
       if (databaseRole === "admin") {
-        // Create admin profile directly
-        const { error: profileError } = await supabase.from("profiles").upsert({
-          id: user.id,
-          full_name:
-            user.user_metadata?.full_name ||
-            user.email?.split("@")[0] ||
-            "Admin",
-          database_role: "admin",
-          visual_role: "Staff",
-          educational_level: null,
-          department: null,
-          is_anonymous: false,
-        });
-
-        if (profileError) {
-          console.error("Admin profile creation error:", profileError);
-        }
-
         // Redirect directly to admin welcome screen
         const welcomeUrl = new URL("/welcome-admin", origin);
+        welcomeUrl.searchParams.set(
+          "name",
+          user.user_metadata?.full_name || user.email?.split("@")[0] || "Admin",
+        );
         return NextResponse.redirect(welcomeUrl);
       }
 
