@@ -33,14 +33,20 @@ export async function GET(request: Request) {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (user && databaseRole) {
+    if (user) {
+      // If no database_role provided, try to get from user metadata or default to 'user'
+      let role = databaseRole;
+      if (!role) {
+        role = user.user_metadata?.role || user.app_metadata?.role || "user";
+      }
+
       // Update user metadata with selected role
       await supabase.auth.updateUser({
-        data: { app_metadata: { role: databaseRole } },
+        data: { app_metadata: { role } },
       });
 
       // For admin users, go directly to welcome screen (profile will be created there)
-      if (databaseRole === "admin") {
+      if (role === "admin") {
         // Redirect directly to admin welcome screen
         const welcomeUrl = new URL("/welcome-admin", origin);
         welcomeUrl.searchParams.set(
@@ -61,7 +67,7 @@ export async function GET(request: Request) {
         if (profileError || !existingProfile) {
           // New user - redirect to profile creation
           const profileCreationUrl = new URL("/profile-creation", origin);
-          profileCreationUrl.searchParams.set("role", databaseRole);
+          profileCreationUrl.searchParams.set("role", role || "user");
           profileCreationUrl.searchParams.set(
             "name",
             user.user_metadata?.full_name ||
@@ -89,7 +95,7 @@ export async function GET(request: Request) {
         console.error("Profile check error:", err);
         // If profile check fails, assume new user and redirect to profile creation
         const profileCreationUrl = new URL("/profile-creation", origin);
-        profileCreationUrl.searchParams.set("role", databaseRole);
+        profileCreationUrl.searchParams.set("role", role || "user");
         profileCreationUrl.searchParams.set(
           "name",
           user.user_metadata?.full_name || user.email?.split("@")[0] || "User",
