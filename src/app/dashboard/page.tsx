@@ -75,13 +75,39 @@ export default function UserDashboard() {
     } = await supabase.auth.getUser();
     if (!user) return;
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", user.id)
       .single();
 
-    setProfile(data);
+    if (error && error.code !== "PGRST116") {
+      // PGRST116 is "No rows returned" - which is expected if profile doesn't exist yet
+      console.error("Error fetching profile:", error);
+    }
+
+    // If no profile exists, create a basic one from user data
+    if (!data && user) {
+      const basicProfile = {
+        id: user.id,
+        full_name:
+          user.user_metadata?.full_name ||
+          user.user_metadata?.name ||
+          user.email ||
+          "Unknown User",
+        database_role: "user" as const,
+        visual_role: null,
+        educational_level: null,
+        department: null,
+        is_anonymous: false,
+        theme_preference: "system" as const,
+        created_at: new Date().toISOString(),
+      };
+      setProfile(basicProfile);
+    } else {
+      setProfile(data);
+    }
+    setLoading(false); // Add this line to set loading to false after fetching profile
   };
 
   const fetchRequests = async () => {
@@ -97,7 +123,7 @@ export default function UserDashboard() {
       .order("created_at", { ascending: false });
 
     setRequests(data || []);
-    setLoading(false);
+    setLoading(false); // Add this line to set loading to false after fetching requests
   };
 
   const handleSubmitRequest = async (e: React.FormEvent) => {

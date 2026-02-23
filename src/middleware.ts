@@ -4,10 +4,12 @@ import { NextResponse, type NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow access to login, auth routes, and static files
+  // Allow access to login, auth routes, profile creation, welcome pages, and static files
   if (
     pathname.startsWith("/login") ||
     pathname.startsWith("/auth") ||
+    pathname.startsWith("/profile-creation") ||
+    pathname.startsWith("/welcome-") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api")
   ) {
