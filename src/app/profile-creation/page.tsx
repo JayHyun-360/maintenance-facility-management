@@ -78,7 +78,7 @@ function ProfileCreationContent() {
           role === "admin" ? null : profileData.educationalLevel || null,
         department: role === "admin" ? null : profileData.department || null,
         is_anonymous: false,
-      });
+      } as any);
 
       if (profileError) {
         console.error("Profile insert error:", profileError);
