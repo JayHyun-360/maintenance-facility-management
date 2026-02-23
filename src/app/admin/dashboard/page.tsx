@@ -11,6 +11,7 @@ import type {
 
 interface RequestWithProfile extends MaintenanceRequest {
   profiles: Profile | null;
+  requester_name?: string;
 }
 
 export default function AdminDashboard() {
@@ -53,6 +54,17 @@ export default function AdminDashboard() {
             description: "Test admin request - server maintenance",
             status: "Pending",
             created_at: new Date(Date.now() - 86400000).toISOString(),
+            profiles: {
+              id: "test-session",
+              full_name: sessionData.full_name,
+              database_role: sessionData.database_role,
+              visual_role: sessionData.visual_role,
+              educational_level: null,
+              department: null,
+              is_anonymous: sessionData.is_anonymous,
+              theme_preference: "system",
+              created_at: new Date().toISOString(),
+            },
           },
           {
             id: "test-admin-req-2",
@@ -64,6 +76,17 @@ export default function AdminDashboard() {
             description: "Test admin request - lighting issues",
             status: "In Progress",
             created_at: new Date(Date.now() - 172800000).toISOString(),
+            profiles: {
+              id: "test-session",
+              full_name: sessionData.full_name,
+              database_role: sessionData.database_role,
+              visual_role: sessionData.visual_role,
+              educational_level: null,
+              department: null,
+              is_anonymous: sessionData.is_anonymous,
+              theme_preference: "system",
+              created_at: new Date().toISOString(),
+            },
           },
         ]);
 
