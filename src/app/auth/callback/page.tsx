@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const supabase = createClient();
+  const supabase = createClient()!;
 
   useEffect(() => {
     const handleAuthCallback = async () => {

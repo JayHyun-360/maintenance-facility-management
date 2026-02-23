@@ -56,7 +56,7 @@ export default function LoginPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [successMessage, setSuccessMessage] = useState("");
 
-  const supabase = createClient();
+  const supabase = createClient()!;
 
   // Load hCaptcha script
   useEffect(() => {

@@ -14,7 +14,7 @@ function ResetPasswordContent() {
   const [successMessage, setSuccessMessage] = useState("");
   const [token, setToken] = useState("");
 
-  const supabase = createClient();
+  const supabase = createClient()!;
 
   useEffect(() => {
     const tokenFromUrl = searchParams.get("token");
@@ -82,7 +82,8 @@ function ResetPasswordContent() {
               Invalid Reset Link
             </h1>
             <p className="text-gray-600 mb-6">
-              This password reset link is invalid or has expired. Please request a new password reset.
+              This password reset link is invalid or has expired. Please request
+              a new password reset.
             </p>
             <button
               onClick={() => router.push("/login")}
@@ -152,7 +153,9 @@ function ResetPasswordContent() {
               disabled={loading}
             />
             {errors.confirmPassword && (
-              <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+              <p className="mt-1 text-sm text-red-600">
+                {errors.confirmPassword}
+              </p>
             )}
           </div>
 

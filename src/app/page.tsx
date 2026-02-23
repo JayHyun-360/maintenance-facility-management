@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const supabase = createClient()!;
 
   useEffect(() => {
     // Simple auth check - let middleware handle server-side redirects

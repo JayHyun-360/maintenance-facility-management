@@ -8,17 +8,21 @@ export default function WelcomeUser() {
   const router = useRouter();
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const supabase = createClient()!;
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
         if (user) {
           // Get user's full name from metadata or profile
-          const fullName = user.user_metadata?.full_name || 
-                          user.email?.split("@")[0] || "User";
+          const fullName =
+            user.user_metadata?.full_name ||
+            user.email?.split("@")[0] ||
+            "User";
           setUserName(fullName);
         } else {
           // Redirect to login if not authenticated
@@ -55,15 +59,26 @@ export default function WelcomeUser() {
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md text-center">
         <div className="mb-6">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            <svg
+              className="w-10 h-10 text-green-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
             </svg>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome, {userName}!
           </h1>
           <p className="text-gray-600">
-            Your account has been successfully created and you're ready to start using the Maintenance Portal.
+            Your account has been successfully created and you're ready to start
+            using the Maintenance Portal.
           </p>
         </div>
 

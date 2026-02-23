@@ -17,7 +17,7 @@ function ProfileCreationContent() {
     department: "",
   });
 
-  const supabase = createClient();
+  const supabase = createClient()!;
 
   useEffect(() => {
     const roleParam = searchParams.get("role") as DatabaseRole;

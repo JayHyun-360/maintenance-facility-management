@@ -8,7 +8,7 @@ export default function WelcomeAdmin() {
   const router = useRouter();
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
+  const supabase = createClient()!;
 
   useEffect(() => {
     const fetchUserData = async () => {

@@ -22,7 +22,7 @@ export default function UserDashboard() {
     supportingReason: "",
   });
 
-  const supabase = createClient();
+  const supabase = createClient()!;
 
   useEffect(() => {
     // Check authentication first
