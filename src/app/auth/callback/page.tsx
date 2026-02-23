@@ -21,8 +21,11 @@ function AuthCallbackContent() {
       console.log("Hash:", url.hash);
       console.log("Search params:", Object.fromEntries(searchParams.entries()));
 
+      // Wait a moment for Supabase to process the URL
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       // Let Supabase handle the session automatically from URL
-      // This will parse both query params and fragments
+      // This will parse both query params and fragments with PKCE flow
       const { data, error } = await supabase.auth.getSession();
 
       if (error) {
@@ -62,35 +65,8 @@ function AuthCallbackContent() {
           }
         }
       } else {
-        // No session found, try to get from URL manually
-        console.log("No session found, attempting manual extraction...");
-
-        const hash = url.hash.slice(1); // Remove #
-        const fragmentParams = new URLSearchParams(hash);
-        const accessToken = fragmentParams.get("access_token");
-        const refreshToken = fragmentParams.get("refresh_token");
-
-        if (accessToken) {
-          console.log("Found access token in fragment, setting session...");
-          const { error: sessionError } = await supabase.auth.setSession({
-            access_token: accessToken,
-            refresh_token: refreshToken || "",
-          });
-
-          if (sessionError) {
-            console.error("Error setting session:", sessionError);
-            router.push(
-              `/auth/error?message=${encodeURIComponent(sessionError.message)}`,
-            );
-            return;
-          }
-
-          // Retry getting user after setting session
-          window.location.reload(); // Reload to trigger the session flow again
-        } else {
-          console.log("No access token found in fragment");
-          router.push("/auth/error?message=No authentication parameters found");
-        }
+        console.log("No session found after callback");
+        router.push("/auth/error?message=No authentication parameters found");
       }
     };
 

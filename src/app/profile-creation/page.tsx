@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import type { DatabaseRole, VisualRole } from "@/types/database";
+import type { DatabaseRole, VisualRole, ProfileInsert } from "@/types/database";
 
 function ProfileCreationContent() {
   const router = useRouter();
@@ -68,10 +68,8 @@ function ProfileCreationContent() {
         throw new Error("User not authenticated");
       }
 
-      // Create profile in database
-      const { error: profileError } = await (
-        supabase.from("profiles") as any
-      ).upsert({
+      // Create profile in database using insert (since user shouldn't exist yet)
+      const { error: profileError } = await supabase.from("profiles").insert({
         id: user.id,
         full_name: fullName,
         database_role: role,
@@ -83,6 +81,7 @@ function ProfileCreationContent() {
       });
 
       if (profileError) {
+        console.error("Profile insert error:", profileError);
         throw profileError;
       }
 
