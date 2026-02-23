@@ -74,23 +74,33 @@ export async function GET(request: Request) {
   // Handle authorization code flow (preferred)
   if (code) {
     console.log("Processing authorization code flow...");
-    const { error: exchangeError, data } =
-      await supabase.auth.exchangeCodeForSession(code);
-    error = exchangeError;
-    if (data) {
-      console.log("Code exchange successful:", data);
+    try {
+      const { error: exchangeError, data } =
+        await supabase.auth.exchangeCodeForSession(code);
+      error = exchangeError;
+      if (data) {
+        console.log("Code exchange successful:", data);
+      }
+    } catch (err) {
+      console.error("Code exchange failed:", err);
+      error = { message: "Failed to exchange code for session" };
     }
   }
   // Handle implicit flow with access token (fallback)
   else if (accessToken) {
     console.log("Processing implicit flow with access token...");
-    const { error: sessionError, data } = await supabase.auth.setSession({
-      access_token: accessToken,
-      refresh_token: refreshToken || "",
-    });
-    error = sessionError;
-    if (data) {
-      console.log("Session set successful:", data);
+    try {
+      const { error: sessionError, data } = await supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken || "",
+      });
+      error = sessionError;
+      if (data) {
+        console.log("Session set successful:", data);
+      }
+    } catch (err) {
+      console.error("Session setting failed:", err);
+      error = { message: "Failed to set session" };
     }
   } else {
     console.log("No code or access token found in callback");

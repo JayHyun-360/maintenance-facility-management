@@ -14,7 +14,7 @@ export const createServerClient = async () => {
         },
       },
       auth: {
-        flowType: "pkce", // Use PKCE flow for better security
+        // Remove explicit PKCE to let Supabase handle OAuth flow naturally
         autoRefreshToken: true,
         persistSession: true,
       },
