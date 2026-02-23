@@ -8,7 +8,7 @@ export default function Home() {
   const supabase = createClient();
 
   useEffect(() => {
-    // Check if user is authenticated and redirect appropriately
+    // Simple auth check - let middleware handle redirects
     const checkAuth = async () => {
       try {
         const {
@@ -18,17 +18,8 @@ export default function Home() {
         if (!session) {
           // Redirect to login if not authenticated
           window.location.href = "/login";
-        } else {
-          // For authenticated users, redirect based on role
-          const jwt = session.access_token;
-          const payload = JSON.parse(atob(jwt.split(".")[1]));
-          const userRole = payload.app_metadata?.role || "user";
-
-          // Redirect to appropriate dashboard
-          const redirectUrl =
-            userRole === "admin" ? "/admin/dashboard" : "/dashboard";
-          window.location.href = redirectUrl;
         }
+        // For authenticated users, middleware will handle the redirect
       } catch (error) {
         console.error("Auth check error:", error);
         // Fallback to login on error
