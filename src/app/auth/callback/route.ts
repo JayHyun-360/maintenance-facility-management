@@ -13,10 +13,10 @@ export async function GET(request: Request) {
   const supabase = await createServerClient();
   let error = null;
 
-  console.log("Auth callback received:", { 
-    hasCode: !!code, 
-    hasAccessToken: !!accessToken, 
-    hasRefreshToken: !!refreshToken 
+  console.log("Auth callback received:", {
+    hasCode: !!code,
+    hasAccessToken: !!accessToken,
+    hasRefreshToken: !!refreshToken,
   });
 
   // Helper function to determine if user should be admin
@@ -88,7 +88,9 @@ export async function GET(request: Request) {
 
   if (error) {
     console.error("Auth callback error:", error);
-    return NextResponse.redirect(`${origin}/auth/error?message=${encodeURIComponent(error.message || 'Unknown error')}`);
+    return NextResponse.redirect(
+      `${origin}/auth/error?message=${encodeURIComponent(error.message || "Unknown error")}`,
+    );
   }
 
   // Get user and check if profile exists
@@ -98,7 +100,7 @@ export async function GET(request: Request) {
 
   if (user) {
     console.log("User found:", user.email);
-    
+
     // Determine user role based on email
     const role = determineUserRole(user.email || "");
     console.log("User role determined:", role);
@@ -123,9 +125,7 @@ export async function GET(request: Request) {
         profileCreationUrl.searchParams.set("role", role);
         profileCreationUrl.searchParams.set(
           "name",
-          user.user_metadata?.full_name ||
-            user.email?.split("@")[0] ||
-            "User",
+          user.user_metadata?.full_name || user.email?.split("@")[0] || "User",
         );
         return NextResponse.redirect(profileCreationUrl);
       }
@@ -149,5 +149,7 @@ export async function GET(request: Request) {
 
   // Log error for debugging
   console.error("No user found after authentication");
-  return NextResponse.redirect(`${origin}/auth/error?message=${encodeURIComponent('User not found')}`);
+  return NextResponse.redirect(
+    `${origin}/auth/error?message=${encodeURIComponent("User not found")}`,
+  );
 }
