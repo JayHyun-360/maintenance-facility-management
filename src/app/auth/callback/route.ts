@@ -39,8 +39,33 @@ export async function GET(request: Request) {
         data: { app_metadata: { role: databaseRole } },
       });
 
+      // For admin users, create profile directly and go to welcome screen
+      if (databaseRole === "admin") {
+        // Create admin profile directly
+        const { error: profileError } = await supabase.from("profiles").upsert({
+          id: user.id,
+          full_name:
+            user.user_metadata?.full_name ||
+            user.email?.split("@")[0] ||
+            "Admin",
+          database_role: "admin",
+          visual_role: "Staff",
+          educational_level: null,
+          department: null,
+          is_anonymous: false,
+        });
+
+        if (profileError) {
+          console.error("Admin profile creation error:", profileError);
+        }
+
+        // Redirect directly to admin welcome screen
+        const welcomeUrl = new URL("/welcome-admin", origin);
+        return NextResponse.redirect(welcomeUrl);
+      }
+
+      // For regular users, check if profile exists
       try {
-        // Check if user profile already exists
         const { data: existingProfile, error: profileError } = await supabase
           .from("profiles")
           .select("id, full_name, visual_role, educational_level, department")
@@ -48,7 +73,7 @@ export async function GET(request: Request) {
           .single();
 
         if (profileError || !existingProfile) {
-          // New user or profile check failed - redirect to profile creation
+          // New user - redirect to profile creation
           const profileCreationUrl = new URL("/profile-creation", origin);
           profileCreationUrl.searchParams.set("role", databaseRole);
           profileCreationUrl.searchParams.set(
@@ -61,8 +86,7 @@ export async function GET(request: Request) {
         }
 
         // Existing user - redirect directly to appropriate dashboard
-        const redirectUrl =
-          databaseRole === "admin" ? "/admin/dashboard" : "/dashboard";
+        const redirectUrl = "/dashboard";
         const forwardedHost = request.headers.get("x-forwarded-host");
         const isLocalEnv = process.env.NODE_ENV === "development";
 
