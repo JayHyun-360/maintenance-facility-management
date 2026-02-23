@@ -30,7 +30,7 @@ export default function LoginPage() {
         console.error("Google OAuth error:", error);
         if (error.message.includes("provider is not enabled")) {
           alert(
-            "Google sign-in is not configured. Please contact administrator.",
+            "Google sign-in is not configured in this environment. For local development, please:\n\n1. Ensure Google OAuth is configured in your Supabase project\n2. Or use the production environment at https://maintenance-facility-management.vercel.app\n\nContact administrator if the issue persists.",
           );
         } else if (error.message.includes("access_denied")) {
           alert(
@@ -173,6 +173,20 @@ export default function LoginPage() {
               />
             </svg>
             <span>{loading ? "Signing in..." : "Continue with Google"}</span>
+          </button>
+        </div>
+
+        {/* Test Sign-In Section */}
+        <div className="mb-4">
+          <h3 className="text-sm font-medium text-gray-700 mb-2">
+            Test Account (Local Development)
+          </h3>
+          <button
+            onClick={handleTestSignIn}
+            disabled={loading}
+            className="w-full bg-green-100 text-green-700 rounded-lg py-3 px-4 font-medium hover:bg-green-200 transition-colors disabled:opacity-50"
+          >
+            {loading ? "Setting up..." : "Continue with Test Account"}
           </button>
         </div>
 
