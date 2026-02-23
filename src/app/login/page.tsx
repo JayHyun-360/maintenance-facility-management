@@ -762,37 +762,37 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
-    ) {
-      alert("Department is required for College level");
-      return;
-    }
+};
 
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.auth.signInAnonymously({
-        options: {
-          data: {
-            full_name: guestData.fullName,
-            database_role: "user",
-            visual_role: guestData.visualRole,
-            educational_level: guestData.educationalLevel || null,
-            department: guestData.department || null,
-            is_anonymous: true,
-          },
+const handleGuestSignIn = async () => {
+  if (guestData.educationalLevel === "College" && !guestData.department) {
+    alert("Department is required for College level");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const { data, error } = await supabase.auth.signInAnonymously({
+      options: {
+        data: {
+          full_name: guestData.fullName,
+          database_role: "user",
+          visual_role: guestData.visualRole,
+          educational_level: guestData.educationalLevel || null,
+          department: guestData.department || null,
+          is_anonymous: true,
         },
-      });
+      },
+    });
 
-      if (error) {
-        console.error("Guest auth error:", error);
-        if (error.message.includes("rate limit")) {
-          alert(
-            "Too many sign-in attempts. Please wait a moment and try again.",
-          );
-        } else {
-          alert(`Guest sign-in error: ${error.message}`);
-        }
-        return;
+    if (error) {
+      console.error("Guest auth error:", error);
+      if (error.message.includes("rate limit")) {
+        alert(
+          "Too many sign-in attempts. Please wait a moment and try again.",
+        );
+      } else {
+        alert(`Guest sign-in error: ${error.message}`);
       }
 
       // Role metadata is automatically set by database trigger
