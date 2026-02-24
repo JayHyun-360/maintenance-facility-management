@@ -1,17 +1,36 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
 export default function AuthError() {
+  const searchParams = useSearchParams();
+  const [errorMessage, setErrorMessage] = useState<string>(
+    "Unknown authentication error",
+  );
+
   useEffect(() => {
-    // Auto-redirect to login after 3 seconds
+    // Get error message from URL parameters
+    const message = searchParams.get("message");
+    const error = searchParams.get("error");
+    const errorDescription = searchParams.get("error_description");
+
+    if (message) {
+      setErrorMessage(decodeURIComponent(message));
+    } else if (error) {
+      setErrorMessage(
+        `OAuth Error: ${error}${errorDescription ? ` - ${errorDescription}` : ""}`,
+      );
+    }
+
+    // Auto-redirect to login after 10 seconds (increased for debugging)
     const timer = setTimeout(() => {
       window.location.href = "/login";
-    }, 3000);
+    }, 10000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
@@ -35,6 +54,11 @@ export default function AuthError() {
         <h1 className="text-xl font-bold text-gray-900 mb-2">
           Authentication Error
         </h1>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-left">
+          <p className="text-sm font-mono text-red-800 break-words">
+            {errorMessage}
+          </p>
+        </div>
         <p className="text-gray-600 mb-6">
           There was an error signing you in. You will be redirected to the login
           page automatically.
@@ -48,7 +72,7 @@ export default function AuthError() {
         </Link>
 
         <p className="text-sm text-gray-500 mt-4">
-          Redirecting in 3 seconds...
+          Redirecting in 10 seconds...
         </p>
       </div>
     </div>

@@ -37,59 +37,114 @@ function AuthCallbackContent() {
 
       if (code) {
         // Exchange code for session
+        console.log("Exchanging OAuth code for session...");
         const { data, error: exchangeError } =
           await supabase.auth.exchangeCodeForSession(code);
 
         if (exchangeError) {
           console.error("Error exchanging code for session:", exchangeError);
-          const exchangeErrorMessage =
-            typeof exchangeError === "string"
-              ? exchangeError
-              : (exchangeError as any)?.message || "Unknown error";
-          router.push(
-            `/auth/error?message=${encodeURIComponent(exchangeErrorMessage)}`,
+          console.error(
+            "Full error object:",
+            JSON.stringify(exchangeError, null, 2),
           );
+
+          // Extract detailed error information
+          const errorDetails = {
+            message: exchangeError.message || "Unknown error",
+            status: exchangeError.status,
+            code: (exchangeError as any).code || "unknown_code",
+          };
+
+          console.error("Extracted error details:", errorDetails);
+
+          const errorParams = new URLSearchParams({
+            error: errorDetails.code,
+            error_description: `${errorDetails.message} (Status: ${errorDetails.status})`,
+          });
+
+          router.push(`/auth/error?${errorParams.toString()}`);
           return;
         }
 
-        console.log("Session exchanged successfully:", data.session);
-        console.log("Session user ID:", data.session.user.id);
-        console.log("Session user email:", data.session.user.email);
-        console.log("Session user metadata:", data.session.user.user_metadata);
+        console.log("Session exchanged successfully!");
+        console.log("Session user ID:", data.session?.user.id);
+        console.log("Session user email:", data.session?.user.email);
+        console.log("Session user metadata:", data.session?.user.user_metadata);
+        console.log("Session app metadata:", data.session?.user.app_metadata);
 
         if (data.session) {
+          // Wait a moment for the trigger to execute
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
           // Get user to determine role and redirect
-          const { data: userData } = await supabase.auth.getUser();
+          const { data: userData, error: userError } =
+            await supabase.auth.getUser();
+
+          if (userError) {
+            console.error("Error getting user after session:", userError);
+            router.push(
+              `/auth/error?message=${encodeURIComponent(`Failed to get user: ${userError.message}`)}`,
+            );
+            return;
+          }
+
           if (userData.user) {
             console.log("User authenticated:", userData.user.email);
+            console.log("User app_metadata:", userData.user.app_metadata);
 
-            // Determine user role based on email
-            const email = userData.user.email || "";
-            const isAdmin =
-              email.includes("@admin") || email.includes("yourdomain.com");
-
-            console.log("Email:", email);
-            console.log("Is Admin:", isAdmin);
-            console.log("User ID:", userData.user.id);
-
-            // Check if profile exists
+            // Check if profile exists with detailed error handling
             const { data: profile, error: profileError } = await supabase
               .from("profiles")
-              .select("id, database_role")
+              .select("id, database_role, full_name, created_at")
               .eq("id", userData.user.id)
               .single();
 
             console.log("Profile query result:", profile);
             console.log("Profile query error:", profileError);
 
+            if (profileError) {
+              console.error("Profile query failed:", profileError);
+              console.error(
+                "Full error object:",
+                JSON.stringify(profileError, null, 2),
+              );
+
+              // Try to debug the issue
+              try {
+                const { data: debugData } = await supabase.rpc(
+                  "debug_user_creation",
+                  {
+                    user_id: userData.user.id,
+                  } as any,
+                );
+                console.log("Debug user creation data:", debugData);
+              } catch (debugError) {
+                console.error("Debug function failed:", debugError);
+              }
+
+              router.push(
+                `/auth/error?message=${encodeURIComponent(`Profile creation failed: ${profileError.message}`)}`,
+              );
+              return;
+            }
+
             if (profile) {
               // Existing user - redirect to dashboard
+              const userRole =
+                userData.user.app_metadata?.role ||
+                (profile as any).database_role;
+              const isAdmin = userRole === "admin";
               const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
               console.log("Existing user, redirecting to:", redirectUrl);
               router.push(redirectUrl);
             } else {
-              // New user - redirect to profile creation
-              const profileCreationUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${userData.user.user_metadata?.full_name || email.split("@")[0]}`;
+              // New user - this shouldn't happen with the trigger, but handle it
+              console.log("No profile found - trigger may have failed");
+              const email = userData.user.email || "";
+              const isAdmin =
+                email.includes("@admin") || email.includes("yourdomain.com");
+
+              const profileCreationUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${encodeURIComponent(userData.user.user_metadata?.full_name || email.split("@")[0])}`;
               console.log(
                 "New user, redirecting to profile creation:",
                 profileCreationUrl,
