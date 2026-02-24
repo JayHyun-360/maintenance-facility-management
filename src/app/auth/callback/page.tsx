@@ -53,6 +53,9 @@ function AuthCallbackContent() {
         }
 
         console.log("Session exchanged successfully:", data.session);
+        console.log("Session user ID:", data.session.user.id);
+        console.log("Session user email:", data.session.user.email);
+        console.log("Session user metadata:", data.session.user.user_metadata);
 
         if (data.session) {
           // Get user to determine role and redirect
@@ -65,20 +68,32 @@ function AuthCallbackContent() {
             const isAdmin =
               email.includes("@admin") || email.includes("yourdomain.com");
 
+            console.log("Email:", email);
+            console.log("Is Admin:", isAdmin);
+            console.log("User ID:", userData.user.id);
+
             // Check if profile exists
-            const { data: profile } = await supabase
+            const { data: profile, error: profileError } = await supabase
               .from("profiles")
-              .select("id")
+              .select("id, database_role")
               .eq("id", userData.user.id)
               .single();
+
+            console.log("Profile query result:", profile);
+            console.log("Profile query error:", profileError);
 
             if (profile) {
               // Existing user - redirect to dashboard
               const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
+              console.log("Existing user, redirecting to:", redirectUrl);
               router.push(redirectUrl);
             } else {
               // New user - redirect to profile creation
               const profileCreationUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${userData.user.user_metadata?.full_name || email.split("@")[0]}`;
+              console.log(
+                "New user, redirecting to profile creation:",
+                profileCreationUrl,
+              );
               router.push(profileCreationUrl);
             }
           }
@@ -108,40 +123,7 @@ function AuthCallbackContent() {
           router.push("/auth/error?message=No authentication parameters found");
         }
       }
-
-        // Get user to determine role and redirect
-        const { data: userData } = await supabase.auth.getUser();
-        if (userData.user) {
-          console.log("User authenticated:", userData.user.email);
-
-          // Determine user role based on email
-          const email = userData.user.email || "";
-          const isAdmin =
-            email.includes("@admin") || email.includes("yourdomain.com");
-
-          // Check if profile exists
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("id")
-            .eq("id", userData.user.id)
-            .single();
-
-          if (profile) {
-            // Existing user - redirect to dashboard
-            const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
-            router.push(redirectUrl);
-          } else {
-            // New user - redirect to profile creation
-            const profileCreationUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${userData.user.user_metadata?.full_name || email.split("@")[0]}`;
-            router.push(profileCreationUrl);
-          }
-        }
-      } else {
-        console.log("No session found after callback");
-        router.push("/auth/error?message=No authentication parameters found");
-      }
-    }
-  };
+    };
 
     handleAuthCallback();
   }, [router, searchParams, supabase]);
