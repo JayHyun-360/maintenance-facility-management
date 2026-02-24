@@ -161,8 +161,8 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
             // Check if profile exists with detailed error handling
             const { data: profile, error: profileError } = await supabase
               .from("profiles")
-              .select("id, database_role, full_name, created_at")
-              .eq("id", userData.user.id)
+              .select("id, user_id, database_role, full_name, created_at")
+              .eq("user_id", userData.user.id)
               .single();
 
             console.log("Profile query result:", profile);

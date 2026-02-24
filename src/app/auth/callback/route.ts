@@ -111,7 +111,7 @@ export async function GET(request: NextRequest) {
     console.log("Checking if profile exists...");
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id, database_role, full_name")
+      .select("id, user_id, database_role, full_name")
       .eq("user_id", data.session.user.id)
       .single();
 
