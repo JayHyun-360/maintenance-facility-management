@@ -67,6 +67,23 @@ function ProfileCreationContent() {
 
         if (!session) {
           console.error("=== NO SESSION FOUND AFTER ALL ATTEMPTS ===");
+          console.log("Session check details:");
+          console.log("- Total attempts made: 5");
+          console.log("- Each attempt included refreshSession() call");
+          console.log(
+            "- Progressive delays: 800ms, 1000ms, 1200ms, 1400ms, 1600ms",
+          );
+          console.log("- Final result: No session object returned");
+
+          // Check if we're being redirected from error page
+          const referrer = document.referrer;
+          console.log("Document referrer:", referrer);
+          if (referrer.includes("/auth/error")) {
+            console.log(
+              "Came from error page - this confirms the timer redirect issue",
+            );
+          }
+
           console.log("Redirecting to login due to no session");
           router.push("/login");
           return;

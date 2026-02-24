@@ -3,12 +3,15 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 function AuthErrorContent() {
   const searchParams = useSearchParams();
   const [errorMessage, setErrorMessage] = useState<string>(
     "Unknown authentication error",
   );
+  const [hasValidSession, setHasValidSession] = useState<boolean>(false);
+  const [redirectCountdown, setRedirectCountdown] = useState<number>(10);
 
   useEffect(() => {
     // Get error message from URL parameters
@@ -24,12 +27,57 @@ function AuthErrorContent() {
       );
     }
 
-    // Auto-redirect to login after 10 seconds (increased for debugging)
-    const timer = setTimeout(() => {
-      window.location.href = "/login";
-    }, 10000);
+    // Check if user has a valid session before considering auto-redirect
+    const checkSessionAndRedirect = async () => {
+      try {
+        const supabase = createClient();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-    return () => clearTimeout(timer);
+        if (session) {
+          console.log(
+            "Valid session found on error page - not redirecting to login",
+          );
+          setHasValidSession(true);
+          return; // Don't redirect if session is valid
+        }
+
+        // Only redirect if no valid session
+        console.log(
+          "No valid session found - starting countdown to login redirect",
+        );
+        let countdown = 10;
+        setRedirectCountdown(countdown);
+
+        const countdownInterval = setInterval(() => {
+          countdown -= 1;
+          setRedirectCountdown(countdown);
+
+          if (countdown <= 0) {
+            clearInterval(countdownInterval);
+            console.log("Redirecting to login due to no valid session");
+            window.location.href = "/login";
+          }
+        }, 1000);
+
+        return () => clearInterval(countdownInterval);
+      } catch (error) {
+        console.error("Error checking session on error page:", error);
+        // Fallback to redirect if session check fails
+        const timer = setTimeout(() => {
+          window.location.href = "/login";
+        }, 10000);
+        return () => clearTimeout(timer);
+      }
+    };
+
+    // Wait a moment for session to potentially be available
+    const sessionTimer = setTimeout(checkSessionAndRedirect, 2000);
+
+    return () => {
+      clearTimeout(sessionTimer);
+    };
   }, [searchParams]);
 
   return (
@@ -59,21 +107,44 @@ function AuthErrorContent() {
             {errorMessage}
           </p>
         </div>
-        <p className="text-gray-600 mb-6">
-          There was an error signing you in. You will be redirected to the login
-          page automatically.
-        </p>
 
-        <Link
-          href="/login"
-          className="inline-block bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors"
-        >
-          Return to Login
-        </Link>
+        {hasValidSession ? (
+          <div className="mb-6">
+            <p className="text-green-600 font-medium mb-2">
+              ✓ Valid session detected
+            </p>
+            <p className="text-gray-600">
+              You can continue to the dashboard or return to login.
+            </p>
+          </div>
+        ) : (
+          <div className="mb-6">
+            <p className="text-gray-600">
+              There was an error signing you in. You will be redirected to the
+              login page automatically.
+            </p>
+            <p className="text-sm text-gray-500 mt-2">
+              Redirecting in {redirectCountdown} seconds...
+            </p>
+          </div>
+        )}
 
-        <p className="text-sm text-gray-500 mt-4">
-          Redirecting in 10 seconds...
-        </p>
+        <div className="flex gap-3 justify-center">
+          <Link
+            href="/login"
+            className="inline-block bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-green-600 transition-colors"
+          >
+            Return to Login
+          </Link>
+          {hasValidSession && (
+            <Link
+              href="/dashboard"
+              className="inline-block bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              Go to Dashboard
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );
