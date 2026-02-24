@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function AuthError() {
+function AuthErrorContent() {
   const searchParams = useSearchParams();
   const [errorMessage, setErrorMessage] = useState<string>(
     "Unknown authentication error",
@@ -76,5 +76,24 @@ export default function AuthError() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function AuthError() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
+            <h1 className="text-xl font-semibold text-gray-900 mb-2">
+              Loading...
+            </h1>
+          </div>
+        </div>
+      }
+    >
+      <AuthErrorContent />
+    </Suspense>
   );
 }
