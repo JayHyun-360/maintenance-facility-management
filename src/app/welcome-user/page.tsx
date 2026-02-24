@@ -41,26 +41,37 @@ export default function WelcomeUser() {
 
   const handleGetStarted = async () => {
     try {
-      // Check current user session and role
+      // First check if we have a valid session
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
 
-      if (!user) {
-        console.error("No authenticated user found");
+      if (sessionError || !session) {
+        console.error("No valid session found:", sessionError);
         router.push("/login");
         return;
       }
 
-      // Get user role from app metadata (Circuit Breaker pattern)
-      const userRole = user.app_metadata?.role || "user";
+      console.log("Session found:", session);
 
-      console.log("User role:", userRole);
+      // Get user from session for role checking
+      const user = session.user;
+
+      // Get user role from app metadata (Circuit Breaker pattern)
+      const userRole =
+        user.app_metadata?.role || user.user_metadata?.role || "user";
+
+      console.log("User role from metadata:", userRole);
+      console.log("App metadata:", user.app_metadata);
+      console.log("User metadata:", user.user_metadata);
 
       // Redirect based on role
       if (userRole === "admin") {
+        console.log("Redirecting to admin dashboard");
         router.push("/admin/dashboard");
       } else {
+        console.log("Redirecting to user dashboard");
         router.push("/dashboard"); // User portal/dashboard
       }
     } catch (error) {
