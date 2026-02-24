@@ -113,7 +113,7 @@ export async function GET(request: NextRequest) {
       .from("profiles")
       .select("id, user_id, database_role, full_name")
       .eq("user_id", data.session.user.id)
-      .single();
+      .maybeSingle();
 
     console.log("Profile check result:", profile);
     console.log("Profile error:", profileError);
@@ -146,7 +146,7 @@ export async function GET(request: NextRequest) {
     if (profile) {
       // Existing user - redirect to appropriate dashboard
       const userRole =
-        data.session.user.app_metadata?.role || (profile as any).database_role;
+        data.session.user.app_metadata?.role || profile.database_role;
       const isAdmin = userRole === "admin";
       redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
       console.log("Existing user, redirecting to:", redirectUrl);

@@ -163,7 +163,7 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
               .from("profiles")
               .select("id, user_id, database_role, full_name, created_at")
               .eq("user_id", userData.user.id)
-              .single();
+              .maybeSingle();
 
             console.log("Profile query result:", profile);
             console.log("Profile query error:", profileError);
@@ -197,8 +197,7 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
             if (profile) {
               // Existing user - redirect to dashboard
               const userRole =
-                userData.user.app_metadata?.role ||
-                (profile as any).database_role;
+                userData.user.app_metadata?.role || profile.database_role;
               const isAdmin = userRole === "admin";
               const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
               console.log("Existing user, redirecting to:", redirectUrl);
