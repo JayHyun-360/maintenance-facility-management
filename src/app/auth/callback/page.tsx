@@ -3,18 +3,18 @@ import { redirect } from "next/navigation";
 import AuthCallbackClient from "./AuthCallbackClient";
 
 interface CallbackPageProps {
-  searchParams: {
+  searchParams: Promise<{
     code?: string;
     error?: string;
     error_description?: string;
     next?: string;
-  };
+  }>;
 }
 
 export default async function AuthCallbackPage({
   searchParams,
 }: CallbackPageProps) {
-  const { code, error, error_description, next } = searchParams;
+  const { code, error, error_description, next } = await searchParams;
 
   // If there's an error, redirect to error page
   if (error) {
@@ -135,5 +135,5 @@ export default async function AuthCallbackPage({
   }
 
   // If no code, show client-side callback (for fallback cases)
-  return <AuthCallbackClient searchParams={searchParams} />;
+  return <AuthCallbackClient searchParams={await searchParams} />;
 }
