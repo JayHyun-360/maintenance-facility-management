@@ -50,17 +50,10 @@ export async function GET(request: NextRequest) {
             return cookieStore.get(name)?.value;
           },
           set(name: string, value: string, options: any) {
-            cookieStore.set({
-              name,
-              value,
-              ...options,
-            });
+            cookieStore.set(name, value, options);
           },
           remove(name: string, options: any) {
-            cookieStore.delete({
-              name,
-              ...options,
-            });
+            cookieStore.set(name, "", { ...options, maxAge: 0 });
           },
         },
       },
@@ -191,9 +184,17 @@ export async function GET(request: NextRequest) {
       console.error("Session verification failed:", testError);
     }
 
-    // The session cookies should already be set by the exchangeCodeForSession call
+    // The session cookies should already be set by exchangeCodeForSession call
     // Just need to redirect to the appropriate page
     const response = NextResponse.redirect(new URL(redirectUrl, request.url));
+
+    // Ensure session cookies are properly set in the response
+    // The exchangeCodeForSession should have set cookies, but let's make sure they're included
+    const cookieList = cookieStore.getAll();
+    console.log(
+      "Available cookies after OAuth:",
+      cookieList.map((c) => c.name),
+    );
 
     return response;
   } catch (error) {

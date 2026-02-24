@@ -67,12 +67,53 @@ function ProfileCreationContent() {
           } catch (refreshError) {
             console.log("Refresh session failed:", refreshError);
           }
+
+          // Third attempt: Check if we have URL parameters indicating successful OAuth
+          if (
+            !session &&
+            searchParams.has("role") &&
+            searchParams.has("name")
+          ) {
+            console.log(
+              "OAuth parameters detected, attempting manual session recovery...",
+            );
+
+            // Check for Supabase cookies directly
+            const hasSupabaseCookies =
+              document.cookie.includes("sb-") ||
+              document.cookie.includes("supabase");
+            console.log("Supabase cookies detected:", hasSupabaseCookies);
+
+            if (hasSupabaseCookies) {
+              // Try to initialize session from URL detection
+              console.log(
+                "Attempting to initialize session from OAuth callback context...",
+              );
+
+              // Wait a bit more for cookies to be processed
+              await new Promise((resolve) => setTimeout(resolve, 2000));
+
+              // Try getSession one more time
+              const {
+                data: { session: retrySession },
+              } = await supabase.auth.getSession();
+              if (retrySession?.user?.id) {
+                session = retrySession;
+                console.log("Session recovered on retry with OAuth context");
+              }
+            }
+          }
         }
 
         if (!session || !session.user?.id) {
           console.error(
             "No valid session found in profile creation after all attempts",
           );
+          console.error("URL params:", {
+            role: searchParams.get("role"),
+            name: searchParams.get("name"),
+          });
+          console.error("Cookies available:", document.cookie);
           router.push("/login");
           return;
         }
