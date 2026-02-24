@@ -21,12 +21,86 @@ function AuthCallbackContent() {
       console.log("Hash:", url.hash);
       console.log("Search params:", Object.fromEntries(searchParams.entries()));
 
-      // Wait a moment for Supabase to process the URL
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      // For PKCE flow, we need to explicitly handle the OAuth callback
+      // Check if we have OAuth code in URL
+      const code = searchParams.get("code");
+      const error = searchParams.get("error");
 
-      // Let Supabase handle the session automatically from URL
-      // This will parse both query params and fragments with PKCE flow
-      const { data, error } = await supabase.auth.getSession();
+      console.log("OAuth code:", code);
+      console.log("OAuth error:", error);
+
+      if (error) {
+        console.error("OAuth error:", error);
+        router.push(`/auth/error?message=${encodeURIComponent(error)}`);
+        return;
+      }
+
+      if (code) {
+        // Exchange code for session
+        const { data, error: exchangeError } =
+          await supabase.auth.exchangeCodeForSession(code);
+
+        if (exchangeError) {
+          console.error("Error exchanging code for session:", exchangeError);
+          router.push(
+            `/auth/error?message=${encodeURIComponent(exchangeError.message)}`,
+          );
+          return;
+        }
+
+        console.log("Session exchanged successfully:", data.session);
+
+        if (data.session) {
+          // Get user to determine role and redirect
+          const { data: userData } = await supabase.auth.getUser();
+          if (userData.user) {
+            console.log("User authenticated:", userData.user.email);
+
+            // Determine user role based on email
+            const email = userData.user.email || "";
+            const isAdmin =
+              email.includes("@admin") || email.includes("yourdomain.com");
+
+            // Check if profile exists
+            const { data: profile } = await supabase
+              .from("profiles")
+              .select("id")
+              .eq("id", userData.user.id)
+              .single();
+
+            if (profile) {
+              // Existing user - redirect to dashboard
+              const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
+              router.push(redirectUrl);
+            } else {
+              // New user - redirect to profile creation
+              const profileCreationUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${userData.user.user_metadata?.full_name || email.split("@")[0]}`;
+              router.push(profileCreationUrl);
+            }
+          }
+        }
+      } else {
+        // Try to get existing session (for direct visits)
+        const { data: sessionData, error: sessionError } =
+          await supabase.auth.getSession();
+
+        if (sessionError) {
+          console.error("Error getting session:", sessionError);
+          router.push(
+            `/auth/error?message=${encodeURIComponent(sessionError.message)}`,
+          );
+          return;
+        }
+
+        if (sessionData.session) {
+          console.log("Existing session found:", sessionData.session);
+          // Redirect to appropriate dashboard based on session
+          router.push("/dashboard");
+        } else {
+          console.log("No session found and no OAuth code");
+          router.push("/auth/error?message=No authentication parameters found");
+        }
+      }
 
       if (error) {
         console.error("Error getting session:", error);
