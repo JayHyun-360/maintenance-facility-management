@@ -45,6 +45,19 @@ function ProfileCreationContent() {
         }
 
         console.log("Session found in profile creation:", session.user.email);
+
+        // Check if profile already exists (shouldn't happen but handle gracefully)
+        const { data: existingProfile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("user_id", session.user.id)
+          .maybeSingle();
+
+        if (existingProfile) {
+          console.log("Profile already exists, redirecting to dashboard");
+          router.push("/dashboard");
+          return;
+        }
       } catch (error) {
         console.error("Error checking session in profile creation:", error);
         router.push("/login");
@@ -72,18 +85,18 @@ function ProfileCreationContent() {
 
     setLoading(true);
     try {
-      // Get current user
+      // Get current session (more reliable than getUser for PKCE flow)
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      if (!user) {
+      if (!session) {
         throw new Error("User not authenticated");
       }
 
-      // Create profile in database using insert (since user shouldn't exist yet)
+      // Create profile in database using user_id field
       const { error: profileError } = await supabase.from("profiles").insert({
-        id: user.id,
+        user_id: session.user.id, // Use user_id instead of id
         full_name: fullName,
         database_role: role,
         visual_role: role === "admin" ? "Staff" : profileData.visualRole,
@@ -109,8 +122,16 @@ function ProfileCreationContent() {
         },
       });
 
+      // Verify session is still valid after profile creation
+      const { data: updatedSession } = await supabase.auth.getSession();
+      if (!updatedSession?.session) {
+        console.error("Session lost after profile creation");
+        throw new Error("Session lost after profile creation");
+      }
+
       // Redirect to welcome screen
       const welcomeUrl = role === "admin" ? "/welcome-admin" : "/welcome-user";
+      console.log("Profile created successfully, redirecting to:", welcomeUrl);
       router.push(welcomeUrl);
     } catch (error) {
       console.error("Profile creation error:", error);

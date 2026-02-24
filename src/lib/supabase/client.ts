@@ -11,8 +11,8 @@ export const createClient = () => {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         auth: {
-          // Let server-side handle PKCE, client just needs basic session management
-          flowType: "implicit", // Use implicit flow for client-side
+          // Use PKCE flow to match server-side configuration
+          flowType: "pkce",
           autoRefreshToken: true,
           persistSession: true,
           detectSessionInUrl: false, // Let server-side handle this
