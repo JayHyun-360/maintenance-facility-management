@@ -29,17 +29,32 @@ function ProfileCreationContent() {
     // Check if user is authenticated with retry logic
     const checkAuth = async () => {
       try {
+        console.log("=== PROFILE CREATION SESSION CHECK ===");
+
         // Wait longer for session to be available and stable
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        // Try multiple times to get session
+        // Try multiple times to get session with detailed logging
         let session = null;
         for (let i = 0; i < 3; i++) {
+          console.log(`Session attempt ${i + 1}/3`);
           const result = await supabase.auth.getSession();
+          console.log(`Session result ${i + 1}:`, result);
+
           if (result.data?.session) {
             session = result.data.session;
+            console.log(`Session found on attempt ${i + 1}:`, {
+              userId: session.user.id,
+              email: session.user.email,
+              expiresAt: session.expires_at,
+              hasAccessToken: !!session.access_token,
+              hasRefreshToken: !!session.refresh_token,
+            });
             break;
+          } else {
+            console.log(`No session on attempt ${i + 1}, error:`, result.error);
           }
+
           // Wait between attempts
           if (i < 2) {
             await new Promise((resolve) => setTimeout(resolve, 500));
@@ -47,29 +62,37 @@ function ProfileCreationContent() {
         }
 
         if (!session) {
-          console.log(
-            "No session found in profile creation after retries, redirecting to login",
-          );
+          console.error("=== NO SESSION FOUND AFTER ALL ATTEMPTS ===");
+          console.log("Redirecting to login due to no session");
           router.push("/login");
           return;
         }
 
+        console.log("=== SESSION VALIDATION SUCCESSFUL ===");
         console.log("Session found in profile creation:", session.user.email);
 
         // Check if profile already exists (shouldn't happen but handle gracefully)
-        const { data: existingProfile } = await supabase
+        console.log("Checking for existing profile...");
+        const { data: existingProfile, error: profileError } = await supabase
           .from("profiles")
-          .select("id")
+          .select("id, user_id, database_role, full_name")
           .eq("user_id", session.user.id)
           .maybeSingle();
+
+        console.log("Existing profile check result:", {
+          existingProfile,
+          profileError,
+        });
 
         if (existingProfile) {
           console.log("Profile already exists, redirecting to dashboard");
           router.push("/dashboard");
           return;
         }
+
+        console.log("=== PROFILE CREATION READY ===");
       } catch (error) {
-        console.error("Error checking session in profile creation:", error);
+        console.error("=== ERROR IN SESSION CHECK ===", error);
         router.push("/login");
       }
     };
@@ -95,16 +118,37 @@ function ProfileCreationContent() {
 
     setLoading(true);
     try {
+      console.log("=== PROFILE CREATION SUBMISSION START ===");
+
       // Get current session (more reliable than getUser for PKCE flow)
+      console.log("Getting session for profile creation...");
       const {
         data: { session },
       } = await supabase.auth.getSession();
 
       if (!session) {
+        console.error("No session found during profile creation submission");
         throw new Error("User not authenticated");
       }
 
+      console.log("Session found for profile creation:", {
+        userId: session.user.id,
+        email: session.user.email,
+        expiresAt: session.expires_at,
+      });
+
       // Create profile in database using user_id field
+      console.log("Creating profile with data:", {
+        user_id: session.user.id,
+        full_name: fullName,
+        database_role: role,
+        visual_role: role === "admin" ? "Staff" : profileData.visualRole,
+        educational_level:
+          role === "admin" ? null : profileData.educationalLevel || null,
+        department: role === "admin" ? null : profileData.department || null,
+        is_anonymous: false,
+      });
+
       const { error: profileError } = await supabase.from("profiles").insert({
         user_id: session.user.id, // Use user_id instead of id
         full_name: fullName,
@@ -121,7 +165,10 @@ function ProfileCreationContent() {
         throw profileError;
       }
 
+      console.log("Profile created successfully");
+
       // Update user metadata
+      console.log("Updating user metadata...");
       await supabase.auth.updateUser({
         data: {
           app_metadata: { role },
@@ -132,37 +179,57 @@ function ProfileCreationContent() {
         },
       });
 
+      console.log("User metadata updated successfully");
+
       // Wait for session to be fully updated and persisted
+      console.log("Waiting for session to be fully updated...");
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Verify session is still valid after profile creation
+      console.log("=== POST-CREATION SESSION VALIDATION ===");
       let finalSession = null;
       for (let i = 0; i < 3; i++) {
+        console.log(`Post-creation session check ${i + 1}/3`);
         const result = await supabase.auth.getSession();
+        console.log(`Post-creation session result ${i + 1}:`, result);
+
         if (result.data?.session) {
           finalSession = result.data.session;
+          console.log(`Session validated on attempt ${i + 1}:`, {
+            userId: finalSession.user.id,
+            email: finalSession.user.email,
+            expiresAt: finalSession.expires_at,
+            hasAccessToken: !!finalSession.access_token,
+            hasRefreshToken: !!finalSession.refresh_token,
+          });
           break;
+        } else {
+          console.log(
+            `No session on post-creation attempt ${i + 1}, error:`,
+            result.error,
+          );
         }
+
         if (i < 2) {
           await new Promise((resolve) => setTimeout(resolve, 500));
         }
       }
 
       if (!finalSession) {
-        console.error("Session lost after profile creation");
+        console.error("=== SESSION LOST AFTER PROFILE CREATION ===");
         alert("Session lost. Please sign in again.");
         router.push("/login");
         return;
       }
 
-      console.log("Profile creation completed successfully, session validated");
+      console.log("=== PROFILE CREATION COMPLETED SUCCESSFULLY ===");
 
       // Redirect to welcome screen
       const welcomeUrl = role === "admin" ? "/welcome-admin" : "/welcome-user";
       console.log("Redirecting to welcome screen:", welcomeUrl);
       router.push(welcomeUrl);
     } catch (error) {
-      console.error("Profile creation error:", error);
+      console.error("=== PROFILE CREATION ERROR ===", error);
       alert("Error creating profile. Please try again.");
     } finally {
       setLoading(false);
