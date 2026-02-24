@@ -26,15 +26,28 @@ function ProfileCreationContent() {
     if (roleParam) setRole(roleParam);
     if (nameParam) setFullName(nameParam);
 
-    // Check if user is authenticated
+    // Check if user is authenticated with retry logic
     const checkAuth = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      try {
+        // Wait a moment for session to be available
+        await new Promise((resolve) => setTimeout(resolve, 500));
 
-      if (!session) {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session) {
+          console.log(
+            "No session found in profile creation, redirecting to login",
+          );
+          router.push("/login");
+          return;
+        }
+
+        console.log("Session found in profile creation:", session.user.email);
+      } catch (error) {
+        console.error("Error checking session in profile creation:", error);
         router.push("/login");
-        return;
       }
     };
 

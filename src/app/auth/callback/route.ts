@@ -103,9 +103,9 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Wait a moment for the trigger to execute
-    console.log("Waiting for database trigger...");
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // Wait a moment for the trigger to execute and session to be fully established
+    console.log("Waiting for database trigger and session persistence...");
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Check if profile exists
     console.log("Checking if profile exists...");
@@ -118,32 +118,22 @@ export async function GET(request: NextRequest) {
     console.log("Profile check result:", profile);
     console.log("Profile error:", profileError);
 
+    let redirectUrl: string;
+
     if (profileError) {
       console.error("Profile query failed:", profileError);
 
-      // Try to debug the issue
-      try {
-        const { data: debugData } = await supabase.rpc("debug_user_creation", {
-          user_id: data.session.user.id,
-        } as any);
-        console.log("Debug user creation data:", debugData);
-      } catch (debugError) {
-        console.error("Debug function failed:", debugError);
-      }
-
-      const errorParams = new URLSearchParams({
-        error: "profile_creation_failed",
-        error_description: `Profile creation failed: ${profileError.message}`,
-      });
-
-      return NextResponse.redirect(
-        new URL(`/auth/error?${errorParams.toString()}`, request.url),
+      // If profile query fails but session is valid, assume new user
+      console.log(
+        "Profile query failed but session is valid, assuming new user",
       );
-    }
+      const email = data.session.user.email || "";
+      const isAdmin =
+        email.includes("@admin") || email.includes("yourdomain.com");
 
-    let redirectUrl: string;
-
-    if (profile) {
+      redirectUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${encodeURIComponent(data.session.user.user_metadata?.full_name || email.split("@")[0])}`;
+      console.log("Fallback: redirecting to profile creation:", redirectUrl);
+    } else if (profile) {
       // Existing user - redirect to appropriate dashboard
       const userRole =
         data.session.user.app_metadata?.role || profile.database_role;
@@ -166,12 +156,6 @@ export async function GET(request: NextRequest) {
     // The session cookies should already be set by the exchangeCodeForSession call
     // Just need to redirect to the appropriate page
     const response = NextResponse.redirect(new URL(redirectUrl, request.url));
-
-    // Ensure we preserve any session cookies that were set
-    const requestCookies = request.headers.get("cookie") || "";
-    if (requestCookies) {
-      response.headers.set("Set-Cookie", requestCookies);
-    }
 
     return response;
   } catch (error) {
