@@ -21,10 +21,10 @@ export async function middleware(request: NextRequest) {
   // Check if user is authenticated
   const supabase = await createServerClient();
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession(); // Use getSession() for PKCE flow
 
-  if (!user) {
+  if (!session) {
     // Redirect to login if not authenticated (except for root page which handles client-side)
     if (pathname !== "/") {
       const loginUrl = new URL("/login", request.url);
@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Get user role from app metadata (Circuit Breaker pattern)
-  const userRole = user.app_metadata?.role || "user";
+  const userRole = session.user.app_metadata?.role || "user";
 
   // Handle root redirect for authenticated users
   if (pathname === "/") {

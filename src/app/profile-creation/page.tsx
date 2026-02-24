@@ -29,16 +29,26 @@ function ProfileCreationContent() {
     // Check if user is authenticated with retry logic
     const checkAuth = async () => {
       try {
-        // Wait a moment for session to be available
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        // Wait longer for session to be available and stable
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        const {
-          data: { session },
-        } = await supabase.auth.getSession();
+        // Try multiple times to get session
+        let session = null;
+        for (let i = 0; i < 3; i++) {
+          const result = await supabase.auth.getSession();
+          if (result.data?.session) {
+            session = result.data.session;
+            break;
+          }
+          // Wait between attempts
+          if (i < 2) {
+            await new Promise((resolve) => setTimeout(resolve, 500));
+          }
+        }
 
         if (!session) {
           console.log(
-            "No session found in profile creation, redirecting to login",
+            "No session found in profile creation after retries, redirecting to login",
           );
           router.push("/login");
           return;
@@ -122,16 +132,34 @@ function ProfileCreationContent() {
         },
       });
 
+      // Wait for session to be fully updated and persisted
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // Verify session is still valid after profile creation
-      const { data: updatedSession } = await supabase.auth.getSession();
-      if (!updatedSession?.session) {
-        console.error("Session lost after profile creation");
-        throw new Error("Session lost after profile creation");
+      let finalSession = null;
+      for (let i = 0; i < 3; i++) {
+        const result = await supabase.auth.getSession();
+        if (result.data?.session) {
+          finalSession = result.data.session;
+          break;
+        }
+        if (i < 2) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        }
       }
+
+      if (!finalSession) {
+        console.error("Session lost after profile creation");
+        alert("Session lost. Please sign in again.");
+        router.push("/login");
+        return;
+      }
+
+      console.log("Profile creation completed successfully, session validated");
 
       // Redirect to welcome screen
       const welcomeUrl = role === "admin" ? "/welcome-admin" : "/welcome-user";
-      console.log("Profile created successfully, redirecting to:", welcomeUrl);
+      console.log("Redirecting to welcome screen:", welcomeUrl);
       router.push(welcomeUrl);
     } catch (error) {
       console.error("Profile creation error:", error);
