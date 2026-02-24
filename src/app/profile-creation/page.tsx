@@ -36,26 +36,18 @@ function ProfileCreationContent() {
         // Check localStorage as well for debugging
         console.log("LocalStorage keys:", Object.keys(localStorage));
 
-        // Wait longer for session to be available and stable
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        // Wait for session to be available with optimized retry logic
+        await new Promise((resolve) => setTimeout(resolve, 1500));
 
-        // Try multiple times to get session with detailed logging
+        // Try to get session with limited, optimized retries
         let session = null;
-        for (let i = 0; i < 8; i++) {
-          console.log(`Session attempt ${i + 1}/8`);
-
-          // First try to refresh session from cookies
-          try {
-            const refreshResult = await supabase.auth.refreshSession();
-            console.log(`Refresh attempt ${i + 1} result:`, refreshResult);
-          } catch (refreshError) {
-            console.log(`Refresh attempt ${i + 1} error:`, refreshError);
-          }
+        for (let i = 0; i < 3; i++) {
+          console.log(`Session attempt ${i + 1}/3`);
 
           const result = await supabase.auth.getSession();
           console.log(`Session result ${i + 1}:`, result);
 
-          // Check for actual session tokens, not just session object existence
+          // Check for actual session tokens
           const hasValidTokens =
             result.data?.session?.access_token &&
             result.data?.session?.refresh_token &&
@@ -69,7 +61,6 @@ function ProfileCreationContent() {
               expiresAt: session.expires_at,
               hasAccessToken: !!session.access_token,
               hasRefreshToken: !!session.refresh_token,
-              accessTokenLength: session.access_token?.length,
             });
             break;
           } else {
@@ -77,19 +68,11 @@ function ProfileCreationContent() {
               `No valid session tokens on attempt ${i + 1}, error:`,
               result.error,
             );
-            console.log(`Data object on attempt ${i + 1}:`, result.data);
-            console.log(`Session object details:`, {
-              hasSession: !!result.data?.session,
-              hasAccessToken: !!result.data?.session?.access_token,
-              hasRefreshToken: !!result.data?.session?.refresh_token,
-              hasUser: !!result.data?.session?.user,
-              userId: result.data?.session?.user?.id,
-            });
           }
 
-          // Wait between attempts with progressive delay
-          if (i < 7) {
-            const delay = 1000 + i * 300; // 1s, 1.3s, 1.6s, 1.9s, 2.2s, 2.5s, 2.8s
+          // Wait between attempts with fixed delay
+          if (i < 2) {
+            const delay = 1000; // Fixed 1s delay
             console.log(`Waiting ${delay}ms before next attempt...`);
             await new Promise((resolve) => setTimeout(resolve, delay));
           }
@@ -98,11 +81,8 @@ function ProfileCreationContent() {
         if (!session) {
           console.error("=== NO SESSION FOUND AFTER ALL ATTEMPTS ===");
           console.log("Session check details:");
-          console.log("- Total attempts made: 8");
-          console.log("- Each attempt included refreshSession() call");
-          console.log(
-            "- Progressive delays: 1s, 1.3s, 1.6s, 1.9s, 2.2s, 2.5s, 2.8s",
-          );
+          console.log("- Total attempts made: 3");
+          console.log("- Fixed 1s delays between attempts");
           console.log("- Final result: No valid session tokens found");
 
           // Check if we're being redirected from error page

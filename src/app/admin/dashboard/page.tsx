@@ -35,13 +35,32 @@ export default function AdminDashboard() {
   const supabase = createClient()!;
 
   useEffect(() => {
-    // Check authentication first
+    // Check authentication first with retry logic
     const checkAuth = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      let session = null;
+
+      // Try up to 2 times to get session
+      for (let i = 0; i < 2; i++) {
+        const result = await supabase.auth.getSession();
+
+        if (
+          result.data?.session?.access_token &&
+          result.data?.session?.user?.id
+        ) {
+          session = result.data.session;
+          break;
+        }
+
+        // Wait briefly before retry
+        if (i === 0) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        }
+      }
 
       if (!session) {
+        console.log(
+          "No valid session found in admin dashboard - redirecting to login",
+        );
         window.location.href = "/login";
         return;
       }

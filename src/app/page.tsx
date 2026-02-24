@@ -16,11 +16,8 @@ export default function Home() {
         } = await supabase.auth.getSession();
 
         if (!session) {
-          // Only redirect if we're not already being redirected by middleware
-          // This prevents race conditions
-          setTimeout(() => {
-            window.location.href = "/login";
-          }, 100);
+          // Let middleware handle server-side redirects to avoid race conditions
+          console.log("No session found - middleware will handle redirect");
         }
         // For authenticated users, middleware will handle the redirect
       } catch (error) {

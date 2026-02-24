@@ -47,7 +47,7 @@ function AuthErrorContent() {
         console.log(
           "No valid session found - starting countdown to login redirect",
         );
-        let countdown = 10;
+        let countdown = 5; // Reduced from 10 to 5 seconds
         setRedirectCountdown(countdown);
 
         const countdownInterval = setInterval(() => {
@@ -71,7 +71,7 @@ function AuthErrorContent() {
     };
 
     // Wait a moment for session to potentially be available
-    const sessionTimer = setTimeout(checkSessionAndRedirect, 2000);
+    const sessionTimer = setTimeout(checkSessionAndRedirect, 1000); // Reduced from 2000ms
 
     return () => {
       clearTimeout(sessionTimer);
