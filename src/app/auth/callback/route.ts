@@ -1,5 +1,6 @@
-import { createServerClient } from "@/lib/supabase/server";
+import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
@@ -39,7 +40,24 @@ export async function GET(request: NextRequest) {
 
   try {
     console.log("Creating server client for OAuth exchange...");
-    const supabase = await createServerClient();
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return cookieStore.get(name)?.value;
+          },
+          set(name: string, value: string, options?: any) {
+            cookieStore.set(name, value, options);
+          },
+          remove(name: string, options?: any) {
+            cookieStore.delete(name);
+          },
+        },
+      },
+    );
 
     // Exchange the code for a session
     console.log("Exchanging code for session...");
@@ -143,9 +161,9 @@ export async function GET(request: NextRequest) {
     const response = NextResponse.redirect(new URL(redirectUrl, request.url));
 
     // Ensure we preserve any session cookies that were set
-    const cookies = request.headers.get("cookie") || "";
-    if (cookies) {
-      response.headers.set("Set-Cookie", cookies);
+    const requestCookies = request.headers.get("cookie") || "";
+    if (requestCookies) {
+      response.headers.set("Set-Cookie", requestCookies);
     }
 
     return response;
