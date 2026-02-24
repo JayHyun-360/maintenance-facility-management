@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
 
     // Wait a moment for the trigger to execute and session to be fully established
     console.log("Waiting for database trigger and session persistence...");
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
     // Check if profile exists
     console.log("Checking if profile exists...");

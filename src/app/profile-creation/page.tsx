@@ -32,12 +32,16 @@ function ProfileCreationContent() {
         console.log("=== PROFILE CREATION SESSION CHECK ===");
 
         // Wait longer for session to be available and stable
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 2000));
 
         // Try multiple times to get session with detailed logging
         let session = null;
-        for (let i = 0; i < 3; i++) {
-          console.log(`Session attempt ${i + 1}/3`);
+        for (let i = 0; i < 5; i++) {
+          console.log(`Session attempt ${i + 1}/5`);
+
+          // Force session refresh from cookies
+          await supabase.auth.refreshSession();
+
           const result = await supabase.auth.getSession();
           console.log(`Session result ${i + 1}:`, result);
 
@@ -55,9 +59,9 @@ function ProfileCreationContent() {
             console.log(`No session on attempt ${i + 1}, error:`, result.error);
           }
 
-          // Wait between attempts
-          if (i < 2) {
-            await new Promise((resolve) => setTimeout(resolve, 500));
+          // Wait between attempts with progressive delay
+          if (i < 4) {
+            await new Promise((resolve) => setTimeout(resolve, 800 + i * 200));
           }
         }
 
@@ -188,8 +192,12 @@ function ProfileCreationContent() {
       // Verify session is still valid after profile creation
       console.log("=== POST-CREATION SESSION VALIDATION ===");
       let finalSession = null;
-      for (let i = 0; i < 3; i++) {
-        console.log(`Post-creation session check ${i + 1}/3`);
+      for (let i = 0; i < 5; i++) {
+        console.log(`Post-creation session check ${i + 1}/5`);
+
+        // Force session refresh after profile creation
+        await supabase.auth.refreshSession();
+
         const result = await supabase.auth.getSession();
         console.log(`Post-creation session result ${i + 1}:`, result);
 
@@ -210,8 +218,8 @@ function ProfileCreationContent() {
           );
         }
 
-        if (i < 2) {
-          await new Promise((resolve) => setTimeout(resolve, 500));
+        if (i < 4) {
+          await new Promise((resolve) => setTimeout(resolve, 800 + i * 200));
         }
       }
 
