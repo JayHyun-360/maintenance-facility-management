@@ -42,8 +42,12 @@ function AuthCallbackContent() {
 
         if (exchangeError) {
           console.error("Error exchanging code for session:", exchangeError);
+          const exchangeErrorMessage =
+            typeof exchangeError === "string"
+              ? exchangeError
+              : (exchangeError as any)?.message || "Unknown error";
           router.push(
-            `/auth/error?message=${encodeURIComponent(exchangeError.message)}`,
+            `/auth/error?message=${encodeURIComponent(exchangeErrorMessage)}`,
           );
           return;
         }
@@ -81,19 +85,22 @@ function AuthCallbackContent() {
         }
       } else {
         // Try to get existing session (for direct visits)
-        const { data: sessionData, error: sessionError } =
-          await supabase.auth.getSession();
+        const { data: sessionData, error } = await supabase.auth.getSession();
 
-        if (sessionError) {
-          console.error("Error getting session:", sessionError);
+        if (error) {
+          console.error("Error getting session:", error);
+          const errorMessage =
+            typeof error === "string"
+              ? error
+              : (error as any)?.message || "Unknown error";
           router.push(
-            `/auth/error?message=${encodeURIComponent(sessionError.message)}`,
+            `/auth/error?message=${encodeURIComponent(errorMessage)}`,
           );
           return;
         }
 
-        if (sessionData.session) {
-          console.log("Existing session found:", sessionData.session);
+        if (sessionData?.session) {
+          console.log("Session found:", sessionData.session);
           // Redirect to appropriate dashboard based on session
           router.push("/dashboard");
         } else {
@@ -102,14 +109,8 @@ function AuthCallbackContent() {
         }
       }
 
-      if (error) {
-        console.error("Error getting session:", error);
-        router.push(`/auth/error?message=${encodeURIComponent(error.message)}`);
-        return;
-      }
-
-      if (data.session) {
-        console.log("Session found:", data.session);
+      if (sessionData?.session) {
+        console.log("Session found:", sessionData.session);
 
         // Get user to determine role and redirect
         const { data: userData } = await supabase.auth.getUser();
