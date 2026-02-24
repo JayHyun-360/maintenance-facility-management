@@ -11,11 +11,11 @@ export const createClient = () => {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         auth: {
-          // Use pkce flow for better security and reliability
-          flowType: "pkce",
+          // Let server-side handle PKCE, client just needs basic session management
+          flowType: "implicit", // Use implicit flow for client-side
           autoRefreshToken: true,
           persistSession: true,
-          detectSessionInUrl: true, // Critical for OAuth callback handling
+          detectSessionInUrl: false, // Let server-side handle this
         },
       },
     );

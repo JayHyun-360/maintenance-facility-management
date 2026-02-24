@@ -21,28 +21,62 @@ function AuthCallbackContent() {
       console.log("Hash:", url.hash);
       console.log("Search params:", Object.fromEntries(searchParams.entries()));
 
-      // For PKCE flow, we need to explicitly handle the OAuth callback
       // Check if we have OAuth code in URL
       const code = searchParams.get("code");
       const error = searchParams.get("error");
+      const errorDescription = searchParams.get("error_description");
 
       console.log("OAuth code:", code);
       console.log("OAuth error:", error);
+      console.log("OAuth error description:", errorDescription);
 
       if (error) {
-        console.error("OAuth error:", error);
-        router.push(`/auth/error?message=${encodeURIComponent(error)}`);
+        console.error("OAuth error from server:", error, errorDescription);
+        // The server-side callback already handled the error, just show it
         return;
       }
 
       if (code) {
-        // Exchange code for session
-        console.log("Exchanging OAuth code for session...");
+        console.log(
+          "Code found, but server-side should have handled it. Checking session...",
+        );
+
+        // Check if we already have a session (server-side callback should have set this)
+        const { data: sessionData, error: sessionError } =
+          await supabase.auth.getSession();
+
+        if (sessionError) {
+          console.error("Error checking session:", sessionError);
+          router.push(
+            `/auth/error?message=${encodeURIComponent(`Session check failed: ${sessionError.message}`)}`,
+          );
+          return;
+        }
+
+        if (sessionData?.session) {
+          console.log("Session found from server-side callback!");
+          console.log("Session user ID:", sessionData.session.user.id);
+          console.log("Session user email:", sessionData.session.user.email);
+
+          // The server-side callback should have already redirected, but as a fallback:
+          const userRole = sessionData.session.user.app_metadata?.role;
+          const isAdmin = userRole === "admin";
+          const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
+
+          console.log("Fallback redirect to:", redirectUrl);
+          router.push(redirectUrl);
+          return;
+        }
+
+        // If no session and we have a code, try client-side exchange as fallback
+        console.log(
+          "No session found, trying client-side code exchange as fallback...",
+        );
         const { data, error: exchangeError } =
           await supabase.auth.exchangeCodeForSession(code);
 
         if (exchangeError) {
-          console.error("Error exchanging code for session:", exchangeError);
+          console.error("Client-side code exchange error:", exchangeError);
           console.error(
             "Full error object:",
             JSON.stringify(exchangeError, null, 2),
@@ -66,7 +100,7 @@ function AuthCallbackContent() {
           return;
         }
 
-        console.log("Session exchanged successfully!");
+        console.log("Client-side session exchange successful!");
         console.log("Session user ID:", data.session?.user.id);
         console.log("Session user email:", data.session?.user.email);
         console.log("Session user metadata:", data.session?.user.user_metadata);
