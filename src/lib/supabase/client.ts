@@ -37,15 +37,42 @@ export const createClient = () => {
   // If we detected existing cookies, try to initialize session immediately
   if (hasExistingSession) {
     console.log("Initializing session from existing cookies...");
-    // Small delay to ensure client is ready
-    setTimeout(() => {
-      supabaseInstance?.auth.getSession().then(({ data: { session } }) => {
+
+    // Try multiple attempts to initialize session with increasing delays
+    const initializeSession = async (attempt: number): Promise<any | null> => {
+      console.log(`Session initialization attempt ${attempt}`);
+
+      // Wait longer for each attempt
+      const delay = 500 + attempt * 500; // 500ms, 1s, 1.5s, 2s
+      await new Promise((resolve) => setTimeout(resolve, delay));
+
+      try {
+        const result = await supabaseInstance?.auth.getSession();
         console.log(
-          "Session initialization result:",
-          session ? "success" : "failed",
+          `Session initialization attempt ${attempt} result:`,
+          (result as any)?.data?.session ? "success" : "failed",
         );
-      });
-    }, 100);
+
+        if ((result as any)?.data?.session?.user?.id) {
+          return (result as any).data.session;
+        }
+      } catch (error) {
+        console.log(`Session initialization attempt ${attempt} error:`, error);
+      }
+
+      return null;
+    };
+
+    // Try up to 3 times with increasing delays
+    (async () => {
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        const session = await initializeSession(attempt);
+        if (session) {
+          console.log(`Session successfully initialized on attempt ${attempt}`);
+          break;
+        }
+      }
+    })();
   }
 
   return supabaseInstance;

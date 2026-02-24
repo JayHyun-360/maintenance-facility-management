@@ -41,7 +41,7 @@ export default function AdminDashboard() {
 
       // Try up to 2 times to get session
       for (let i = 0; i < 2; i++) {
-        const result = await supabase.auth.getSession();
+        const result = await (supabase as any).auth.getSession();
 
         if (
           result.data?.session?.access_token &&
