@@ -68,6 +68,22 @@ export async function GET(request: NextRequest) {
       console.error("Server-side code exchange error:", exchangeError);
       console.error("Error details:", JSON.stringify(exchangeError, null, 2));
 
+      // If it's a PKCE or session error, fallback to client-side handling
+      if (
+        exchangeError.message?.includes("pkce") ||
+        exchangeError.message?.includes("verifier")
+      ) {
+        console.log(
+          "PKCE error detected, falling back to client-side handling",
+        );
+        return NextResponse.redirect(
+          new URL(
+            "/auth/callback/client?" + requestUrl.searchParams.toString(),
+            request.url,
+          ),
+        );
+      }
+
       // Redirect to error page with detailed error information
       const errorParams = new URLSearchParams({
         error: exchangeError.code || "server_exchange_error",
