@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { signInWithGoogle } from "./actions";
 import type { VisualRole } from "@/types/database";
 
 interface EmailFormData {
@@ -227,30 +228,20 @@ export default function LoginPage() {
     setSuccessMessage("");
 
     try {
-      console.log("Initiating Google OAuth...");
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: {
-            access_type: "offline",
-            prompt: "consent",
-          },
-        },
-      });
+      console.log("Initiating Google OAuth via server action...");
 
-      if (error) {
-        console.error("Google OAuth error:", error);
-        handleAuthError(error);
-        return;
-      }
+      // Use server action to initiate OAuth (stores PKCE verifier in cookies)
+      await signInWithGoogle();
 
-      console.log("Google OAuth initiated successfully");
+      // The server action will handle redirect, so this shouldn't execute
+      console.log("Server action completed");
     } catch (error) {
-      console.error("Unexpected Google sign in error:", error);
+      console.error("Google sign in error:", error);
       setErrors({
         general:
-          "An unexpected error occurred during sign-in. Please try again.",
+          error instanceof Error
+            ? error.message
+            : "An unexpected error occurred during sign-in. Please try again.",
       });
     } finally {
       setLoading(false);

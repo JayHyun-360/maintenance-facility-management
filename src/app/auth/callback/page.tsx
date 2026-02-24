@@ -1,139 +1,227 @@
-import { createServerClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import AuthCallbackClient from "./AuthCallbackClient";
+"use client";
 
-interface CallbackPageProps {
-  searchParams: Promise<{
-    code?: string;
-    error?: string;
-    error_description?: string;
-    next?: string;
-  }>;
-}
+import { useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 
-export default async function AuthCallbackPage({
-  searchParams,
-}: CallbackPageProps) {
-  const { code, error, error_description, next } = await searchParams;
+function AuthCallbackContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const supabase = createClient()!;
 
-  // If there's an error, redirect to error page
-  if (error) {
-    console.error("OAuth error from server:", error, error_description);
-    const errorParams = new URLSearchParams({
-      error: error || "oauth_error",
-      error_description: error_description || "OAuth authentication failed",
-    });
-    redirect(`/auth/error?${errorParams.toString()}`);
-  }
+  useEffect(() => {
+    const handleAuthCallback = async () => {
+      console.log("=== CLIENT-SIDE AUTH CALLBACK (FALLBACK) ===");
 
-  if (code) {
-    try {
-      console.log("=== SERVER-SIDE AUTH CALLBACK ===");
-      console.log("OAuth code received:", code);
+      // Get the full URL
+      const fullUrl = window.location.href;
+      const url = new URL(fullUrl);
 
-      const supabase = await createServerClient();
+      console.log("Full URL:", fullUrl);
+      console.log("Hash:", url.hash);
+      console.log("Search params:", Object.fromEntries(searchParams.entries()));
 
-      // Exchange the code for a session on the server
-      const { data, error: exchangeError } =
-        await supabase.auth.exchangeCodeForSession(code);
+      // Check if we have OAuth code in URL
+      const code = searchParams.get("code");
+      const error = searchParams.get("error");
+      const errorDescription = searchParams.get("error_description");
 
-      if (exchangeError) {
-        console.error("Server-side code exchange error:", exchangeError);
-        console.error("Error details:", JSON.stringify(exchangeError, null, 2));
+      console.log("OAuth code:", code);
+      console.log("OAuth error:", error);
+      console.log("OAuth error description:", errorDescription);
 
-        // Redirect to error page with detailed error information
-        const errorParams = new URLSearchParams({
-          error: exchangeError.code || "server_exchange_error",
-          error_description: `${exchangeError.message} (Server-side exchange failed)`,
-        });
-
-        redirect(`/auth/error?${errorParams.toString()}`);
+      if (error) {
+        console.error("OAuth error from server:", error, errorDescription);
+        // The server-side route handler should have already handled this
+        return;
       }
 
-      console.log("Server-side session exchange successful!");
-      console.log("User ID:", data.session?.user.id);
-      console.log("User email:", data.session?.user.email);
-      console.log("User metadata:", data.session?.user.user_metadata);
-      console.log("App metadata:", data.session?.user.app_metadata);
+      if (code) {
+        console.log("Code found, checking if server already handled it...");
+        
+        // Check if we already have a session (server-side should have set this)
+        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+        
+        if (sessionError) {
+          console.error("Error checking session:", sessionError);
+          router.push(`/auth/error?message=${encodeURIComponent(`Session check failed: ${sessionError.message}`)}`);
+          return;
+        }
 
-      // Wait a moment for the trigger to execute
-      await new Promise((resolve) => setTimeout(resolve, 500));
+        if (sessionData?.session) {
+          console.log("Session found from server-side callback!");
+          console.log("Session user ID:", sessionData.session.user.id);
+          console.log("Session user email:", sessionData.session.user.email);
+          
+          // The server-side route should have already redirected, but as a fallback:
+          const userRole = sessionData.session.user.app_metadata?.role;
+          const isAdmin = userRole === 'admin';
+          const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
+          
+          console.log("Fallback redirect to:", redirectUrl);
+          router.push(redirectUrl);
+          return;
+        }
 
-      // Check if profile exists
-      if (data.session?.user) {
-        const { data: profile, error: profileError } = await supabase
-          .from("profiles")
-          .select("id, database_role, full_name")
-          .eq("id", data.session.user.id)
-          .single();
+        // If no session and we have a code, this shouldn't happen with the route handler
+        // But let's try client-side exchange as ultimate fallback
+        console.log("No session found, trying client-side code exchange as ultimate fallback...");
+        const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
 
-        console.log("Profile check result:", profile);
-        console.log("Profile error:", profileError);
+        if (exchangeError) {
+          console.error("Client-side code exchange error:", exchangeError);
+          console.error("Full error object:", JSON.stringify(exchangeError, null, 2));
+          
+          // Extract detailed error information
+          const errorDetails = {
+            message: exchangeError.message || "Unknown error",
+            status: exchangeError.status,
+            code: (exchangeError as any).code || "unknown_code",
+          };
 
-        if (profileError) {
-          console.error("Profile query failed:", profileError);
-
-          // Try to debug the issue
-          try {
-            const { data: debugData } = await supabase.rpc(
-              "debug_user_creation",
-              {
-                user_id: data.session.user.id,
-              } as any,
-            );
-            console.log("Debug user creation data:", debugData);
-          } catch (debugError) {
-            console.error("Debug function failed:", debugError);
-          }
+          console.error("Extracted error details:", errorDetails);
 
           const errorParams = new URLSearchParams({
-            error: "profile_creation_failed",
-            error_description: `Profile creation failed: ${profileError.message}`,
+            error: errorDetails.code,
+            error_description: `${errorDetails.message} (Status: ${errorDetails.status})`,
           });
 
-          redirect(`/auth/error?${errorParams.toString()}`);
+          router.push(`/auth/error?${errorParams.toString()}`);
+          return;
         }
 
-        if (profile) {
-          // Existing user - redirect to appropriate dashboard
-          const userRole =
-            data.session.user.app_metadata?.role ||
-            (profile as any).database_role;
-          const isAdmin = userRole === "admin";
-          const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
+        console.log("Client-side session exchange successful!");
+        console.log("Session user ID:", data.session?.user.id);
+        console.log("Session user email:", data.session?.user.email);
+        console.log("Session user metadata:", data.session?.user.user_metadata);
+        console.log("Session app metadata:", data.session?.user.app_metadata);
 
-          console.log("Existing user, redirecting to:", redirectUrl);
-          redirect(redirectUrl);
-        } else {
-          // New user - redirect to profile creation
-          const email = data.session.user.email || "";
-          const isAdmin =
-            email.includes("@admin") || email.includes("yourdomain.com");
+        if (data.session) {
+          // Wait a moment for trigger to execute
+          await new Promise((resolve) => setTimeout(resolve, 500));
 
-          const profileCreationUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${encodeURIComponent(data.session.user.user_metadata?.full_name || email.split("@")[0])}`;
+          // Get user to determine role and redirect
+          const { data: userData, error: userError } = await supabase.auth.getUser();
 
-          console.log(
-            "New user, redirecting to profile creation:",
-            profileCreationUrl,
+          if (userError) {
+            console.error("Error getting user after session:", userError);
+            router.push(`/auth/error?message=${encodeURIComponent(`Failed to get user: ${userError.message}`)}`);
+            return;
+          }
+
+          if (userData.user) {
+            console.log("User authenticated:", userData.user.email);
+            console.log("User app_metadata:", userData.user.app_metadata);
+
+            // Check if profile exists with detailed error handling
+            const { data: profile, error: profileError } = await supabase
+              .from("profiles")
+              .select("id, database_role, full_name, created_at")
+              .eq("id", userData.user.id)
+              .single();
+
+            console.log("Profile query result:", profile);
+            console.log("Profile query error:", profileError);
+
+            if (profileError) {
+              console.error("Profile query failed:", profileError);
+              console.error("Full error object:", JSON.stringify(profileError, null, 2));
+
+              // Try to debug the issue
+              try {
+                const { data: debugData } = await supabase.rpc('debug_user_creation', {
+                  user_id: userData.user.id
+                } as any);
+                console.log("Debug user creation data:", debugData);
+              } catch (debugError) {
+                console.error("Debug function failed:", debugError);
+              }
+
+              router.push(
+                `/auth/error?message=${encodeURIComponent(`Profile creation failed: ${profileError.message}`)}`,
+              );
+              return;
+            }
+
+            if (profile) {
+              // Existing user - redirect to dashboard
+              const userRole = userData.user.app_metadata?.role || (profile as any).database_role;
+              const isAdmin = userRole === 'admin';
+              const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
+              console.log("Existing user, redirecting to:", redirectUrl);
+              router.push(redirectUrl);
+            } else {
+              // New user - this shouldn't happen with the trigger, but handle it
+              console.log("No profile found - trigger may have failed");
+              const email = userData.user.email || "";
+              const isAdmin = email.includes("@admin") || email.includes("yourdomain.com");
+
+              const profileCreationUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${encodeURIComponent(userData.user.user_metadata?.full_name || email.split("@")[0])}`;
+              console.log("New user, redirecting to profile creation:", profileCreationUrl);
+              router.push(profileCreationUrl);
+            }
+          }
+        }
+      } else {
+        // Try to get existing session (for direct visits)
+        const { data: sessionData, error } = await supabase.auth.getSession();
+
+        if (error) {
+          console.error("Error getting session:", error);
+          const errorMessage =
+            typeof error === "string"
+              ? error
+              : (error as any)?.message || "Unknown error";
+          router.push(
+            `/auth/error?message=${encodeURIComponent(errorMessage)}`,
           );
-          redirect(profileCreationUrl);
+          return;
+        }
+
+        if (sessionData?.session) {
+          console.log("Session found:", sessionData.session);
+          // Redirect to appropriate dashboard based on session
+          router.push("/dashboard");
+        } else {
+          console.log("No session found and no OAuth code");
+          router.push("/auth/error?message=No authentication parameters found");
         }
       }
+    };
 
-      // Fallback redirect
-      redirect(next || "/dashboard");
-    } catch (error) {
-      console.error("Unexpected server-side auth error:", error);
+    handleAuthCallback();
+  }, [router, searchParams, supabase]);
 
-      const errorParams = new URLSearchParams({
-        error: "unexpected_server_error",
-        error_description: "Unexpected error during authentication",
-      });
+  return (
+    <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center">
+      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+        <h1 className="text-xl font-semibold text-gray-900 mb-2">
+          Completing sign in...
+        </h1>
+        <p className="text-gray-600">
+          Please wait while we set up your session.
+        </p>
+      </div>
+    </div>
+  );
+}
 
-      redirect(`/auth/error?${errorParams.toString()}`);
-    }
-  }
-
-  // If no code, show client-side callback (for fallback cases)
-  return <AuthCallbackClient searchParams={await searchParams} />;
+export default function AuthCallbackPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center">
+          <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+            <h1 className="text-xl font-semibold text-gray-900 mb-2">
+              Loading...
+            </h1>
+          </div>
+        </div>
+      }
+    >
+      <AuthCallbackContent />
+    </Suspense>
+  );
 }
