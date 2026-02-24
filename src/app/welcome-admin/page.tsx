@@ -60,8 +60,34 @@ export default function WelcomeAdmin() {
     fetchUserData();
   }, [router]);
 
-  const handleGoManage = () => {
-    router.push("/admin/dashboard");
+  const handleGoManage = async () => {
+    try {
+      // Check current user session and role
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        console.error("No authenticated user found");
+        router.push("/login");
+        return;
+      }
+
+      // Get user role from app metadata (Circuit Breaker pattern)
+      const userRole = user.app_metadata?.role || "user";
+
+      console.log("Admin welcome - User role:", userRole);
+
+      // Redirect based on role
+      if (userRole === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      console.error("Error checking user role:", error);
+      router.push("/login");
+    }
   };
 
   if (loading) {
