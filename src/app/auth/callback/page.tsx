@@ -109,9 +109,6 @@ function AuthCallbackContent() {
         }
       }
 
-      if (sessionData?.session) {
-        console.log("Session found:", sessionData.session);
-
         // Get user to determine role and redirect
         const { data: userData } = await supabase.auth.getUser();
         if (userData.user) {
