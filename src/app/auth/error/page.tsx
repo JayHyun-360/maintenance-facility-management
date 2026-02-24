@@ -64,11 +64,9 @@ function AuthErrorContent() {
         return () => clearInterval(countdownInterval);
       } catch (error) {
         console.error("Error checking session on error page:", error);
-        // Fallback to redirect if session check fails
-        const timer = setTimeout(() => {
-          window.location.href = "/login";
-        }, 10000);
-        return () => clearTimeout(timer);
+        // Don't auto-redirect on error - let user decide manually
+        setHasValidSession(false);
+        setRedirectCountdown(0); // Disable countdown
       }
     };
 

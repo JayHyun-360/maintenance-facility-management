@@ -30,61 +30,118 @@ function ProfileCreationContent() {
     const checkAuth = async () => {
       try {
         console.log("=== PROFILE CREATION SESSION CHECK ===");
+        console.log("Current URL:", window.location.href);
+        console.log("Document cookies:", document.cookie);
+
+        // Check localStorage as well for debugging
+        console.log("LocalStorage keys:", Object.keys(localStorage));
 
         // Wait longer for session to be available and stable
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 3000));
 
         // Try multiple times to get session with detailed logging
         let session = null;
-        for (let i = 0; i < 5; i++) {
-          console.log(`Session attempt ${i + 1}/5`);
+        for (let i = 0; i < 8; i++) {
+          console.log(`Session attempt ${i + 1}/8`);
 
-          // Force session refresh from cookies
-          await supabase.auth.refreshSession();
+          // First try to refresh session from cookies
+          try {
+            const refreshResult = await supabase.auth.refreshSession();
+            console.log(`Refresh attempt ${i + 1} result:`, refreshResult);
+          } catch (refreshError) {
+            console.log(`Refresh attempt ${i + 1} error:`, refreshError);
+          }
 
           const result = await supabase.auth.getSession();
           console.log(`Session result ${i + 1}:`, result);
 
-          if (result.data?.session) {
-            session = result.data.session;
+          // Check for actual session tokens, not just session object existence
+          const hasValidTokens =
+            result.data?.session?.access_token &&
+            result.data?.session?.refresh_token &&
+            result.data?.session?.user?.id;
+
+          if (hasValidTokens) {
+            session = result.data.session!;
             console.log(`Session found on attempt ${i + 1}:`, {
-              userId: session.user.id,
-              email: session.user.email,
+              userId: session.user?.id,
+              email: session.user?.email,
               expiresAt: session.expires_at,
               hasAccessToken: !!session.access_token,
               hasRefreshToken: !!session.refresh_token,
+              accessTokenLength: session.access_token?.length,
             });
             break;
           } else {
-            console.log(`No session on attempt ${i + 1}, error:`, result.error);
+            console.log(
+              `No valid session tokens on attempt ${i + 1}, error:`,
+              result.error,
+            );
+            console.log(`Data object on attempt ${i + 1}:`, result.data);
+            console.log(`Session object details:`, {
+              hasSession: !!result.data?.session,
+              hasAccessToken: !!result.data?.session?.access_token,
+              hasRefreshToken: !!result.data?.session?.refresh_token,
+              hasUser: !!result.data?.session?.user,
+              userId: result.data?.session?.user?.id,
+            });
           }
 
           // Wait between attempts with progressive delay
-          if (i < 4) {
-            await new Promise((resolve) => setTimeout(resolve, 800 + i * 200));
+          if (i < 7) {
+            const delay = 1000 + i * 300; // 1s, 1.3s, 1.6s, 1.9s, 2.2s, 2.5s, 2.8s
+            console.log(`Waiting ${delay}ms before next attempt...`);
+            await new Promise((resolve) => setTimeout(resolve, delay));
           }
         }
 
         if (!session) {
           console.error("=== NO SESSION FOUND AFTER ALL ATTEMPTS ===");
           console.log("Session check details:");
-          console.log("- Total attempts made: 5");
+          console.log("- Total attempts made: 8");
           console.log("- Each attempt included refreshSession() call");
           console.log(
-            "- Progressive delays: 800ms, 1000ms, 1200ms, 1400ms, 1600ms",
+            "- Progressive delays: 1s, 1.3s, 1.6s, 1.9s, 2.2s, 2.5s, 2.8s",
           );
-          console.log("- Final result: No session object returned");
+          console.log("- Final result: No valid session tokens found");
 
           // Check if we're being redirected from error page
           const referrer = document.referrer;
           console.log("Document referrer:", referrer);
           if (referrer.includes("/auth/error")) {
             console.log(
-              "Came from error page - this confirms the timer redirect issue",
+              "Came from error page - this confirms timer redirect issue",
             );
           }
 
-          console.log("Redirecting to login due to no session");
+          // Final check: look for any Supabase cookies as fallback
+          console.log("Final cookie check:", document.cookie);
+          const hasSupabaseCookies =
+            document.cookie.includes("sb-") ||
+            document.cookie.includes("supabase");
+          console.log("Has Supabase cookies:", hasSupabaseCookies);
+
+          if (hasSupabaseCookies) {
+            console.log(
+              " Supabase cookies found but session not hydrated - possible client configuration issue",
+            );
+            // Try one more time with a different approach
+            try {
+              const finalResult = await supabase.auth.getUser();
+              if (finalResult.data?.user) {
+                console.log(
+                  " User found via getUser() - session exists but getSession() failed",
+                );
+                session = { user: finalResult.data.user } as any;
+                // Don't redirect - continue to profile creation
+                return;
+              }
+            } catch (getUserError) {
+              console.log("getUser() fallback also failed:", getUserError);
+            }
+          }
+
+          console.log("Redirecting to login due to no valid session");
           router.push("/login");
           return;
         }
