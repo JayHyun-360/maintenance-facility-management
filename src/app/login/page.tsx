@@ -132,8 +132,34 @@ export default function LoginPage() {
       }
 
       setSuccessMessage("Successfully signed in!");
-      setTimeout(() => {
-        router.push("/dashboard");
+
+      // Check if user has profile before redirecting
+      setTimeout(async () => {
+        try {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("id")
+            .eq("user_id", data.user.id)
+            .maybeSingle();
+
+          if (profile) {
+            router.push("/dashboard");
+          } else {
+            // New user - redirect to profile creation
+            const email = data.user.email || "";
+            const isAdmin =
+              email.includes("@admin") || email.includes("yourdomain.com");
+            const role = isAdmin ? "admin" : "user";
+            const name =
+              data.user.user_metadata?.full_name || email.split("@")[0];
+            router.push(
+              `/profile-creation?role=${role}&name=${encodeURIComponent(name)}`,
+            );
+          }
+        } catch (error) {
+          console.error("Error checking profile:", error);
+          router.push("/dashboard"); // Fallback
+        }
       }, 1000);
     } catch (error) {
       console.error("Unexpected sign in error:", error);
@@ -267,7 +293,7 @@ export default function LoginPage() {
     setErrors({});
 
     try {
-      const { error } = await supabase.auth.signInAnonymously({
+      const { error, data } = await supabase.auth.signInAnonymously({
         options: {
           data: {
             full_name: guestData.fullName,
@@ -285,7 +311,33 @@ export default function LoginPage() {
         return;
       }
 
-      router.push("/dashboard");
+      // Check if guest user has profile before redirecting
+      try {
+        if (!data?.user?.id) {
+          console.error("No user data in guest sign in result");
+          router.push("/dashboard"); // Fallback
+          return;
+        }
+
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("id")
+          .eq("user_id", data.user.id)
+          .maybeSingle();
+
+        if (profile) {
+          router.push("/dashboard");
+        } else {
+          // New guest user - redirect to profile creation
+          const name = guestData.fullName;
+          router.push(
+            `/profile-creation?role=user&name=${encodeURIComponent(name)}`,
+          );
+        }
+      } catch (error) {
+        console.error("Error checking guest profile:", error);
+        router.push("/dashboard"); // Fallback
+      }
     } catch (error) {
       console.error("Unexpected guest sign in error:", error);
       setErrors({
