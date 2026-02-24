@@ -140,7 +140,8 @@ function AuthCallbackContent() {
         console.log("No session found after callback");
         router.push("/auth/error?message=No authentication parameters found");
       }
-    };
+    }
+  };
 
     handleAuthCallback();
   }, [router, searchParams, supabase]);
