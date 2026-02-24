@@ -13,6 +13,14 @@ export const createClient = () => {
   }
 
   console.log("Creating new Supabase client instance");
+
+  // Check if we have existing session cookies and initialize client accordingly
+  const hasExistingSession =
+    typeof window !== "undefined" &&
+    document.cookie.includes("sb-yozddskzyykymidjucqt-auth-token");
+
+  console.log("Existing session cookies detected:", hasExistingSession);
+
   supabaseInstance = createSupabaseClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -25,6 +33,20 @@ export const createClient = () => {
       },
     },
   );
+
+  // If we detected existing cookies, try to initialize session immediately
+  if (hasExistingSession) {
+    console.log("Initializing session from existing cookies...");
+    // Small delay to ensure client is ready
+    setTimeout(() => {
+      supabaseInstance?.auth.getSession().then(({ data: { session } }) => {
+        console.log(
+          "Session initialization result:",
+          session ? "success" : "failed",
+        );
+      });
+    }, 100);
+  }
 
   return supabaseInstance;
 };
