@@ -32,17 +32,47 @@ function ProfileCreationContent() {
         console.log("=== PROFILE CREATION SESSION CHECK ===");
         console.log("Current URL:", window.location.href);
 
-        // Simple session check with reasonable timeout
+        // Simple session check with reasonable timeout and recovery
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
+        let session = null;
+
+        // First attempt: getSession()
         const {
-          data: { session },
-          error,
+          data: { session: initialSession },
+          error: initialError,
         } = await supabase.auth.getSession();
-        console.log("Session check result:", { session, error });
+        console.log("Initial session check:", {
+          session: initialSession,
+          error: initialError,
+        });
+
+        if (initialSession?.user?.id) {
+          session = initialSession;
+        } else {
+          // Second attempt: try to refresh/restore session
+          console.log("No initial session, attempting refreshSession...");
+          try {
+            const { data: refreshData, error: refreshError } =
+              await supabase.auth.refreshSession();
+            console.log("Refresh session result:", {
+              data: refreshData,
+              error: refreshError,
+            });
+
+            if (refreshData?.session?.user?.id) {
+              session = refreshData.session;
+              console.log("Session recovered via refreshSession");
+            }
+          } catch (refreshError) {
+            console.log("Refresh session failed:", refreshError);
+          }
+        }
 
         if (!session || !session.user?.id) {
-          console.error("No valid session found in profile creation");
+          console.error(
+            "No valid session found in profile creation after all attempts",
+          );
           router.push("/login");
           return;
         }

@@ -153,6 +153,44 @@ export async function GET(request: NextRequest) {
     // Create a response with proper redirect
     console.log("Final redirect URL:", redirectUrl);
 
+    // Verify session is properly accessible before redirecting
+    try {
+      const testClient = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+          cookies: {
+            get(name: string) {
+              return cookieStore.get(name)?.value;
+            },
+            set(name: string, value: string, options: any) {
+              // No-op - just testing access
+            },
+            remove(name: string, options: any) {
+              // No-op - just testing access
+            },
+          },
+        },
+      );
+
+      const { data: testSession } = await testClient.auth.getSession();
+      console.log("Session verification test:", testSession);
+
+      if (!testSession?.session?.user?.id) {
+        console.error("Session not properly accessible after OAuth exchange");
+        // Still redirect but with error indicator
+        const errorParams = new URLSearchParams({
+          error: "session_not_accessible",
+          error_description: "Session created but not accessible to client",
+        });
+        return NextResponse.redirect(
+          new URL(`/auth/error?${errorParams.toString()}`, request.url),
+        );
+      }
+    } catch (testError) {
+      console.error("Session verification failed:", testError);
+    }
+
     // The session cookies should already be set by the exchangeCodeForSession call
     // Just need to redirect to the appropriate page
     const response = NextResponse.redirect(new URL(redirectUrl, request.url));
