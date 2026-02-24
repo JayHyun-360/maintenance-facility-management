@@ -1,5 +1,6 @@
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/types/database";
+import { createCustomStorage } from "./storage";
 
 // Create a client that works in client components with proper PKCE configuration
 export const createClient = () => {
@@ -12,6 +13,8 @@ export const createClient = () => {
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: true,
+        // Use custom storage to handle cookie-based session persistence
+        storage: createCustomStorage(),
       },
     },
   );

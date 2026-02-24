@@ -103,21 +103,27 @@ function ProfileCreationContent() {
 
           if (hasSupabaseCookies) {
             console.log(
-              " Supabase cookies found but session not hydrated - possible client configuration issue",
+              " Supabase cookies found but session not hydrated - attempting cookie-based session recovery",
             );
-            // Try one more time with a different approach
+            // Try to recover session from cookies using refreshSession
             try {
-              const finalResult = await supabase.auth.getUser();
-              if (finalResult.data?.user) {
-                console.log(
-                  " User found via getUser() - session exists but getSession() failed",
-                );
-                session = { user: finalResult.data.user } as any;
+              const refreshResult = await supabase.auth.refreshSession();
+              console.log(
+                "Cookie-based session recovery result:",
+                refreshResult,
+              );
+
+              if (refreshResult.data?.session?.user?.id) {
+                console.log("Session successfully recovered from cookies");
+                session = refreshResult.data.session;
                 // Don't redirect - continue to profile creation
                 return;
               }
-            } catch (getUserError) {
-              console.log("getUser() fallback also failed:", getUserError);
+            } catch (refreshError) {
+              console.log(
+                "Cookie-based session recovery failed:",
+                refreshError,
+              );
             }
           }
 

@@ -13,9 +13,21 @@ export default function WelcomeAdmin() {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
+        let user = null;
+
+        // First try to get user directly
+        const userResult = await supabase.auth.getUser();
+        if (userResult.data?.user) {
+          user = userResult.data.user;
+        } else {
+          // Try to recover session from cookies
+          console.log("No user found, attempting session recovery...");
+          const refreshResult = await supabase.auth.refreshSession();
+          if (refreshResult.data?.session?.user) {
+            user = refreshResult.data.session.user;
+            console.log("Session recovered from cookies");
+          }
+        }
 
         if (user) {
           // Get user's full name from metadata or profile
