@@ -37,7 +37,7 @@ BEGIN
     RAISE LOG 'Profile inserted successfully for user %', NEW.id;
   EXCEPTION WHEN OTHERS THEN
     RAISE LOG 'Error inserting profile for user %: %', NEW.id, SQLERRM;
-    -- Re-raise the exception to ensure proper error handling
+    -- Re-raise to exception
     RAISE EXCEPTION USING SQLSTATE = SQLSTATE, SQLERRM = SQLERRM;
   END;
 
@@ -53,8 +53,8 @@ BEGIN
     
     RAISE LOG 'App metadata updated for user %', NEW.id;
   EXCEPTION WHEN OTHERS THEN
-    RAISE LOG 'Error updating app metadata for user %: %', NEW.id, SQLERRM;
-    -- Re-raise the exception
+    RAISE EXCEPTION 'Error updating app metadata for user %: %', NEW.id, SQLERRM;
+    -- Re-raise to exception
     RAISE EXCEPTION USING SQLSTATE = SQLSTATE, SQLERRM = SQLERRM;
   END;
 
