@@ -17,11 +17,18 @@ export async function signInWithGoogle() {
           get(name: string) {
             return cookieStore.get(name)?.value;
           },
-          set(name: string, value: string, options?: any) {
-            cookieStore.set(name, value, options);
+          set(name: string, value: string, options: any) {
+            cookieStore.set({
+              name,
+              value,
+              ...options,
+            });
           },
-          remove(name: string, options?: any) {
-            cookieStore.delete(name);
+          remove(name: string, options: any) {
+            cookieStore.delete({
+              name,
+              ...options,
+            });
           },
         },
       },
@@ -31,7 +38,7 @@ export async function signInWithGoogle() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL || "http://localhost:3000"}/auth/callback`,
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_URL || "http://localhost:3002"}/auth/callback`,
         queryParams: {
           access_type: "offline",
           prompt: "consent",

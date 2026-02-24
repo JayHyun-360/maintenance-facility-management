@@ -49,11 +49,18 @@ export async function GET(request: NextRequest) {
           get(name: string) {
             return cookieStore.get(name)?.value;
           },
-          set(name: string, value: string, options?: any) {
-            cookieStore.set(name, value, options);
+          set(name: string, value: string, options: any) {
+            cookieStore.set({
+              name,
+              value,
+              ...options,
+            });
           },
-          remove(name: string, options?: any) {
-            cookieStore.delete(name);
+          remove(name: string, options: any) {
+            cookieStore.delete({
+              name,
+              ...options,
+            });
           },
         },
       },
@@ -67,22 +74,6 @@ export async function GET(request: NextRequest) {
     if (exchangeError) {
       console.error("Server-side code exchange error:", exchangeError);
       console.error("Error details:", JSON.stringify(exchangeError, null, 2));
-
-      // If it's a PKCE or session error, fallback to client-side handling
-      if (
-        exchangeError.message?.includes("pkce") ||
-        exchangeError.message?.includes("verifier")
-      ) {
-        console.log(
-          "PKCE error detected, falling back to client-side handling",
-        );
-        return NextResponse.redirect(
-          new URL(
-            "/auth/callback/client?" + requestUrl.searchParams.toString(),
-            request.url,
-          ),
-        );
-      }
 
       // Redirect to error page with detailed error information
       const errorParams = new URLSearchParams({
@@ -121,7 +112,7 @@ export async function GET(request: NextRequest) {
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("id, database_role, full_name")
-      .eq("id", data.session.user.id)
+      .eq("user_id", data.session.user.id)
       .single();
 
     console.log("Profile check result:", profile);
