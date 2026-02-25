@@ -909,12 +909,126 @@ export default function AdminDashboardClient({
 
         {/* Analytics Tab */}
         {activeTab === "analytics" && (
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Analytics
-            </h2>
-            <p className="text-gray-600">Analytics and charts coming soon</p>
-          </div>
+          <>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <p className="text-sm font-medium text-gray-600">
+                  Total Requests
+                </p>
+                <p className="text-3xl font-bold text-gray-900 mt-2">
+                  {stats.total}
+                </p>
+              </div>
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <p className="text-sm font-medium text-gray-600">Pending</p>
+                <p className="text-3xl font-bold text-yellow-600 mt-2">
+                  {stats.pending}
+                </p>
+              </div>
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <p className="text-sm font-medium text-gray-600">In Progress</p>
+                <p className="text-3xl font-bold text-blue-600 mt-2">
+                  {stats.inProgress}
+                </p>
+              </div>
+              <div className="bg-white rounded-xl shadow-sm p-6">
+                <p className="text-sm font-medium text-gray-600">Completed</p>
+                <p className="text-3xl font-bold text-green-600 mt-2">
+                  {stats.completed}
+                </p>
+              </div>
+            </div>
+
+            {/* Nature Breakdown */}
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Requests by Nature
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                {[
+                  { name: "Plumbing", color: "bg-blue-500" },
+                  { name: "Electrical", color: "bg-yellow-500" },
+                  { name: "Carpentry", color: "bg-amber-700" },
+                  { name: "HVAC", color: "bg-cyan-500" },
+                  { name: "Cleaning", color: "bg-purple-500" },
+                  { name: "Other", color: "bg-gray-500" },
+                ].map((nature) => {
+                  const count = requests.filter(
+                    (r) => r.nature === nature.name,
+                  ).length;
+                  const percentage =
+                    stats.total > 0
+                      ? Math.round((count / stats.total) * 100)
+                      : 0;
+                  return (
+                    <div
+                      key={nature.name}
+                      className="border border-gray-200 rounded-lg p-4"
+                    >
+                      <p className="text-sm font-medium text-gray-700">
+                        {nature.name}
+                      </p>
+                      <p className="text-2xl font-bold text-gray-900 mt-1">
+                        {count}
+                      </p>
+                      <div className="mt-2 h-2 bg-gray-100 rounded-full">
+                        <div
+                          className={`h-full ${nature.color} rounded-full`}
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {percentage}%
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Status Distribution */}
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                Status Distribution
+              </h3>
+              <div className="flex items-center justify-around">
+                {[
+                  {
+                    status: "Pending",
+                    count: stats.pending,
+                    color: "bg-yellow-500",
+                    text: "text-yellow-600",
+                  },
+                  {
+                    status: "In Progress",
+                    count: stats.inProgress,
+                    color: "bg-blue-500",
+                    text: "text-blue-600",
+                  },
+                  {
+                    status: "Completed",
+                    count: stats.completed,
+                    color: "bg-green-500",
+                    text: "text-green-600",
+                  },
+                ].map((item) => (
+                  <div key={item.status} className="text-center">
+                    <div
+                      className={`w-24 h-24 rounded-full ${item.color} flex items-center justify-center mx-auto`}
+                    >
+                      <span className="text-2xl font-bold text-white">
+                        {item.count}
+                      </span>
+                    </div>
+                    <p className={`mt-2 font-medium ${item.text}`}>
+                      {item.status}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
         )}
 
         {/* Master Queue Tab */}
@@ -937,19 +1051,189 @@ export default function AdminDashboardClient({
               </svg>
               <input
                 type="text"
-                placeholder="Search requests..."
+                placeholder="Search by nature, location, or description..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#84B179] focus:border-transparent"
               />
             </div>
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                Master Queue
-              </h2>
-              <p className="text-gray-600">
-                Use the search above to filter requests
-              </p>
+
+            {/* Table */}
+            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  All Maintenance Requests
+                </h2>
+                <p className="text-sm text-gray-600">
+                  {requests.length} total requests
+                </p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Request
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Requester
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Details
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {requests
+                      .filter(
+                        (r) =>
+                          searchQuery === "" ||
+                          r.nature
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase()) ||
+                          r.location
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase()) ||
+                          r.description
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase()),
+                      )
+                      .map((request) => (
+                        <tr key={request.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {request.nature}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {request.location}
+                            </div>
+                            <div className="text-xs text-gray-400">
+                              {new Date(
+                                request.created_at,
+                              ).toLocaleDateString()}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="text-sm font-medium text-gray-900">
+                              {request.profiles?.full_name || "Unknown"}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {request.profiles?.visual_role}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="max-w-xs">
+                              <p className="text-sm text-gray-900 truncate">
+                                {request.description}
+                              </p>
+                              {request.photos && request.photos.length > 0 && (
+                                <div className="flex gap-1 mt-2">
+                                  {request.photos
+                                    .slice(0, 2)
+                                    .map((photo, idx) => (
+                                      <img
+                                        key={idx}
+                                        src={photo}
+                                        alt=""
+                                        className="w-8 h-8 object-cover rounded"
+                                        onClick={() => setSelectedPhoto(photo)}
+                                      />
+                                    ))}
+                                  {request.photos.length > 2 && (
+                                    <span className="text-xs text-gray-500 self-center">
+                                      +{request.photos.length - 2}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
+                              <span
+                                className={`inline-block px-2 py-1 text-xs rounded-full mt-1 ${request.urgency === "Emergency" ? "bg-red-100 text-red-700" : request.urgency === "Urgent" ? "bg-orange-100 text-orange-700" : "bg-gray-100 text-gray-700"}`}
+                              >
+                                {request.urgency}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span
+                              className={`px-2 py-1 text-xs rounded-full ${request.status === "Pending" ? "bg-yellow-100 text-yellow-700" : request.status === "In Progress" ? "bg-blue-100 text-blue-700" : request.status === "Completed" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                            >
+                              {request.status}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex gap-2">
+                              {request.status === "Pending" && (
+                                <button
+                                  onClick={() =>
+                                    handleStatusUpdate(
+                                      request.id,
+                                      "In Progress",
+                                    )
+                                  }
+                                  className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                                >
+                                  Start
+                                </button>
+                              )}
+                              {request.status === "In Progress" && (
+                                <button
+                                  onClick={() =>
+                                    handleStatusUpdate(request.id, "Completed")
+                                  }
+                                  className="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+                                >
+                                  Complete
+                                </button>
+                              )}
+                              <button
+                                onClick={() => handleStatusChange(request)}
+                                className="text-xs bg-gray-600 text-white px-2 py-1 rounded hover:bg-gray-700"
+                                title="Change Status"
+                              >
+                                <svg
+                                  className="w-4 h-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+                {requests.filter(
+                  (r) =>
+                    searchQuery === "" ||
+                    r.nature
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()) ||
+                    r.location
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()) ||
+                    r.description
+                      .toLowerCase()
+                      .includes(searchQuery.toLowerCase()),
+                ).length === 0 && (
+                  <div className="text-center py-12 text-gray-500">
+                    <p>No requests found</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -960,7 +1244,25 @@ export default function AdminDashboardClient({
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
               Manage Users
             </h2>
-            <p className="text-gray-600">User management coming soon</p>
+            <div className="text-center py-12 text-gray-500">
+              <svg
+                className="w-16 h-16 mx-auto mb-4 text-gray-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                />
+              </svg>
+              <p className="text-lg">User Management Coming Soon</p>
+              <p className="text-sm text-gray-400 mt-1">
+                This feature will allow you to manage user accounts
+              </p>
+            </div>
           </div>
         )}
       </div>
