@@ -47,6 +47,23 @@ export default function AdminDashboardClient({
   const [activeTab, setActiveTab] = useState<
     "overview" | "analytics" | "master-queue" | "manage-users"
   >("overview");
+  const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
+
+  useEffect(() => {
+    const activeButton = tabRefs.current[activeTab];
+    if (activeButton) {
+      const tabContainer = activeButton.parentElement;
+      if (tabContainer) {
+        const indicator = tabContainer.querySelector(
+          ".tab-indicator",
+        ) as HTMLElement;
+        if (indicator) {
+          indicator.style.width = `${activeButton.offsetWidth}px`;
+          indicator.style.transform = `translateX(${activeButton.offsetLeft}px)`;
+        }
+      }
+    }
+  }, [activeTab]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [editingRequest, setEditingRequest] =
@@ -499,7 +516,7 @@ export default function AdminDashboardClient({
 
       {/* Tab Navigation */}
       <div className="w-full px-4 sm:px-6 lg:px-8 py-4 bg-white border-b">
-        <div className="flex gap-8 overflow-x-auto">
+        <div className="relative flex gap-8 overflow-x-auto">
           {[
             {
               id: "overview",
@@ -580,22 +597,32 @@ export default function AdminDashboardClient({
           ].map((tab) => (
             <button
               key={tab.id}
+              ref={(el) => {
+                tabRefs.current[tab.id] = el;
+              }}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 pb-3 font-medium transition-all duration-300 whitespace-nowrap border-b-2 ${
+              className={`relative flex items-center gap-2 pb-3 font-medium transition-all duration-300 whitespace-nowrap z-10 ${
                 activeTab === tab.id
-                  ? "border-[#84B179] text-[#84B179]"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  ? "text-[#84B179]"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
             >
               {tab.icon}
               {tab.label}
             </button>
           ))}
+          {/* Sliding Underline */}
+          <div
+            className="absolute bottom-0 left-0 h-0.5 bg-[#84B179] transition-all duration-300 ease-out tab-indicator"
+            style={{ width: "88px", transform: "translateX(0px)" }}
+          />
         </div>
       </div>
 
       <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
-        <div className="transition-all duration-300 ease-in-out">
+        <div
+          className={`transition-opacity duration-300 ease-in-out ${activeTab === "overview" ? "opacity-100" : "opacity-0 absolute pointer-events-none"}`}
+        >
           {/* Overview Tab */}
           {activeTab === "overview" && (
             <>
@@ -1364,7 +1391,7 @@ export default function AdminDashboardClient({
               </div>
             </div>
           )}
-        )}
+        </div>
 
         {/* Manage Users Tab */}
         {activeTab === "manage-users" && (
