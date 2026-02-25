@@ -115,24 +115,44 @@ export default function UserDashboardClient({
 
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b transition-all duration-300">
+      {/* Enhanced Header */}
+      <div className="bg-gradient-to-r from-green-600 to-emerald-600 shadow-lg border-b transition-all duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900 transition-all duration-300">
-                Welcome, {profile?.full_name}
-              </h1>
-              <p className="text-sm text-gray-600 transition-all duration-300">
-                {profile?.visual_role} •{" "}
-                {profile?.database_role === "admin" ? "Administrator" : "User"}
-              </p>
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center gap-4">
+              {/* Profile Avatar */}
+              <div className="relative">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30">
+                  <span className="text-white font-bold text-lg">
+                    {profile?.full_name?.charAt(0).toUpperCase() || "U"}
+                  </span>
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+              </div>
+
+              {/* Welcome Text */}
+              <div className="text-white">
+                <h1 className="text-2xl font-bold transition-all duration-300 hover:scale-105">
+                  Welcome back, {profile?.full_name}!
+                </h1>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-white transition-all duration-300 hover:bg-white/30">
+                    {profile?.visual_role}
+                  </span>
+                  <span className="text-white/80 text-sm">•</span>
+                  <span className="text-white/80 text-sm font-medium">
+                    {profile?.database_role === "admin"
+                      ? "Administrator"
+                      : "User"}
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <button
                 onClick={handleThemeToggle}
-                className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
                 title={`Current theme: ${profile?.theme_preference}`}
               >
                 {profile?.theme_preference === "dark" ? (
@@ -182,14 +202,14 @@ export default function UserDashboardClient({
 
               <a
                 href="/profile-settings"
-                className="text-sm text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 hover:scale-105"
+                className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
               >
                 Settings
               </a>
 
               <button
                 onClick={handleSignOut}
-                className="text-sm text-gray-600 hover:text-gray-900 transition-all duration-300 hover:scale-105"
+                className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
               >
                 Sign Out
               </button>
