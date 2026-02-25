@@ -54,5 +54,9 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- 4. Ensure unique constraint exists
-ALTER TABLE public.profiles 
-ADD CONSTRAINT IF NOT EXISTS profiles_user_id_unique UNIQUE (user_id);
+DO $$ 
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'profiles_user_id_unique') THEN
+        ALTER TABLE public.profiles ADD CONSTRAINT profiles_user_id_unique UNIQUE (user_id);
+    END IF;
+END $$;

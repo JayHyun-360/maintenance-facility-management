@@ -37,8 +37,7 @@ BEGIN
     RAISE LOG 'Profile inserted successfully for user %', NEW.id;
   EXCEPTION WHEN OTHERS THEN
     RAISE LOG 'Error inserting profile for user %: %', NEW.id, SQLERRM;
-    -- Re-raise to exception
-    RAISE EXCEPTION USING SQLSTATE = SQLSTATE, SQLERRM = SQLERRM;
+    RAISE EXCEPTION 'Error inserting profile for user %: %', NEW.id, SQLERRM;
   END;
 
   -- Set role in app_metadata for JWT access
@@ -54,8 +53,7 @@ BEGIN
     RAISE LOG 'App metadata updated for user %', NEW.id;
   EXCEPTION WHEN OTHERS THEN
     RAISE EXCEPTION 'Error updating app metadata for user %: %', NEW.id, SQLERRM;
-    -- Re-raise to exception
-    RAISE EXCEPTION USING SQLSTATE = SQLSTATE, SQLERRM = SQLERRM;
+    RAISE EXCEPTION 'Error updating app metadata for user %: %', NEW.id, SQLERRM;
   END;
 
   RETURN NEW;
@@ -63,6 +61,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- 2. Update debug function to be more precise
+DROP FUNCTION IF EXISTS public.debug_user_creation(UUID);
 CREATE OR REPLACE FUNCTION public.debug_user_creation(user_id UUID)
 RETURNS TABLE(
   user_exists BOOLEAN,
