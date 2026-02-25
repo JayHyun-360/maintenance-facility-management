@@ -32,7 +32,20 @@ function ProfileCreationContent() {
         console.log("=== PROFILE CREATION SESSION CHECK ===");
         console.log("Current URL:", window.location.href);
 
-        // Simple session check with reasonable timeout and recovery
+        // If we have OAuth parameters, we're in post-OAuth flow
+        // Skip session validation here - it will happen on form submit
+        const hasOAuthParams =
+          searchParams.has("role") && searchParams.has("name");
+        if (hasOAuthParams) {
+          console.log(
+            "Post-OAuth redirect detected via URL params, skipping session check",
+          );
+          console.log("Session will be validated on form submission");
+          console.log("=== PROFILE CREATION READY ===");
+          return;
+        }
+
+        // Otherwise, we need a valid session to reach this page
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
         let session = null;
@@ -50,70 +63,19 @@ function ProfileCreationContent() {
         if (initialSession?.user?.id) {
           session = initialSession;
         } else {
-          // Second attempt: try to refresh/restore session
+          // Try refresh
           console.log("No initial session, attempting refreshSession...");
-          try {
-            const { data: refreshData, error: refreshError } =
-              await supabase.auth.refreshSession();
-            console.log("Refresh session result:", {
-              data: refreshData,
-              error: refreshError,
-            });
+          const { data: refreshData, error: refreshError } =
+            await supabase.auth.refreshSession();
 
-            if (refreshData?.session?.user?.id) {
-              session = refreshData.session;
-              console.log("Session recovered via refreshSession");
-            }
-          } catch (refreshError) {
-            console.log("Refresh session failed:", refreshError);
-          }
-
-          // Third attempt: Check if we have URL parameters indicating successful OAuth
-          if (
-            !session &&
-            searchParams.has("role") &&
-            searchParams.has("name")
-          ) {
-            console.log(
-              "OAuth parameters detected, attempting manual session recovery...",
-            );
-
-            // Check for Supabase cookies directly
-            const hasSupabaseCookies =
-              document.cookie.includes("sb-") ||
-              document.cookie.includes("supabase");
-            console.log("Supabase cookies detected:", hasSupabaseCookies);
-
-            if (hasSupabaseCookies) {
-              // Try to initialize session from URL detection
-              console.log(
-                "Attempting to initialize session from OAuth callback context...",
-              );
-
-              // Wait a bit more for cookies to be processed
-              await new Promise((resolve) => setTimeout(resolve, 2000));
-
-              // Try getSession one more time
-              const {
-                data: { session: retrySession },
-              } = await supabase.auth.getSession();
-              if (retrySession?.user?.id) {
-                session = retrySession;
-                console.log("Session recovered on retry with OAuth context");
-              }
-            }
+          if (refreshData?.session?.user?.id) {
+            session = refreshData.session;
+            console.log("Session recovered via refreshSession");
           }
         }
 
         if (!session || !session.user?.id) {
-          console.error(
-            "No valid session found in profile creation after all attempts",
-          );
-          console.error("URL params:", {
-            role: searchParams.get("role"),
-            name: searchParams.get("name"),
-          });
-          console.error("Cookies available:", document.cookie);
+          console.error("No valid session found - redirecting to login");
           router.push("/login");
           return;
         }
@@ -121,12 +83,12 @@ function ProfileCreationContent() {
         console.log("=== SESSION VALIDATION SUCCESSFUL ===");
         console.log("Session found in profile creation:", session.user.email);
 
-        // Check if profile already exists (shouldn't happen but handle gracefully)
+        // Check if profile already exists
         console.log("Checking for existing profile...");
         const { data: existingProfile, error: profileError } = await supabase
           .from("profiles")
-          .select("id, user_id, database_role, full_name")
-          .eq("user_id", session.user.id)
+          .select("id, database_role, full_name")
+          .eq("id", session.user.id)
           .maybeSingle();
 
         console.log("Existing profile check result:", {
@@ -170,15 +132,32 @@ function ProfileCreationContent() {
     try {
       console.log("=== PROFILE CREATION SUBMISSION START ===");
 
-      // Get current session (more reliable than getUser for PKCE flow)
+      // Get current session with multiple retry attempts
       console.log("Getting session for profile creation...");
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      let session = null;
+
+      // Try up to 5 times with increasing delays
+      for (let i = 0; i < 5; i++) {
+        const {
+          data: { session: currentSession },
+        } = await supabase.auth.getSession();
+
+        if (currentSession?.user?.id) {
+          session = currentSession;
+          console.log(`Session found on attempt ${i + 1}`);
+          break;
+        }
+
+        if (i < 4) {
+          const delay = 500 + i * 500; // 500ms, 1000ms, 1500ms, 2000ms
+          console.log(`Session not found, waiting ${delay}ms before retry...`);
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
+      }
 
       if (!session) {
         console.error("No session found during profile creation submission");
-        throw new Error("User not authenticated");
+        throw new Error("User not authenticated - please sign in again");
       }
 
       console.log("Session found for profile creation:", {
@@ -187,9 +166,9 @@ function ProfileCreationContent() {
         expiresAt: session.expires_at,
       });
 
-      // Create profile in database using user_id field
+      // Create profile in database using id field (PRIMARY KEY)
       console.log("Creating profile with data:", {
-        user_id: session.user.id,
+        id: session.user.id,
         full_name: fullName,
         database_role: role,
         visual_role: role === "admin" ? "Staff" : profileData.visualRole,
@@ -200,7 +179,7 @@ function ProfileCreationContent() {
       });
 
       const { error: profileError } = await supabase.from("profiles").insert({
-        user_id: session.user.id, // Use user_id instead of id
+        id: session.user.id, // Use id as PRIMARY KEY (not user_id)
         full_name: fullName,
         database_role: role,
         visual_role: role === "admin" ? "Staff" : profileData.visualRole,
