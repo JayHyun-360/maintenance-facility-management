@@ -179,12 +179,16 @@ export default function UserDashboardClient({
                       className={`relative transform transition-all duration-300 ${showProfileViewer ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
                       ref={profileViewerRef}
                     >
-                      <div className="w-80 h-80 rounded-full bg-white/20 backdrop-blur-xl shadow-2xl border-2 border-white/30 flex flex-col items-center justify-center p-8">
-                        <div className="w-64 h-64 rounded-full overflow-hidden border-3 border-white/50 shadow-lg mb-4">
+                      <div className="w-72 h-72 rounded-full bg-white/20 backdrop-blur-xl shadow-2xl border-2 border-white/30 flex flex-col items-center justify-center p-8">
+                        <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-white/50 shadow-lg mb-4 bg-white">
                           <img
                             src={userAvatar}
                             alt="Profile Picture"
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
+                            style={{
+                              imageRendering: "auto",
+                              imageResolution: "from-image",
+                            }}
                           />
                         </div>
                         <h3 className="font-semibold text-white text-lg text-center">
