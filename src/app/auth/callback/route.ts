@@ -88,8 +88,8 @@ export async function GET(request: NextRequest) {
     console.log("Checking if profile exists...");
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id, user_id, database_role, full_name")
-      .eq("user_id", data.session.user.id)
+      .select("id, database_role, full_name")
+      .eq("id", data.session.user.id)
       .maybeSingle();
 
     console.log("Profile check result:", profile);
@@ -99,6 +99,21 @@ export async function GET(request: NextRequest) {
 
     if (profileError) {
       console.error("Profile query failed:", profileError);
+      console.error(
+        "Full error object:",
+        JSON.stringify(profileError, null, 2),
+      );
+
+      // Check if it's a schema-related error
+      if (
+        profileError?.message?.includes("column") ||
+        profileError?.code === "42703"
+      ) {
+        console.error("SCHEMA MISMATCH: Column reference error detected.");
+        console.error(
+          "Possible cause: user_id vs id column mismatch in profiles table",
+        );
+      }
 
       // If profile query fails but session is valid, assume new user
       console.log(

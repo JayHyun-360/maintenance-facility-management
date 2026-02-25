@@ -28,7 +28,10 @@ function AuthCallbackContent({ searchParams }: AuthCallbackClientProps) {
 
       console.log("Full URL:", fullUrl);
       console.log("Hash:", url.hash);
-      console.log("Search params:", Object.fromEntries(searchParamsClient.entries()));
+      console.log(
+        "Search params:",
+        Object.fromEntries(searchParamsClient.entries()),
+      );
 
       // Check if we have OAuth code in URL
       const code = searchParamsClient.get("code");
@@ -47,13 +50,16 @@ function AuthCallbackContent({ searchParams }: AuthCallbackClientProps) {
 
       if (code) {
         console.log("Code found, checking if server already handled it...");
-        
+
         // Check if we already have a session (server-side callback should have set this)
-        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-        
+        const { data: sessionData, error: sessionError } =
+          await supabase.auth.getSession();
+
         if (sessionError) {
           console.error("Error checking session:", sessionError);
-          router.push(`/auth/error?message=${encodeURIComponent(`Session check failed: ${sessionError.message}`)}`);
+          router.push(
+            `/auth/error?message=${encodeURIComponent(`Session check failed: ${sessionError.message}`)}`,
+          );
           return;
         }
 
@@ -61,25 +67,31 @@ function AuthCallbackContent({ searchParams }: AuthCallbackClientProps) {
           console.log("Session found from server-side callback!");
           console.log("Session user ID:", sessionData.session.user.id);
           console.log("Session user email:", sessionData.session.user.email);
-          
+
           // The server-side callback should have already redirected, but as a fallback:
           const userRole = sessionData.session.user.app_metadata?.role;
-          const isAdmin = userRole === 'admin';
+          const isAdmin = userRole === "admin";
           const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
-          
+
           console.log("Fallback redirect to:", redirectUrl);
           router.push(redirectUrl);
           return;
         }
 
         // If no session and we have a code, try client-side exchange as fallback
-        console.log("No session found, trying client-side code exchange as fallback...");
-        const { data, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+        console.log(
+          "No session found, trying client-side code exchange as fallback...",
+        );
+        const { data, error: exchangeError } =
+          await supabase.auth.exchangeCodeForSession(code);
 
         if (exchangeError) {
           console.error("Client-side code exchange error:", exchangeError);
-          console.error("Full error object:", JSON.stringify(exchangeError, null, 2));
-          
+          console.error(
+            "Full error object:",
+            JSON.stringify(exchangeError, null, 2),
+          );
+
           // Extract detailed error information
           const errorDetails = {
             message: exchangeError.message || "Unknown error",
@@ -109,11 +121,14 @@ function AuthCallbackContent({ searchParams }: AuthCallbackClientProps) {
           await new Promise((resolve) => setTimeout(resolve, 500));
 
           // Get user to determine role and redirect
-          const { data: userData, error: userError } = await supabase.auth.getUser();
+          const { data: userData, error: userError } =
+            await supabase.auth.getUser();
 
           if (userError) {
             console.error("Error getting user after session:", userError);
-            router.push(`/auth/error?message=${encodeURIComponent(`Failed to get user: ${userError.message}`)}`);
+            router.push(
+              `/auth/error?message=${encodeURIComponent(`Failed to get user: ${userError.message}`)}`,
+            );
             return;
           }
 
@@ -138,11 +153,27 @@ function AuthCallbackContent({ searchParams }: AuthCallbackClientProps) {
                 JSON.stringify(profileError, null, 2),
               );
 
+              // Check if it's a schema-related error
+              if (
+                profileError?.message?.includes("column") ||
+                profileError?.code === "42703"
+              ) {
+                console.error(
+                  "SCHEMA MISMATCH: Column reference error detected.",
+                );
+                console.error(
+                  "Possible cause: user_id vs id column mismatch in profiles table",
+                );
+              }
+
               // Try to debug the issue
               try {
-                const { data: debugData } = await supabase.rpc('debug_user_creation', {
-                  user_id: userData.user.id
-                } as any);
+                const { data: debugData } = await supabase.rpc(
+                  "debug_user_creation",
+                  {
+                    user_id: userData.user.id,
+                  } as any,
+                );
                 console.log("Debug user creation data:", debugData);
               } catch (debugError) {
                 console.error("Debug function failed:", debugError);
@@ -156,8 +187,10 @@ function AuthCallbackContent({ searchParams }: AuthCallbackClientProps) {
 
             if (profile) {
               // Existing user - redirect to dashboard
-              const userRole = userData.user.app_metadata?.role || (profile as any).database_role;
-              const isAdmin = userRole === 'admin';
+              const userRole =
+                userData.user.app_metadata?.role ||
+                (profile as any).database_role;
+              const isAdmin = userRole === "admin";
               const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
               console.log("Existing user, redirecting to:", redirectUrl);
               router.push(redirectUrl);
@@ -169,7 +202,10 @@ function AuthCallbackContent({ searchParams }: AuthCallbackClientProps) {
                 email.includes("@admin") || email.includes("yourdomain.com");
 
               const profileCreationUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${encodeURIComponent(userData.user.user_metadata?.full_name || email.split("@")[0])}`;
-              console.log("New user, redirecting to profile creation:", profileCreationUrl);
+              console.log(
+                "New user, redirecting to profile creation:",
+                profileCreationUrl,
+              );
               router.push(profileCreationUrl);
             }
           }
@@ -219,7 +255,9 @@ function AuthCallbackContent({ searchParams }: AuthCallbackClientProps) {
   );
 }
 
-export default function AuthCallbackClient({ searchParams }: AuthCallbackClientProps) {
+export default function AuthCallbackClient({
+  searchParams,
+}: AuthCallbackClientProps) {
   return (
     <Suspense
       fallback={
