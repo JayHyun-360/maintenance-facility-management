@@ -436,93 +436,30 @@ export default function UserDashboardClient({
               </button>
 
               {/* Notifications Bell */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
-                  title="Notifications"
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                title="Notifications"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                    />
-                  </svg>
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                      {unreadCount > 9 ? "9+" : unreadCount}
-                    </span>
-                  )}
-                </button>
-
-                {/* Notifications Dropdown */}
-                {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50 border border-gray-200 max-h-96 overflow-hidden">
-                    <div className="p-3 border-b flex justify-between items-center bg-gray-50">
-                      <h3 className="font-semibold text-gray-900">
-                        Notifications
-                      </h3>
-                      {unreadCount > 0 && (
-                        <button
-                          onClick={markAllNotificationsRead}
-                          className="text-xs text-green-600 hover:text-green-700"
-                        >
-                          Mark all read
-                        </button>
-                      )}
-                    </div>
-                    <div className="overflow-y-auto max-h-80">
-                      {notifications.length === 0 ? (
-                        <div className="p-4 text-center text-gray-500">
-                          No notifications yet
-                        </div>
-                      ) : (
-                        notifications.map((notification: any) => (
-                          <div
-                            key={notification.id}
-                            onClick={() =>
-                              markNotificationRead(notification.id)
-                            }
-                            className={`p-3 border-b cursor-pointer hover:bg-gray-50 ${
-                              !notification.is_read ? "bg-blue-50" : ""
-                            }`}
-                          >
-                            <div className="flex items-start gap-2">
-                              <div
-                                className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
-                                  !notification.is_read
-                                    ? "bg-blue-500"
-                                    : "bg-gray-300"
-                                }`}
-                              />
-                              <div className="flex-1 min-w-0">
-                                <p className="font-medium text-sm text-gray-900">
-                                  {notification.title}
-                                </p>
-                                <p className="text-sm text-gray-600 truncate">
-                                  {notification.message}
-                                </p>
-                                <p className="text-xs text-gray-400 mt-1">
-                                  {new Date(
-                                    notification.created_at,
-                                  ).toLocaleString()}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
                 )}
-              </div>
+              </button>
 
               <button
                 onClick={() => setShowProfileSidebar(true)}
@@ -1002,6 +939,87 @@ export default function UserDashboardClient({
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Notifications Sidebar */}
+      <div
+        className={`fixed top-0 right-0 h-full w-96 bg-white shadow-2xl z-40 transform transition-transform duration-500 ease-out ${
+          showNotifications ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="h-full overflow-y-auto">
+          <div className="bg-[#84B179] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold text-white">Notifications</h2>
+              <button
+                onClick={() => setShowNotifications(false)}
+                className="text-white/80 hover:text-white"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="p-4">
+            {unreadCount > 0 && (
+              <button
+                onClick={markAllNotificationsRead}
+                className="w-full mb-4 text-sm text-green-600 hover:text-green-700 text-center"
+              >
+                Mark all as read
+              </button>
+            )}
+            {notifications.length === 0 ? (
+              <div className="p-4 text-center text-gray-500">
+                No notifications yet
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {notifications.map((notification: any) => (
+                  <div
+                    key={notification.id}
+                    onClick={() => markNotificationRead(notification.id)}
+                    className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                      !notification.is_read
+                        ? "bg-blue-50 border-blue-200"
+                        : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div
+                        className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
+                          !notification.is_read ? "bg-blue-500" : "bg-gray-300"
+                        }`}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-sm text-gray-900">
+                          {notification.title}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {notification.message}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-2">
+                          {new Date(notification.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
