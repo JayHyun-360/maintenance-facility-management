@@ -1,4 +1,4 @@
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
   const error = requestUrl.searchParams.get("error");
   const errorDescription = requestUrl.searchParams.get("error_description");
   const next = requestUrl.searchParams.get("next") || "/";
+  const cookieStore = await cookies();
 
   console.log("=== SERVER-SIDE OAUTH ROUTE HANDLER ===");
   console.log("Full URL:", request.url);
@@ -40,24 +41,7 @@ export async function GET(request: NextRequest) {
 
   try {
     console.log("Creating server client for OAuth exchange...");
-    const cookieStore = await cookies();
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          get(name: string) {
-            return cookieStore.get(name)?.value;
-          },
-          set(name: string, value: string, options: any) {
-            cookieStore.set(name, value, options);
-          },
-          remove(name: string, options: any) {
-            cookieStore.set(name, "", { ...options, maxAge: 0 });
-          },
-        },
-      },
-    );
+    const supabase = await createServerClient();
 
     // Exchange the code for a session
     console.log("Exchanging code for session...");
@@ -148,23 +132,7 @@ export async function GET(request: NextRequest) {
 
     // Verify session is properly accessible before redirecting
     try {
-      const testClient = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-          cookies: {
-            get(name: string) {
-              return cookieStore.get(name)?.value;
-            },
-            set(name: string, value: string, options: any) {
-              // No-op - just testing access
-            },
-            remove(name: string, options: any) {
-              // No-op - just testing access
-            },
-          },
-        },
-      );
+      const testClient = await createServerClient();
 
       const { data: testSession } = await testClient.auth.getSession();
       console.log("Session verification test:", testSession);
@@ -190,10 +158,10 @@ export async function GET(request: NextRequest) {
 
     // Ensure session cookies are properly set in the response
     // The exchangeCodeForSession should have set cookies, but let's make sure they're included
-    const cookieList = cookieStore.getAll();
+    const cookieList = await cookieStore.getAll();
     console.log(
       "Available cookies after OAuth:",
-      cookieList.map((c) => c.name),
+      cookieList.map((c: any) => c.name),
     );
 
     return response;
