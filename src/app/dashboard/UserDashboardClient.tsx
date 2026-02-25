@@ -289,12 +289,12 @@ export default function UserDashboardClient({
                         <option value="" className="text-gray-400">
                           Select the type of maintenance needed
                         </option>
-                        <option value="Plumbing">🔧 Plumbing</option>
-                        <option value="Electrical">⚡ Electrical</option>
-                        <option value="Carpentry">🔨 Carpentry</option>
-                        <option value="HVAC">❄️ HVAC</option>
-                        <option value="Cleaning">🧹 Cleaning</option>
-                        <option value="Other">📦 Other</option>
+                        <option value="Plumbing">Plumbing</option>
+                        <option value="Electrical">Electrical</option>
+                        <option value="Carpentry">Carpentry</option>
+                        <option value="HVAC">HVAC</option>
+                        <option value="Cleaning">Cleaning</option>
+                        <option value="Other">Other</option>
                       </select>
                       <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                         <svg
@@ -344,13 +344,11 @@ export default function UserDashboardClient({
                           How urgent is this issue?
                         </option>
                         <option value="Emergency">
-                          🚨 Emergency - Immediate attention required
+                          Emergency - Immediate attention required
                         </option>
-                        <option value="Urgent">
-                          ⚡ Urgent - Within 24 hours
-                        </option>
+                        <option value="Urgent">Urgent - Within 24 hours</option>
                         <option value="Not Urgent">
-                          📅 Not Urgent - Routine maintenance
+                          Not Urgent - Routine maintenance
                         </option>
                       </select>
                       <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
