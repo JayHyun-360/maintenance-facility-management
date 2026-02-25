@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type {
   Profile,
@@ -26,6 +26,13 @@ export default function UserDashboardClient({
   const [requests, setRequests] =
     useState<MaintenanceRequest[]>(initialRequests);
   const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    nature: "",
+    urgency: "",
+    location: "",
+    description: "",
+    supportingReason: "",
+  });
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -45,11 +52,6 @@ export default function UserDashboardClient({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  const [formData, setFormData] = useState({
-    nature: "",
-    urgency: "",
-    location: "",
-    description: "",
     supportingReason: "",
   });
 
@@ -265,112 +267,12 @@ export default function UserDashboardClient({
                   New Request
                 </h2>
                 {!showForm && (
-                  <div className="relative" ref={dropdownRef}>
-                    <button
-                      onClick={() => setShowDropdown(!showDropdown)}
-                      className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105 flex items-center gap-2"
-                    >
-                      Create
-                      <svg
-                        className={`w-4 h-4 transition-transform duration-300 ${showDropdown ? "rotate-180" : ""}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </button>
-
-                    {/* Dropdown Menu */}
-                    {showDropdown && (
-                      <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 animate-fadeIn">
-                        <div className="py-2">
-                          <button
-                            onClick={() => {
-                              setShowDropdown(false);
-                              setShowForm(true);
-                            }}
-                            className="w-full text-left px-4 py-2 text-gray-700 hover:bg-green-50 hover:text-green-600 transition-all duration-200 flex items-center gap-2"
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 4v16m8-8H4"
-                              />
-                            </svg>
-                            Maintenance Request
-                          </button>
-                          <button
-                            onClick={() => {
-                              setShowDropdown(false);
-                              // Future: Quick request template
-                            }}
-                            className="w-full text-left px-4 py-2 text-gray-500 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2 cursor-not-allowed"
-                            disabled
-                            title="Coming soon"
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                              />
-                            </svg>
-                            Use Template
-                            <span className="text-xs bg-gray-200 text-gray-600 px-2 py-1 rounded-full ml-auto">
-                              Soon
-                            </span>
-                          </button>
-                          <div className="border-t border-gray-100 my-2"></div>
-                          <button
-                            onClick={() => {
-                              setShowDropdown(false);
-                              // Future: Emergency request
-                            }}
-                            className="w-full text-left px-4 py-2 text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200 flex items-center gap-2 cursor-not-allowed"
-                            disabled
-                            title="Coming soon"
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 16.5c-.77.833.192 2.5 1.732 2.5z"
-                              />
-                            </svg>
-                            Emergency Request
-                            <span className="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full ml-auto">
-                              Soon
-                            </span>
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
+                  <button
+                    onClick={() => setShowForm(true)}
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
+                  >
+                    Create
+                  </button>
                 )}
               </div>
 
