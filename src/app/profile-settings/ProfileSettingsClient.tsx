@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { switchAdminMode } from "./actions";
+import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/types/database";
 
 interface ProfileSettingsClientProps {
@@ -31,7 +32,18 @@ export default function ProfileSettingsClient({
         return;
       }
 
-      console.log("Mode switch successful, redirecting...");
+      console.log("Mode switch successful, refreshing JWT session...");
+
+      // Force the browser to fetch a fresh JWT so the middleware reads the
+      // updated role (stamped by the DB trigger) without requiring re-login.
+      const supabase = createClient()!;
+      const { error: refreshError } = await supabase.auth.refreshSession();
+      if (refreshError) {
+        console.warn("JWT refresh warning (non-fatal):", refreshError.message);
+      } else {
+        console.log("JWT refreshed successfully — new role active.");
+      }
+
       if (result.redirect) {
         router.push(result.redirect);
       }

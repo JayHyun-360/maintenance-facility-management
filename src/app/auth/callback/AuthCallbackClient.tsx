@@ -69,8 +69,17 @@ function AuthCallbackContent({ searchParams }: AuthCallbackClientProps) {
           console.log("Session user email:", sessionData.session.user.email);
 
           // The server-side callback should have already redirected, but as a fallback:
-          const userRole = sessionData.session.user.app_metadata?.role;
-          const isAdmin = userRole === "admin";
+          // Use profile DB role as source of truth at login time.
+          const { data: fallbackProfile } = await supabase
+            .from("profiles")
+            .select("database_role")
+            .eq("id", sessionData.session.user.id)
+            .maybeSingle();
+
+          const fallbackRole =
+            (fallbackProfile as { database_role: string } | null)
+              ?.database_role || sessionData.session.user.app_metadata?.role;
+          const isAdmin = fallbackRole === "admin";
           const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
 
           console.log("Fallback redirect to:", redirectUrl);
@@ -186,13 +195,15 @@ function AuthCallbackContent({ searchParams }: AuthCallbackClientProps) {
             }
 
             if (profile) {
-              // Existing user - redirect to dashboard
-              const userRole =
-                userData.user.app_metadata?.role ||
-                (profile as any).database_role;
-              const isAdmin = userRole === "admin";
+              // Existing user - use database_role as source of truth, not JWT
+              const isAdmin = (profile as any).database_role === "admin";
               const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
-              console.log("Existing user, redirecting to:", redirectUrl);
+              console.log(
+                "Existing user, database_role:",
+                (profile as any).database_role,
+                "→ redirecting to:",
+                redirectUrl,
+              );
               router.push(redirectUrl);
             } else {
               // New user - this shouldn't happen with the trigger, but handle it

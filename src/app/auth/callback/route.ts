@@ -126,12 +126,19 @@ export async function GET(request: NextRequest) {
       redirectUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${encodeURIComponent(data.session.user.user_metadata?.full_name || email.split("@")[0])}`;
       console.log("Fallback: redirecting to profile creation:", redirectUrl);
     } else if (profile) {
-      // Existing user - redirect to appropriate dashboard
-      const userRole =
-        data.session.user.app_metadata?.role || profile.database_role;
-      const isAdmin = userRole === "admin";
+      // Existing user - redirect to appropriate dashboard.
+      // Use profile.database_role as the SOURCE OF TRUTH (not the JWT),
+      // because an admin may have changed the role directly in the database.
+      // The DB trigger will have already stamped auth.users.raw_app_metadata,
+      // but we trust the profile table here for the redirect decision.
+      const isAdmin = profile.database_role === "admin";
       redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
-      console.log("Existing user, redirecting to:", redirectUrl);
+      console.log(
+        "Existing user, database_role:",
+        profile.database_role,
+        "→ redirecting to:",
+        redirectUrl,
+      );
     } else {
       // New user - redirect to profile creation
       const email = data.session.user.email || "";
