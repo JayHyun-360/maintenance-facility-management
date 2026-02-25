@@ -58,6 +58,7 @@ export interface Database {
           location: string;
           description: string;
           status: "Pending" | "In Progress" | "Completed" | "Cancelled";
+          photos: string[];
           created_at: string;
         };
         Insert: {
@@ -68,6 +69,7 @@ export interface Database {
           location: string;
           description: string;
           status?: "Pending" | "In Progress" | "Completed" | "Cancelled";
+          photos?: string[];
           created_at?: string;
         };
         Update: {
@@ -78,6 +80,7 @@ export interface Database {
           location?: string | null;
           description?: string | null;
           status?: "Pending" | "In Progress" | "Completed" | "Cancelled" | null;
+          photos?: string[] | null;
           created_at?: string | null;
         };
       };

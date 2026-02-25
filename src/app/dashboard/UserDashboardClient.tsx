@@ -30,9 +30,12 @@ export default function UserDashboardClient({
   const [showForm, setShowForm] = useState(false);
   const [showProfileViewer, setShowProfileViewer] = useState(false);
   const [showProfileSidebar, setShowProfileSidebar] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmType, setConfirmType] = useState<"admin" | "user" | null>(null);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
   const profileViewerRef = useRef<HTMLDivElement>(null);
 
   // Check if user is currently in admin mode
@@ -60,7 +63,10 @@ export default function UserDashboardClient({
     location: "",
     description: "",
     supportingReason: "",
+    photos: [] as string[],
   });
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
 
   const supabase = createClient()!;
 
@@ -74,34 +80,124 @@ export default function UserDashboardClient({
     setRequests(data || []);
   };
 
+  const fetchNotifications = async () => {
+    const { data } = await supabase
+      .from("notifications")
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    if (data) {
+      setNotifications(data);
+      setUnreadCount(data.filter((n: any) => !n.is_read).length);
+    }
+  };
+
+  const markNotificationRead = async (notificationId: string) => {
+    await (supabase.from("notifications") as any)
+      .update({ is_read: true })
+      .eq("id", notificationId);
+    fetchNotifications();
+  };
+
+  const markAllNotificationsRead = async () => {
+    await (supabase.from("notifications") as any)
+      .update({ is_read: true })
+      .eq("user_id", userId)
+      .eq("is_read", false);
+    fetchNotifications();
+  };
+
+  // Fetch notifications on mount and set up polling
+  useEffect(() => {
+    fetchNotifications();
+    const notificationInterval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(notificationInterval);
+  }, [userId]);
+
+  // Poll for request updates
+  useEffect(() => {
+    const requestInterval = setInterval(fetchRequests, 15000);
+    return () => clearInterval(requestInterval);
+  }, [userId]);
+
   const handleSubmitRequest = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const { error } = await (
-      supabase.from("maintenance_requests") as any
-    ).insert({
-      requester_id: userId,
-      nature: formData.nature,
-      urgency: formData.urgency,
-      location: formData.location,
-      description: formData.description,
-    });
+    setUploading(true);
+    try {
+      let photoUrls: string[] = [];
 
-    if (error) {
+      // Upload photos if any
+      if (photoFiles.length > 0) {
+        for (const file of photoFiles) {
+          const fileName = `${userId}/${Date.now()}-${file.name}`;
+          const { data: uploadData, error: uploadError } =
+            await supabase.storage
+              .from("maintenance-requests-photos")
+              .upload(fileName, file);
+
+          if (uploadError) {
+            console.error("Photo upload error:", uploadError);
+            continue;
+          }
+
+          const {
+            data: { publicUrl },
+          } = supabase.storage
+            .from("maintenance-requests-photos")
+            .getPublicUrl(fileName);
+
+          photoUrls.push(publicUrl);
+        }
+      }
+
+      const { error } = await (
+        supabase.from("maintenance_requests") as any
+      ).insert({
+        requester_id: userId,
+        nature: formData.nature,
+        urgency: formData.urgency,
+        location: formData.location,
+        description: formData.description,
+        photos: photoUrls,
+      });
+
+      if (error) {
+        alert("Error submitting request");
+        return;
+      }
+
+      // Reset form and refresh requests
+      setFormData({
+        nature: "",
+        urgency: "",
+        location: "",
+        description: "",
+        supportingReason: "",
+        photos: [],
+      });
+      setPhotoFiles([]);
+      setShowForm(false);
+      fetchRequests();
+    } catch (error) {
+      console.error("Error submitting request:", error);
       alert("Error submitting request");
-      return;
+    } finally {
+      setUploading(false);
     }
+  };
 
-    // Reset form and refresh requests
-    setFormData({
-      nature: "",
-      urgency: "",
-      location: "",
-      description: "",
-      supportingReason: "",
-    });
-    setShowForm(false);
-    fetchRequests();
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setPhotoFiles((prev) => [...prev, ...newFiles].slice(0, 5));
+    }
+  };
+
+  const removePhoto = (index: number) => {
+    setPhotoFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleThemeToggle = async () => {
@@ -338,6 +434,95 @@ export default function UserDashboardClient({
                   </svg>
                 )}
               </button>
+
+              {/* Notifications Bell */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                  title="Notifications"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                    />
+                  </svg>
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {/* Notifications Dropdown */}
+                {showNotifications && (
+                  <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-50 border border-gray-200 max-h-96 overflow-hidden">
+                    <div className="p-3 border-b flex justify-between items-center bg-gray-50">
+                      <h3 className="font-semibold text-gray-900">
+                        Notifications
+                      </h3>
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={markAllNotificationsRead}
+                          className="text-xs text-green-600 hover:text-green-700"
+                        >
+                          Mark all read
+                        </button>
+                      )}
+                    </div>
+                    <div className="overflow-y-auto max-h-80">
+                      {notifications.length === 0 ? (
+                        <div className="p-4 text-center text-gray-500">
+                          No notifications yet
+                        </div>
+                      ) : (
+                        notifications.map((notification: any) => (
+                          <div
+                            key={notification.id}
+                            onClick={() =>
+                              markNotificationRead(notification.id)
+                            }
+                            className={`p-3 border-b cursor-pointer hover:bg-gray-50 ${
+                              !notification.is_read ? "bg-blue-50" : ""
+                            }`}
+                          >
+                            <div className="flex items-start gap-2">
+                              <div
+                                className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
+                                  !notification.is_read
+                                    ? "bg-blue-500"
+                                    : "bg-gray-300"
+                                }`}
+                              />
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-sm text-gray-900">
+                                  {notification.title}
+                                </p>
+                                <p className="text-sm text-gray-600 truncate">
+                                  {notification.message}
+                                </p>
+                                <p className="text-xs text-gray-400 mt-1">
+                                  {new Date(
+                                    notification.created_at,
+                                  ).toLocaleString()}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
 
               <button
                 onClick={() => setShowProfileSidebar(true)}
@@ -594,6 +779,82 @@ export default function UserDashboardClient({
                     </div>
                   </div>
 
+                  {/* Photo Upload Section */}
+                  <div className="relative">
+                    <label className="block text-sm font-semibold text-gray-800 mb-2 transition-all duration-300 flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-pink-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                      Attach Photos (Optional)
+                    </label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 hover:border-green-500 transition-colors">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={handlePhotoChange}
+                        className="hidden"
+                        id="photo-upload"
+                        disabled={photoFiles.length >= 5}
+                      />
+                      <label
+                        htmlFor="photo-upload"
+                        className={`flex flex-col items-center justify-center cursor-pointer ${photoFiles.length >= 5 ? "opacity-50 cursor-not-allowed" : ""}`}
+                      >
+                        <svg
+                          className="w-8 h-8 text-gray-400 mb-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 4v16m8-8H4"
+                          />
+                        </svg>
+                        <span className="text-sm text-gray-500">
+                          {photoFiles.length >= 5
+                            ? "Maximum 5 photos reached"
+                            : "Click to upload photos (max 5)"}
+                        </span>
+                      </label>
+                    </div>
+
+                    {/* Photo Preview */}
+                    {photoFiles.length > 0 && (
+                      <div className="flex gap-2 mt-3 flex-wrap">
+                        {photoFiles.map((file, index) => (
+                          <div key={index} className="relative">
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={`Preview ${index + 1}`}
+                              className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removePhoto(index)}
+                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
+                            >
+                              ×
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex gap-3 pt-4">
                     <button
                       type="button"
@@ -715,6 +976,20 @@ export default function UserDashboardClient({
                       <p className="text-sm text-gray-700 mb-2 transition-all duration-300">
                         {request.description}
                       </p>
+
+                      {/* Photo Display */}
+                      {request.photos && request.photos.length > 0 && (
+                        <div className="flex gap-2 mt-2 overflow-x-auto pb-1">
+                          {request.photos.map((photo, index) => (
+                            <img
+                              key={index}
+                              src={photo}
+                              alt={`Attachment ${index + 1}`}
+                              className="w-16 h-16 object-cover rounded-lg border border-gray-200 flex-shrink-0"
+                            />
+                          ))}
+                        </div>
+                      )}
 
                       <div className="flex justify-between items-center text-xs text-gray-500 transition-all duration-300">
                         <span>Urgency: {request.urgency}</span>

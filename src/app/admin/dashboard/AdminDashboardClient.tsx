@@ -40,6 +40,14 @@ export default function AdminDashboardClient({
   const [profile, setProfile] = useState<Profile | null>(initialProfile);
   const [showProfileViewer, setShowProfileViewer] = useState(false);
   const [showProfileSidebar, setShowProfileSidebar] = useState(false);
+  const [editingRequest, setEditingRequest] =
+    useState<RequestWithProfile | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    nature: "",
+    urgency: "",
+    location: "",
+    description: "",
+  });
   const profileViewerRef = useRef<HTMLDivElement>(null);
 
   const supabase = createClient()!;
@@ -58,6 +66,12 @@ export default function AdminDashboardClient({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, []);
+
+  // Poll for request updates
+  useEffect(() => {
+    const interval = setInterval(fetchRequests, 15000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchRequests = async () => {
@@ -120,6 +134,62 @@ export default function AdminDashboardClient({
       console.error("Error logging audit:", auditError);
     }
 
+    fetchRequests();
+  };
+
+  const handleDeleteRequest = async (requestId: string) => {
+    if (
+      !confirm(
+        "Are you sure you want to delete this request? This action cannot be undone.",
+      )
+    ) {
+      return;
+    }
+
+    const { error: deleteError } = await (
+      supabase.from("maintenance_requests") as any
+    )
+      .delete()
+      .eq("id", requestId);
+
+    if (deleteError) {
+      alert("Error deleting request");
+      return;
+    }
+
+    fetchRequests();
+  };
+
+  const handleEditRequest = (request: RequestWithProfile) => {
+    setEditingRequest(request);
+    setEditFormData({
+      nature: request.nature,
+      urgency: request.urgency,
+      location: request.location,
+      description: request.description,
+    });
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingRequest) return;
+
+    const { error: updateError } = await (
+      supabase.from("maintenance_requests") as any
+    )
+      .update({
+        nature: editFormData.nature,
+        urgency: editFormData.urgency,
+        location: editFormData.location,
+        description: editFormData.description,
+      })
+      .eq("id", editingRequest.id);
+
+    if (updateError) {
+      alert("Error updating request");
+      return;
+    }
+
+    setEditingRequest(null);
     fetchRequests();
   };
 
@@ -504,6 +574,23 @@ export default function AdminDashboardClient({
                         <p className="text-sm text-gray-900 truncate">
                           {request.description}
                         </p>
+                        {request.photos && request.photos.length > 0 && (
+                          <div className="flex gap-1 mt-2">
+                            {request.photos.slice(0, 3).map((photo, index) => (
+                              <img
+                                key={index}
+                                src={photo}
+                                alt={`Attachment ${index + 1}`}
+                                className="w-10 h-10 object-cover rounded border border-gray-200"
+                              />
+                            ))}
+                            {request.photos.length > 3 && (
+                              <span className="text-xs text-gray-500 self-center">
+                                +{request.photos.length - 3} more
+                              </span>
+                            )}
+                          </div>
+                        )}
                         <span
                           className={`inline-flex px-2 py-1 text-xs font-medium rounded-full mt-1 ${getUrgencyColor(request.urgency)}`}
                         >
@@ -551,6 +638,44 @@ export default function AdminDashboardClient({
                             Cancel
                           </button>
                         )}
+                        <button
+                          onClick={() => handleEditRequest(request)}
+                          className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 ml-2"
+                          title="Edit request"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteRequest(request.id)}
+                          className="text-sm bg-gray-600 text-white px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 ml-2"
+                          title="Delete request"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -582,6 +707,123 @@ export default function AdminDashboardClient({
           </div>
         </div>
       </div>
+
+      {/* Edit Request Modal */}
+      {editingRequest && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="bg-[#84B179] p-6 rounded-t-xl">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-bold text-white">Edit Request</h2>
+                <button
+                  onClick={() => setEditingRequest(null)}
+                  className="text-white/80 hover:text-white"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Nature
+                </label>
+                <select
+                  value={editFormData.nature}
+                  onChange={(e) =>
+                    setEditFormData({ ...editFormData, nature: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                >
+                  <option value="Plumbing">Plumbing</option>
+                  <option value="Electrical">Electrical</option>
+                  <option value="Carpentry">Carpentry</option>
+                  <option value="HVAC">HVAC</option>
+                  <option value="Cleaning">Cleaning</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Urgency
+                </label>
+                <select
+                  value={editFormData.urgency}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      urgency: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                >
+                  <option value="Emergency">Emergency</option>
+                  <option value="Urgent">Urgent</option>
+                  <option value="Not Urgent">Not Urgent</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Location
+                </label>
+                <input
+                  type="text"
+                  value={editFormData.location}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      location: e.target.value,
+                    })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Description
+                </label>
+                <textarea
+                  value={editFormData.description}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      description: e.target.value,
+                    })
+                  }
+                  rows={4}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => setEditingRequest(null)}
+                  className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveEdit}
+                  className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Profile Settings Sidebar */}
       <>
