@@ -44,6 +44,10 @@ export default function AdminDashboardClient({
   const [showProfileSidebar, setShowProfileSidebar] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showAIChat, setShowAIChat] = useState(false);
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "analytics" | "master-queue" | "manage-users"
+  >("overview");
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [editingRequest, setEditingRequest] =
     useState<RequestWithProfile | null>(null);
@@ -493,373 +497,472 @@ export default function AdminDashboardClient({
         </div>
       </div>
 
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 transition-all duration-300">
-          <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
-            <div className="flex items-center">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-600">
-                  Total Requests
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {stats.total}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-[#84B179]/10 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-[#84B179]"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
-            <div className="flex items-center">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-600">Pending</p>
-                <p className="text-2xl font-bold text-yellow-600">
-                  {stats.pending}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-yellow-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
-            <div className="flex items-center">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-600">In Progress</p>
-                <p className="text-2xl font-bold text-blue-600">
-                  {stats.inProgress}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
-            <div className="flex items-center">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-600">Completed</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {stats.completed}
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-          </div>
+      {/* Tab Navigation */}
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-4 bg-white border-b">
+        <div className="flex gap-2 overflow-x-auto">
+          {[
+            { id: "overview", label: "Overview", icon: "📊" },
+            { id: "analytics", label: "Analytics", icon: "📈" },
+            { id: "master-queue", label: "Master Queue", icon: "📋" },
+            { id: "manage-users", label: "Manage Users", icon: "👥" },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 whitespace-nowrap ${
+                activeTab === tab.id
+                  ? "bg-[#84B179] text-white"
+                  : "text-gray-600 hover:bg-gray-100"
+              }`}
+            >
+              <span>{tab.icon}</span>
+              {tab.label}
+            </button>
+          ))}
         </div>
+      </div>
 
-        {/* Analytics - Nature of Requests */}
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Requests by Nature
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {[
-              { name: "Plumbing", color: "bg-blue-500", icon: "🔧" },
-              { name: "Electrical", color: "bg-yellow-500", icon: "⚡" },
-              { name: "Carpentry", color: "bg-amber-700", icon: "🪵" },
-              { name: "HVAC", color: "bg-cyan-500", icon: "❄️" },
-              { name: "Cleaning", color: "bg-purple-500", icon: "🧹" },
-              { name: "Other", color: "bg-gray-500", icon: "📋" },
-            ].map((nature) => {
-              const count = requests.filter(
-                (r) => r.nature === nature.name,
-              ).length;
-              const percentage =
-                stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
-              return (
-                <div
-                  key={nature.name}
-                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-2xl">{nature.icon}</span>
-                    <span className="text-sm font-medium text-gray-700">
-                      {nature.name}
-                    </span>
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
+        {/* Overview Tab */}
+        {activeTab === "overview" && (
+          <>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+              <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                <div className="flex items-center">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-600">
+                      Total Requests
+                    </p>
+                    <p className="text-2xl font-bold text-gray-900">
+                      {stats.total}
+                    </p>
                   </div>
-                  <div className="flex items-end gap-2">
-                    <span className="text-2xl font-bold text-gray-900">
-                      {count}
-                    </span>
-                    <span className="text-sm text-gray-500 mb-1">
-                      ({percentage}%)
-                    </span>
-                  </div>
-                  <div className="mt-2 h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full ${nature.color} transition-all duration-500`}
-                      style={{ width: `${percentage}%` }}
-                    />
+                  <div className="w-12 h-12 bg-[#84B179]/10 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-[#84B179]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
+              </div>
 
-        {/* Master Queue Table */}
-        <div className="bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-md animate-fadeIn">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Master Queue
-            </h2>
-            <p className="text-sm text-gray-600">All maintenance requests</p>
-          </div>
+              <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                <div className="flex items-center">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-600">Pending</p>
+                    <p className="text-2xl font-bold text-yellow-600">
+                      {stats.pending}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-yellow-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Request
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Requester
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Details
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {requests.map((request) => (
-                  <tr
-                    key={request.id}
-                    className="hover:bg-gray-50 transition-all duration-300"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {request.nature}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {request.location}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {new Date(request.created_at).toLocaleDateString()}
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {request.profiles?.full_name || "Unknown"}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {request.profiles?.visual_role}
-                        </div>
-                        {request.profiles?.educational_level && (
-                          <div className="text-xs text-gray-400">
-                            {request.profiles.educational_level}
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="max-w-xs">
-                        <p className="text-sm text-gray-900 truncate">
-                          {request.description}
-                        </p>
-                        {request.photos && request.photos.length > 0 && (
-                          <div className="flex gap-1 mt-2">
-                            {request.photos.slice(0, 3).map((photo, index) => (
-                              <img
-                                key={index}
-                                src={photo}
-                                alt={`Attachment ${index + 1}`}
-                                className="w-10 h-10 object-cover rounded border border-gray-200 cursor-pointer hover:scale-110 transition-transform"
-                                onClick={() => setSelectedPhoto(photo)}
-                              />
-                            ))}
-                            {request.photos.length > 3 && (
-                              <span
-                                className="text-xs text-gray-500 self-center cursor-pointer hover:text-blue-500"
-                                onClick={() =>
-                                  setSelectedPhoto(request.photos[0])
-                                }
-                              >
-                                +{request.photos.length - 3} more
-                              </span>
-                            )}
-                          </div>
-                        )}
-                        <span
-                          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full mt-1 ${getUrgencyColor(request.urgency)}`}
-                        >
-                          {request.urgency}
+              <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                <div className="flex items-center">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-600">
+                      In Progress
+                    </p>
+                    <p className="text-2xl font-bold text-blue-600">
+                      {stats.inProgress}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-blue-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                <div className="flex items-center">
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-gray-600">
+                      Completed
+                    </p>
+                    <p className="text-2xl font-bold text-green-600">
+                      {stats.completed}
+                    </p>
+                  </div>
+                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-6 h-6 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Analytics - Nature of Requests */}
+            <div className="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Requests by Nature
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                {[
+                  { name: "Plumbing", color: "bg-blue-500", icon: "🔧" },
+                  { name: "Electrical", color: "bg-yellow-500", icon: "⚡" },
+                  { name: "Carpentry", color: "bg-amber-700", icon: "🪵" },
+                  { name: "HVAC", color: "bg-cyan-500", icon: "❄️" },
+                  { name: "Cleaning", color: "bg-purple-500", icon: "🧹" },
+                  { name: "Other", color: "bg-gray-500", icon: "📋" },
+                ].map((nature) => {
+                  const count = requests.filter(
+                    (r) => r.nature === nature.name,
+                  ).length;
+                  const percentage =
+                    stats.total > 0
+                      ? Math.round((count / stats.total) * 100)
+                      : 0;
+                  return (
+                    <div
+                      key={nature.name}
+                      className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-2xl">{nature.icon}</span>
+                        <span className="text-sm font-medium text-gray-700">
+                          {nature.name}
                         </span>
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(request.status)}`}
-                      >
-                        {request.status}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        {request.status === "Pending" && (
-                          <button
-                            onClick={() =>
-                              handleStatusUpdate(request.id, "In Progress")
-                            }
-                            className="text-sm bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105"
-                          >
-                            Start
-                          </button>
-                        )}
-                        {request.status === "In Progress" && (
-                          <button
-                            onClick={() =>
-                              handleStatusUpdate(request.id, "Completed")
-                            }
-                            className="text-sm bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1.5 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-md"
-                          >
-                            Complete
-                          </button>
-                        )}
-                        {(request.status === "Pending" ||
-                          request.status === "In Progress") && (
-                          <button
-                            onClick={() =>
-                              handleStatusUpdate(request.id, "Cancelled")
-                            }
-                            className="text-sm bg-red-500 text-white px-3 py-1.5 rounded-lg hover:bg-red-600 transition-all duration-300 transform hover:scale-105"
-                          >
-                            Cancel
-                          </button>
-                        )}
-                        <button
-                          onClick={() => handleStatusChange(request)}
-                          className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 ml-2"
-                          title="Change Status"
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                            />
-                          </svg>
-                        </button>
-                        <button
-                          onClick={() => handleDeleteRequest(request.id)}
-                          className="text-sm bg-gray-600 text-white px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 ml-2"
-                          title="Delete request"
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                            />
-                          </svg>
-                        </button>
+                      <div className="flex items-end gap-2">
+                        <span className="text-2xl font-bold text-gray-900">
+                          {count}
+                        </span>
+                        <span className="text-sm text-gray-500 mb-1">
+                          ({percentage}%)
+                        </span>
                       </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      <div className="mt-2 h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full ${nature.color} transition-all duration-500`}
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
 
-            {requests.length === 0 && (
-              <div className="text-center py-12 text-gray-500 animate-fadeIn">
-                <svg
-                  className="w-16 h-16 mx-auto mb-4 text-gray-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <p className="text-lg">No maintenance requests found</p>
-                <p className="text-sm text-gray-400 mt-1">
-                  Requests will appear here when users submit them
+            {/* Master Queue Table */}
+            <div className="bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-md animate-fadeIn">
+              <div className="px-6 py-4 border-b border-gray-200">
+                <h2 className="text-lg font-semibold text-gray-900">
+                  Master Queue
+                </h2>
+                <p className="text-sm text-gray-600">
+                  All maintenance requests
                 </p>
               </div>
-            )}
+
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Request
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Requester
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Details
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Status
+                      </th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {requests.map((request) => (
+                      <tr
+                        key={request.id}
+                        className="hover:bg-gray-50 transition-all duration-300"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {request.nature}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {request.location}
+                            </div>
+                            <div className="text-xs text-gray-400">
+                              {new Date(
+                                request.created_at,
+                              ).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {request.profiles?.full_name || "Unknown"}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {request.profiles?.visual_role}
+                            </div>
+                            {request.profiles?.educational_level && (
+                              <div className="text-xs text-gray-400">
+                                {request.profiles.educational_level}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="max-w-xs">
+                            <p className="text-sm text-gray-900 truncate">
+                              {request.description}
+                            </p>
+                            {request.photos && request.photos.length > 0 && (
+                              <div className="flex gap-1 mt-2">
+                                {request.photos
+                                  .slice(0, 3)
+                                  .map((photo, index) => (
+                                    <img
+                                      key={index}
+                                      src={photo}
+                                      alt={`Attachment ${index + 1}`}
+                                      className="w-10 h-10 object-cover rounded border border-gray-200 cursor-pointer hover:scale-110 transition-transform"
+                                      onClick={() => setSelectedPhoto(photo)}
+                                    />
+                                  ))}
+                                {request.photos.length > 3 && (
+                                  <span
+                                    className="text-xs text-gray-500 self-center cursor-pointer hover:text-blue-500"
+                                    onClick={() =>
+                                      setSelectedPhoto(request.photos[0])
+                                    }
+                                  >
+                                    +{request.photos.length - 3} more
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                            <span
+                              className={`inline-flex px-2 py-1 text-xs font-medium rounded-full mt-1 ${getUrgencyColor(request.urgency)}`}
+                            >
+                              {request.urgency}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <span
+                            className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(request.status)}`}
+                          >
+                            {request.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            {request.status === "Pending" && (
+                              <button
+                                onClick={() =>
+                                  handleStatusUpdate(request.id, "In Progress")
+                                }
+                                className="text-sm bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105"
+                              >
+                                Start
+                              </button>
+                            )}
+                            {request.status === "In Progress" && (
+                              <button
+                                onClick={() =>
+                                  handleStatusUpdate(request.id, "Completed")
+                                }
+                                className="text-sm bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1.5 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-md"
+                              >
+                                Complete
+                              </button>
+                            )}
+                            {(request.status === "Pending" ||
+                              request.status === "In Progress") && (
+                              <button
+                                onClick={() =>
+                                  handleStatusUpdate(request.id, "Cancelled")
+                                }
+                                className="text-sm bg-red-500 text-white px-3 py-1.5 rounded-lg hover:bg-red-600 transition-all duration-300 transform hover:scale-105"
+                              >
+                                Cancel
+                              </button>
+                            )}
+                            <button
+                              onClick={() => handleStatusChange(request)}
+                              className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 ml-2"
+                              title="Change Status"
+                            >
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => handleDeleteRequest(request.id)}
+                              className="text-sm bg-gray-600 text-white px-3 py-1.5 rounded-lg hover:bg-gray-700 transition-all duration-300 transform hover:scale-105 ml-2"
+                              title="Delete request"
+                            >
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {requests.length === 0 && (
+                  <div className="text-center py-12 text-gray-500 animate-fadeIn">
+                    <svg
+                      className="w-16 h-16 mx-auto mb-4 text-gray-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                    <p className="text-lg">No maintenance requests found</p>
+                    <p className="text-sm text-gray-400 mt-1">
+                      Requests will appear here when users submit them
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Analytics Tab */}
+        {activeTab === "analytics" && (
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Analytics
+            </h2>
+            <p className="text-gray-600">Analytics and charts coming soon</p>
           </div>
-        </div>
+        )}
+
+        {/* Master Queue Tab */}
+        {activeTab === "master-queue" && (
+          <div className="space-y-6">
+            {/* Search Bar */}
+            <div className="relative">
+              <svg
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                type="text"
+                placeholder="Search requests..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#84B179] focus:border-transparent"
+              />
+            </div>
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                Master Queue
+              </h2>
+              <p className="text-gray-600">
+                Use the search above to filter requests
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Manage Users Tab */}
+        {activeTab === "manage-users" && (
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              Manage Users
+            </h2>
+            <p className="text-gray-600">User management coming soon</p>
+          </div>
+        )}
       </div>
 
       {/* Edit Request Modal */}
