@@ -48,6 +48,13 @@ export default async function UserDashboard() {
     created_at: new Date().toISOString(),
   };
 
+  // ✅ Check if user's profile role is admin - redirect if needed
+  // This handles cases where database_role was manually changed
+  if (finalProfile?.database_role === "admin") {
+    console.log("User profile is admin, redirecting to admin dashboard");
+    redirect("/admin/dashboard");
+  }
+
   // Fetch requests
   const { data: requests = [] } = await supabase
     .from("maintenance_requests")

@@ -41,13 +41,29 @@ export default async function AdminDashboard() {
         id,
         full_name,
         visual_role,
-        educational_level
+        educational_level,
+        database_role
       )
     `,
     )
     .order("created_at", { ascending: false });
 
   const requests = (data as RequestWithProfile[]) || [];
+
+  // ✅ Verify current user's profile is still admin
+  // This handles cases where database_role was manually changed back to user
+  const { data: adminProfile } = await supabase
+    .from("profiles")
+    .select("database_role")
+    .eq("id", session.user.id)
+    .single();
+
+  if (adminProfile?.database_role !== "admin") {
+    console.log(
+      "User profile role changed from admin, redirecting to dashboard",
+    );
+    redirect("/dashboard");
+  }
 
   // Calculate stats
   const initialStats = {
