@@ -120,10 +120,10 @@ export async function GET(request: NextRequest) {
         "Profile query failed but session is valid, assuming new user",
       );
       const email = data.session.user.email || "";
-      const isAdmin =
-        email.includes("@admin") || email.includes("yourdomain.com");
+      const name =
+        data.session.user.user_metadata?.full_name || email.split("@")[0];
 
-      redirectUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${encodeURIComponent(data.session.user.user_metadata?.full_name || email.split("@")[0])}`;
+      redirectUrl = `/profile-creation?role=user&name=${encodeURIComponent(name)}`;
       console.log("Fallback: redirecting to profile creation:", redirectUrl);
     } else if (profile) {
       // Existing user - redirect to appropriate dashboard.
@@ -140,12 +140,12 @@ export async function GET(request: NextRequest) {
         redirectUrl,
       );
     } else {
-      // New user - redirect to profile creation
+      // New user - redirect to profile creation (default to user role)
       const email = data.session.user.email || "";
-      const isAdmin =
-        email.includes("@admin") || email.includes("yourdomain.com");
+      const name =
+        data.session.user.user_metadata?.full_name || email.split("@")[0];
 
-      redirectUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${encodeURIComponent(data.session.user.user_metadata?.full_name || email.split("@")[0])}`;
+      redirectUrl = `/profile-creation?role=user&name=${encodeURIComponent(name)}`;
       console.log("New user, redirecting to profile creation:", redirectUrl);
     }
 

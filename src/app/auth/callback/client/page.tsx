@@ -206,10 +206,10 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
               // New user - this shouldn't happen with the trigger, but handle it
               console.log("No profile found - trigger may have failed");
               const email = userData.user.email || "";
-              const isAdmin =
-                email.includes("@admin") || email.includes("yourdomain.com");
+              const name =
+                userData.user.user_metadata?.full_name || email.split("@")[0];
 
-              const profileCreationUrl = `/profile-creation?role=${isAdmin ? "admin" : "user"}&name=${encodeURIComponent(userData.user.user_metadata?.full_name || email.split("@")[0])}`;
+              const profileCreationUrl = `/profile-creation?role=user&name=${encodeURIComponent(name)}`;
               console.log(
                 "New user, redirecting to profile creation:",
                 profileCreationUrl,

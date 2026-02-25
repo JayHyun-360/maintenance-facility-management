@@ -18,6 +18,7 @@ interface GuestFormData {
   visualRole: VisualRole;
   educationalLevel: string;
   department: string;
+  captchaToken: string;
 }
 
 declare global {
@@ -38,7 +39,6 @@ export default function LoginPage() {
   );
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [showGuestModal, setShowGuestModal] = useState(false);
-  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
 
   const [emailData, setEmailData] = useState<EmailFormData>({
@@ -53,6 +53,7 @@ export default function LoginPage() {
     visualRole: "Student",
     educationalLevel: "",
     department: "",
+    captchaToken: "",
   });
 
   // Handle tab switching with smooth transition
@@ -125,12 +126,6 @@ export default function LoginPage() {
       newErrors.email = "Invalid email format";
     }
 
-    if (!emailData.password) {
-      newErrors.password = "Password is required";
-    } else if (emailData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-
     if (!emailData.captchaToken) {
       newErrors.captcha = "Please complete captcha verification";
     }
@@ -139,22 +134,35 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Handle email sign in
+  // Handle email sign in (Magic Link - passwordless)
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateEmailForm()) return;
+    if (!emailData.email.trim()) {
+      setErrors({ email: "Email is required" });
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailData.email)) {
+      setErrors({ email: "Invalid email format" });
+      return;
+    }
+
+    if (!emailData.captchaToken) {
+      setErrors({ captcha: "Please complete captcha verification" });
+      return;
+    }
 
     setLoading(true);
     setErrors({});
     setSuccessMessage("");
 
     try {
-      const { error, data } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithOtp({
         email: emailData.email,
-        password: emailData.password,
         options: {
           captchaToken: emailData.captchaToken,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
         },
       });
 
@@ -164,36 +172,7 @@ export default function LoginPage() {
         return;
       }
 
-      setSuccessMessage("Successfully signed in!");
-
-      // Check if user has profile before redirecting
-      setTimeout(async () => {
-        try {
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("id")
-            .eq("user_id", data.user.id)
-            .maybeSingle();
-
-          if (profile) {
-            router.push("/dashboard");
-          } else {
-            // New user - redirect to profile creation
-            const email = data.user.email || "";
-            const isAdmin =
-              email.includes("@admin") || email.includes("yourdomain.com");
-            const role = isAdmin ? "admin" : "user";
-            const name =
-              data.user.user_metadata?.full_name || email.split("@")[0];
-            router.push(
-              `/profile-creation?role=${role}&name=${encodeURIComponent(name)}`,
-            );
-          }
-        } catch (error) {
-          console.error("Error checking profile:", error);
-          router.push("/dashboard"); // Fallback
-        }
-      }, 1000);
+      setSuccessMessage("Check your email for the magic link!");
     } catch (error) {
       console.error("Unexpected sign in error:", error);
       setErrors({ general: "An unexpected error occurred. Please try again." });
@@ -203,24 +182,38 @@ export default function LoginPage() {
     }
   };
 
-  // Handle email sign up
+  // Handle email sign up (Magic Link - passwordless)
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateEmailForm()) return;
+    if (!emailData.email.trim()) {
+      setErrors({ email: "Email is required" });
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailData.email)) {
+      setErrors({ email: "Invalid email format" });
+      return;
+    }
+
+    if (!emailData.captchaToken) {
+      setErrors({ captcha: "Please complete captcha verification" });
+      return;
+    }
 
     setLoading(true);
     setErrors({});
     setSuccessMessage("");
 
     try {
-      const { error, data } = await supabase.auth.signUp({
+      // Use signInWithOtp for magic link - works for both new and existing users
+      const { error } = await supabase.auth.signInWithOtp({
         email: emailData.email,
-        password: emailData.password,
         options: {
           captchaToken: emailData.captchaToken,
+          emailRedirectTo: `${window.location.origin}/auth/callback`,
           data: {
-            full_name: emailData.email.split("@")[0], // Default name from email
+            full_name: emailData.email.split("@")[0],
           },
         },
       });
@@ -232,49 +225,13 @@ export default function LoginPage() {
       }
 
       setSuccessMessage(
-        "Account created! Please check your email to confirm your account.",
+        "Check your email for the magic link to complete sign up!",
       );
       setShowSignUp(false);
     } catch (error) {
       console.error("Unexpected sign up error:", error);
       setErrors({ general: "An unexpected error occurred. Please try again." });
       resetCaptcha();
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Handle forgot password
-  const handleForgotPassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!emailData.email.trim()) {
-      setErrors({ email: "Email is required for password reset" });
-      return;
-    }
-
-    setLoading(true);
-    setErrors({});
-    setSuccessMessage("");
-
-    try {
-      const { error } = await supabase.auth.resetPasswordForEmail(
-        emailData.email,
-        {
-          redirectTo: `${window.location.origin}/reset-password`,
-        },
-      );
-
-      if (error) {
-        handleAuthError(error);
-        return;
-      }
-
-      setSuccessMessage("Password reset email sent! Please check your inbox.");
-      setShowForgotPassword(false);
-    } catch (error) {
-      console.error("Unexpected password reset error:", error);
-      setErrors({ general: "An unexpected error occurred. Please try again." });
     } finally {
       setLoading(false);
     }
@@ -322,6 +279,11 @@ export default function LoginPage() {
       return;
     }
 
+    if (!guestData.captchaToken) {
+      alert("Please complete the captcha verification");
+      return;
+    }
+
     setLoading(true);
     setErrors({});
 
@@ -355,7 +317,7 @@ export default function LoginPage() {
         const { data: profile } = await supabase
           .from("profiles")
           .select("id")
-          .eq("user_id", data.user.id)
+          .eq("id", data.user.id)
           .maybeSingle();
 
         if (profile) {
@@ -534,8 +496,8 @@ export default function LoginPage() {
                 : "opacity-100 transform scale-100"
             }`}
           >
-            {/* Email/Password Form */}
-            {activeTab === "email" && !showSignUp && !showForgotPassword && (
+            {/* Email Form */}
+            {activeTab === "email" && !showSignUp && (
               <div className="space-y-4 animate-fadeIn">
                 <form onSubmit={handleEmailSignIn} className="space-y-4">
                   <div>
@@ -561,29 +523,6 @@ export default function LoginPage() {
                     )}
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      value={emailData.password}
-                      onChange={(e) =>
-                        setEmailData({ ...emailData, password: e.target.value })
-                      }
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.password ? "border-red-500" : "border-gray-300"
-                      }`}
-                      placeholder="Enter your password"
-                      disabled={loading}
-                    />
-                    {errors.password && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.password}
-                      </p>
-                    )}
-                  </div>
-
                   {/* hCaptcha */}
                   <div>
                     <div
@@ -600,36 +539,12 @@ export default function LoginPage() {
                     )}
                   </div>
 
-                  <div className="flex items-center justify-between">
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={emailData.rememberMe}
-                        onChange={(e) =>
-                          setEmailData({
-                            ...emailData,
-                            rememberMe: e.target.checked,
-                          })
-                        }
-                        className="mr-2"
-                      />
-                      <span className="text-sm text-gray-600">Remember me</span>
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => setShowForgotPassword(true)}
-                      className="text-sm text-green-600 hover:text-green-700"
-                    >
-                      Forgot password?
-                    </button>
-                  </div>
-
                   <button
                     type="submit"
                     disabled={loading}
                     className="w-full bg-green-500 text-white rounded-lg py-3 px-4 font-medium hover:bg-green-600 transition-colors disabled:opacity-50"
                   >
-                    {loading ? "Signing in..." : "Sign In"}
+                    {loading ? "Sending..." : "Send Magic Link"}
                   </button>
 
                   <div className="text-center">
@@ -645,7 +560,7 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Sign Up Form */}
+            {/* Sign Up Form - Using Magic Link (passwordless) */}
             {activeTab === "email" && showSignUp && (
               <div className="space-y-4 animate-fadeIn">
                 <form onSubmit={handleEmailSignUp} className="space-y-4">
@@ -668,29 +583,6 @@ export default function LoginPage() {
                     {errors.email && (
                       <p className="mt-1 text-sm text-red-600">
                         {errors.email}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      value={emailData.password}
-                      onChange={(e) =>
-                        setEmailData({ ...emailData, password: e.target.value })
-                      }
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.password ? "border-red-500" : "border-gray-300"
-                      }`}
-                      placeholder="Create a password (min 6 characters)"
-                      disabled={loading}
-                    />
-                    {errors.password && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.password}
                       </p>
                     )}
                   </div>
@@ -725,55 +617,7 @@ export default function LoginPage() {
                       disabled={loading}
                       className="flex-1 bg-green-500 text-white rounded-lg py-3 px-4 font-medium hover:bg-green-600 transition-colors disabled:opacity-50"
                     >
-                      {loading ? "Creating account..." : "Sign Up"}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            )}
-
-            {/* Forgot Password Form */}
-            {activeTab === "email" && showForgotPassword && (
-              <div className="space-y-4 animate-fadeIn">
-                <form onSubmit={handleForgotPassword} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      value={emailData.email}
-                      onChange={(e) =>
-                        setEmailData({ ...emailData, email: e.target.value })
-                      }
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.email ? "border-red-500" : "border-gray-300"
-                      }`}
-                      placeholder="Enter your email for password reset"
-                      disabled={loading}
-                    />
-                    {errors.email && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.email}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setShowForgotPassword(false)}
-                      className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                      disabled={loading}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="flex-1 bg-green-500 text-white rounded-lg py-3 px-4 font-medium hover:bg-green-600 transition-colors disabled:opacity-50"
-                    >
-                      {loading ? "Sending email..." : "Reset Password"}
+                      {loading ? "Sending..." : "Send Magic Link"}
                     </button>
                   </div>
                 </form>
@@ -913,6 +757,16 @@ export default function LoginPage() {
                     />
                   </div>
                 )}
+              </div>
+
+              <div>
+                <div
+                  className="h-captcha"
+                  data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
+                  data-callback="onHCaptchaVerify"
+                  data-error-callback="onHCaptchaError"
+                  data-expired-callback="onHCaptchaExpire"
+                ></div>
               </div>
 
               <div className="flex gap-3 mt-6">
