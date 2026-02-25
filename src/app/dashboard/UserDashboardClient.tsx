@@ -258,51 +258,140 @@ export default function UserDashboardClient({
               {showForm ? (
                 <form
                   onSubmit={handleSubmitRequest}
-                  className="space-y-4 animate-fadeIn"
+                  className="space-y-5 animate-fadeIn"
                 >
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-300">
-                      Nature *
+                  <div className="relative">
+                    <label className="block text-sm font-semibold text-gray-800 mb-2 transition-all duration-300 flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                        />
+                      </svg>
+                      Nature of Issue *
                     </label>
-                    <select
-                      value={formData.nature}
-                      onChange={(e) =>
-                        setFormData({ ...formData, nature: e.target.value })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 focus:scale-[1.02]"
-                      required
-                    >
-                      <option value="">Select nature</option>
-                      <option value="Plumbing">Plumbing</option>
-                      <option value="Electrical">Electrical</option>
-                      <option value="Carpentry">Carpentry</option>
-                      <option value="HVAC">HVAC</option>
-                      <option value="Cleaning">Cleaning</option>
-                      <option value="Other">Other</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        value={formData.nature}
+                        onChange={(e) =>
+                          setFormData({ ...formData, nature: e.target.value })
+                        }
+                        className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 hover:border-gray-300 appearance-none cursor-pointer text-gray-700 font-medium"
+                        required
+                      >
+                        <option value="" className="text-gray-400">
+                          Select the type of maintenance needed
+                        </option>
+                        <option value="Plumbing">🔧 Plumbing</option>
+                        <option value="Electrical">⚡ Electrical</option>
+                        <option value="Carpentry">🔨 Carpentry</option>
+                        <option value="HVAC">❄️ HVAC</option>
+                        <option value="Cleaning">🧹 Cleaning</option>
+                        <option value="Other">📦 Other</option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <svg
+                          className="w-5 h-5 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-300">
-                      Urgency *
+                  <div className="relative">
+                    <label className="block text-sm font-semibold text-gray-800 mb-2 transition-all duration-300 flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-red-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      Urgency Level *
                     </label>
-                    <select
-                      value={formData.urgency}
-                      onChange={(e) =>
-                        setFormData({ ...formData, urgency: e.target.value })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 focus:scale-[1.02]"
-                      required
-                    >
-                      <option value="">Select urgency</option>
-                      <option value="Emergency">Emergency</option>
-                      <option value="Urgent">Urgent</option>
-                      <option value="Not Urgent">Not Urgent</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        value={formData.urgency}
+                        onChange={(e) =>
+                          setFormData({ ...formData, urgency: e.target.value })
+                        }
+                        className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 hover:border-gray-300 appearance-none cursor-pointer text-gray-700 font-medium"
+                        required
+                      >
+                        <option value="" className="text-gray-400">
+                          How urgent is this issue?
+                        </option>
+                        <option value="Emergency">
+                          🚨 Emergency - Immediate attention required
+                        </option>
+                        <option value="Urgent">
+                          ⚡ Urgent - Within 24 hours
+                        </option>
+                        <option value="Not Urgent">
+                          📅 Not Urgent - Routine maintenance
+                        </option>
+                      </select>
+                      <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                        <svg
+                          className="w-5 h-5 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </div>
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-300">
+                  <div className="relative">
+                    <label className="block text-sm font-semibold text-gray-800 mb-2 transition-all duration-300 flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
                       Location *
                     </label>
                     <input
@@ -311,15 +400,28 @@ export default function UserDashboardClient({
                       onChange={(e) =>
                         setFormData({ ...formData, location: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 focus:scale-[1.02]"
-                      placeholder="Building, room, etc."
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 hover:border-gray-300 text-gray-700 font-medium placeholder-gray-400"
+                      placeholder="e.g., Building A, Room 201, Main Office"
                       required
                     />
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-300">
-                      Description *
+                  <div className="relative">
+                    <label className="block text-sm font-semibold text-gray-800 mb-2 transition-all duration-300 flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-purple-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                      Detailed Description *
                     </label>
                     <textarea
                       value={formData.description}
@@ -329,16 +431,32 @@ export default function UserDashboardClient({
                           description: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 focus:scale-[1.02]"
-                      rows={3}
-                      placeholder="Describe issue..."
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 hover:border-gray-300 text-gray-700 font-medium placeholder-gray-400 resize-none"
+                      rows={4}
+                      placeholder="Please describe the issue in detail. Include any relevant information that might help resolve it quickly..."
                       required
                     />
+                    <div className="text-xs text-gray-500 mt-1">
+                      {formData.description.length}/500 characters
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-300">
-                      Supporting Reason
+                  <div className="relative">
+                    <label className="block text-sm font-semibold text-gray-800 mb-2 transition-all duration-300 flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-orange-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      Additional Context (Optional)
                     </label>
                     <textarea
                       value={formData.supportingReason}
@@ -348,25 +466,58 @@ export default function UserDashboardClient({
                           supportingReason: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 focus:scale-[1.02]"
-                      rows={2}
-                      placeholder="Additional context..."
+                      className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 hover:border-gray-300 text-gray-700 font-medium placeholder-gray-400 resize-none"
+                      rows={3}
+                      placeholder="Any additional information, previous attempts to fix, or special considerations..."
                     />
+                    <div className="text-xs text-gray-500 mt-1">
+                      {formData.supportingReason.length}/300 characters
+                    </div>
                   </div>
 
-                  <div className="flex gap-3">
+                  <div className="flex gap-3 pt-4">
                     <button
                       type="button"
                       onClick={() => setShowForm(false)}
-                      className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
+                      className="flex-1 px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium border-2 border-transparent hover:border-gray-300"
                     >
-                      Cancel
+                      <span className="flex items-center justify-center gap-2">
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                        Cancel
+                      </span>
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 font-medium shadow-lg hover:shadow-xl"
                     >
-                      Submit
+                      <span className="flex items-center justify-center gap-2">
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 4v16m8-8H4"
+                          />
+                        </svg>
+                        Submit Request
+                      </span>
                     </button>
                   </div>
                 </form>
