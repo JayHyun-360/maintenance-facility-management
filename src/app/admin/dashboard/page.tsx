@@ -73,7 +73,7 @@ export default async function AdminDashboard() {
 
   const requests = (data as RequestWithProfile[]) || [];
 
-  // Fetch full admin profile for settings
+  // Fetch full admin profile for settings sidebar
   const { data: fullProfile } = await supabase
     .from("profiles")
     .select("*")
