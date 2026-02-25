@@ -118,7 +118,7 @@ export default function UserDashboardClient({
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
-      <div className="bg-[#C7EABB] shadow-lg border-b transition-all duration-300">
+      <div className="bg-[#84B179] shadow-lg border-b transition-all duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-4">
