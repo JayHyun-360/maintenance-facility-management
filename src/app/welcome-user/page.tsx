@@ -1,144 +1,44 @@
-"use client";
+import { createServerClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import WelcomeUserClient from "./WelcomeUserClient";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+export default async function WelcomeUser() {
+  // ✅ Check session on SERVER where it always works!
+  const supabase = await createServerClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
-export default function WelcomeUser() {
-  const router = useRouter();
-  const [userName, setUserName] = useState("");
-  const [loading, setLoading] = useState(true);
-  const supabase = createClient()!;
+  console.log("=== WELCOME-USER SERVER COMPONENT ===");
+  console.log("Session found:", !!session);
+  console.log("User ID:", session?.user?.id);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        let user = null;
-
-        // First try to get user directly
-        const userResult = await supabase.auth.getUser();
-        if (userResult.data?.user) {
-          user = userResult.data.user;
-        } else {
-          // Try to recover session from cookies
-          console.log("No user found, attempting session recovery...");
-          const refreshResult = await supabase.auth.refreshSession();
-          if (refreshResult.data?.session?.user) {
-            user = refreshResult.data.session.user;
-            console.log("Session recovered from cookies");
-          }
-        }
-
-        if (user) {
-          // Get user's full name from metadata or profile
-          const fullName =
-            user.user_metadata?.full_name ||
-            user.email?.split("@")[0] ||
-            "User";
-          setUserName(fullName);
-        } else {
-          // Redirect to login if not authenticated
-          console.log("No valid session found in welcome-user");
-          router.push("/login");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-        router.push("/login");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, [router]);
-
-  const handleGetStarted = async () => {
-    try {
-      // First check if we have a valid session
-      const {
-        data: { session },
-        error: sessionError,
-      } = await supabase.auth.getSession();
-
-      if (sessionError || !session) {
-        console.error("No valid session found:", sessionError);
-        router.push("/login");
-        return;
-      }
-
-      console.log("Session found:", session);
-
-      // Get user from session for role checking
-      const user = session.user;
-
-      // Get user role from app metadata (Circuit Breaker pattern)
-      const userRole =
-        user.app_metadata?.role || user.user_metadata?.role || "user";
-
-      console.log("User role from metadata:", userRole);
-      console.log("App metadata:", user.app_metadata);
-      console.log("User metadata:", user.user_metadata);
-
-      // Redirect based on role
-      if (userRole === "admin") {
-        console.log("Redirecting to admin dashboard");
-        router.push("/admin/dashboard");
-      } else {
-        console.log("Redirecting to user dashboard");
-        router.push("/dashboard"); // User portal/dashboard
-      }
-    } catch (error) {
-      console.error("Error checking user role:", error);
-      router.push("/login");
-    }
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
+  if (!session?.user) {
+    console.log("No session on server, redirecting to login");
+    redirect("/login");
   }
 
-  return (
-    <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md text-center">
-        <div className="mb-6">
-          <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <svg
-              className="w-10 h-10 text-green-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome, {userName}!
-          </h1>
-          <p className="text-gray-600">
-            Your account has been successfully created and you're ready to start
-            using the Maintenance Portal.
-          </p>
-        </div>
+  // Get user's full name from metadata
+  const fullName =
+    session.user.user_metadata?.full_name ||
+    session.user.email?.split("@")[0] ||
+    "User";
 
-        <button
-          onClick={handleGetStarted}
-          className="w-full bg-green-500 text-white rounded-lg py-3 px-6 font-medium hover:bg-green-600 transition-colors"
-        >
-          Get Started
-        </button>
-      </div>
-    </div>
+  const userRole = session.user.app_metadata?.role || "user";
+
+  console.log("User authenticated:", {
+    userId: session.user.id,
+    email: session.user.email,
+    fullName,
+    userRole,
+  });
+
+  // Pass to client component for interactivity
+  return (
+    <WelcomeUserClient
+      userName={fullName}
+      userRole={userRole}
+      userId={session.user.id}
+    />
   );
 }
