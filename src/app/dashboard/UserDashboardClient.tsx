@@ -172,23 +172,20 @@ export default function UserDashboardClient({
 
                 {/* Profile Picture Viewer */}
                 {showProfileViewer && userAvatar && (
-                  <div
-                    className="absolute top-full left-0 mt-2 z-50 animate-fadeIn"
-                    ref={profileViewerRef}
-                  >
-                    <div className="bg-white/20 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 p-6 min-w-[250px]">
-                      <div className="flex flex-col items-center">
-                        <div className="w-24 h-24 rounded-full overflow-hidden border-3 border-white/50 mb-4 shadow-lg">
+                  <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
+                    <div className="relative" ref={profileViewerRef}>
+                      <div className="w-64 h-64 rounded-full bg-white/20 backdrop-blur-xl shadow-2xl border-2 border-white/30 flex flex-col items-center justify-center p-8">
+                        <div className="w-48 h-48 rounded-full overflow-hidden border-3 border-white/50 shadow-lg mb-4">
                           <img
                             src={userAvatar}
                             alt="Profile Picture"
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <h3 className="font-semibold text-white text-lg">
+                        <h3 className="font-semibold text-white text-lg text-center">
                           {profile?.full_name}
                         </h3>
-                        <p className="text-sm text-white/80">
+                        <p className="text-sm text-white/80 text-center">
                           {profile?.visual_role}
                         </p>
                       </div>
