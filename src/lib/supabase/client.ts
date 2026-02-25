@@ -17,7 +17,7 @@ export const createClient = () => {
   // Check if we have existing session cookies and initialize client accordingly
   const hasExistingSession =
     typeof window !== "undefined" &&
-    document.cookie.includes("sb-yozddskzyykymidjucqt-auth-token");
+    document.cookie.includes("sb-localhost-auth-token");
 
   console.log("Existing session cookies detected:", hasExistingSession);
 

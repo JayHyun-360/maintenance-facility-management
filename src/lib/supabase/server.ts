@@ -1,25 +1,31 @@
-import { createClient } from "@supabase/supabase-js";
+import { createServerClient as createSupabaseServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { Database } from "@/types/database";
 
 export const createServerClient = async () => {
   const cookieStore = await cookies();
 
-  return createClient(
+  return createSupabaseServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      global: {
-        headers: {
-          cookie: cookieStore.toString(),
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
         },
-      },
-      auth: {
-        // Use PKCE flow with proper cookie storage
-        flowType: "pkce",
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: true,
+        set(name: string, value: string, options: any) {
+          cookieStore.set({
+            name,
+            value,
+            ...options,
+          });
+        },
+        remove(name: string, options: any) {
+          cookieStore.delete({
+            name,
+            ...options,
+          });
+        },
       },
     },
   );
@@ -29,20 +35,27 @@ export const createServerClient = async () => {
 export const createServerComponentClient = async () => {
   const cookieStore = await cookies();
 
-  return createClient(
+  return createSupabaseServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
-      global: {
-        headers: {
-          cookie: cookieStore.toString(),
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value;
         },
-      },
-      auth: {
-        flowType: "pkce",
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: true,
+        set(name: string, value: string, options: any) {
+          cookieStore.set({
+            name,
+            value,
+            ...options,
+          });
+        },
+        remove(name: string, options: any) {
+          cookieStore.delete({
+            name,
+            ...options,
+          });
+        },
       },
     },
   );
