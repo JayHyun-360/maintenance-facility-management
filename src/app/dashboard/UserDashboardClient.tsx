@@ -37,6 +37,7 @@ export default function UserDashboardClient({
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const profileViewerRef = useRef<HTMLDivElement>(null);
+  const notificationsRef = useRef<HTMLDivElement>(null);
 
   // Check if user is currently in admin mode
   const isAdmin = profile?.database_role === "admin";
@@ -49,6 +50,12 @@ export default function UserDashboardClient({
         !profileViewerRef.current.contains(event.target as Node)
       ) {
         setShowProfileViewer(false);
+      }
+      if (
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target as Node)
+      ) {
+        setShowNotifications(false);
       }
     };
 
@@ -945,32 +952,15 @@ export default function UserDashboardClient({
 
       {/* Notifications Sidebar */}
       <div
+        ref={notificationsRef}
         className={`fixed top-0 right-0 h-full w-96 bg-white shadow-2xl z-40 transform transition-transform duration-500 ease-out ${
           showNotifications ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <div className="h-full overflow-y-auto">
           <div className="bg-[#84B179] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-center items-center">
               <h2 className="text-xl font-bold text-white">Notifications</h2>
-              <button
-                onClick={() => setShowNotifications(false)}
-                className="text-white/80 hover:text-white"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
             </div>
           </div>
           <div className="p-4">
