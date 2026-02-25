@@ -24,14 +24,37 @@ export default async function AdminDashboard() {
     redirect("/login");
   }
 
-  // Check if user is admin
-  const userRole = session.user.app_metadata?.role || "user";
-  if (userRole !== "admin") {
-    console.log("Non-admin user trying to access admin dashboard");
+  // ✅ Use profile.database_role as the SOURCE OF TRUTH — not the JWT.
+  // The JWT (app_metadata.role) can be stale if the role was changed directly
+  // in the database before the session was refreshed. The DB trigger will
+  // eventually sync it, but on first login after a direct DB change the JWT
+  // may still carry the old value. Checking the profile table here is safe
+  // and does NOT violate the Circuit Breaker pattern — we only read the
+  // CURRENT user's own profile, not someone else's role for RLS purposes.
+  const { data: adminProfile, error: profileError } = await supabase
+    .from("profiles")
+    .select("database_role")
+    .eq("id", session.user.id)
+    .single();
+
+  if (profileError || !adminProfile) {
+    console.error("Error fetching admin profile:", profileError);
+    redirect("/login");
+  }
+
+  console.log(
+    "Admin dashboard — profile.database_role:",
+    adminProfile.database_role,
+  );
+
+  if (adminProfile.database_role !== "admin") {
+    console.log(
+      "Non-admin user trying to access admin dashboard, redirecting.",
+    );
     redirect("/dashboard");
   }
 
-  // Fetch all requests with profile data
+  // Fetch all maintenance requests with requester profile data
   const { data } = await supabase
     .from("maintenance_requests")
     .select(
@@ -49,21 +72,6 @@ export default async function AdminDashboard() {
     .order("created_at", { ascending: false });
 
   const requests = (data as RequestWithProfile[]) || [];
-
-  // ✅ Verify current user's profile is still admin
-  // This handles cases where database_role was manually changed back to user
-  const { data: adminProfile } = await supabase
-    .from("profiles")
-    .select("database_role")
-    .eq("id", session.user.id)
-    .single();
-
-  if (adminProfile?.database_role !== "admin") {
-    console.log(
-      "User profile role changed from admin, redirecting to dashboard",
-    );
-    redirect("/dashboard");
-  }
 
   // Calculate stats
   const initialStats = {
