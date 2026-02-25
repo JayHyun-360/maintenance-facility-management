@@ -52,6 +52,7 @@ export default function AdminDashboardClient({
     urgency: "",
     location: "",
     description: "",
+    status: "Pending",
   });
   const profileViewerRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
@@ -206,32 +207,27 @@ export default function AdminDashboardClient({
     fetchRequests();
   };
 
-  const handleEditRequest = (request: RequestWithProfile) => {
+  const handleStatusChange = (request: RequestWithProfile) => {
     setEditingRequest(request);
     setEditFormData({
-      nature: request.nature,
-      urgency: request.urgency,
-      location: request.location,
-      description: request.description,
+      ...editFormData,
+      status: request.status,
     });
   };
 
-  const handleSaveEdit = async () => {
+  const handleSaveStatus = async () => {
     if (!editingRequest) return;
 
     const { error: updateError } = await (
       supabase.from("maintenance_requests") as any
     )
       .update({
-        nature: editFormData.nature,
-        urgency: editFormData.urgency,
-        location: editFormData.location,
-        description: editFormData.description,
+        status: editFormData.status,
       })
       .eq("id", editingRequest.id);
 
     if (updateError) {
-      alert("Error updating request");
+      alert("Error updating status");
       return;
     }
 
@@ -577,6 +573,56 @@ export default function AdminDashboardClient({
           </div>
         </div>
 
+        {/* Analytics - Nature of Requests */}
+        <div className="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Requests by Nature
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {[
+              { name: "Plumbing", color: "bg-blue-500", icon: "🔧" },
+              { name: "Electrical", color: "bg-yellow-500", icon: "⚡" },
+              { name: "Carpentry", color: "bg-amber-700", icon: "🪵" },
+              { name: "HVAC", color: "bg-cyan-500", icon: "❄️" },
+              { name: "Cleaning", color: "bg-purple-500", icon: "🧹" },
+              { name: "Other", color: "bg-gray-500", icon: "📋" },
+            ].map((nature) => {
+              const count = requests.filter(
+                (r) => r.nature === nature.name,
+              ).length;
+              const percentage =
+                stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
+              return (
+                <div
+                  key={nature.name}
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-2xl">{nature.icon}</span>
+                    <span className="text-sm font-medium text-gray-700">
+                      {nature.name}
+                    </span>
+                  </div>
+                  <div className="flex items-end gap-2">
+                    <span className="text-2xl font-bold text-gray-900">
+                      {count}
+                    </span>
+                    <span className="text-sm text-gray-500 mb-1">
+                      ({percentage}%)
+                    </span>
+                  </div>
+                  <div className="mt-2 h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full ${nature.color} transition-all duration-500`}
+                      style={{ width: `${percentage}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Master Queue Table */}
         <div className="bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-md animate-fadeIn">
           <div className="px-6 py-4 border-b border-gray-200">
@@ -711,9 +757,9 @@ export default function AdminDashboardClient({
                           </button>
                         )}
                         <button
-                          onClick={() => handleEditRequest(request)}
+                          onClick={() => handleStatusChange(request)}
                           className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 transition-all duration-300 transform hover:scale-105 ml-2"
-                          title="Edit request"
+                          title="Change Status"
                         >
                           <svg
                             className="w-4 h-4"
@@ -725,7 +771,7 @@ export default function AdminDashboardClient({
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth={2}
-                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                             />
                           </svg>
                         </button>
@@ -786,7 +832,7 @@ export default function AdminDashboardClient({
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="bg-[#84B179] p-6 rounded-t-xl">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold text-white">Edit Request</h2>
+                <h2 className="text-xl font-bold text-white">Change Status</h2>
                 <button
                   onClick={() => setEditingRequest(null)}
                   className="text-white/80 hover:text-white"
@@ -810,73 +856,20 @@ export default function AdminDashboardClient({
             <div className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Nature
+                  Status
                 </label>
                 <select
-                  value={editFormData.nature}
+                  value={editFormData.status}
                   onChange={(e) =>
-                    setEditFormData({ ...editFormData, nature: e.target.value })
+                    setEditFormData({ ...editFormData, status: e.target.value })
                   }
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
                 >
-                  <option value="Plumbing">Plumbing</option>
-                  <option value="Electrical">Electrical</option>
-                  <option value="Carpentry">Carpentry</option>
-                  <option value="HVAC">HVAC</option>
-                  <option value="Cleaning">Cleaning</option>
-                  <option value="Other">Other</option>
+                  <option value="Pending">Pending</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Cancelled">Cancelled</option>
                 </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Urgency
-                </label>
-                <select
-                  value={editFormData.urgency}
-                  onChange={(e) =>
-                    setEditFormData({
-                      ...editFormData,
-                      urgency: e.target.value,
-                    })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="Emergency">Emergency</option>
-                  <option value="Urgent">Urgent</option>
-                  <option value="Not Urgent">Not Urgent</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Location
-                </label>
-                <input
-                  type="text"
-                  value={editFormData.location}
-                  onChange={(e) =>
-                    setEditFormData({
-                      ...editFormData,
-                      location: e.target.value,
-                    })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
-                </label>
-                <textarea
-                  value={editFormData.description}
-                  onChange={(e) =>
-                    setEditFormData({
-                      ...editFormData,
-                      description: e.target.value,
-                    })
-                  }
-                  rows={4}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                />
               </div>
               <div className="flex gap-3 pt-4">
                 <button
@@ -886,10 +879,10 @@ export default function AdminDashboardClient({
                   Cancel
                 </button>
                 <button
-                  onClick={handleSaveEdit}
+                  onClick={handleSaveStatus}
                   className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
                 >
-                  Save Changes
+                  Update Status
                 </button>
               </div>
             </div>
