@@ -749,9 +749,11 @@ export default function UserDashboardClient({
         >
           <div className="h-full overflow-y-auto">
             {/* Sidebar Header */}
-            <div className="bg-gradient-to-r from-[#84B179] to-green-600 text-white p-6 sticky top-0 z-10">
+            <div className="bg-[#84B179] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold">Profile Settings</h2>
+                <h2 className="text-xl font-bold text-white">
+                  Profile Settings
+                </h2>
               </div>
             </div>
 
