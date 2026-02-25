@@ -147,12 +147,21 @@ export default function AdminDashboardClient({
               </p>
             </div>
 
-            <button
-              onClick={handleSignOut}
-              className="text-sm text-gray-600 hover:text-gray-900"
-            >
-              Sign Out
-            </button>
+            <div className="flex items-center gap-4">
+              <a
+                href="/profile-settings"
+                className="text-sm text-gray-600 hover:text-gray-900 font-medium"
+              >
+                Settings
+              </a>
+
+              <button
+                onClick={handleSignOut}
+                className="text-sm text-gray-600 hover:text-gray-900"
+              >
+                Sign Out
+              </button>
+            </div>
           </div>
         </div>
       </div>
