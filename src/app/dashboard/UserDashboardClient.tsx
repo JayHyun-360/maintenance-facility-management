@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type {
   Profile,
@@ -22,12 +23,20 @@ export default function UserDashboardClient({
   userId,
   userAvatar,
 }: UserDashboardClientProps) {
+  const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(initialProfile);
   const [requests, setRequests] =
     useState<MaintenanceRequest[]>(initialRequests);
   const [showForm, setShowForm] = useState(false);
   const [showProfileViewer, setShowProfileViewer] = useState(false);
+  const [showProfileSidebar, setShowProfileSidebar] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmType, setConfirmType] = useState<"admin" | "user" | null>(null);
   const profileViewerRef = useRef<HTMLDivElement>(null);
+
+  // Check if user is currently in admin mode
+  const isAdmin = profile?.database_role === "admin";
 
   // Close profile viewer when clicking outside
   useEffect(() => {
@@ -132,6 +141,63 @@ export default function UserDashboardClient({
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     window.location.href = "/login";
+  };
+
+  // Profile settings mode switching functionality
+  const handleModeSwitch = async (enableAdmin: boolean) => {
+    setLoading(true);
+    try {
+      console.log("=== SWITCHING MODE ===");
+
+      // Call the server action
+      const response = await fetch("/api/switch-admin-mode", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ enableAdmin }),
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        alert(`Error: ${result.error}`);
+        setShowConfirm(false);
+        return;
+      }
+
+      console.log("Mode switch successful, refreshing JWT session...");
+
+      // Force the browser to fetch a fresh JWT
+      const { error: refreshError } = await supabase.auth.refreshSession();
+      if (refreshError) {
+        console.warn("JWT refresh warning (non-fatal):", refreshError.message);
+      } else {
+        console.log("JWT refreshed successfully — new role active.");
+      }
+
+      if (result.redirect) {
+        router.push(result.redirect);
+      }
+    } catch (error) {
+      console.error("Mode switch error:", error);
+      alert(
+        `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+    } finally {
+      setLoading(false);
+      setShowConfirm(false);
+    }
+  };
+
+  const handleAdminModeSwitch = () => {
+    setConfirmType("user");
+    setShowConfirm(true);
+  };
+
+  const handleUserModeSwitch = () => {
+    setConfirmType("admin");
+    setShowConfirm(true);
   };
 
   return (
@@ -273,12 +339,12 @@ export default function UserDashboardClient({
                 )}
               </button>
 
-              <a
-                href="/profile-settings"
+              <button
+                onClick={() => setShowProfileSidebar(true)}
                 className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
               >
                 Settings
-              </a>
+              </button>
 
               <button
                 onClick={handleSignOut}
@@ -664,6 +730,247 @@ export default function UserDashboardClient({
           </div>
         </div>
       </div>
+
+      {/* Profile Settings Sidebar */}
+      {showProfileSidebar && (
+        <>
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300"
+            onClick={() => setShowProfileSidebar(false)}
+          />
+
+          {/* Sidebar */}
+          <div
+            className={`fixed top-0 left-0 h-full w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+              showProfileSidebar ? "translate-x-0" : "-translate-x-full"
+            }`}
+          >
+            <div className="h-full overflow-y-auto">
+              {/* Sidebar Header */}
+              <div className="bg-gradient-to-r from-[#84B179] to-green-600 text-white p-6 sticky top-0 z-10">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-xl font-bold">Profile Settings</h2>
+                  <button
+                    onClick={() => setShowProfileSidebar(false)}
+                    className="p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Profile Content */}
+              <div className="p-6 space-y-6">
+                {/* Profile Information */}
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">
+                    Your Profile
+                  </h3>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Full Name
+                      </label>
+                      <p className="text-gray-900">{profile?.full_name}</p>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Visual Role
+                      </label>
+                      <p className="text-gray-900">
+                        {profile?.visual_role || "Not Set"}
+                      </p>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Current Access Mode
+                      </label>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-xl font-bold text-blue-900">
+                            {isAdmin ? "Administrator" : "Regular User"}
+                          </p>
+                          <p className="text-sm text-blue-700">
+                            {isAdmin
+                              ? "You have full access to admin dashboard"
+                              : "You can submit and view maintenance requests"}
+                          </p>
+                        </div>
+                        <div
+                          className={`px-3 py-1 rounded-full text-white font-semibold text-sm ${
+                            isAdmin ? "bg-red-500" : "bg-green-500"
+                          }`}
+                        >
+                          {isAdmin ? "ADMIN" : "USER"}
+                        </div>
+                      </div>
+                    </div>
+
+                    {!isAdmin && profile?.educational_level && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Educational Level
+                        </label>
+                        <p className="text-gray-900">
+                          {profile.educational_level}
+                        </p>
+                      </div>
+                    )}
+
+                    {!isAdmin && profile?.department && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Department
+                        </label>
+                        <p className="text-gray-900">{profile.department}</p>
+                      </div>
+                    )}
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Theme Preference
+                      </label>
+                      <p className="text-gray-900 capitalize">
+                        {profile?.theme_preference}
+                      </p>
+                    </div>
+
+                    <div className="text-sm text-gray-500 pt-2 border-t">
+                      <p>
+                        Account created:{" "}
+                        {profile?.created_at
+                          ? new Date(profile.created_at).toLocaleDateString()
+                          : ""}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Mode Switching */}
+                {isAdmin && (
+                  <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">
+                      ⚙️ Access Mode Management
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      As an administrator, you can switch between admin and user
+                      modes to test different user experiences.
+                    </p>
+                    <button
+                      onClick={handleAdminModeSwitch}
+                      disabled={loading}
+                      className="w-full px-4 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 disabled:bg-gray-400 transition-colors"
+                    >
+                      {loading ? "Switching..." : "Switch to User Mode"}
+                    </button>
+                  </div>
+                )}
+
+                {!isAdmin && profile?.database_role === "admin" && (
+                  <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">
+                      🔧 Admin Access Available
+                    </h3>
+                    <p className="text-gray-600 text-sm mb-4">
+                      You have admin privileges but are currently in user mode.
+                      You can switch back to admin mode.
+                    </p>
+                    <button
+                      onClick={handleUserModeSwitch}
+                      disabled={loading}
+                      className="w-full px-4 py-3 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 disabled:bg-gray-400 transition-colors"
+                    >
+                      {loading ? "Switching..." : "Switch to Admin Mode"}
+                    </button>
+                  </div>
+                )}
+
+                {!isAdmin && profile?.database_role === "user" && (
+                  <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6">
+                    <h3 className="text-lg font-bold text-gray-900 mb-3">
+                      📋 User Mode
+                    </h3>
+                    <p className="text-gray-600 text-sm">
+                      You are currently in user mode. You can submit maintenance
+                      requests and track their status.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Confirmation Dialog */}
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-xl p-8 max-w-md w-full">
+            <h4 className="text-lg font-bold text-gray-900 mb-4">
+              Confirm Mode Switch
+            </h4>
+
+            {confirmType === "user" && (
+              <>
+                <p className="text-gray-600 mb-4">
+                  You are about to switch to <strong>User Mode</strong>. You
+                  will be redirected to the user dashboard and will no longer
+                  have access to admin features.
+                </p>
+                <p className="text-sm text-gray-500 mb-6">
+                  You can switch back to admin mode from the profile settings.
+                </p>
+              </>
+            )}
+
+            {confirmType === "admin" && (
+              <>
+                <p className="text-gray-600 mb-4">
+                  You are about to switch to <strong>Admin Mode</strong>. You
+                  will be redirected to the admin dashboard with full access to
+                  maintenance management tools.
+                </p>
+                <p className="text-sm text-gray-500 mb-6">
+                  You can switch back to user mode from the profile settings.
+                </p>
+              </>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowConfirm(false)}
+                disabled={loading}
+                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleModeSwitch(confirmType === "admin")}
+                disabled={loading}
+                className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400 transition-colors"
+              >
+                {loading ? "Switching..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
