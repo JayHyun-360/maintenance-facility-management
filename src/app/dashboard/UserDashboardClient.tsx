@@ -116,14 +116,14 @@ export default function UserDashboardClient({
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="bg-white shadow-sm border-b transition-all duration-300">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div>
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="text-xl font-semibold text-gray-900 transition-all duration-300">
                 Welcome, {profile?.full_name}
               </h1>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 transition-all duration-300">
                 {profile?.visual_role} •{" "}
                 {profile?.database_role === "admin" ? "Administrator" : "User"}
               </p>
@@ -132,12 +132,12 @@ export default function UserDashboardClient({
             <div className="flex items-center gap-4">
               <button
                 onClick={handleThemeToggle}
-                className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
                 title={`Current theme: ${profile?.theme_preference}`}
               >
                 {profile?.theme_preference === "dark" ? (
                   <svg
-                    className="w-5 h-5"
+                    className="w-5 h-5 transition-all duration-300"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -151,7 +151,7 @@ export default function UserDashboardClient({
                   </svg>
                 ) : profile?.theme_preference === "light" ? (
                   <svg
-                    className="w-5 h-5"
+                    className="w-5 h-5 transition-all duration-300"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -165,7 +165,7 @@ export default function UserDashboardClient({
                   </svg>
                 ) : (
                   <svg
-                    className="w-5 h-5"
+                    className="w-5 h-5 transition-all duration-300"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -182,14 +182,14 @@ export default function UserDashboardClient({
 
               <a
                 href="/profile-settings"
-                className="text-sm text-gray-600 hover:text-gray-900 font-medium"
+                className="text-sm text-gray-600 hover:text-gray-900 font-medium transition-all duration-300 hover:scale-105"
               >
                 Settings
               </a>
 
               <button
                 onClick={handleSignOut}
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="text-sm text-gray-600 hover:text-gray-900 transition-all duration-300 hover:scale-105"
               >
                 Sign Out
               </button>
@@ -198,19 +198,19 @@ export default function UserDashboardClient({
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 transition-all duration-300">
           {/* New Request Form */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-900">
+                <h2 className="text-lg font-semibold text-gray-900 transition-all duration-300">
                   New Request
                 </h2>
                 {!showForm && (
                   <button
                     onClick={() => setShowForm(true)}
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors"
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
                   >
                     Create
                   </button>
@@ -218,9 +218,12 @@ export default function UserDashboardClient({
               </div>
 
               {showForm ? (
-                <form onSubmit={handleSubmitRequest} className="space-y-4">
+                <form
+                  onSubmit={handleSubmitRequest}
+                  className="space-y-4 animate-fadeIn"
+                >
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-300">
                       Nature *
                     </label>
                     <select
@@ -228,7 +231,7 @@ export default function UserDashboardClient({
                       onChange={(e) =>
                         setFormData({ ...formData, nature: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 focus:scale-[1.02]"
                       required
                     >
                       <option value="">Select nature</option>
@@ -242,7 +245,7 @@ export default function UserDashboardClient({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-300">
                       Urgency *
                     </label>
                     <select
@@ -250,7 +253,7 @@ export default function UserDashboardClient({
                       onChange={(e) =>
                         setFormData({ ...formData, urgency: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 focus:scale-[1.02]"
                       required
                     >
                       <option value="">Select urgency</option>
@@ -261,7 +264,7 @@ export default function UserDashboardClient({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-300">
                       Location *
                     </label>
                     <input
@@ -270,14 +273,14 @@ export default function UserDashboardClient({
                       onChange={(e) =>
                         setFormData({ ...formData, location: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 focus:scale-[1.02]"
                       placeholder="Building, room, etc."
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-300">
                       Description *
                     </label>
                     <textarea
@@ -288,15 +291,15 @@ export default function UserDashboardClient({
                           description: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 focus:scale-[1.02]"
                       rows={3}
-                      placeholder="Describe the issue..."
+                      placeholder="Describe issue..."
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-300">
                       Supporting Reason
                     </label>
                     <textarea
@@ -307,7 +310,7 @@ export default function UserDashboardClient({
                           supportingReason: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all duration-300 focus:scale-[1.02]"
                       rows={2}
                       placeholder="Additional context..."
                     />
@@ -317,22 +320,22 @@ export default function UserDashboardClient({
                     <button
                       type="button"
                       onClick={() => setShowForm(false)}
-                      className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                      className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                      className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
                     >
                       Submit
                     </button>
                   </div>
                 </form>
               ) : (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 animate-fadeIn">
                   <svg
-                    className="w-12 h-12 mx-auto mb-3 text-gray-300"
+                    className="w-12 h-12 mx-auto mb-3 text-gray-300 transition-all duration-300 hover:scale-110"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -344,7 +347,7 @@ export default function UserDashboardClient({
                       d="M12 4v16m8-8H4"
                     />
                   </svg>
-                  <p>
+                  <p className="transition-all duration-300">
                     Click &quot;Create&quot; to submit a new maintenance request
                   </p>
                 </div>
@@ -354,15 +357,15 @@ export default function UserDashboardClient({
 
           {/* Requests List */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4 transition-all duration-300">
                 Your Requests
               </h2>
 
               {requests.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 animate-fadeIn">
                   <svg
-                    className="w-12 h-12 mx-auto mb-3 text-gray-300"
+                    className="w-12 h-12 mx-auto mb-3 text-gray-300 transition-all duration-300 hover:scale-110"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -374,36 +377,38 @@ export default function UserDashboardClient({
                       d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                     />
                   </svg>
-                  <p>No maintenance requests yet</p>
+                  <p className="transition-all duration-300">
+                    No maintenance requests yet
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {requests.map((request) => (
                     <div
                       key={request.id}
-                      className="border border-gray-200 rounded-lg p-4"
+                      className="border border-gray-200 rounded-lg p-4 transition-all duration-300 hover:shadow-md hover:scale-[1.01] hover:border-gray-300 animate-fadeIn"
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <h3 className="font-medium text-gray-900">
+                          <h3 className="font-medium text-gray-900 transition-all duration-300">
                             {request.nature}
                           </h3>
-                          <p className="text-sm text-gray-600">
+                          <p className="text-sm text-gray-600 transition-all duration-300">
                             {request.location}
                           </p>
                         </div>
                         <span
-                          className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(request.status)}`}
+                          className={`px-2 py-1 text-xs font-medium rounded-full transition-all duration-300 ${getStatusColor(request.status)}`}
                         >
                           {request.status}
                         </span>
                       </div>
 
-                      <p className="text-sm text-gray-700 mb-2">
+                      <p className="text-sm text-gray-700 mb-2 transition-all duration-300">
                         {request.description}
                       </p>
 
-                      <div className="flex justify-between items-center text-xs text-gray-500">
+                      <div className="flex justify-between items-center text-xs text-gray-500 transition-all duration-300">
                         <span>Urgency: {request.urgency}</span>
                         <span>
                           {new Date(request.created_at).toLocaleDateString()}
