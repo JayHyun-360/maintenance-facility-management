@@ -742,7 +742,7 @@ export default function UserDashboardClient({
 
           {/* Sidebar */}
           <div
-            className={`fixed top-0 left-0 h-full w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out ${
+            className={`fixed top-0 left-0 h-full w-96 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${
               showProfileSidebar ? "translate-x-0" : "-translate-x-full"
             }`}
           >
@@ -751,24 +751,9 @@ export default function UserDashboardClient({
               <div className="bg-gradient-to-r from-[#84B179] to-green-600 text-white p-6 sticky top-0 z-10">
                 <div className="flex justify-between items-center">
                   <h2 className="text-xl font-bold">Profile Settings</h2>
-                  <button
-                    onClick={() => setShowProfileSidebar(false)}
-                    className="p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-colors"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
+                  <div className="w-8 h-8 flex items-center justify-center text-white/60 text-sm">
+                    Click outside to close
+                  </div>
                 </div>
               </div>
 
