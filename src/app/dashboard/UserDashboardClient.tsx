@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import type {
   Profile,
@@ -27,6 +27,24 @@ export default function UserDashboardClient({
     useState<MaintenanceRequest[]>(initialRequests);
   const [showForm, setShowForm] = useState(false);
   const [showProfileViewer, setShowProfileViewer] = useState(false);
+  const profileViewerRef = useRef<HTMLDivElement>(null);
+
+  // Close profile viewer when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileViewerRef.current &&
+        !profileViewerRef.current.contains(event.target as Node)
+      ) {
+        setShowProfileViewer(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const [formData, setFormData] = useState({
     nature: "",
     urgency: "",
@@ -154,38 +172,25 @@ export default function UserDashboardClient({
 
                 {/* Profile Picture Viewer */}
                 {showProfileViewer && userAvatar && (
-                  <div className="absolute top-full left-0 mt-2 z-50 animate-fadeIn">
-                    <div className="bg-white rounded-xl shadow-2xl border border-gray-200 p-4 min-w-[300px]">
+                  <div
+                    className="absolute top-full left-0 mt-2 z-50 animate-fadeIn"
+                    ref={profileViewerRef}
+                  >
+                    <div className="bg-white/20 backdrop-blur-xl rounded-2xl shadow-2xl border border-white/30 p-6 min-w-[250px]">
                       <div className="flex flex-col items-center">
-                        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-green-500 mb-3">
+                        <div className="w-24 h-24 rounded-full overflow-hidden border-3 border-white/50 mb-4 shadow-lg">
                           <img
                             src={userAvatar}
                             alt="Profile Picture"
                             className="w-full h-full object-cover"
                           />
                         </div>
-                        <h3 className="font-semibold text-gray-900 text-lg">
+                        <h3 className="font-semibold text-white text-lg">
                           {profile?.full_name}
                         </h3>
-                        <p className="text-sm text-gray-600">
+                        <p className="text-sm text-white/80">
                           {profile?.visual_role}
                         </p>
-                        <div className="mt-3 flex gap-2">
-                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                            {profile?.database_role === "admin"
-                              ? "Administrator"
-                              : "User"}
-                          </span>
-                          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
-                            {profile?.theme_preference}
-                          </span>
-                        </div>
-                        <button
-                          onClick={() => setShowProfileViewer(false)}
-                          className="mt-4 text-xs text-gray-500 hover:text-gray-700 transition-colors"
-                        >
-                          Close
-                        </button>
                       </div>
                     </div>
                   </div>
