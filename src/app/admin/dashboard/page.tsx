@@ -73,6 +73,16 @@ export default async function AdminDashboard() {
 
   const requests = (data as RequestWithProfile[]) || [];
 
+  // Fetch full admin profile for settings
+  const { data: fullProfile } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", session.user.id)
+    .single();
+
+  // Get user avatar from user_metadata
+  const userAvatar = session.user.user_metadata?.avatar_url || null;
+
   // Calculate stats
   const initialStats = {
     total: requests.length,
@@ -92,6 +102,8 @@ export default async function AdminDashboard() {
     <AdminDashboardClient
       initialRequests={requests}
       initialStats={initialStats}
+      initialProfile={fullProfile}
+      userAvatar={userAvatar}
     />
   );
 }

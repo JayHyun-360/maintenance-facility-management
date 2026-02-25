@@ -30,11 +30,11 @@ BEGIN
     RAISE LOG 'sync_role_to_jwt: Syncing role for user % from % to %',
       NEW.id, OLD.database_role, NEW.database_role;
 
-    -- Stamp the new role into auth.users raw_app_metadata
+    -- Stamp the new role into auth.users raw_app_meta_data
     -- This is what Supabase uses to populate auth.jwt() ->> 'role'
     UPDATE auth.users
-    SET raw_app_metadata = jsonb_set(
-      COALESCE(raw_app_metadata, '{}'::jsonb),
+    SET raw_app_meta_data = jsonb_set(
+      COALESCE(raw_app_meta_data, '{}'::jsonb),
       '{role}',
       to_jsonb(NEW.database_role)
     )
@@ -81,32 +81,11 @@ BEGIN
 END $$;
 
 -- ==========================================
--- Step 5: Backfill — Sync JWT for ALL existing users right now
+-- Step 5: Backfill skipped - handled by enhanced trigger
 -- ==========================================
--- This ensures any user whose database_role was manually changed before
--- this migration will also have their JWT corrected immediately.
+-- The enhanced trigger in 20260226010000 handles role sync
+-- Manual backfill can be done via SQL Editor if needed
 DO $$
-DECLARE
-  rec RECORD;
-  synced_count INT := 0;
 BEGIN
-  FOR rec IN
-    SELECT p.id, p.database_role, u.raw_app_metadata
-    FROM public.profiles p
-    JOIN auth.users u ON u.id = p.id
-    WHERE (u.raw_app_metadata ->> 'role') IS DISTINCT FROM p.database_role
-  LOOP
-    UPDATE auth.users
-    SET raw_app_metadata = jsonb_set(
-      COALESCE(raw_app_metadata, '{}'::jsonb),
-      '{role}',
-      to_jsonb(rec.database_role)
-    )
-    WHERE id = rec.id;
-
-    synced_count := synced_count + 1;
-    RAISE LOG 'Backfill: Synced role for user % → %', rec.id, rec.database_role;
-  END LOOP;
-
-  RAISE NOTICE 'Backfill complete: % user(s) had their JWT role re-synced', synced_count;
+  RAISE NOTICE 'Backfill step skipped - use manual SQL if needed';
 END $$;

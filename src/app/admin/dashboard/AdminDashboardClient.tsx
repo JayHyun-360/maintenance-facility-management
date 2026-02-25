@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type {
   Profile,
   MaintenanceRequest,
   RequestStatus,
+  ThemePreference,
 } from "@/types/database";
 
 interface RequestWithProfile extends MaintenanceRequest {
@@ -21,17 +23,41 @@ interface AdminDashboardClientProps {
     inProgress: number;
     completed: number;
   };
+  initialProfile: Profile | null;
+  userAvatar?: string | null;
 }
 
 export default function AdminDashboardClient({
   initialRequests,
   initialStats,
+  initialProfile,
+  userAvatar,
 }: AdminDashboardClientProps) {
-  const [requests, setRequests] =
-    useState<RequestWithProfile[]>(initialRequests);
+  const router = useRouter();
+  const [requests, setRequests] = useState<RequestWithProfile[]>(initialRequests);
   const [stats, setStats] = useState(initialStats);
+  const [profile, setProfile] = useState<Profile | null>(initialProfile);
+  const [showProfileViewer, setShowProfileViewer] = useState(false);
+  const [showProfileSidebar, setShowProfileSidebar] = useState(false);
+  const profileViewerRef = useRef<HTMLDivElement>(null);
 
   const supabase = createClient()!;
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileViewerRef.current &&
+        !profileViewerRef.current.contains(event.target as Node)
+      ) {
+        setShowProfileViewer(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const fetchRequests = async () => {
     const { data } = await supabase
@@ -43,7 +69,8 @@ export default function AdminDashboardClient({
           id,
           full_name,
           visual_role,
-          educational_level
+          educational_level,
+          database_role
         )
       `,
       )
@@ -52,7 +79,6 @@ export default function AdminDashboardClient({
     const requestsData = (data as RequestWithProfile[]) || [];
     setRequests(requestsData);
 
-    // Calculate stats
     setStats({
       total: requestsData.length,
       pending: requestsData.filter((r) => r.status === "Pending").length,
@@ -70,7 +96,6 @@ export default function AdminDashboardClient({
     } = await supabase.auth.getUser();
     if (!user) return;
 
-    // Update the request status
     const { error: updateError } = await (
       supabase.from("maintenance_requests") as any
     )
@@ -82,7 +107,6 @@ export default function AdminDashboardClient({
       return;
     }
 
-    // Log the change to audit_logs (server action simulation)
     const { error: auditError } = await (
       supabase.from("audit_logs") as any
     ).insert({
@@ -95,8 +119,26 @@ export default function AdminDashboardClient({
       console.error("Error logging audit:", auditError);
     }
 
-    // Refresh requests
     fetchRequests();
+  };
+
+  const handleThemeToggle = async () => {
+    if (!profile) return;
+
+    const newTheme: ThemePreference =
+      profile.theme_preference === "light"
+        ? "dark"
+        : profile.theme_preference === "dark"
+          ? "system"
+          : "light";
+
+    const { error } = await (supabase.from("profiles") as any)
+      .update({ theme_preference: newTheme })
+      .eq("id", profile.id);
+
+    if (!error) {
+      setProfile({ ...profile, theme_preference: newTheme });
+    }
   };
 
   const getStatusColor = (status: RequestStatus) => {
@@ -134,30 +176,116 @@ export default function AdminDashboardClient({
 
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900">
-                Admin Dashboard
-              </h1>
-              <p className="text-sm text-gray-600">
-                Maintenance Request Management
-              </p>
+      {/* Enhanced Header */}
+      <div className="bg-[#84B179] shadow-lg border-b transition-all duration-300">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            <div className="flex items-center gap-4">
+              {/* Profile Avatar */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowProfileViewer(!showProfileViewer)}
+                  className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
+                  title="Click to view profile picture"
+                >
+                  {userAvatar ? (
+                    <img
+                      src={userAvatar}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        e.currentTarget.nextElementSibling?.classList.remove(
+                          "hidden",
+                        );
+                      }}
+                    />
+                  ) : null}
+                  <span
+                    className={`text-white font-bold text-lg ${userAvatar ? "hidden" : ""}`}
+                  >
+                    {profile?.full_name?.charAt(0).toUpperCase() || "A"}
+                  </span>
+                </button>
+                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+
+                {/* Profile Picture Viewer */}
+                {showProfileViewer && userAvatar && (
+                  <div
+                    className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 ${showProfileViewer ? "opacity-100" : "opacity-0"}`}
+                  >
+                    <div
+                      className={`relative transform transition-all duration-300 ${showProfileViewer ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
+                      ref={profileViewerRef}
+                    >
+                      <div className="w-72 h-72 rounded-full bg-white/20 backdrop-blur-xl shadow-2xl border-2 border-white/30 flex flex-col items-center justify-center p-8">
+                        <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-white/50 shadow-lg mb-4 bg-white">
+                          <img
+                            src={userAvatar}
+                            alt="Profile Picture"
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <h3 className="font-semibold text-white text-lg text-center">
+                          {profile?.full_name}
+                        </h3>
+                        <p className="text-sm text-white/80 text-center">
+                          {profile?.visual_role} - Administrator
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Welcome Text */}
+              <div className="text-white">
+                <h1 className="text-2xl font-bold transition-all duration-300 hover:scale-105">
+                  Welcome back, {profile?.full_name}!
+                </h1>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-white transition-all duration-300 hover:bg-white/30">
+                    Administrator
+                  </span>
+                  <span className="text-white/80 text-sm">•</span>
+                  <span className="text-white/80 text-sm font-medium">
+                    Admin Dashboard
+                  </span>
+                </div>
+              </div>
             </div>
 
-            <div className="flex items-center gap-4">
-              <a
-                href="/profile-settings"
-                className="text-sm text-gray-600 hover:text-gray-900 font-medium"
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleThemeToggle}
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
+                title={`Current theme: ${profile?.theme_preference}`}
+              >
+                {profile?.theme_preference === "dark" ? (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                ) : profile?.theme_preference === "light" ? (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                )}
+              </button>
+
+              <button
+                onClick={() => setShowProfileSidebar(true)}
+                className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
               >
                 Settings
-              </a>
+              </button>
 
               <button
                 onClick={handleSignOut}
-                className="text-sm text-gray-600 hover:text-gray-900"
+                className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
               >
                 Sign Out
               </button>
@@ -166,110 +294,60 @@ export default function AdminDashboardClient({
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm p-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 transition-all duration-300">
+          <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
             <div className="flex items-center">
               <div className="flex-1">
-                <p className="text-sm font-medium text-gray-600">
-                  Total Requests
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {stats.total}
-                </p>
+                <p className="text-sm font-medium text-gray-600">Total Requests</p>
+                <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
               </div>
-              <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-gray-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
+              <div className="w-12 h-12 bg-[#84B179]/10 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-[#84B179]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
             <div className="flex items-center">
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-600">Pending</p>
-                <p className="text-2xl font-bold text-yellow-600">
-                  {stats.pending}
-                </p>
+                <p className="text-2xl font-bold text-yellow-600">{stats.pending}</p>
               </div>
               <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-yellow-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
+                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
             <div className="flex items-center">
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-600">In Progress</p>
-                <p className="text-2xl font-bold text-blue-600">
-                  {stats.inProgress}
-                </p>
+                <p className="text-2xl font-bold text-blue-600">{stats.inProgress}</p>
               </div>
               <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
+                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm p-6">
+          <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
             <div className="flex items-center">
               <div className="flex-1">
                 <p className="text-sm font-medium text-gray-600">Completed</p>
-                <p className="text-2xl font-bold text-green-600">
-                  {stats.completed}
-                </p>
+                <p className="text-2xl font-bold text-green-600">{stats.completed}</p>
               </div>
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
+                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
             </div>
@@ -277,11 +355,9 @@ export default function AdminDashboardClient({
         </div>
 
         {/* Master Queue Table */}
-        <div className="bg-white rounded-xl shadow-sm">
+        <div className="bg-white rounded-xl shadow-sm transition-all duration-300 hover:shadow-md animate-fadeIn">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Master Queue
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-900">Master Queue</h2>
             <p className="text-sm text-gray-600">All maintenance requests</p>
           </div>
 
@@ -289,108 +365,67 @@ export default function AdminDashboardClient({
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Request
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Requester
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Details
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Request</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Requester</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Details</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {requests.map((request) => (
-                  <tr key={request.id} className="hover:bg-gray-50">
+                  <tr key={request.id} className="hover:bg-gray-50 transition-all duration-300">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {request.nature}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {request.location}
-                        </div>
-                        <div className="text-xs text-gray-400">
-                          {new Date(request.created_at).toLocaleDateString()}
-                        </div>
+                        <div className="text-sm font-medium text-gray-900">{request.nature}</div>
+                        <div className="text-sm text-gray-500">{request.location}</div>
+                        <div className="text-xs text-gray-400">{new Date(request.created_at).toLocaleDateString()}</div>
                       </div>
                     </td>
-
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {request.profiles?.full_name || "Unknown"}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {request.profiles?.visual_role}
-                        </div>
+                        <div className="text-sm font-medium text-gray-900">{request.profiles?.full_name || "Unknown"}</div>
+                        <div className="text-sm text-gray-500">{request.profiles?.visual_role}</div>
                         {request.profiles?.educational_level && (
-                          <div className="text-xs text-gray-400">
-                            {request.profiles.educational_level}
-                          </div>
+                          <div className="text-xs text-gray-400">{request.profiles.educational_level}</div>
                         )}
                       </div>
                     </td>
-
                     <td className="px-6 py-4">
                       <div className="max-w-xs">
-                        <p className="text-sm text-gray-900 truncate">
-                          {request.description}
-                        </p>
-                        <span
-                          className={`inline-flex px-2 py-1 text-xs font-medium rounded-full mt-1 ${getUrgencyColor(request.urgency)}`}
-                        >
+                        <p className="text-sm text-gray-900 truncate">{request.description}</p>
+                        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full mt-1 ${getUrgencyColor(request.urgency)}`}>
                           {request.urgency}
                         </span>
                       </div>
                     </td>
-
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(request.status)}`}
-                      >
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(request.status)}`}>
                         {request.status}
                       </span>
                     </td>
-
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         {request.status === "Pending" && (
                           <button
-                            onClick={() =>
-                              handleStatusUpdate(request.id, "In Progress")
-                            }
-                            className="text-sm bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
+                            onClick={() => handleStatusUpdate(request.id, "In Progress")}
+                            className="text-sm bg-blue-500 text-white px-3 py-1.5 rounded-lg hover:bg-blue-600 transition-all duration-300 transform hover:scale-105"
                           >
                             Start
                           </button>
                         )}
-
                         {request.status === "In Progress" && (
                           <button
-                            onClick={() =>
-                              handleStatusUpdate(request.id, "Completed")
-                            }
-                            className="text-sm bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition-colors"
+                            onClick={() => handleStatusUpdate(request.id, "Completed")}
+                            className="text-sm bg-gradient-to-r from-green-500 to-emerald-600 text-white px-3 py-1.5 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 shadow-md"
                           >
                             Complete
                           </button>
                         )}
-
-                        {(request.status === "Pending" ||
-                          request.status === "In Progress") && (
+                        {(request.status === "Pending" || request.status === "In Progress") && (
                           <button
-                            onClick={() =>
-                              handleStatusUpdate(request.id, "Cancelled")
-                            }
-                            className="text-sm bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors"
+                            onClick={() => handleStatusUpdate(request.id, "Cancelled")}
+                            className="text-sm bg-red-500 text-white px-3 py-1.5 rounded-lg hover:bg-red-600 transition-all duration-300 transform hover:scale-105"
                           >
                             Cancel
                           </button>
@@ -403,26 +438,103 @@ export default function AdminDashboardClient({
             </table>
 
             {requests.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                <svg
-                  className="w-12 h-12 mx-auto mb-3 text-gray-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
+              <div className="text-center py-12 text-gray-500 animate-fadeIn">
+                <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <p>No maintenance requests found</p>
+                <p className="text-lg">No maintenance requests found</p>
+                <p className="text-sm text-gray-400 mt-1">Requests will appear here when users submit them</p>
               </div>
             )}
           </div>
         </div>
       </div>
+
+      {/* Profile Settings Sidebar */}
+      <>
+        <div
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-500 ${showProfileSidebar ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          onClick={() => setShowProfileSidebar(false)}
+        />
+        <div
+          className={`fixed top-0 left-0 h-full w-96 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showProfileSidebar ? "translate-x-0" : "-translate-x-full"}`}
+        >
+          <div className="h-full overflow-y-auto">
+            <div className="bg-[#84B179] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-bold text-white">Profile Settings</h2>
+                <button
+                  onClick={() => setShowProfileSidebar(false)}
+                  className="text-white/80 hover:text-white transition-all duration-300 hover:scale-110"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <div className="p-6 space-y-6">
+              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Your Profile</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Full Name</label>
+                    <p className="text-gray-900 font-medium">{profile?.full_name}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Visual Role</label>
+                    <p className="text-gray-900 font-medium">{profile?.visual_role || "Not Set"}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Access Mode</label>
+                    <span className="px-3 py-1 bg-[#84B179] text-white text-sm font-medium rounded-full">Administrator</span>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-600 mb-1">Theme Preference</label>
+                    <p className="text-gray-900 font-medium capitalize">{profile?.theme_preference}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+                <div className="space-y-3">
+                  <button
+                    onClick={() => { setShowProfileSidebar(false); router.push("/profile-settings"); }}
+                    className="w-full flex items-center gap-3 px-4 py-3 bg-[#84B179]/10 hover:bg-[#84B179]/20 rounded-lg transition-all duration-300 transform hover:scale-[1.02] text-gray-900"
+                  >
+                    <svg className="w-5 h-5 text-[#84B179]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span className="font-medium">Full Settings</span>
+                  </button>
+                  <button
+                    onClick={() => { setShowProfileSidebar(false); router.push("/dashboard"); }}
+                    className="w-full flex items-center gap-3 px-4 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-300 transform hover:scale-[1.02] text-gray-900"
+                  >
+                    <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    <span className="font-medium">Switch to User Mode</span>
+                  </button>
+                </div>
+              </div>
+
+              <button
+                onClick={handleSignOut}
+                className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-red-50 hover:bg-red-100 rounded-lg transition-all duration-300 transform hover:scale-[1.02] text-red-600"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                <span className="font-medium">Sign Out</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </>
     </div>
   );
 }
