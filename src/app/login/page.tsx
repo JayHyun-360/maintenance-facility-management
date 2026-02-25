@@ -59,6 +59,29 @@ export default function LoginPage() {
 
   const supabase = createClient()!;
 
+  // Check if user is already authenticated on component mount
+  useEffect(() => {
+    const checkExistingAuth = async () => {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (session) {
+          // User is already authenticated, redirect to appropriate dashboard
+          const userRole = session.user.app_metadata?.role || "user";
+          const redirectUrl =
+            userRole === "admin" ? "/admin/dashboard" : "/dashboard";
+          router.replace(redirectUrl);
+        }
+      } catch (error) {
+        console.error("Error checking existing auth:", error);
+      }
+    };
+
+    checkExistingAuth();
+  }, [router, supabase]);
+
   // Load hCaptcha script
   useEffect(() => {
     const script = document.createElement("script");

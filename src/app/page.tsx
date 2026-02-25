@@ -1,36 +1,46 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
   const supabase = createClient()!;
 
   useEffect(() => {
-    // Simple auth check - let middleware handle server-side redirects
+    // Quick auth check - this should be fast since middleware handles the main logic
     const checkAuth = async () => {
       try {
         const {
           data: { session },
         } = await supabase.auth.getSession();
 
-        if (!session) {
-          // Let middleware handle server-side redirects to avoid race conditions
-          console.log("No session found - middleware will handle redirect");
+        if (session) {
+          // User is authenticated, redirect to appropriate dashboard
+          const userRole = session.user.app_metadata?.role || "user";
+          const redirectUrl =
+            userRole === "admin" ? "/admin/dashboard" : "/dashboard";
+          router.replace(redirectUrl);
+        } else {
+          // User is not authenticated, redirect to login
+          router.replace("/login");
         }
-        // For authenticated users, middleware will handle the redirect
       } catch (error) {
         console.error("Auth check error:", error);
         // Fallback to login on error
-        window.location.href = "/login";
+        router.replace("/login");
       } finally {
         setLoading(false);
       }
     };
 
-    checkAuth();
-  }, []);
+    // Add a small delay to prevent flickering if middleware redirects
+    const timer = setTimeout(checkAuth, 100);
+
+    return () => clearTimeout(timer);
+  }, [router, supabase]);
 
   if (loading) {
     return (

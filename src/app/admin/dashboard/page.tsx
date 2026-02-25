@@ -35,105 +35,67 @@ export default function AdminDashboard() {
   const supabase = createClient()!;
 
   useEffect(() => {
-    // Check authentication first with retry logic
+    // Check authentication first
     const checkAuth = async () => {
-      let session = null;
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
 
-      // Try up to 2 times to get session
-      for (let i = 0; i < 2; i++) {
-        const result = await (supabase as any).auth.getSession();
-
-        if (
-          result.data?.session?.access_token &&
-          result.data?.session?.user?.id
-        ) {
-          session = result.data.session;
-          break;
-        }
-
-        // Wait briefly before retry
-        if (i === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        }
-      }
-
-      if (!session) {
-        console.log(
-          "No valid session found in admin dashboard - redirecting to login",
-        );
-        window.location.href = "/login";
-        return;
-      }
-
-      // Check for test session
-      const testSession = sessionStorage.getItem("testSession");
-
-      if (testSession) {
-        try {
-          const sessionData = JSON.parse(testSession);
-          setProfile(sessionData);
-
-          // Fetch mock requests for test session
-          setRequests([
-            {
-              id: "test-admin-req-1",
-              requester_id: "test-session",
-              requester_name: sessionData.full_name,
-              nature: "Plumbing",
-              urgency: "Urgent",
-              location: "Server Room",
-              description: "Test admin request - server maintenance",
-              status: "Pending",
-              created_at: new Date(Date.now() - 86400000).toISOString(),
-              profiles: {
-                id: "test-session",
-                full_name: sessionData.full_name,
-                database_role: sessionData.database_role,
-                visual_role: sessionData.visual_role,
-                educational_level: null,
-                department: null,
-                is_anonymous: sessionData.is_anonymous,
-                theme_preference: "system",
-                created_at: new Date().toISOString(),
-              },
-            },
-            {
-              id: "test-admin-req-2",
-              requester_id: "test-session",
-              requester_name: sessionData.full_name,
-              nature: "Electrical",
-              urgency: "Not Urgent",
-              location: "Office Area",
-              description: "Test admin request - lighting issues",
-              status: "In Progress",
-              created_at: new Date(Date.now() - 172800000).toISOString(),
-              profiles: {
-                id: "test-session",
-                full_name: sessionData.full_name,
-                database_role: sessionData.database_role,
-                visual_role: sessionData.visual_role,
-                educational_level: null,
-                department: null,
-                is_anonymous: sessionData.is_anonymous,
-                theme_preference: "system",
-                created_at: new Date().toISOString(),
-              },
-            },
-          ]);
-
-          setLoading(false);
+        if (error || !session) {
+          console.log(
+            "No valid session found in admin dashboard - redirecting to login",
+          );
+          window.location.href = "/login";
           return;
-        } catch (error) {
-          console.error("Failed to parse test session:", error);
         }
-      }
 
-      // Original auth flow for real users
-      fetchRequests();
+        // Check if user is admin
+        const userRole = session.user.app_metadata?.role || "user";
+        if (userRole !== "admin") {
+          console.log(
+            "Non-admin user trying to access admin dashboard - redirecting to user dashboard",
+          );
+          window.location.href = "/dashboard";
+          return;
+        }
+
+        // User is authenticated admin, proceed with data fetching
+        fetchRequests();
+        fetchStats();
+      } catch (error) {
+        console.error("Auth check error in admin dashboard:", error);
+        window.location.href = "/login";
+      }
     };
 
     checkAuth();
   }, []);
+
+  const fetchStats = async () => {
+    try {
+      const { data } = await supabase
+        .from("maintenance_requests")
+        .select("status");
+
+      if (data) {
+        const stats = {
+          total: data.length,
+          pending: (data as any[]).filter((req) => req.status === "Pending")
+            .length,
+          inProgress: (data as any[]).filter(
+            (req) => req.status === "In Progress",
+          ).length,
+          completed: (data as any[]).filter((req) => req.status === "Completed")
+            .length,
+        };
+        setStats(stats);
+      }
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+    }
+  };
 
   const fetchRequests = async () => {
     const { data } = await supabase

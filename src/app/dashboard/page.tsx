@@ -25,78 +25,29 @@ export default function UserDashboard() {
   const supabase = createClient()!;
 
   useEffect(() => {
-    // Check authentication first with retry logic
+    // Check authentication first
     const checkAuth = async () => {
-      let session = null;
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession();
 
-      // Try up to 2 times to get session
-      for (let i = 0; i < 2; i++) {
-        const result = await supabase.auth.getSession();
-
-        if (
-          result.data?.session?.access_token &&
-          result.data?.session?.user?.id
-        ) {
-          session = result.data.session;
-          break;
-        }
-
-        // Wait briefly before retry
-        if (i === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        }
-      }
-
-      if (!session) {
-        console.log(
-          "No valid session found in dashboard - redirecting to login",
-        );
-        window.location.href = "/login";
-        return;
-      }
-
-      // Check for test session
-      const testSession = sessionStorage.getItem("testSession");
-
-      if (testSession) {
-        try {
-          const sessionData = JSON.parse(testSession);
-          setProfile(sessionData);
-
-          // Fetch mock requests for test session
-          setRequests([
-            {
-              id: "test-req-1",
-              requester_id: "test-session",
-              nature: "Plumbing",
-              urgency: "Urgent",
-              location: "Room 101",
-              description: "Test plumbing request - leaky faucet",
-              status: "Pending",
-              created_at: new Date(Date.now() - 86400000).toISOString(),
-            },
-            {
-              id: "test-req-2",
-              requester_id: "test-session",
-              nature: "Electrical",
-              urgency: "Not Urgent",
-              location: "Room 202",
-              description: "Test electrical request - flickering lights",
-              status: "In Progress",
-              created_at: new Date(Date.now() - 172800000).toISOString(),
-            },
-          ]);
-
-          setLoading(false);
+        if (error || !session) {
+          console.log(
+            "No valid session found in dashboard - redirecting to login",
+          );
+          window.location.href = "/login";
           return;
-        } catch (error) {
-          console.error("Failed to parse test session:", error);
         }
-      }
 
-      // Original auth flow for real users
-      fetchProfile();
-      fetchRequests();
+        // User is authenticated, proceed with data fetching
+        fetchProfile();
+        fetchRequests();
+      } catch (error) {
+        console.error("Auth check error in dashboard:", error);
+        window.location.href = "/login";
+      }
     };
 
     checkAuth();

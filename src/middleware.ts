@@ -25,13 +25,11 @@ export async function middleware(request: NextRequest) {
   } = await supabase.auth.getSession(); // Use getSession() for PKCE flow
 
   if (!session) {
-    // Redirect to login if not authenticated (except for root page which handles client-side)
-    if (pathname !== "/") {
-      const loginUrl = new URL("/login", request.url);
-      // Prevent redirect loops
-      if (requestUrl.pathname !== "/login") {
-        return NextResponse.redirect(loginUrl);
-      }
+    // Always redirect to login if not authenticated
+    const loginUrl = new URL("/login", request.url);
+    // Prevent redirect loops
+    if (requestUrl.pathname !== "/login") {
+      return NextResponse.redirect(loginUrl);
     }
     return NextResponse.next();
   }
