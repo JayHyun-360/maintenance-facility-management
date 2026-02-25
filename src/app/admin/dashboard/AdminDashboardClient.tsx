@@ -620,9 +620,7 @@ export default function AdminDashboardClient({
       </div>
 
       <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
-        <div
-          className={`transition-opacity duration-300 ease-in-out ${activeTab === "overview" ? "opacity-100" : "opacity-0 absolute pointer-events-none"}`}
-        >
+        <div className="transition-opacity duration-300 ease-in-out">
           {/* Overview Tab */}
           {activeTab === "overview" && (
             <>
