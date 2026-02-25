@@ -732,176 +732,173 @@ export default function UserDashboardClient({
       </div>
 
       {/* Profile Settings Sidebar */}
-      {showProfileSidebar && (
-        <>
-          {/* Backdrop */}
-          <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300"
-            onClick={() => setShowProfileSidebar(false)}
-          />
+      <>
+        {/* Backdrop */}
+        <div
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-500 ${
+            showProfileSidebar ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+          onClick={() => setShowProfileSidebar(false)}
+        />
 
-          {/* Sidebar */}
-          <div
-            className={`fixed top-0 left-0 h-full w-96 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${
-              showProfileSidebar ? "translate-x-0" : "-translate-x-full"
-            }`}
-          >
-            <div className="h-full overflow-y-auto">
-              {/* Sidebar Header */}
-              <div className="bg-gradient-to-r from-[#84B179] to-green-600 text-white p-6 sticky top-0 z-10">
-                <div className="flex justify-between items-center">
-                  <h2 className="text-xl font-bold">Profile Settings</h2>
-                  <div className="w-8 h-8 flex items-center justify-center text-white/60 text-sm">
-                    Click outside to close
-                  </div>
-                </div>
-              </div>
-
-              {/* Profile Content */}
-              <div className="p-6 space-y-6">
-                {/* Profile Information */}
-                <div className="bg-gray-50 rounded-xl p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">
-                    Your Profile
-                  </h3>
-
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Full Name
-                      </label>
-                      <p className="text-gray-900">{profile?.full_name}</p>
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Visual Role
-                      </label>
-                      <p className="text-gray-900">
-                        {profile?.visual_role || "Not Set"}
-                      </p>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Current Access Mode
-                      </label>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-xl font-bold text-blue-900">
-                            {isAdmin ? "Administrator" : "Regular User"}
-                          </p>
-                          <p className="text-sm text-blue-700">
-                            {isAdmin
-                              ? "You have full access to admin dashboard"
-                              : "You can submit and view maintenance requests"}
-                          </p>
-                        </div>
-                        <div
-                          className={`px-3 py-1 rounded-full text-white font-semibold text-sm ${
-                            isAdmin ? "bg-red-500" : "bg-green-500"
-                          }`}
-                        >
-                          {isAdmin ? "ADMIN" : "USER"}
-                        </div>
-                      </div>
-                    </div>
-
-                    {!isAdmin && profile?.educational_level && (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Educational Level
-                        </label>
-                        <p className="text-gray-900">
-                          {profile.educational_level}
-                        </p>
-                      </div>
-                    )}
-
-                    {!isAdmin && profile?.department && (
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Department
-                        </label>
-                        <p className="text-gray-900">{profile.department}</p>
-                      </div>
-                    )}
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Theme Preference
-                      </label>
-                      <p className="text-gray-900 capitalize">
-                        {profile?.theme_preference}
-                      </p>
-                    </div>
-
-                    <div className="text-sm text-gray-500 pt-2 border-t">
-                      <p>
-                        Account created:{" "}
-                        {profile?.created_at
-                          ? new Date(profile.created_at).toLocaleDateString()
-                          : ""}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Mode Switching */}
-                {isAdmin && (
-                  <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3">
-                      ⚙️ Access Mode Management
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4">
-                      As an administrator, you can switch between admin and user
-                      modes to test different user experiences.
-                    </p>
-                    <button
-                      onClick={handleAdminModeSwitch}
-                      disabled={loading}
-                      className="w-full px-4 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 disabled:bg-gray-400 transition-colors"
-                    >
-                      {loading ? "Switching..." : "Switch to User Mode"}
-                    </button>
-                  </div>
-                )}
-
-                {!isAdmin && profile?.database_role === "admin" && (
-                  <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3">
-                      🔧 Admin Access Available
-                    </h3>
-                    <p className="text-gray-600 text-sm mb-4">
-                      You have admin privileges but are currently in user mode.
-                      You can switch back to admin mode.
-                    </p>
-                    <button
-                      onClick={handleUserModeSwitch}
-                      disabled={loading}
-                      className="w-full px-4 py-3 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 disabled:bg-gray-400 transition-colors"
-                    >
-                      {loading ? "Switching..." : "Switch to Admin Mode"}
-                    </button>
-                  </div>
-                )}
-
-                {!isAdmin && profile?.database_role === "user" && (
-                  <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6">
-                    <h3 className="text-lg font-bold text-gray-900 mb-3">
-                      📋 User Mode
-                    </h3>
-                    <p className="text-gray-600 text-sm">
-                      You are currently in user mode. You can submit maintenance
-                      requests and track their status.
-                    </p>
-                  </div>
-                )}
+        {/* Sidebar */}
+        <div
+          className={`fixed top-0 left-0 h-full w-96 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${
+            showProfileSidebar ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div className="h-full overflow-y-auto">
+            {/* Sidebar Header */}
+            <div className="bg-gradient-to-r from-[#84B179] to-green-600 text-white p-6 sticky top-0 z-10">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-bold">Profile Settings</h2>
               </div>
             </div>
+
+            {/* Profile Content */}
+            <div className="p-6 space-y-6">
+              {/* Profile Information */}
+              <div className="bg-gray-50 rounded-xl p-6">
+                <h3 className="text-lg font-bold text-gray-900 mb-4">
+                  Your Profile
+                </h3>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Full Name
+                    </label>
+                    <p className="text-gray-900">{profile?.full_name}</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Visual Role
+                    </label>
+                    <p className="text-gray-900">
+                      {profile?.visual_role || "Not Set"}
+                    </p>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Current Access Mode
+                    </label>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-xl font-bold text-blue-900">
+                          {isAdmin ? "Administrator" : "Regular User"}
+                        </p>
+                        <p className="text-sm text-blue-700">
+                          {isAdmin
+                            ? "You have full access to admin dashboard"
+                            : "You can submit and view maintenance requests"}
+                        </p>
+                      </div>
+                      <div
+                        className={`px-3 py-1 rounded-full text-white font-semibold text-sm ${
+                          isAdmin ? "bg-red-500" : "bg-green-500"
+                        }`}
+                      >
+                        {isAdmin ? "ADMIN" : "USER"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {!isAdmin && profile?.educational_level && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Educational Level
+                      </label>
+                      <p className="text-gray-900">
+                        {profile.educational_level}
+                      </p>
+                    </div>
+                  )}
+
+                  {!isAdmin && profile?.department && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Department
+                      </label>
+                      <p className="text-gray-900">{profile.department}</p>
+                    </div>
+                  )}
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Theme Preference
+                    </label>
+                    <p className="text-gray-900 capitalize">
+                      {profile?.theme_preference}
+                    </p>
+                  </div>
+
+                  <div className="text-sm text-gray-500 pt-2 border-t">
+                    <p>
+                      Account created:{" "}
+                      {profile?.created_at
+                        ? new Date(profile.created_at).toLocaleDateString()
+                        : ""}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Mode Switching */}
+              {isAdmin && (
+                <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">
+                    ⚙️ Access Mode Management
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    As an administrator, you can switch between admin and user
+                    modes to test different user experiences.
+                  </p>
+                  <button
+                    onClick={handleAdminModeSwitch}
+                    disabled={loading}
+                    className="w-full px-4 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 disabled:bg-gray-400 transition-colors"
+                  >
+                    {loading ? "Switching..." : "Switch to User Mode"}
+                  </button>
+                </div>
+              )}
+
+              {!isAdmin && profile?.database_role === "admin" && (
+                <div className="bg-blue-50 border-2 border-blue-200 rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">
+                    🔧 Admin Access Available
+                  </h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    You have admin privileges but are currently in user mode.
+                    You can switch back to admin mode.
+                  </p>
+                  <button
+                    onClick={handleUserModeSwitch}
+                    disabled={loading}
+                    className="w-full px-4 py-3 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 disabled:bg-gray-400 transition-colors"
+                  >
+                    {loading ? "Switching..." : "Switch to Admin Mode"}
+                  </button>
+                </div>
+              )}
+
+              {!isAdmin && profile?.database_role === "user" && (
+                <div className="bg-green-50 border-2 border-green-200 rounded-xl p-6">
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">
+                    📋 User Mode
+                  </h3>
+                  <p className="text-gray-600 text-sm">
+                    You are currently in user mode. You can submit maintenance
+                    requests and track their status.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
-        </>
-      )}
+        </div>
+      </>
 
       {/* Confirmation Dialog */}
       {showConfirm && (
