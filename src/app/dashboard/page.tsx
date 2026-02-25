@@ -68,12 +68,19 @@ export default async function UserDashboard() {
     requestCount: requests?.length,
   });
 
+  // Extract avatar URL from Google metadata if available
+  const userAvatar =
+    session.user.user_metadata?.avatar_url ||
+    session.user.user_metadata?.picture ||
+    null;
+
   // Pass to client component for interactivity
   return (
     <UserDashboardClient
       initialProfile={finalProfile}
       initialRequests={(requests || []) as MaintenanceRequest[]}
       userId={session.user.id}
+      userAvatar={userAvatar}
     />
   );
 }

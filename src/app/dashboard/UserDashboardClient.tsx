@@ -13,12 +13,14 @@ interface UserDashboardClientProps {
   initialProfile: Profile | null;
   initialRequests: MaintenanceRequest[];
   userId: string;
+  userAvatar?: string | null;
 }
 
 export default function UserDashboardClient({
   initialProfile,
   initialRequests,
   userId,
+  userAvatar,
 }: UserDashboardClientProps) {
   const [profile, setProfile] = useState<Profile | null>(initialProfile);
   const [requests, setRequests] =
@@ -116,14 +118,30 @@ export default function UserDashboardClient({
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
-      <div className="bg-gradient-to-r from-green-600 to-emerald-600 shadow-lg border-b transition-all duration-300">
+      <div className="bg-[#C7EABB] shadow-lg border-b transition-all duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-4">
               {/* Profile Avatar */}
               <div className="relative">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30">
-                  <span className="text-white font-bold text-lg">
+                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden">
+                  {userAvatar ? (
+                    <img
+                      src={userAvatar}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        // Fallback to initial if image fails to load
+                        e.currentTarget.style.display = "none";
+                        e.currentTarget.nextElementSibling?.classList.remove(
+                          "hidden",
+                        );
+                      }}
+                    />
+                  ) : null}
+                  <span
+                    className={`text-white font-bold text-lg ${userAvatar ? "hidden" : ""}`}
+                  >
                     {profile?.full_name?.charAt(0).toUpperCase() || "U"}
                   </span>
                 </div>
