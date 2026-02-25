@@ -133,13 +133,15 @@ export default function AdminDashboardClient({
   const markNotificationRead = async (notificationId: string) => {
     await (supabase.from("notifications") as any)
       .update({ is_read: true })
-      .eq("id", notificationId);
+      .eq("id", notificationId)
+      .eq("user_id", userId);
     fetchNotifications();
   };
 
   const markAllNotificationsRead = async () => {
     await (supabase.from("notifications") as any)
       .update({ is_read: true })
+      .eq("user_id", userId)
       .eq("is_read", false);
     fetchNotifications();
   };
