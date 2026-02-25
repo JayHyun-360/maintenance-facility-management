@@ -25,6 +25,7 @@ interface AdminDashboardClientProps {
   };
   initialProfile: Profile | null;
   userAvatar?: string | null;
+  userId: string;
 }
 
 export default function AdminDashboardClient({
@@ -32,6 +33,7 @@ export default function AdminDashboardClient({
   initialStats,
   initialProfile,
   userAvatar,
+  userId,
 }: AdminDashboardClientProps) {
   const router = useRouter();
   const [requests, setRequests] =
@@ -87,6 +89,7 @@ export default function AdminDashboardClient({
   const fetchNotifications = async () => {
     const { data } = await (supabase.from("notifications") as any)
       .select("*")
+      .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(20);
 

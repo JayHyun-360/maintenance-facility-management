@@ -104,6 +104,7 @@ export default async function AdminDashboard() {
       initialStats={initialStats}
       initialProfile={fullProfile}
       userAvatar={userAvatar}
+      userId={session.user.id}
     />
   );
 }
