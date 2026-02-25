@@ -43,6 +43,8 @@ export default function AdminDashboardClient({
   const [showProfileViewer, setShowProfileViewer] = useState(false);
   const [showProfileSidebar, setShowProfileSidebar] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [showAIChat, setShowAIChat] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [editingRequest, setEditingRequest] =
     useState<RequestWithProfile | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -56,6 +58,7 @@ export default function AdminDashboardClient({
   });
   const profileViewerRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
+  const aiChatRef = useRef<HTMLDivElement>(null);
 
   const supabase = createClient()!;
 
@@ -72,6 +75,12 @@ export default function AdminDashboardClient({
         !notificationsRef.current.contains(event.target as Node)
       ) {
         setShowNotifications(false);
+      }
+      if (
+        aiChatRef.current &&
+        !aiChatRef.current.contains(event.target as Node)
+      ) {
+        setShowAIChat(false);
       }
     };
 
@@ -445,6 +454,27 @@ export default function AdminDashboardClient({
                 )}
               </button>
 
+              {/* AI Chat Robot Icon */}
+              <button
+                onClick={() => setShowAIChat(!showAIChat)}
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                title="AI Assistant"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                  />
+                </svg>
+              </button>
+
               <button
                 onClick={() => setShowProfileSidebar(true)}
                 className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
@@ -699,11 +729,17 @@ export default function AdminDashboardClient({
                                 key={index}
                                 src={photo}
                                 alt={`Attachment ${index + 1}`}
-                                className="w-10 h-10 object-cover rounded border border-gray-200"
+                                className="w-10 h-10 object-cover rounded border border-gray-200 cursor-pointer hover:scale-110 transition-transform"
+                                onClick={() => setSelectedPhoto(photo)}
                               />
                             ))}
                             {request.photos.length > 3 && (
-                              <span className="text-xs text-gray-500 self-center">
+                              <span
+                                className="text-xs text-gray-500 self-center cursor-pointer hover:text-blue-500"
+                                onClick={() =>
+                                  setSelectedPhoto(request.photos[0])
+                                }
+                              >
                                 +{request.photos.length - 3} more
                               </span>
                             )}
@@ -1090,6 +1126,129 @@ export default function AdminDashboardClient({
           </div>
         </div>
       </>
+
+      {/* AI Chat Sidebar */}
+      <div
+        ref={aiChatRef}
+        className={`fixed top-0 left-0 h-full w-96 bg-gradient-to-b from-gray-900 to-gray-800 shadow-2xl z-40 transform transition-transform duration-500 ease-out ${
+          showAIChat ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="h-full flex flex-col">
+          <div className="bg-gradient-to-r from-[#84B179] to-green-600 p-6">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-white">AI Assistant</h2>
+                <p className="text-xs text-white/70">Always ready to help</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex-1 flex items-center justify-center p-6">
+            <div className="text-center">
+              <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg
+                  className="w-10 h-10 text-white/50"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                Coming Soon
+              </h3>
+              <p className="text-sm text-white/60">
+                AI-powered assistance for managing maintenance requests
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 border-t border-white/10">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Type a message..."
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#84B179] focus:border-transparent"
+                disabled
+              />
+              <button
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-white/50 cursor-not-allowed"
+                disabled
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Photo Modal */}
+      {selectedPhoto && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedPhoto(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh]">
+            <img
+              src={selectedPhoto}
+              alt="Full size"
+              className="max-w-full max-h-[90vh] object-contain rounded-lg"
+            />
+            <button
+              onClick={() => setSelectedPhoto(null)}
+              className="absolute top-4 right-4 text-white/80 hover:text-white bg-black/50 rounded-full p-2"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

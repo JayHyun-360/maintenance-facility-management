@@ -31,6 +31,7 @@ export default function UserDashboardClient({
   const [showProfileViewer, setShowProfileViewer] = useState(false);
   const [showProfileSidebar, setShowProfileSidebar] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmType, setConfirmType] = useState<"admin" | "user" | null>(null);
@@ -929,7 +930,8 @@ export default function UserDashboardClient({
                               key={index}
                               src={photo}
                               alt={`Attachment ${index + 1}`}
-                              className="w-16 h-16 object-cover rounded-lg border border-gray-200 flex-shrink-0"
+                              className="w-16 h-16 object-cover rounded-lg border border-gray-200 flex-shrink-0 cursor-pointer hover:scale-110 transition-transform"
+                              onClick={() => setSelectedPhoto(photo)}
                             />
                           ))}
                         </div>
@@ -1373,6 +1375,40 @@ export default function UserDashboardClient({
                 {loading ? "Switching..." : "Confirm"}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Photo Modal */}
+      {selectedPhoto && (
+        <div
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+          onClick={() => setSelectedPhoto(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh]">
+            <img
+              src={selectedPhoto}
+              alt="Full size"
+              className="max-w-full max-h-[90vh] object-contain rounded-lg"
+            />
+            <button
+              onClick={() => setSelectedPhoto(null)}
+              className="absolute top-4 right-4 text-white/80 hover:text-white bg-black/50 rounded-full p-2"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       )}
