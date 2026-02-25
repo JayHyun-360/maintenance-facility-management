@@ -26,6 +26,7 @@ export default function UserDashboardClient({
   const [requests, setRequests] =
     useState<MaintenanceRequest[]>(initialRequests);
   const [showForm, setShowForm] = useState(false);
+  const [showProfileViewer, setShowProfileViewer] = useState(false);
   const [formData, setFormData] = useState({
     nature: "",
     urgency: "",
@@ -124,7 +125,11 @@ export default function UserDashboardClient({
             <div className="flex items-center gap-4">
               {/* Profile Avatar */}
               <div className="relative">
-                <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden">
+                <button
+                  onClick={() => setShowProfileViewer(!showProfileViewer)}
+                  className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
+                  title="Click to view profile picture"
+                >
                   {userAvatar ? (
                     <img
                       src={userAvatar}
@@ -144,8 +149,47 @@ export default function UserDashboardClient({
                   >
                     {profile?.full_name?.charAt(0).toUpperCase() || "U"}
                   </span>
-                </div>
+                </button>
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+
+                {/* Profile Picture Viewer */}
+                {showProfileViewer && userAvatar && (
+                  <div className="absolute top-full left-0 mt-2 z-50 animate-fadeIn">
+                    <div className="bg-white rounded-xl shadow-2xl border border-gray-200 p-4 min-w-[300px]">
+                      <div className="flex flex-col items-center">
+                        <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-green-500 mb-3">
+                          <img
+                            src={userAvatar}
+                            alt="Profile Picture"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <h3 className="font-semibold text-gray-900 text-lg">
+                          {profile?.full_name}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {profile?.visual_role}
+                        </p>
+                        <div className="mt-3 flex gap-2">
+                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                            {profile?.database_role === "admin"
+                              ? "Administrator"
+                              : "User"}
+                          </span>
+                          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium">
+                            {profile?.theme_preference}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => setShowProfileViewer(false)}
+                          className="mt-4 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                        >
+                          Close
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Welcome Text */}
