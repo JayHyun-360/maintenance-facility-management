@@ -2437,42 +2437,133 @@ export default function AdminDashboardClient({
       {/* AI Chat Sidebar */}
       <div
         ref={aiChatRef}
-        className={`fixed top-0 left-0 h-full w-96 bg-gradient-to-b from-gray-900 to-gray-800 shadow-2xl z-40 transform transition-transform duration-500 ease-out ${
+        className={`fixed top-0 left-0 h-full w-96 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 shadow-2xl z-40 transform transition-all duration-700 ease-out ${
           showAIChat ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="h-full flex flex-col">
-          <div className="bg-gradient-to-r from-[#427A43] to-green-600 p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                <svg
-                  className="w-6 h-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+          {/* Enhanced Header */}
+          <div className="bg-gradient-to-r from-[#427A43] via-emerald-600 to-green-600 p-6 relative overflow-hidden">
+            <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30">
+                    <svg
+                      className="w-7 h-7 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 className="font-header text-xl font-bold text-white">
+                      AI Assistant
+                    </h2>
+                    <p className="text-xs text-white/80 flex items-center gap-1">
+                      <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                      Always ready to help
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowAIChat(false)}
+                  className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-all duration-200"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-                  />
-                </svg>
+                  <svg
+                    className="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
               </div>
-              <div>
-                <h2 className="font-header text-xl font-bold text-white">
-                  AI Assistant
-                </h2>
-                <p className="text-xs text-white/70">Always ready to help</p>
+
+              {/* Action Icons */}
+              <div className="flex gap-2">
+                <button className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg text-xs font-medium text-white hover:bg-white/30 transition-all duration-200 flex items-center gap-1.5">
+                  <svg
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
+                  </svg>
+                  Quick Actions
+                </button>
+                <button className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg text-xs font-medium text-white hover:bg-white/30 transition-all duration-200 flex items-center gap-1.5">
+                  <svg
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                    />
+                  </svg>
+                  Insights
+                </button>
+                <button className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg text-xs font-medium text-white hover:bg-white/30 transition-all duration-200 flex items-center gap-1.5">
+                  <svg
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                    />
+                  </svg>
+                  Help
+                </button>
               </div>
             </div>
           </div>
 
-          <div className="flex-1 flex items-center justify-center p-6">
-            <div className="text-center">
-              <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-4">
+          {/* Enhanced Chat Area */}
+          <div className="flex-1 flex items-center justify-center p-6 relative">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-5">
+              <div className="grid grid-cols-6 grid-rows-6 h-full">
+                {[...Array(36)].map((_, i) => (
+                  <div key={i} className="border border-white/20"></div>
+                ))}
+              </div>
+            </div>
+
+            <div className="text-center relative z-10">
+              {/* Animated AI Icon */}
+              <div className="w-24 h-24 bg-gradient-to-br from-[#427A43]/20 to-emerald-600/20 rounded-full flex items-center justify-center mx-auto mb-6 relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#427A43]/30 to-emerald-600/30 rounded-full animate-pulse"></div>
                 <svg
-                  className="w-10 h-10 text-white/50"
+                  className="w-12 h-12 text-white/70 relative z-10"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -2480,34 +2571,152 @@ export default function AdminDashboardClient({
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    strokeWidth={1.5}
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
+                {/* Orbiting dots */}
+                <div className="absolute inset-0">
+                  <div className="absolute top-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-white/60 rounded-full animate-ping"></div>
+                  <div
+                    className="absolute bottom-2 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-white/60 rounded-full animate-ping"
+                    style={{ animationDelay: "0.5s" }}
+                  ></div>
+                  <div
+                    className="absolute left-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white/60 rounded-full animate-ping"
+                    style={{ animationDelay: "1s" }}
+                  ></div>
+                  <div
+                    className="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white/60 rounded-full animate-ping"
+                    style={{ animationDelay: "1.5s" }}
+                  ></div>
+                </div>
               </div>
-              <h3 className="font-header text-lg font-semibold text-white mb-2">
+
+              <h3 className="font-header text-xl font-semibold text-white mb-3">
                 Coming Soon
               </h3>
-              <p className="text-sm text-white/60">
-                AI-powered assistance for managing maintenance requests
+              <p className="text-sm text-white/60 mb-6 max-w-xs mx-auto">
+                AI-powered assistance for managing maintenance requests with
+                smart insights and automation
               </p>
+
+              {/* Feature Preview */}
+              <div className="space-y-2 text-left max-w-xs mx-auto">
+                <div className="flex items-center gap-2 text-xs text-white/50">
+                  <svg
+                    className="w-4 h-4 text-[#427A43]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Smart request prioritization
+                </div>
+                <div className="flex items-center gap-2 text-xs text-white/50">
+                  <svg
+                    className="w-4 h-4 text-[#427A43]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Automated workflow suggestions
+                </div>
+                <div className="flex items-center gap-2 text-xs text-white/50">
+                  <svg
+                    className="w-4 h-4 text-[#427A43]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Real-time analytics insights
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="p-4 border-t border-white/10">
+          {/* Enhanced Input Area */}
+          <div className="p-4 border-t border-white/10 bg-slate-900/50 backdrop-blur-sm">
             <div className="relative">
+              <div className="flex items-center gap-2 mb-3">
+                <button className="p-2 text-white/40 hover:text-white/60 transition-colors">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                    />
+                  </svg>
+                </button>
+                <button className="p-2 text-white/40 hover:text-white/60 transition-colors">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </button>
+                <button className="p-2 text-white/40 hover:text-white/60 transition-colors">
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                    />
+                  </svg>
+                </button>
+              </div>
               <input
                 type="text"
-                placeholder="Type a message..."
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
+                placeholder="Ask me anything about maintenance..."
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#427A43] focus:border-transparent transition-all duration-200"
                 disabled
               />
               <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 text-white/50 cursor-not-allowed"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#427A43] text-white rounded-lg hover:bg-[#4d8c4f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -2520,6 +2729,22 @@ export default function AdminDashboardClient({
                   />
                 </svg>
               </button>
+            </div>
+            <div className="flex items-center justify-between mt-2">
+              <p className="text-xs text-white/40">
+                AI assistant is getting ready
+              </p>
+              <div className="flex items-center gap-1">
+                <div className="w-1.5 h-1.5 bg-[#427A43] rounded-full animate-bounce"></div>
+                <div
+                  className="w-1.5 h-1.5 bg-[#427A43] rounded-full animate-bounce"
+                  style={{ animationDelay: "0.1s" }}
+                ></div>
+                <div
+                  className="w-1.5 h-1.5 bg-[#427A43] rounded-full animate-bounce"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
+              </div>
             </div>
           </div>
         </div>

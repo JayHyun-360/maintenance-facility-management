@@ -23,6 +23,7 @@ export interface Database {
           educational_level: string | null;
           department: string | null;
           is_anonymous: boolean;
+          is_blocked: boolean | null;
           theme_preference: "light" | "dark" | "system";
           created_at: string;
         };
@@ -34,6 +35,7 @@ export interface Database {
           educational_level?: string | null;
           department?: string | null;
           is_anonymous?: boolean;
+          is_blocked?: boolean | null;
           theme_preference?: "light" | "dark" | "system";
           created_at?: string;
         };
@@ -45,6 +47,7 @@ export interface Database {
           educational_level?: string | null;
           department?: string | null;
           is_anonymous?: boolean | null;
+          is_blocked?: boolean | null;
           theme_preference?: "light" | "dark" | "system" | null;
           created_at?: string | null;
         };
