@@ -70,6 +70,16 @@ export default function AdminDashboardClient({
     useState<RequestWithProfile | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [showReportSidebar, setShowReportSidebar] = useState(false);
+  const [selectedRequestForReport, setSelectedRequestForReport] =
+    useState<RequestWithProfile | null>(null);
+  const [filters, setFilters] = useState({
+    status: [] as string[],
+    nature: [] as string[],
+    urgency: [] as string[],
+  });
+  const [selectAll, setSelectAll] = useState(true);
   const [editFormData, setEditFormData] = useState({
     nature: "",
     urgency: "",
@@ -1173,29 +1183,234 @@ export default function AdminDashboardClient({
           {/* Master Queue Tab */}
           {activeTab === "master-queue" && (
             <div className="space-y-6">
-              {/* Search Bar */}
-              <div className="relative">
-                <svg
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              {/* Search Bar with Filter */}
+              <div className="flex gap-3">
+                <div className="relative flex-1">
+                  <svg
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                  <input
+                    type="text"
+                    placeholder="Search by nature, location, or description..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
                   />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search by nature, location, or description..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
-                />
+                </div>
+                <button
+                  onClick={() => setShowFilterPanel(!showFilterPanel)}
+                  className={`p-3 rounded-lg border transition-colors ${
+                    showFilterPanel ||
+                    filters.status.length > 0 ||
+                    filters.nature.length > 0 ||
+                    filters.urgency.length > 0
+                      ? "bg-[#427A43] text-white border-[#427A43]"
+                      : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"
+                  }`}
+                  title="Filter"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                    />
+                  </svg>
+                </button>
               </div>
+
+              {/* Filter Panel */}
+              {showFilterPanel && (
+                <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-md">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <label className="flex items-center gap-2 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={selectAll}
+                          onChange={(e) => setSelectAll(e.target.checked)}
+                          className="w-4 h-4 text-[#427A43] rounded border-gray-300 focus:ring-[#427A43]"
+                        />
+                        <span className="text-sm font-medium text-gray-700">
+                          Select all
+                        </span>
+                      </label>
+                    </div>
+                    <button
+                      onClick={() => {
+                        setFilters({ status: [], nature: [], urgency: [] });
+                        setSelectAll(true);
+                      }}
+                      className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                      title="Clear filters"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {/* Status Filter */}
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                        Status
+                      </p>
+                      <div className="space-y-1">
+                        {[
+                          "Pending",
+                          "In Progress",
+                          "Completed",
+                          "Cancelled",
+                        ].map((status) => (
+                          <label
+                            key={status}
+                            className="flex items-center gap-2 cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={
+                                selectAll || filters.status.includes(status)
+                              }
+                              onChange={(e) => {
+                                if (selectAll) {
+                                  setSelectAll(false);
+                                  setFilters({ ...filters, status: [status] });
+                                } else {
+                                  const newStatus = e.target.checked
+                                    ? [...filters.status, status]
+                                    : filters.status.filter(
+                                        (s) => s !== status,
+                                      );
+                                  setFilters({ ...filters, status: newStatus });
+                                }
+                              }}
+                              className="w-4 h-4 text-[#427A43] rounded border-gray-300 focus:ring-[#427A43]"
+                            />
+                            <span className="text-sm text-gray-700">
+                              {status}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    {/* Nature Filter */}
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                        Nature
+                      </p>
+                      <div className="space-y-1">
+                        {[
+                          "Plumbing",
+                          "Electrical",
+                          "Carpentry",
+                          "HVAC",
+                          "Cleaning",
+                          "Other",
+                        ].map((nature) => (
+                          <label
+                            key={nature}
+                            className="flex items-center gap-2 cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={
+                                selectAll || filters.nature.includes(nature)
+                              }
+                              onChange={(e) => {
+                                if (selectAll) {
+                                  setSelectAll(false);
+                                  setFilters({ ...filters, nature: [nature] });
+                                } else {
+                                  const newNature = e.target.checked
+                                    ? [...filters.nature, nature]
+                                    : filters.nature.filter(
+                                        (n) => n !== nature,
+                                      );
+                                  setFilters({ ...filters, nature: newNature });
+                                }
+                              }}
+                              className="w-4 h-4 text-[#427A43] rounded border-gray-300 focus:ring-[#427A43]"
+                            />
+                            <span className="text-sm text-gray-700">
+                              {nature}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                    {/* Urgency Filter */}
+                    <div>
+                      <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                        Urgency
+                      </p>
+                      <div className="space-y-1">
+                        {["Emergency", "Urgent", "Normal"].map((urgency) => (
+                          <label
+                            key={urgency}
+                            className="flex items-center gap-2 cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={
+                                selectAll || filters.urgency.includes(urgency)
+                              }
+                              onChange={(e) => {
+                                if (selectAll) {
+                                  setSelectAll(false);
+                                  setFilters({
+                                    ...filters,
+                                    urgency: [urgency],
+                                  });
+                                } else {
+                                  const newUrgency = e.target.checked
+                                    ? [...filters.urgency, urgency]
+                                    : filters.urgency.filter(
+                                        (u) => u !== urgency,
+                                      );
+                                  setFilters({
+                                    ...filters,
+                                    urgency: newUrgency,
+                                  });
+                                }
+                              }}
+                              className="w-4 h-4 text-[#427A43] rounded border-gray-300 focus:ring-[#427A43]"
+                            />
+                            <span className="text-sm text-gray-700">
+                              {urgency}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Table */}
               <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -1230,8 +1445,8 @@ export default function AdminDashboardClient({
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                       {requests
-                        .filter(
-                          (r) =>
+                        .filter((r) => {
+                          const matchesSearch =
                             searchQuery === "" ||
                             r.nature
                               .toLowerCase()
@@ -1241,8 +1456,26 @@ export default function AdminDashboardClient({
                               .includes(searchQuery.toLowerCase()) ||
                             r.description
                               .toLowerCase()
-                              .includes(searchQuery.toLowerCase()),
-                        )
+                              .includes(searchQuery.toLowerCase());
+                          const matchesStatus =
+                            selectAll ||
+                            filters.status.length === 0 ||
+                            filters.status.includes(r.status);
+                          const matchesNature =
+                            selectAll ||
+                            filters.nature.length === 0 ||
+                            filters.nature.includes(r.nature);
+                          const matchesUrgency =
+                            selectAll ||
+                            filters.urgency.length === 0 ||
+                            filters.urgency.includes(r.urgency);
+                          return (
+                            matchesSearch &&
+                            matchesStatus &&
+                            matchesNature &&
+                            matchesUrgency
+                          );
+                        })
                         .map((request) => (
                           <tr key={request.id} className="hover:bg-gray-50">
                             <td className="px-6 py-4">
@@ -1309,37 +1542,42 @@ export default function AdminDashboardClient({
                               </span>
                             </td>
                             <td className="px-6 py-4">
-                              <div className="flex gap-2">
-                                {request.status === "Pending" && (
-                                  <button
-                                    onClick={() =>
-                                      handleStatusUpdate(
-                                        request.id,
-                                        "In Progress",
-                                      )
-                                    }
-                                    className="text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-                                  >
-                                    Start
-                                  </button>
-                                )}
-                                {request.status === "In Progress" && (
-                                  <button
-                                    onClick={() =>
-                                      handleStatusUpdate(
-                                        request.id,
-                                        "Completed",
-                                      )
-                                    }
-                                    className="text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
-                                  >
-                                    Complete
-                                  </button>
-                                )}
+                              <div className="flex items-center gap-2">
+                                {/* Status Dropdown */}
+                                <select
+                                  value={request.status}
+                                  onChange={(e) =>
+                                    handleStatusUpdate(
+                                      request.id,
+                                      e.target.value as RequestStatus,
+                                    )
+                                  }
+                                  className={`text-xs px-2 py-1.5 rounded border focus:outline-none focus:ring-1 focus:ring-[#427A43] cursor-pointer ${
+                                    request.status === "Pending"
+                                      ? "bg-yellow-50 border-yellow-200 text-yellow-700"
+                                      : request.status === "In Progress"
+                                        ? "bg-blue-50 border-blue-200 text-blue-700"
+                                        : request.status === "Completed"
+                                          ? "bg-green-50 border-green-200 text-green-700"
+                                          : "bg-red-50 border-red-200 text-red-700"
+                                  }`}
+                                >
+                                  <option value="Pending">Pending</option>
+                                  <option value="In Progress">
+                                    In Progress
+                                  </option>
+                                  <option value="Completed">Completed</option>
+                                  <option value="Cancelled">Cancelled</option>
+                                </select>
+
+                                {/* Report Button */}
                                 <button
-                                  onClick={() => handleStatusChange(request)}
-                                  className="text-xs bg-gray-600 text-white px-2 py-1 rounded hover:bg-gray-700"
-                                  title="Change Status"
+                                  onClick={() => {
+                                    setSelectedRequestForReport(request);
+                                    setShowReportSidebar(true);
+                                  }}
+                                  className="p-1.5 text-gray-500 hover:text-[#427A43] hover:bg-gray-100 rounded transition-colors"
+                                  title="Generate Report"
                                 >
                                   <svg
                                     className="w-4 h-4"
@@ -1351,7 +1589,30 @@ export default function AdminDashboardClient({
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
                                       strokeWidth={2}
-                                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                    />
+                                  </svg>
+                                </button>
+
+                                {/* Delete Button */}
+                                <button
+                                  onClick={() =>
+                                    handleDeleteRequest(request.id)
+                                  }
+                                  className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                                  title="Delete Request"
+                                >
+                                  <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                                     />
                                   </svg>
                                 </button>
@@ -1361,8 +1622,8 @@ export default function AdminDashboardClient({
                         ))}
                     </tbody>
                   </table>
-                  {requests.filter(
-                    (r) =>
+                  {requests.filter((r) => {
+                    const matchesSearch =
                       searchQuery === "" ||
                       r.nature
                         .toLowerCase()
@@ -1372,8 +1633,26 @@ export default function AdminDashboardClient({
                         .includes(searchQuery.toLowerCase()) ||
                       r.description
                         .toLowerCase()
-                        .includes(searchQuery.toLowerCase()),
-                  ).length === 0 && (
+                        .includes(searchQuery.toLowerCase());
+                    const matchesStatus =
+                      selectAll ||
+                      filters.status.length === 0 ||
+                      filters.status.includes(r.status);
+                    const matchesNature =
+                      selectAll ||
+                      filters.nature.length === 0 ||
+                      filters.nature.includes(r.nature);
+                    const matchesUrgency =
+                      selectAll ||
+                      filters.urgency.length === 0 ||
+                      filters.urgency.includes(r.urgency);
+                    return (
+                      matchesSearch &&
+                      matchesStatus &&
+                      matchesNature &&
+                      matchesUrgency
+                    );
+                  }).length === 0 && (
                     <div className="text-center py-12 text-gray-500">
                       <p>No requests found</p>
                     </div>
@@ -1678,6 +1957,183 @@ export default function AdminDashboardClient({
                 <span className="font-medium">Sign Out</span>
               </button>
             </div>
+          </div>
+        </div>
+      </>
+
+      {/* Report Sidebar */}
+      <>
+        <div
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${showReportSidebar ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          onClick={() => setShowReportSidebar(false)}
+        />
+        <div
+          className={`fixed top-0 right-0 h-full w-[500px] bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showReportSidebar ? "translate-x-0" : "translate-x-full"}`}
+        >
+          <div className="h-full overflow-y-auto">
+            <div className="bg-[#427A43] shadow-lg border-b p-6 sticky top-0 z-10">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="font-header text-xl font-bold text-white">
+                    Maintenance Report
+                  </h2>
+                  <p className="text-white/80 text-sm mt-1">
+                    Edit and generate report for this request
+                  </p>
+                </div>
+                <button
+                  onClick={() => setShowReportSidebar(false)}
+                  className="text-white/80 hover:text-white transition-all duration-300 hover:scale-110"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            {selectedRequestForReport && (
+              <div className="p-6 space-y-6">
+                {/* Request Details */}
+                <div className="bg-gray-50 rounded-lg p-4 space-y-4">
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 uppercase">
+                      Nature
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue={selectedRequestForReport.nature}
+                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 uppercase">
+                      Location
+                    </label>
+                    <input
+                      type="text"
+                      defaultValue={selectedRequestForReport.location}
+                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 uppercase">
+                      Urgency
+                    </label>
+                    <select
+                      defaultValue={selectedRequestForReport.urgency}
+                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                    >
+                      <option value="Normal">Normal</option>
+                      <option value="Urgent">Urgent</option>
+                      <option value="Emergency">Emergency</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 uppercase">
+                      Status
+                    </label>
+                    <select
+                      defaultValue={selectedRequestForReport.status}
+                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-gray-500 uppercase">
+                      Description
+                    </label>
+                    <textarea
+                      defaultValue={selectedRequestForReport.description}
+                      rows={4}
+                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                    />
+                  </div>
+                </div>
+
+                {/* Requester Info */}
+                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                  <h3 className="font-header text-sm font-semibold text-gray-900">
+                    Requester Information
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div>
+                      <p className="text-xs text-gray-500">Name</p>
+                      <p className="text-gray-900">
+                        {selectedRequestForReport.profiles?.full_name ||
+                          "Unknown"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">Role</p>
+                      <p className="text-gray-900">
+                        {selectedRequestForReport.profiles?.visual_role ||
+                          "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">Created</p>
+                      <p className="text-gray-900">
+                        {new Date(
+                          selectedRequestForReport.created_at,
+                        ).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500">Request ID</p>
+                      <p className="text-gray-900 text-xs font-mono">
+                        {selectedRequestForReport.id.slice(0, 8)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Admin Notes */}
+                <div>
+                  <label className="text-xs font-medium text-gray-500 uppercase">
+                    Admin Notes
+                  </label>
+                  <textarea
+                    placeholder="Add notes about this maintenance request..."
+                    rows={4}
+                    className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                  />
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => setShowReportSidebar(false)}
+                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      alert("Report saved successfully!");
+                      setShowReportSidebar(false);
+                    }}
+                    className="flex-1 px-4 py-2.5 bg-[#427A43] text-white font-medium rounded-lg hover:bg-[#366337] transition-colors"
+                  >
+                    Save Report
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </>
