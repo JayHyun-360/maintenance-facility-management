@@ -322,7 +322,7 @@ export default function AdminDashboardClient({
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
-      <div className="bg-[#84B179] shadow-lg border-b transition-all duration-300">
+      <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-4">
@@ -371,7 +371,7 @@ export default function AdminDashboardClient({
                             className="w-full h-full object-contain"
                           />
                         </div>
-                        <h3 className="font-semibold text-white text-lg text-center">
+                        <h3 className="font-header font-semibold text-white text-lg text-center">
                           {profile?.full_name}
                         </h3>
                         <p className="text-sm text-white/80 text-center">
@@ -385,7 +385,7 @@ export default function AdminDashboardClient({
 
               {/* Welcome Text */}
               <div className="text-white">
-                <h1 className="text-2xl font-bold transition-all duration-300 hover:scale-105">
+                <h1 className="font-header text-2xl font-bold transition-all duration-300 hover:scale-105">
                   Welcome back, {profile?.full_name}!
                 </h1>
                 <div className="flex items-center gap-2 mt-1">
@@ -605,7 +605,7 @@ export default function AdminDashboardClient({
               onClick={() => setActiveTab(tab.id as any)}
               className={`relative flex items-center gap-2 pb-3 font-medium transition-all duration-300 whitespace-nowrap z-10 ${
                 activeTab === tab.id
-                  ? "text-[#84B179]"
+                  ? "text-[#427A43]"
                   : "text-gray-500 hover:text-gray-700"
               }`}
             >
@@ -615,7 +615,7 @@ export default function AdminDashboardClient({
           ))}
           {/* Sliding Underline */}
           <div
-            className="absolute bottom-0 left-0 h-0.5 bg-[#84B179] transition-all duration-300 ease-out tab-indicator"
+            className="absolute bottom-0 left-0 h-0.5 bg-[#427A43] transition-all duration-300 ease-out tab-indicator"
             style={{ width: "88px", transform: "translateX(0px)" }}
           />
         </div>
@@ -638,9 +638,9 @@ export default function AdminDashboardClient({
                         {stats.total}
                       </p>
                     </div>
-                    <div className="w-12 h-12 bg-[#84B179]/10 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-[#427A43]/10 rounded-lg flex items-center justify-center">
                       <svg
-                        className="w-6 h-6 text-[#84B179]"
+                        className="w-6 h-6 text-[#427A43]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -743,7 +743,7 @@ export default function AdminDashboardClient({
 
               {/* Recent Requests - Last 1 Hour */}
               <div className="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                <h2 className="font-header text-lg font-semibold text-gray-900 mb-4">
                   Recent Requests (Last 1 Hour)
                 </h2>
                 {(() => {
@@ -785,7 +785,7 @@ export default function AdminDashboardClient({
 
               {/* Analytics - Nature of Requests */}
               <div className="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                <h2 className="font-header text-lg font-semibold text-gray-900 mb-4">
                   Requests by Nature
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -982,7 +982,7 @@ export default function AdminDashboardClient({
 
               {/* Nature Breakdown */}
               <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="font-header text-lg font-semibold text-gray-900 mb-4">
                   Requests by Nature
                 </h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -1137,7 +1137,7 @@ export default function AdminDashboardClient({
 
               {/* Status Distribution */}
               <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="font-header text-lg font-semibold text-gray-900 mb-4">
                   Status Distribution
                 </h3>
                 <div className="flex items-center justify-around">
@@ -1202,14 +1202,14 @@ export default function AdminDashboardClient({
                   placeholder="Search by nature, location, or description..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#84B179] focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
                 />
               </div>
 
               {/* Table */}
               <div className="bg-white rounded-xl shadow-sm overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-200">
-                  <h2 className="text-lg font-semibold text-gray-900">
+                  <h2 className="font-header text-lg font-semibold text-gray-900">
                     All Maintenance Requests
                   </h2>
                   <p className="text-sm text-gray-600">
@@ -1396,7 +1396,7 @@ export default function AdminDashboardClient({
         {/* Manage Users Tab */}
         {activeTab === "manage-users" && (
           <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            <h2 className="font-header text-lg font-semibold text-gray-900 mb-4">
               Manage Users
             </h2>
             <div className="text-center py-12 text-gray-500">
@@ -1426,9 +1426,11 @@ export default function AdminDashboardClient({
       {editingRequest && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="bg-[#84B179] p-6 rounded-t-xl">
+            <div className="bg-[#427A43] p-6 rounded-t-xl">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold text-white">Change Status</h2>
+                <h2 className="font-header text-xl font-bold text-white">
+                  Change Status
+                </h2>
                 <button
                   onClick={() => setEditingRequest(null)}
                   className="text-white/80 hover:text-white"
@@ -1494,9 +1496,11 @@ export default function AdminDashboardClient({
         }`}
       >
         <div className="h-full overflow-y-auto">
-          <div className="bg-[#84B179] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+          <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
             <div className="flex justify-center items-center">
-              <h2 className="text-xl font-bold text-white">Notifications</h2>
+              <h2 className="font-header text-xl font-bold text-white">
+                Notifications
+              </h2>
             </div>
           </div>
           <div className="p-4">
@@ -1560,9 +1564,9 @@ export default function AdminDashboardClient({
           className={`fixed top-0 left-0 h-full w-96 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showProfileSidebar ? "translate-x-0" : "-translate-x-full"}`}
         >
           <div className="h-full overflow-y-auto">
-            <div className="bg-[#84B179] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+            <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold text-white">
+                <h2 className="font-header text-xl font-bold text-white">
                   Profile Settings
                 </h2>
                 <button
@@ -1588,7 +1592,7 @@ export default function AdminDashboardClient({
 
             <div className="p-6 space-y-6">
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="font-header text-lg font-semibold text-gray-900 mb-4">
                   Your Profile
                 </h3>
                 <div className="space-y-4">
@@ -1612,7 +1616,7 @@ export default function AdminDashboardClient({
                     <label className="block text-sm font-medium text-gray-600 mb-1">
                       Access Mode
                     </label>
-                    <span className="px-3 py-1 bg-[#84B179] text-white text-sm font-medium rounded-full">
+                    <span className="px-3 py-1 bg-[#427A43] text-white text-sm font-medium rounded-full">
                       Administrator
                     </span>
                   </div>
@@ -1695,7 +1699,7 @@ export default function AdminDashboardClient({
         }`}
       >
         <div className="h-full flex flex-col">
-          <div className="bg-gradient-to-r from-[#84B179] to-green-600 p-6">
+          <div className="bg-gradient-to-r from-[#427A43] to-green-600 p-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                 <svg
@@ -1713,7 +1717,9 @@ export default function AdminDashboardClient({
                 </svg>
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white">AI Assistant</h2>
+                <h2 className="font-header text-xl font-bold text-white">
+                  AI Assistant
+                </h2>
                 <p className="text-xs text-white/70">Always ready to help</p>
               </div>
             </div>
@@ -1736,7 +1742,7 @@ export default function AdminDashboardClient({
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-white mb-2">
+              <h3 className="font-header text-lg font-semibold text-white mb-2">
                 Coming Soon
               </h3>
               <p className="text-sm text-white/60">
@@ -1750,7 +1756,7 @@ export default function AdminDashboardClient({
               <input
                 type="text"
                 placeholder="Type a message..."
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#84B179] focus:border-transparent"
+                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
                 disabled
               />
               <button

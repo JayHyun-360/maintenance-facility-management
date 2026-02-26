@@ -97,7 +97,7 @@ function AuthErrorContent() {
           </svg>
         </div>
 
-        <h1 className="text-xl font-bold text-gray-900 mb-2">
+        <h1 className="font-header text-xl font-bold text-gray-900 mb-2">
           Authentication Error
         </h1>
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 text-left">
@@ -155,7 +155,7 @@ export default function AuthError() {
         <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
-            <h1 className="text-xl font-semibold text-gray-900 mb-2">
+            <h1 className="font-header text-xl font-semibold text-gray-900 mb-2">
               Loading...
             </h1>
           </div>

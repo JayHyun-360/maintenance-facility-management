@@ -75,7 +75,7 @@ export default function ProfileSettingsClient({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div>
-              <h1 className="text-xl font-semibold text-gray-900">
+              <h1 className="font-header text-xl font-semibold text-gray-900">
                 Profile Settings
               </h1>
             </div>
@@ -98,7 +98,7 @@ export default function ProfileSettingsClient({
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Profile Information Card */}
         <div className="bg-white rounded-xl shadow-sm p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
+          <h2 className="font-header text-2xl font-bold text-gray-900 mb-6">
             Your Profile
           </h2>
 
@@ -191,7 +191,7 @@ export default function ProfileSettingsClient({
         {/* Mode Switch Card */}
         {isAdmin && (
           <div className="bg-white rounded-xl shadow-sm p-8 border-2 border-amber-200">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">
+            <h3 className="font-header text-xl font-bold text-gray-900 mb-4">
               ⚙️ Access Mode Management
             </h3>
             <p className="text-gray-600 mb-6">
@@ -224,7 +224,7 @@ export default function ProfileSettingsClient({
 
         {!isAdmin && profile.database_role === "admin" && (
           <div className="bg-white rounded-xl shadow-sm p-8 border-2 border-blue-200">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">
+            <h3 className="font-header text-xl font-bold text-gray-900 mb-4">
               🔧 Admin Access Available
             </h3>
             <p className="text-gray-600 mb-6">
@@ -248,7 +248,7 @@ export default function ProfileSettingsClient({
 
         {!isAdmin && profile.database_role === "user" && (
           <div className="bg-white rounded-xl shadow-sm p-8 border-2 border-green-200">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">
+            <h3 className="font-header text-xl font-bold text-gray-900 mb-4">
               📋 User Mode
             </h3>
             <p className="text-gray-600 mb-6">

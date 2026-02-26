@@ -89,7 +89,7 @@ function ProfileCreationContent() {
   return (
     <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+        <h1 className="font-header text-2xl font-bold text-gray-900 mb-6 text-center">
           Complete Your Profile
         </h1>
 

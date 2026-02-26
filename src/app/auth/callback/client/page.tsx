@@ -26,7 +26,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
   const router = useRouter();
   const searchParamsClient = useSearchParams();
 
-  // Create client-side Supabase client as fallback
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -44,7 +43,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
     const handleAuthCallback = async () => {
       console.log("=== CLIENT-SIDE AUTH CALLBACK (FALLBACK) ===");
 
-      // Get the full URL including fragments
       const fullUrl = window.location.href;
       const url = new URL(fullUrl);
 
@@ -55,7 +53,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
         Object.fromEntries(searchParamsClient.entries()),
       );
 
-      // Check if we have OAuth code in URL
       const code = searchParamsClient.get("code");
       const error = searchParamsClient.get("error");
       const errorDescription = searchParamsClient.get("error_description");
@@ -66,14 +63,12 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
 
       if (error) {
         console.error("OAuth error from server:", error, errorDescription);
-        // The server-side callback already handled the error, just show it
         return;
       }
 
       if (code) {
         console.log("Code found, checking if server already handled it...");
 
-        // Check if we already have a session (server-side callback should have set this)
         const { data: sessionData, error: sessionError } =
           await supabase.auth.getSession();
 
@@ -90,7 +85,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
           console.log("Session user ID:", sessionData.session.user.id);
           console.log("Session user email:", sessionData.session.user.email);
 
-          // The server-side callback should have already redirected, but as a fallback:
           const userRole = sessionData.session.user.app_metadata?.role;
           const isAdmin = userRole === "admin";
           const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
@@ -100,7 +94,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
           return;
         }
 
-        // If no session and we have a code, try client-side exchange as fallback
         console.log(
           "No session found, trying client-side code exchange as fallback...",
         );
@@ -114,7 +107,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
             JSON.stringify(exchangeError, null, 2),
           );
 
-          // Extract detailed error information
           const errorDetails = {
             message: exchangeError.message || "Unknown error",
             status: exchangeError.status,
@@ -139,10 +131,8 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
         console.log("Session app metadata:", data.session?.user.app_metadata);
 
         if (data.session) {
-          // Wait a moment for the trigger to execute
           await new Promise((resolve) => setTimeout(resolve, 500));
 
-          // Get user to determine role and redirect
           const { data: userData, error: userError } =
             await supabase.auth.getUser();
 
@@ -158,7 +148,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
             console.log("User authenticated:", userData.user.email);
             console.log("User app_metadata:", userData.user.app_metadata);
 
-            // Check if profile exists with detailed error handling
             const { data: profile, error: profileError } = await supabase
               .from("profiles")
               .select("id, user_id, database_role, full_name, created_at")
@@ -175,7 +164,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
                 JSON.stringify(profileError, null, 2),
               );
 
-              // Try to debug the issue
               try {
                 const { data: debugData } = await supabase.rpc(
                   "debug_user_creation",
@@ -195,7 +183,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
             }
 
             if (profile) {
-              // Existing user - redirect to dashboard
               const userRole =
                 userData.user.app_metadata?.role || profile.database_role;
               const isAdmin = userRole === "admin";
@@ -203,7 +190,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
               console.log("Existing user, redirecting to:", redirectUrl);
               router.push(redirectUrl);
             } else {
-              // New user - this shouldn't happen with the trigger, but handle it
               console.log("No profile found - trigger may have failed");
               const email = userData.user.email || "";
               const name =
@@ -219,7 +205,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
           }
         }
       } else {
-        // Try to get existing session (for direct visits)
         const { data: sessionData, error } = await supabase.auth.getSession();
 
         if (error) {
@@ -236,7 +221,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
 
         if (sessionData?.session) {
           console.log("Session found:", sessionData.session);
-          // Redirect to appropriate dashboard based on session
           router.push("/dashboard");
         } else {
           console.log("No session found and no OAuth code");
@@ -252,7 +236,7 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
     <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md text-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
-        <h1 className="text-xl font-semibold text-gray-900 mb-2">
+        <h1 className="font-header text-xl font-bold text-gray-900 mb-2">
           Completing sign in...
         </h1>
         <p className="text-gray-600">
@@ -274,7 +258,7 @@ export default async function AuthCallbackPage({
         <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center">
           <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
-            <h1 className="text-xl font-semibold text-gray-900 mb-2">
+            <h1 className="font-header text-xl font-bold text-gray-900 mb-2">
               Loading...
             </h1>
           </div>

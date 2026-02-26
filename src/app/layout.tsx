@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Quicksand, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const quicksand = Quicksand({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-body",
+  display: "swap",
+});
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-header",
   display: "swap",
 });
 
@@ -19,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${quicksand.variable} ${cormorant.variable}`}>
       <body className="font-sans antialiased">{children}</body>
     </html>
   );

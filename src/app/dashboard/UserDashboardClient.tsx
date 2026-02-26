@@ -307,7 +307,7 @@ export default function UserDashboardClient({
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
-      <div className="bg-[#84B179] shadow-lg border-b transition-all duration-300">
+      <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-4">
@@ -361,7 +361,7 @@ export default function UserDashboardClient({
                             }}
                           />
                         </div>
-                        <h3 className="font-semibold text-white text-lg text-center">
+                        <h3 className="font-header font-semibold text-white text-lg text-center">
                           {profile?.full_name}
                         </h3>
                         <p className="text-sm text-white/80 text-center">
@@ -375,7 +375,7 @@ export default function UserDashboardClient({
 
               {/* Welcome Text */}
               <div className="text-white">
-                <h1 className="text-2xl font-bold transition-all duration-300 hover:scale-105">
+                <h1 className="font-header text-2xl font-bold transition-all duration-300 hover:scale-105">
                   Welcome back, {profile?.full_name}!
                 </h1>
                 <div className="flex items-center gap-2 mt-1">
@@ -493,7 +493,7 @@ export default function UserDashboardClient({
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold text-gray-900 transition-all duration-300">
+                <h2 className="font-header text-lg font-semibold text-gray-900 transition-all duration-300">
                   New Request
                 </h2>
                 {!showForm && (
@@ -872,7 +872,7 @@ export default function UserDashboardClient({
           {/* Requests List */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 transition-all duration-300">
+              <h2 className="font-header text-lg font-semibold text-gray-900 mb-4 transition-all duration-300">
                 Your Requests
               </h2>
 
@@ -904,7 +904,7 @@ export default function UserDashboardClient({
                     >
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <h3 className="font-medium text-gray-900 transition-all duration-300">
+                          <h3 className="font-header font-medium text-gray-900 transition-all duration-300">
                             {request.nature}
                           </h3>
                           <p className="text-sm text-gray-600 transition-all duration-300">
@@ -960,9 +960,11 @@ export default function UserDashboardClient({
         }`}
       >
         <div className="h-full overflow-y-auto">
-          <div className="bg-[#84B179] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+          <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
             <div className="flex justify-center items-center">
-              <h2 className="text-xl font-bold text-white">Notifications</h2>
+              <h2 className="font-header text-xl font-bold text-white">
+                Notifications
+              </h2>
             </div>
           </div>
           <div className="p-4">
@@ -1034,9 +1036,9 @@ export default function UserDashboardClient({
         >
           <div className="h-full overflow-y-auto">
             {/* Sidebar Header */}
-            <div className="bg-[#84B179] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+            <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
               <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold text-white">
+                <h2 className="font-header text-xl font-bold text-white">
                   Profile Settings
                 </h2>
               </div>
@@ -1046,7 +1048,7 @@ export default function UserDashboardClient({
             <div className="p-6 space-y-6">
               {/* Profile Information */}
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <svg
                     className="w-5 h-5 text-purple-600"
                     fill="none"
@@ -1228,7 +1230,7 @@ export default function UserDashboardClient({
               {/* Mode Switching */}
               {isAdmin && (
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <h3 className="font-header text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                     <svg
                       className="w-5 h-5 text-amber-600"
                       fill="none"
@@ -1266,7 +1268,7 @@ export default function UserDashboardClient({
 
               {!isAdmin && profile?.database_role === "admin" && (
                 <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <h3 className="font-header text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                     <svg
                       className="w-5 h-5 text-blue-600"
                       fill="none"
@@ -1298,7 +1300,7 @@ export default function UserDashboardClient({
 
               {!isAdmin && profile?.database_role === "user" && (
                 <div className="bg-green-50 border border-green-200 rounded-xl p-6">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <h3 className="font-header text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
                     <svg
                       className="w-5 h-5 text-green-600"
                       fill="none"

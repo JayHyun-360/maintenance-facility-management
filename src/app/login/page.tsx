@@ -428,7 +428,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+        <h1 className="font-header text-2xl font-bold text-gray-900 mb-6 text-center">
           Maintenance Portal
         </h1>
 
@@ -676,7 +676,7 @@ export default function LoginPage() {
         {showGuestModal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
+              <h2 className="font-header text-xl font-bold text-gray-900 mb-4">
                 Guest Information
               </h2>
 
