@@ -80,6 +80,18 @@ export default function AdminDashboardClient({
     urgency: [] as string[],
   });
   const [selectAll, setSelectAll] = useState(true);
+  const [users, setUsers] = useState<Profile[]>([]);
+  const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
+  const [userMessages, setUserMessages] = useState<{
+    [userId: string]: {
+      id: string;
+      message: string;
+      created_at: string;
+      from_admin: boolean;
+    }[];
+  }>({});
+  const [newMessage, setNewMessage] = useState("");
+  const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
   const [editFormData, setEditFormData] = useState({
     nature: "",
     urgency: "",
@@ -248,6 +260,67 @@ export default function AdminDashboardClient({
 
     fetchRequests();
   };
+
+  const fetchUsers = async () => {
+    const { data: usersData, error: usersError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("database_role", "user")
+      .order("created_at", { ascending: false });
+
+    if (!usersError && usersData) {
+      setUsers(usersData);
+    }
+  };
+
+  const fetchUserMessages = async (userId: string) => {
+    const { data: messagesData } = await (
+      supabase.from("admin_messages") as any
+    )
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: true });
+
+    if (messagesData) {
+      setUserMessages((prev) => ({ ...prev, [userId]: messagesData }));
+    }
+  };
+
+  const sendMessage = async () => {
+    if (!selectedUser || !newMessage.trim()) return;
+
+    const { data, error } = await (supabase.from("admin_messages") as any)
+      .insert({
+        user_id: selectedUser.id,
+        message: newMessage.trim(),
+        from_admin: true,
+      })
+      .select();
+
+    if (!error && data) {
+      setUserMessages((prev) => ({
+        ...prev,
+        [selectedUser.id]: [...(prev[selectedUser.id] || []), data[0]],
+      }));
+      setNewMessage("");
+    }
+  };
+
+  const toggleBlockUser = async (userId: string) => {
+    const isBlocked = blockedUsers.includes(userId);
+    const newBlocked = isBlocked
+      ? blockedUsers.filter((id) => id !== userId)
+      : [...blockedUsers, userId];
+    setBlockedUsers(newBlocked);
+
+    await (supabase.from("profiles") as any)
+      .update({ is_blocked: !isBlocked })
+      .eq("id", userId);
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const handleStatusChange = (request: RequestWithProfile) => {
     setEditingRequest(request);
@@ -1669,24 +1742,247 @@ export default function AdminDashboardClient({
             <h2 className="font-header text-lg font-semibold text-gray-900 mb-4">
               Manage Users
             </h2>
-            <div className="text-center py-12 text-gray-500">
-              <svg
-                className="w-16 h-16 mx-auto mb-4 text-gray-300"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-                />
-              </svg>
-              <p className="text-lg">User Management Coming Soon</p>
-              <p className="text-sm text-gray-400 mt-1">
-                This feature will allow you to manage user accounts
-              </p>
+
+            <div className="flex gap-6 h-[600px]">
+              {/* Left Side - User List */}
+              <div className="w-1/3 border border-gray-200 rounded-lg overflow-hidden flex flex-col">
+                <div className="p-3 border-b border-gray-200 bg-gray-50">
+                  <input
+                    type="text"
+                    placeholder="Search users..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
+                  />
+                </div>
+                <div className="overflow-y-auto flex-1">
+                  {users
+                    .filter(
+                      (u) =>
+                        searchQuery === "" ||
+                        u.full_name
+                          .toLowerCase()
+                          .includes(searchQuery.toLowerCase()) ||
+                        u.visual_role
+                          ?.toLowerCase()
+                          .includes(searchQuery.toLowerCase()),
+                    )
+                    .map((user) => (
+                      <div
+                        key={user.id}
+                        onClick={() => {
+                          setSelectedUser(user);
+                          fetchUserMessages(user.id);
+                        }}
+                        className={`p-3 border-b border-gray-100 cursor-pointer transition-colors ${
+                          selectedUser?.id === user.id
+                            ? "bg-green-50"
+                            : "hover:bg-gray-50"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 rounded-full bg-[#427A43] flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
+                            {user.full_name.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-gray-900 truncate">
+                              {user.full_name}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {user.visual_role || "User"}
+                            </p>
+                            <p className="text-xs text-gray-400">
+                              {user.department ||
+                                user.educational_level ||
+                                "No department"}
+                            </p>
+                          </div>
+                          {blockedUsers.includes(user.id) && (
+                            <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded">
+                              Blocked
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  {users.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                      <p>No users found</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Right Side - Chat/Notice Panel */}
+              <div className="flex-1 border border-gray-200 rounded-lg overflow-hidden flex flex-col">
+                {selectedUser ? (
+                  <>
+                    {/* User Info Header */}
+                    <div className="p-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-[#427A43] flex items-center justify-center text-white font-semibold">
+                          {selectedUser.full_name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {selectedUser.full_name}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {selectedUser.visual_role || "User"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {/* Email Button */}
+                        <a
+                          href={`mailto:${selectedUser.id}@placeholder.com`}
+                          className="p-2 text-gray-500 hover:text-[#427A43] hover:bg-gray-100 rounded-lg transition-colors"
+                          title="Send Email"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </a>
+                        {/* Block Button */}
+                        <button
+                          onClick={() => toggleBlockUser(selectedUser.id)}
+                          className={`p-2 rounded-lg transition-colors ${
+                            blockedUsers.includes(selectedUser.id)
+                              ? "text-red-500 bg-red-50 hover:bg-red-100"
+                              : "text-gray-500 hover:text-red-500 hover:bg-red-50"
+                          }`}
+                          title={
+                            blockedUsers.includes(selectedUser.id)
+                              ? "Unblock User"
+                              : "Block User"
+                          }
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Messages Area */}
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+                      {userMessages[selectedUser.id]?.length > 0 ? (
+                        userMessages[selectedUser.id].map((msg) => (
+                          <div
+                            key={msg.id}
+                            className={`flex ${msg.from_admin ? "justify-end" : "justify-start"}`}
+                          >
+                            <div
+                              className={`max-w-[70%] px-4 py-2 rounded-lg ${
+                                msg.from_admin
+                                  ? "bg-[#427A43] text-white"
+                                  : "bg-white border border-gray-200 text-gray-900"
+                              }`}
+                            >
+                              <p className="text-sm">{msg.message}</p>
+                              <p
+                                className={`text-xs mt-1 ${msg.from_admin ? "text-white/70" : "text-gray-400"}`}
+                              >
+                                {new Date(msg.created_at).toLocaleString()}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-gray-400">
+                          <svg
+                            className="w-12 h-12 mx-auto mb-2 text-gray-300"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                            />
+                          </svg>
+                          <p>No messages yet</p>
+                          <p className="text-sm">Send a notice to this user</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Message Input */}
+                    <div className="p-4 border-t border-gray-200 bg-white">
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={newMessage}
+                          onChange={(e) => setNewMessage(e.target.value)}
+                          onKeyPress={(e) => e.key === "Enter" && sendMessage()}
+                          placeholder="Type a notice message..."
+                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
+                        />
+                        <button
+                          onClick={sendMessage}
+                          disabled={!newMessage.trim()}
+                          className="px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex-1 flex items-center justify-center text-gray-400">
+                    <div className="text-center">
+                      <svg
+                        className="w-16 h-16 mx-auto mb-2 text-gray-300"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                        />
+                      </svg>
+                      <p>Select a user to view details</p>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}

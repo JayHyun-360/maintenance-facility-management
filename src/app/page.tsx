@@ -47,7 +47,7 @@ export default function Home() {
       <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h1 className="font-header text-xl font-semibold text-gray-900">
+          <h1 className="text-xl font-semibold text-gray-900">
             Maintenance Facility Management
           </h1>
           <p className="text-gray-600 mt-2">Loading...</p>
@@ -60,7 +60,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center">
       <div className="text-center">
-        <h1 className="font-header text-xl font-semibold text-gray-900">
+        <h1 className="text-xl font-semibold text-gray-900">
           Maintenance Facility Management
         </h1>
         <p className="text-gray-600 mt-2">Redirecting...</p>

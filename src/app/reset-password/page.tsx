@@ -78,7 +78,7 @@ function ResetPasswordContent() {
       <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
         <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
           <div className="text-center">
-            <h1 className="font-header text-2xl font-bold text-gray-900 mb-4">
+            <h1 className="text-2xl font-bold text-gray-900 mb-4">
               Invalid Reset Link
             </h1>
             <p className="text-gray-600 mb-6">
@@ -100,7 +100,7 @@ function ResetPasswordContent() {
   return (
     <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-        <h1 className="font-header text-2xl font-bold text-gray-900 mb-6 text-center">
+        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
           Reset Your Password
         </h1>
 
