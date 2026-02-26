@@ -948,159 +948,47 @@ export default function AdminDashboardClient({
           {/* Analytics Tab */}
           {activeTab === "analytics" && (
             <>
-              {/* Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div className="bg-white rounded-xl shadow-sm p-6">
-                  <p className="text-sm font-medium text-gray-600">
+              {/* Minimal Bento Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                <div className="col-span-2 bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
+                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                     Total Requests
                   </p>
-                  <p className="text-3xl font-bold text-gray-900 mt-2">
+                  <p className="text-4xl font-bold text-gray-900 mt-1">
                     {stats.total}
                   </p>
                 </div>
-                <div className="bg-white rounded-xl shadow-sm p-6">
-                  <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-3xl font-bold text-yellow-600 mt-2">
+                <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
+                  <p className="text-xs font-medium text-yellow-600 uppercase tracking-wide">
+                    Pending
+                  </p>
+                  <p className="text-3xl font-bold text-gray-900 mt-1">
                     {stats.pending}
                   </p>
                 </div>
-                <div className="bg-white rounded-xl shadow-sm p-6">
-                  <p className="text-sm font-medium text-gray-600">
-                    In Progress
+                <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
+                  <p className="text-xs font-medium text-green-600 uppercase tracking-wide">
+                    Completed
                   </p>
-                  <p className="text-3xl font-bold text-blue-600 mt-2">
-                    {stats.inProgress}
-                  </p>
-                </div>
-                <div className="bg-white rounded-xl shadow-sm p-6">
-                  <p className="text-sm font-medium text-gray-600">Completed</p>
-                  <p className="text-3xl font-bold text-green-600 mt-2">
+                  <p className="text-3xl font-bold text-gray-900 mt-1">
                     {stats.completed}
                   </p>
                 </div>
               </div>
 
-              {/* Nature Breakdown */}
-              <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
-                <h3 className="font-header text-lg font-semibold text-gray-900 mb-4">
+              {/* Nature Breakdown - Compact Bento */}
+              <div className="bg-white rounded-lg p-4 mb-6 border border-gray-100 hover:shadow-md transition-all duration-200">
+                <h3 className="font-header text-base font-semibold text-gray-900 mb-3">
                   Requests by Nature
                 </h3>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
                   {[
-                    {
-                      name: "Plumbing",
-                      color: "bg-blue-500",
-                      icon: (
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-                          />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Electrical",
-                      color: "bg-yellow-500",
-                      icon: (
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13 10V3L4 14h7v7l9-11h-7z"
-                          />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Carpentry",
-                      color: "bg-amber-700",
-                      icon: (
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"
-                          />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "HVAC",
-                      color: "bg-cyan-500",
-                      icon: (
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                          />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Cleaning",
-                      color: "bg-purple-500",
-                      icon: (
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
-                          />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Other",
-                      color: "bg-gray-500",
-                      icon: (
-                        <svg
-                          className="w-6 h-6"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
-                          />
-                        </svg>
-                      ),
-                    },
+                    { name: "Plumbing", color: "#3B82F6" },
+                    { name: "Electrical", color: "#EAB308" },
+                    { name: "Carpentry", color: "#92400E" },
+                    { name: "HVAC", color: "#06B6D4" },
+                    { name: "Cleaning", color: "#A855F7" },
+                    { name: "Other", color: "#6B7280" },
                   ].map((nature) => {
                     const count = requests.filter(
                       (r) => r.nature === nature.name,
@@ -1112,68 +1000,171 @@ export default function AdminDashboardClient({
                     return (
                       <div
                         key={nature.name}
-                        className="border border-gray-200 rounded-lg p-4"
+                        className="text-center p-2 rounded hover:bg-gray-50 transition-colors"
                       >
-                        <p className="text-sm font-medium text-gray-700">
+                        <p className="text-xs font-medium text-gray-700">
                           {nature.name}
                         </p>
-                        <p className="text-2xl font-bold text-gray-900 mt-1">
+                        <p className="text-xl font-bold text-gray-900 mt-1">
                           {count}
                         </p>
-                        <div className="mt-2 h-2 bg-gray-100 rounded-full">
+                        <div className="mt-1 h-1 bg-gray-100 rounded-full overflow-hidden">
                           <div
-                            className={`h-full ${nature.color} rounded-full`}
-                            style={{ width: `${percentage}%` }}
+                            className="h-full rounded-full"
+                            style={{
+                              width: `${percentage}%`,
+                              backgroundColor: nature.color,
+                            }}
                           />
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {percentage}%
-                        </p>
                       </div>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Status Distribution */}
-              <div className="bg-white rounded-xl shadow-sm p-6">
-                <h3 className="font-header text-lg font-semibold text-gray-900 mb-4">
-                  Status Distribution
-                </h3>
-                <div className="flex items-center justify-around">
-                  {[
-                    {
-                      status: "Pending",
-                      count: stats.pending,
-                      color: "bg-yellow-500",
-                      text: "text-yellow-600",
-                    },
-                    {
-                      status: "In Progress",
-                      count: stats.inProgress,
-                      color: "bg-blue-500",
-                      text: "text-blue-600",
-                    },
-                    {
-                      status: "Completed",
-                      count: stats.completed,
-                      color: "bg-green-500",
-                      text: "text-green-600",
-                    },
-                  ].map((item) => (
-                    <div key={item.status} className="text-center">
+              {/* Status Distribution - Bento Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all duration-200">
+                  <h4 className="text-sm font-medium text-gray-600 mb-3">
+                    Status Overview
+                  </h4>
+                  <div className="flex items-end justify-around h-32 gap-2">
+                    {[
+                      {
+                        status: "Pending",
+                        count: stats.pending,
+                        color: "#EAB308",
+                      },
+                      {
+                        status: "In Progress",
+                        count: stats.inProgress,
+                        color: "#3B82F6",
+                      },
+                      {
+                        status: "Completed",
+                        count: stats.completed,
+                        color: "#22C55E",
+                      },
+                    ].map((item) => {
+                      const maxCount =
+                        Math.max(
+                          stats.pending,
+                          stats.inProgress,
+                          stats.completed,
+                        ) || 1;
+                      const height = (item.count / maxCount) * 100;
+                      return (
+                        <div
+                          key={item.status}
+                          className="flex flex-col items-center flex-1"
+                        >
+                          <span className="text-xs font-semibold text-gray-700">
+                            {item.count}
+                          </span>
+                          <div
+                            className="w-full max-w-[40px] rounded-t-sm mt-1"
+                            style={{
+                              height: `${height}%`,
+                              minHeight: item.count > 0 ? "6px" : "0",
+                              backgroundColor: item.color,
+                            }}
+                          />
+                          <span className="text-[10px] text-gray-500 mt-1">
+                            {item.status}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all duration-200">
+                  <h4 className="text-sm font-medium text-gray-600 mb-2">
+                    Distribution
+                  </h4>
+                  <div className="flex items-center justify-center">
+                    <svg viewBox="0 0 100 100" className="w-28 h-28">
+                      {(() => {
+                        const total =
+                          stats.pending + stats.inProgress + stats.completed;
+                        if (total === 0)
+                          return (
+                            <circle cx="50" cy="50" r="40" fill="#F3F4F6" />
+                          );
+                        const pendingPct = stats.pending / total;
+                        const inProgressPct = stats.inProgress / total;
+                        const pendingDash = pendingPct * 251.2;
+                        const inProgressDash = inProgressPct * 251.2;
+                        const completedDash = (stats.completed / total) * 251.2;
+                        return (
+                          <>
+                            <circle
+                              cx="50"
+                              cy="50"
+                              r="40"
+                              fill="transparent"
+                              stroke="#F3F4F6"
+                              strokeWidth="16"
+                            />
+                            <circle
+                              cx="50"
+                              cy="50"
+                              r="40"
+                              fill="transparent"
+                              stroke="#EAB308"
+                              strokeWidth="16"
+                              strokeDasharray={`${pendingDash} 251.2`}
+                              strokeDashoffset="0"
+                              transform="rotate(-90 50 50)"
+                            />
+                            <circle
+                              cx="50"
+                              cy="50"
+                              r="40"
+                              fill="transparent"
+                              stroke="#3B82F6"
+                              strokeWidth="16"
+                              strokeDasharray={`${inProgressDash} 251.2`}
+                              strokeDashoffset={`-${pendingDash}`}
+                              transform="rotate(-90 50 50)"
+                            />
+                            <circle
+                              cx="50"
+                              cy="50"
+                              r="40"
+                              fill="transparent"
+                              stroke="#22C55E"
+                              strokeWidth="16"
+                              strokeDasharray={`${completedDash} 251.2`}
+                              strokeDashoffset={`-${pendingDash + inProgressDash}`}
+                              transform="rotate(-90 50 50)"
+                            />
+                          </>
+                        );
+                      })()}
+                    </svg>
+                  </div>
+                  <div className="flex justify-center gap-3 mt-1">
+                    {[
+                      { status: "Pending", color: "#EAB308" },
+                      { status: "In Progress", color: "#3B82F6" },
+                      { status: "Completed", color: "#22C55E" },
+                    ].map((item) => (
                       <div
-                        className={`w-24 h-24 rounded-full ${item.color} flex items-center justify-center mx-auto`}
+                        key={item.status}
+                        className="flex items-center gap-1"
                       >
-                        <span className="text-2xl font-bold text-white">
-                          {item.count}
+                        <div
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: item.color }}
+                        />
+                        <span className="text-[10px] text-gray-500">
+                          {item.status}
                         </span>
                       </div>
-                      <p className={`mt-2 font-medium ${item.text}`}>
-                        {item.status}
-                      </p>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             </>
