@@ -208,16 +208,22 @@ export default function AdminDashboardClient({
       maintenanceRequests,
     );
 
-    // Fetch read status from database
-    const { data: dbNotifications } = await (
-      supabase.from("notifications") as any
-    )
-      .select("id, is_read")
-      .eq("user_id", userId);
+    // Get read status from localStorage
+    const storageKey = `admin_notif_read_${userId}`;
+    const storedReadStatus =
+      typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem(storageKey) || "{}")
+        : {};
 
-    const readStatusMap = new Map(
-      (dbNotifications || []).map((n: any) => [n.id, n.is_read]),
-    );
+    // Get emergency shown status from localStorage
+    const emergencyStorageKey = `admin_emergency_shown_${userId}`;
+    const storedEmergencyShown =
+      typeof window !== "undefined"
+        ? new Set(JSON.parse(localStorage.getItem(emergencyStorageKey) || "[]"))
+        : new Set<string>();
+
+    // Update ref with stored emergency shown status
+    emergencyShownRef.current = storedEmergencyShown;
 
     // Create admin notifications from maintenance requests data
     const newNotifications =
@@ -243,13 +249,13 @@ export default function AdminDashboardClient({
         const existingNotif = prevNotifications.find(
           (n) => n.id === newNotif.id,
         );
-        // Check database first, then local state
-        const dbReadStatus = readStatusMap.get(newNotif.dbId);
+        // Check localStorage first, then local state
+        const storedRead = storedReadStatus[newNotif.id];
         return {
           ...newNotif,
           is_read:
-            dbReadStatus !== undefined
-              ? dbReadStatus
+            storedRead !== undefined
+              ? storedRead
               : existingNotif
                 ? existingNotif.is_read
                 : false,
@@ -278,6 +284,11 @@ export default function AdminDashboardClient({
 
       if (newEmergency && !emergencyPopup) {
         emergencyShownRef.current.add(newEmergency.id);
+        // Save to localStorage
+        localStorage.setItem(
+          emergencyStorageKey,
+          JSON.stringify([...emergencyShownRef.current]),
+        );
         // Use setTimeout to avoid calling setState during render
         setTimeout(() => {
           setEmergencyPopup(newEmergency);
@@ -297,11 +308,13 @@ export default function AdminDashboardClient({
     );
     setUnreadCount((prev) => Math.max(0, prev - 1));
 
-    // Persist to database
-    const dbNotificationId = notificationId.replace("admin-", "");
-    await (supabase.from("notifications") as any)
-      .update({ is_read: true })
-      .eq("id", dbNotificationId);
+    // Persist to localStorage
+    const storageKey = `admin_notif_read_${userId}`;
+    const storedReadStatus = JSON.parse(
+      localStorage.getItem(storageKey) || "{}",
+    );
+    storedReadStatus[notificationId] = true;
+    localStorage.setItem(storageKey, JSON.stringify(storedReadStatus));
   };
 
   const markAllNotificationsRead = async () => {
@@ -316,15 +329,22 @@ export default function AdminDashboardClient({
     });
     setUnreadCount(0);
 
-    // Persist all to database
-    const notificationIds = notifications.map((n) =>
-      n.id.replace("admin-", ""),
+    // Persist all to localStorage
+    const storageKey = `admin_notif_read_${userId}`;
+    const storedReadStatus = JSON.parse(
+      localStorage.getItem(storageKey) || "{}",
     );
-    if (notificationIds.length > 0) {
-      await (supabase.from("notifications") as any)
-        .update({ is_read: true })
-        .in("id", notificationIds);
-    }
+    notifications.forEach((n) => {
+      storedReadStatus[n.id] = true;
+    });
+    localStorage.setItem(storageKey, JSON.stringify(storedReadStatus));
+
+    // Save emergency shown status
+    const emergencyStorageKey = `admin_emergency_shown_${userId}`;
+    localStorage.setItem(
+      emergencyStorageKey,
+      JSON.stringify([...emergencyShownRef.current]),
+    );
   };
 
   const deleteNotification = async (notificationId: string) => {
