@@ -223,22 +223,25 @@ export default function AdminDashboardClient({
         urgency: request.urgency,
       })) || [];
 
-    // Preserve read status from existing notifications
-    const updatedNotifications = newNotifications.map((newNotif: any) => {
-      const existingNotif = notifications.find((n) => n.id === newNotif.id);
-      return {
-        ...newNotif,
-        is_read: existingNotif ? existingNotif.is_read : false,
-      };
-    });
+    // Use functional update to get latest notifications and preserve read status
+    setNotifications((prevNotifications) => {
+      const updatedNotifications = newNotifications.map((newNotif: any) => {
+        const existingNotif = prevNotifications.find(
+          (n) => n.id === newNotif.id,
+        );
+        return {
+          ...newNotif,
+          is_read: existingNotif ? existingNotif.is_read : false,
+        };
+      });
 
-    console.log("Generated admin notifications:", updatedNotifications);
+      console.log("Generated admin notifications:", updatedNotifications);
 
-    if (updatedNotifications) {
-      setNotifications(updatedNotifications);
-      setUnreadCount(
-        updatedNotifications.filter((n: any) => !n.is_read).length,
-      );
+      // Update unread count
+      const unreadCount = updatedNotifications.filter(
+        (n: any) => !n.is_read,
+      ).length;
+      setUnreadCount(unreadCount);
 
       // Check for emergency requests and show popup (only once per emergency ID)
       const unreadEmergencies = updatedNotifications.filter(
@@ -254,9 +257,14 @@ export default function AdminDashboardClient({
 
       if (newEmergency && !emergencyPopup) {
         emergencyShownRef.current.add(newEmergency.id);
-        setEmergencyPopup(newEmergency);
+        // Use setTimeout to avoid calling setState during render
+        setTimeout(() => {
+          setEmergencyPopup(newEmergency);
+        }, 0);
       }
-    }
+
+      return updatedNotifications;
+    });
   };
 
   const markNotificationRead = async (notificationId: string) => {
