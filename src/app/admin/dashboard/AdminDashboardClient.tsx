@@ -110,6 +110,7 @@ export default function AdminDashboardClient({
     string | null
   >(null);
   const [emergencyPopup, setEmergencyPopup] = useState<any>(null);
+  const [emergencyShown, setEmergencyShown] = useState(false);
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showReportSidebar, setShowReportSidebar] = useState(false);
   const [selectedRequestForReport, setSelectedRequestForReport] =
@@ -246,10 +247,9 @@ export default function AdminDashboardClient({
           (n.title.includes("EMERGENCY") || n.message.includes("EMERGENCY")),
       );
 
-      if (unreadEmergencies.length > 0 && !emergencyPopup) {
+      if (unreadEmergencies.length > 0 && !emergencyPopup && !emergencyShown) {
         setEmergencyPopup(unreadEmergencies[0]);
-        // Auto-hide popup after 5 seconds
-        setTimeout(() => setEmergencyPopup(null), 5000);
+        setEmergencyShown(true);
       }
     }
   };
@@ -2194,26 +2194,18 @@ export default function AdminDashboardClient({
           </div>
           <div className="p-4">
             <div className="flex justify-between items-center mb-4">
-              <div>
-                {unreadCount > 0 && (
-                  <button
-                    onClick={markAllNotificationsRead}
-                    className="text-sm text-green-600 hover:text-green-700"
-                  >
-                    Mark all as read
-                  </button>
-                )}
-              </div>
-              <div>
-                {notifications.some((n: any) => n.is_read) && (
-                  <button
-                    onClick={deleteAllReadNotifications}
-                    className="text-sm text-red-500 hover:text-red-600"
-                  >
-                    Delete all read
-                  </button>
-                )}
-              </div>
+              <button
+                onClick={markAllNotificationsRead}
+                className="text-sm text-green-600 hover:text-green-700"
+              >
+                Mark all as read
+              </button>
+              <button
+                onClick={deleteAllReadNotifications}
+                className="text-sm text-red-500 hover:text-red-600"
+              >
+                Delete all read
+              </button>
             </div>
             {notifications.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
@@ -3253,12 +3245,12 @@ export default function AdminDashboardClient({
 
       {/* Emergency Popup */}
       {emergencyPopup && (
-        <div className="fixed top-4 right-4 z-50 animate-pulse">
-          <div className="bg-red-600 text-white px-6 py-4 rounded-lg shadow-2xl border-2 border-red-700 max-w-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex-shrink-0">
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="bg-red-600 text-white px-6 py-4 rounded-lg shadow-2xl border-2 border-red-700 max-w-lg">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="flex-shrink-0 animate-pulse">
                 <svg
-                  className="w-6 h-6"
+                  className="w-8 h-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -3275,23 +3267,13 @@ export default function AdminDashboardClient({
                 <h3 className="font-bold text-lg">EMERGENCY REQUEST</h3>
                 <p className="text-sm mt-1">{emergencyPopup.message}</p>
               </div>
+            </div>
+            <div className="flex justify-center">
               <button
                 onClick={() => setEmergencyPopup(null)}
-                className="flex-shrink-0 ml-2 text-white/80 hover:text-white"
+                className="px-6 py-2 bg-white text-red-600 font-semibold rounded hover:bg-gray-100"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
+                Dismiss
               </button>
             </div>
           </div>
