@@ -106,6 +106,9 @@ export default function AdminDashboardClient({
     useState<RequestWithProfile | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [openNotificationMenu, setOpenNotificationMenu] = useState<
+    string | null
+  >(null);
   const [emergencyPopup, setEmergencyPopup] = useState<any>(null);
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showReportSidebar, setShowReportSidebar] = useState(false);
@@ -257,6 +260,18 @@ export default function AdminDashboardClient({
       prev.map((notif) => ({ ...notif, is_read: true })),
     );
     setUnreadCount(0);
+  };
+
+  const deleteNotification = async (notificationId: string) => {
+    setNotifications((prev) =>
+      prev.filter((notif) => notif.id !== notificationId),
+    );
+    setUnreadCount((prev) => Math.max(0, prev - 1));
+    setOpenNotificationMenu(null);
+  };
+
+  const deleteAllReadNotifications = async () => {
+    setNotifications((prev) => prev.filter((notif) => !notif.is_read));
   };
 
   // Fetch notifications on mount and poll
@@ -2168,14 +2183,24 @@ export default function AdminDashboardClient({
             </div>
           </div>
           <div className="p-4">
-            {unreadCount > 0 && (
-              <button
-                onClick={markAllNotificationsRead}
-                className="w-full mb-4 text-sm text-green-600 hover:text-green-700 text-center"
-              >
-                Mark all as read
-              </button>
-            )}
+            <div className="flex justify-between items-center mb-4">
+              {unreadCount > 0 && (
+                <button
+                  onClick={markAllNotificationsRead}
+                  className="text-sm text-green-600 hover:text-green-700"
+                >
+                  Mark all as read
+                </button>
+              )}
+              {notifications.some((n: any) => n.is_read) && (
+                <button
+                  onClick={deleteAllReadNotifications}
+                  className="text-sm text-red-500 hover:text-red-600"
+                >
+                  Delete all read
+                </button>
+              )}
+            </div>
             {notifications.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
                 No notifications yet
@@ -2189,8 +2214,7 @@ export default function AdminDashboardClient({
                   return (
                     <div
                       key={notification.id}
-                      onClick={() => markNotificationRead(notification.id)}
-                      className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                      className={`p-4 rounded-lg border transition-all ${
                         !notification.is_read
                           ? isEmergency
                             ? "bg-red-50 border-red-200"
@@ -2208,7 +2232,10 @@ export default function AdminDashboardClient({
                               : "bg-gray-300"
                           }`}
                         />
-                        <div className="flex-1 min-w-0">
+                        <div
+                          className="flex-1 min-w-0 cursor-pointer"
+                          onClick={() => markNotificationRead(notification.id)}
+                        >
                           <p className="font-medium text-sm text-gray-900">
                             {notification.title}
                             {isEmergency && (
@@ -2223,6 +2250,42 @@ export default function AdminDashboardClient({
                           <p className="text-xs text-gray-400 mt-2">
                             {new Date(notification.created_at).toLocaleString()}
                           </p>
+                        </div>
+                        <div className="relative">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setOpenNotificationMenu(
+                                openNotificationMenu === notification.id
+                                  ? null
+                                  : notification.id,
+                              );
+                            }}
+                            className="p-1 hover:bg-gray-200 rounded"
+                          >
+                            <svg
+                              className="w-5 h-5 text-gray-500"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle cx="12" cy="6" r="2" />
+                              <circle cx="12" cy="12" r="2" />
+                              <circle cx="12" cy="18" r="2" />
+                            </svg>
+                          </button>
+                          {openNotificationMenu === notification.id && (
+                            <div className="absolute right-0 mt-1 w-32 bg-white border rounded-lg shadow-lg z-10">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteNotification(notification.id);
+                                }}
+                                className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 rounded-lg"
+                              >
+                                Delete
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
