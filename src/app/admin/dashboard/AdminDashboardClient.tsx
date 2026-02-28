@@ -20,6 +20,9 @@ import {
   ResponsiveContainer,
   Area,
   AreaChart,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 import { format, subDays, eachDayOfInterval, startOfDay } from "date-fns";
 
@@ -497,6 +500,18 @@ export default function AdminDashboardClient({
         total: dayRequests.length,
       };
     });
+  };
+
+  // Generate distribution data for pie chart
+  const generateDistributionData = () => {
+    const total = stats.pending + stats.inProgress + stats.completed;
+    if (total === 0) return [];
+
+    return [
+      { name: "Pending", value: stats.pending, color: "#EAB308" },
+      { name: "In Progress", value: stats.inProgress, color: "#3B82F6" },
+      { name: "Completed", value: stats.completed, color: "#22C55E" },
+    ];
   };
 
   const handleSignOut = async () => {
@@ -1335,89 +1350,79 @@ export default function AdminDashboardClient({
                   </ResponsiveContainer>
                 </div>
 
-                <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all duration-200">
-                  <h4 className="text-sm font-medium text-gray-600 mb-2">
-                    Distribution
-                  </h4>
-                  <div className="flex items-center justify-center">
-                    <svg viewBox="0 0 100 100" className="w-28 h-28">
-                      {(() => {
-                        const total =
-                          stats.pending + stats.inProgress + stats.completed;
-                        if (total === 0)
-                          return (
-                            <circle cx="50" cy="50" r="40" fill="#F3F4F6" />
-                          );
-                        const pendingPct = stats.pending / total;
-                        const inProgressPct = stats.inProgress / total;
-                        const pendingDash = pendingPct * 251.2;
-                        const inProgressDash = inProgressPct * 251.2;
-                        const completedDash = (stats.completed / total) * 251.2;
-                        return (
-                          <>
-                            <circle
-                              cx="50"
-                              cy="50"
-                              r="40"
-                              fill="transparent"
-                              stroke="#F3F4F6"
-                              strokeWidth="16"
-                            />
-                            <circle
-                              cx="50"
-                              cy="50"
-                              r="40"
-                              fill="transparent"
-                              stroke="#EAB308"
-                              strokeWidth="16"
-                              strokeDasharray={`${pendingDash} 251.2`}
-                              strokeDashoffset="0"
-                              transform="rotate(-90 50 50)"
-                            />
-                            <circle
-                              cx="50"
-                              cy="50"
-                              r="40"
-                              fill="transparent"
-                              stroke="#3B82F6"
-                              strokeWidth="16"
-                              strokeDasharray={`${inProgressDash} 251.2`}
-                              strokeDashoffset={`-${pendingDash}`}
-                              transform="rotate(-90 50 50)"
-                            />
-                            <circle
-                              cx="50"
-                              cy="50"
-                              r="40"
-                              fill="transparent"
-                              stroke="#22C55E"
-                              strokeWidth="16"
-                              strokeDasharray={`${completedDash} 251.2`}
-                              strokeDashoffset={`-${pendingDash + inProgressDash}`}
-                              transform="rotate(-90 50 50)"
-                            />
-                          </>
-                        );
-                      })()}
-                    </svg>
+                <div className="bg-white rounded-lg p-6 border border-gray-100 hover:shadow-md transition-all duration-200">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-sm font-medium text-gray-600">
+                      Status Distribution
+                    </h4>
+                    <div className="text-xs text-gray-500">
+                      Total:{" "}
+                      {stats.pending + stats.inProgress + stats.completed}
+                    </div>
                   </div>
-                  <div className="flex justify-center gap-3 mt-1">
-                    {[
-                      { status: "Pending", color: "#EAB308" },
-                      { status: "In Progress", color: "#3B82F6" },
-                      { status: "Completed", color: "#22C55E" },
-                    ].map((item) => (
+                  <ResponsiveContainer width="100%" height={220}>
+                    <PieChart>
+                      <Pie
+                        data={generateDistributionData()}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={2}
+                        dataKey="value"
+                        animationBegin={0}
+                        animationDuration={800}
+                      >
+                        {generateDistributionData().map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={entry.color}
+                            className="hover:opacity-80 transition-opacity cursor-pointer"
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "rgba(255, 255, 255, 0.95)",
+                          border: "1px solid #e5e7eb",
+                          borderRadius: "8px",
+                          fontSize: "12px",
+                        }}
+                        formatter={(value: number, name: string) => [
+                          `${value} (${Math.round((value / (stats.pending + stats.inProgress + stats.completed)) * 100)}%)`,
+                          name,
+                        ]}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+
+                  {/* Custom Legend */}
+                  <div className="flex justify-center gap-6 mt-4">
+                    {generateDistributionData().map((item) => (
                       <div
-                        key={item.status}
-                        className="flex items-center gap-1"
+                        key={item.name}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer group"
                       >
                         <div
-                          className="w-2 h-2 rounded-full"
+                          className="w-3 h-3 rounded-full group-hover:scale-110 transition-transform"
                           style={{ backgroundColor: item.color }}
                         />
-                        <span className="text-[10px] text-gray-500">
-                          {item.status}
-                        </span>
+                        <div className="text-xs">
+                          <div className="font-medium text-gray-700">
+                            {item.name}
+                          </div>
+                          <div className="text-gray-500">
+                            {item.value} (
+                            {Math.round(
+                              (item.value /
+                                (stats.pending +
+                                  stats.inProgress +
+                                  stats.completed)) *
+                                100,
+                            )}
+                            %)
+                          </div>
+                        </div>
                       </div>
                     ))}
                   </div>
