@@ -110,7 +110,7 @@ export default function AdminDashboardClient({
     string | null
   >(null);
   const [emergencyPopup, setEmergencyPopup] = useState<any>(null);
-  const [emergencyShown, setEmergencyShown] = useState(false);
+  const emergencyShownRef = useRef<Set<string>>(new Set());
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showReportSidebar, setShowReportSidebar] = useState(false);
   const [selectedRequestForReport, setSelectedRequestForReport] =
@@ -240,16 +240,21 @@ export default function AdminDashboardClient({
         updatedNotifications.filter((n: any) => !n.is_read).length,
       );
 
-      // Check for emergency requests and show popup (only for NEW emergencies)
+      // Check for emergency requests and show popup (only once per emergency ID)
       const unreadEmergencies = updatedNotifications.filter(
         (n: any) =>
           !n.is_read &&
           (n.title.includes("EMERGENCY") || n.message.includes("EMERGENCY")),
       );
 
-      if (unreadEmergencies.length > 0 && !emergencyPopup && !emergencyShown) {
-        setEmergencyPopup(unreadEmergencies[0]);
-        setEmergencyShown(true);
+      // Show first emergency that hasn't been shown yet
+      const newEmergency = unreadEmergencies.find(
+        (n: any) => !emergencyShownRef.current.has(n.id),
+      );
+
+      if (newEmergency && !emergencyPopup) {
+        emergencyShownRef.current.add(newEmergency.id);
+        setEmergencyPopup(newEmergency);
       }
     }
   };
@@ -3245,12 +3250,16 @@ export default function AdminDashboardClient({
 
       {/* Emergency Popup */}
       {emergencyPopup && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
-          <div className="bg-red-600 text-white px-6 py-4 rounded-lg shadow-2xl border-2 border-red-700 max-w-lg">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="flex-shrink-0 animate-pulse">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-8">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setEmergencyPopup(null)}
+          />
+          <div className="relative bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-6 rounded-xl shadow-2xl border-4 border-red-500 max-w-2xl w-full mx-4">
+            <div className="flex items-center justify-center gap-4 mb-4">
+              <div className="animate-pulse">
                 <svg
-                  className="w-8 h-8"
+                  className="w-12 h-12"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -3263,15 +3272,30 @@ export default function AdminDashboardClient({
                   />
                 </svg>
               </div>
-              <div className="flex-1">
-                <h3 className="font-bold text-lg">EMERGENCY REQUEST</h3>
-                <p className="text-sm mt-1">{emergencyPopup.message}</p>
+              <h3 className="font-bold text-2xl">🚨 EMERGENCY REQUEST</h3>
+              <div className="animate-pulse">
+                <svg
+                  className="w-12 h-12"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  />
+                </svg>
               </div>
+            </div>
+            <div className="bg-white/10 rounded-lg p-4 mb-4">
+              <p className="text-center text-lg">{emergencyPopup.message}</p>
             </div>
             <div className="flex justify-center">
               <button
                 onClick={() => setEmergencyPopup(null)}
-                className="px-6 py-2 bg-white text-red-600 font-semibold rounded hover:bg-gray-100"
+                className="px-8 py-3 bg-white text-red-600 font-bold text-lg rounded-full hover:bg-gray-100 transition-colors shadow-lg"
               >
                 Dismiss
               </button>
