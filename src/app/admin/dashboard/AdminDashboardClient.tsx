@@ -2580,14 +2580,13 @@ export default function AdminDashboardClient({
       </>
 
       {/* Report Sidebar */}
-      <>
-        <div
-          className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${showReportSidebar ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-          onClick={() => setShowReportSidebar(false)}
-        />
-        <div
-          className={`fixed top-0 right-0 h-full w-[500px] bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showReportSidebar ? "translate-x-0" : "translate-x-full"}`}
-        >
+      <div
+        className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${showReportSidebar ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+        onClick={() => setShowReportSidebar(false)}
+      />
+      <div
+        className={`fixed top-0 right-0 h-full w-[500px] bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showReportSidebar ? "translate-x-0" : "translate-x-full"}`}
+      >
           <div className="h-full overflow-y-auto">
             <div className="bg-[#427A43] shadow-lg border-b p-6 sticky top-0 z-10">
               <div className="flex items-center justify-between">
@@ -2754,7 +2753,6 @@ export default function AdminDashboardClient({
             )}
           </div>
         </div>
-      </>
 
       {/* AI Chat Sidebar */}
       <div
@@ -2915,8 +2913,8 @@ export default function AdminDashboardClient({
               <div className="w-32 h-32 mx-auto mb-6 relative">
                 {/* Holographic rings */}
                 <div className="absolute inset-0 bg-gradient-to-br from-[#427A43]/30 via-emerald-500/20 to-teal-500/30 rounded-full blur-xl animate-pulse"></div>
-                <div className="absolute inset-2 bg-gradient-to-br from-[#427A43]/40 to-emerald-600/40 rounded-full blur-lg animate-pulse" style={{animationDelay: '0.5s'}}></div>
-                <div className="absolute inset-4 bg-gradient-to-br from-[#427A43]/50 to-emerald-600/50 rounded-full blur-md animate-pulse" style={{animationDelay: '1s'}}></div>
+                <div className="absolute inset-2 bg-gradient-to-br from-[#427A43]/40 to-emerald-600/40 rounded-full blur-lg animate-pulse" style={{animationDelay: "0.5s"}}></div>
+                <div className="absolute inset-4 bg-gradient-to-br from-[#427A43]/50 to-emerald-600/50 rounded-full blur-md animate-pulse" style={{animationDelay: "1s"}}></div>
                 
                 {/* Core AI icon */}
                 <div className="absolute inset-6 bg-gradient-to-br from-slate-900/80 to-slate-800/80 rounded-full flex items-center justify-center backdrop-blur-md border border-white/20">
