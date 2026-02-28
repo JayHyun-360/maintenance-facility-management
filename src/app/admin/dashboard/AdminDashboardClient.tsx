@@ -180,13 +180,30 @@ export default function AdminDashboardClient({
   }, []);
 
   const fetchNotifications = async () => {
+    console.log("Fetching notifications for admin:", userId);
+
+    // First, let's see what notifications exist for this user
+    const { data: allNotifications } = await (
+      supabase.from("notifications") as any
+    )
+      .select("*")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(20);
+
+    console.log("All notifications for user:", allNotifications);
+
     // Fetch admin notifications only (when users submit new requests)
     const { data } = await (supabase.from("notifications") as any)
       .select("*")
       .eq("user_id", userId)
-      .like("title", "New Maintenance Request%") // Only admin notifications
+      .or(
+        "title.like.*New Maintenance Request*,title.like.*EMERGENCY Maintenance Request*",
+      ) // Both normal and emergency
       .order("created_at", { ascending: false })
       .limit(20);
+
+    console.log("Filtered admin notifications:", data);
 
     if (data) {
       setNotifications(data);
@@ -194,7 +211,9 @@ export default function AdminDashboardClient({
 
       // Check for emergency requests and show popup
       const emergencyNotifications = data.filter(
-        (n: any) => !n.is_read && n.message.toLowerCase().includes("emergency"),
+        (n: any) =>
+          !n.is_read &&
+          (n.title.includes("EMERGENCY") || n.message.includes("EMERGENCY")),
       );
 
       if (emergencyNotifications.length > 0 && !emergencyPopup) {
