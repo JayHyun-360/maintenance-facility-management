@@ -106,6 +106,7 @@ export default function AdminDashboardClient({
     useState<RequestWithProfile | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [emergencyPopup, setEmergencyPopup] = useState<any>(null);
   const [showFilterPanel, setShowFilterPanel] = useState(false);
   const [showReportSidebar, setShowReportSidebar] = useState(false);
   const [selectedRequestForReport, setSelectedRequestForReport] =
@@ -179,15 +180,28 @@ export default function AdminDashboardClient({
   }, []);
 
   const fetchNotifications = async () => {
+    // Fetch admin notifications only (when users submit new requests)
     const { data } = await (supabase.from("notifications") as any)
       .select("*")
       .eq("user_id", userId)
+      .like("title", "New Maintenance Request%") // Only admin notifications
       .order("created_at", { ascending: false })
       .limit(20);
 
     if (data) {
       setNotifications(data);
       setUnreadCount(data.filter((n: any) => !n.is_read).length);
+
+      // Check for emergency requests and show popup
+      const emergencyNotifications = data.filter(
+        (n: any) => !n.is_read && n.message.toLowerCase().includes("emergency"),
+      );
+
+      if (emergencyNotifications.length > 0 && !emergencyPopup) {
+        setEmergencyPopup(emergencyNotifications[0]);
+        // Auto-hide popup after 5 seconds
+        setTimeout(() => setEmergencyPopup(null), 5000);
+      }
     }
   };
 
@@ -2130,36 +2144,52 @@ export default function AdminDashboardClient({
               </div>
             ) : (
               <div className="space-y-3">
-                {notifications.map((notification: any) => (
-                  <div
-                    key={notification.id}
-                    onClick={() => markNotificationRead(notification.id)}
-                    className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                      !notification.is_read
-                        ? "bg-blue-50 border-blue-200"
-                        : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div
-                        className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
-                          !notification.is_read ? "bg-blue-500" : "bg-gray-300"
-                        }`}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm text-gray-900">
-                          {notification.title}
-                        </p>
-                        <p className="text-sm text-gray-600 mt-1">
-                          {notification.message}
-                        </p>
-                        <p className="text-xs text-gray-400 mt-2">
-                          {new Date(notification.created_at).toLocaleString()}
-                        </p>
+                {notifications.map((notification: any) => {
+                  const isEmergency = notification.message
+                    .toLowerCase()
+                    .includes("emergency");
+                  return (
+                    <div
+                      key={notification.id}
+                      onClick={() => markNotificationRead(notification.id)}
+                      className={`p-4 rounded-lg border cursor-pointer transition-all ${
+                        !notification.is_read
+                          ? isEmergency
+                            ? "bg-red-50 border-red-200"
+                            : "bg-blue-50 border-blue-200"
+                          : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div
+                          className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
+                            !notification.is_read
+                              ? isEmergency
+                                ? "bg-red-500"
+                                : "bg-blue-500"
+                              : "bg-gray-300"
+                          }`}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm text-gray-900">
+                            {notification.title}
+                            {isEmergency && (
+                              <span className="ml-2 px-2 py-0.5 text-xs bg-red-100 text-red-700 rounded-full font-semibold">
+                                EMERGENCY
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {notification.message}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-2">
+                            {new Date(notification.created_at).toLocaleString()}
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
@@ -3101,6 +3131,53 @@ export default function AdminDashboardClient({
                   {blockedUsers.includes(selectedUser.id) ? "Unblock" : "Block"}
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Emergency Popup */}
+      {emergencyPopup && (
+        <div className="fixed top-4 right-4 z-50 animate-pulse">
+          <div className="bg-red-600 text-white px-6 py-4 rounded-lg shadow-2xl border-2 border-red-700 max-w-sm">
+            <div className="flex items-center gap-3">
+              <div className="flex-shrink-0">
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h3 className="font-bold text-lg">EMERGENCY REQUEST</h3>
+                <p className="text-sm mt-1">{emergencyPopup.message}</p>
+              </div>
+              <button
+                onClick={() => setEmergencyPopup(null)}
+                className="flex-shrink-0 ml-2 text-white/80 hover:text-white"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
           </div>
         </div>

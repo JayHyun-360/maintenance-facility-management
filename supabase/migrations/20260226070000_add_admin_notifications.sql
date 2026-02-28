@@ -32,8 +32,14 @@ BEGIN
         INSERT INTO public.notifications (user_id, title, message, link_url)
         VALUES (
           v_admin_ids[i],
-          'New Maintenance Request',
-          'New request from ' || COALESCE(v_requester_name, 'Unknown') || ': ' || LEFT(NEW.nature::TEXT, 50) || '...',
+          CASE 
+            WHEN NEW.urgency = 'Emergency' THEN '🚨 EMERGENCY Maintenance Request'
+            ELSE 'New Maintenance Request'
+          END,
+          CASE 
+            WHEN NEW.urgency = 'Emergency' THEN '🚨 EMERGENCY: ' || COALESCE(v_requester_name, 'Unknown') || ' submitted an emergency request: ' || LEFT(NEW.nature::TEXT, 50) || '...'
+            ELSE 'New request from ' || COALESCE(v_requester_name, 'Unknown') || ': ' || LEFT(NEW.nature::TEXT, 50) || '...'
+          END,
           '/admin/dashboard'
         );
       END LOOP;
