@@ -93,10 +93,11 @@ export default function UserDashboardClient({
   };
 
   const fetchNotifications = async () => {
-    const { data } = await supabase
-      .from("notifications")
+    // Fetch only user notifications from database
+    const { data } = await (supabase.from("notifications") as any)
       .select("*")
       .eq("user_id", userId)
+      .eq("target_role", "user")
       .order("created_at", { ascending: false })
       .limit(20);
 
@@ -117,21 +118,24 @@ export default function UserDashboardClient({
     await (supabase.from("notifications") as any)
       .update({ is_read: true })
       .eq("user_id", userId)
+      .eq("target_role", "user")
       .eq("is_read", false);
     fetchNotifications();
   };
 
   const deleteNotification = async (notificationId: string) => {
-    await supabase.from("notifications").delete().eq("id", notificationId);
+    await (supabase.from("notifications") as any)
+      .delete()
+      .eq("id", notificationId);
     setOpenNotificationMenu(null);
     fetchNotifications();
   };
 
   const deleteAllReadNotifications = async () => {
-    await supabase
-      .from("notifications")
+    await (supabase.from("notifications") as any)
       .delete()
       .eq("user_id", userId)
+      .eq("target_role", "user")
       .eq("is_read", true);
     fetchNotifications();
   };
@@ -213,6 +217,7 @@ export default function UserDashboardClient({
               ? `🚨 EMERGENCY: A new emergency request has been submitted: ${formData.nature}`
               : `New maintenance request: ${formData.nature} at ${formData.location}`,
           link_url: "/admin/dashboard",
+          target_role: "admin",
         }));
 
         await (supabase.from("notifications") as any).insert(notifications);

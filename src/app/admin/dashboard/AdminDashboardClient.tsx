@@ -188,12 +188,13 @@ export default function AdminDashboardClient({
   const fetchNotifications = async () => {
     console.log("Fetching notifications for admin:", userId);
 
-    // Fetch real notifications from database
+    // Fetch real notifications from database - only admin notifications
     const { data: dbNotifications } = await (
       supabase.from("notifications") as any
     )
       .select("*")
       .eq("user_id", userId)
+      .eq("target_role", "admin")
       .order("created_at", { ascending: false })
       .limit(20);
 
