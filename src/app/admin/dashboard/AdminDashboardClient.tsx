@@ -629,7 +629,7 @@ export default function AdminDashboardClient({
                       <div className="flex gap-1">
                         {request.photos.slice(0, 2).map((photo, idx) => (
                           <img
-                            key={idx}
+                            key={`${request.id}-photo-${idx}`}
                             src={photo}
                             alt=""
                             loading="lazy"
