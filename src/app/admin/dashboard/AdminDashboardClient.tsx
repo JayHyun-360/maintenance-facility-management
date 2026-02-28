@@ -188,32 +188,16 @@ export default function AdminDashboardClient({
   const fetchNotifications = async () => {
     console.log("Fetching notifications for admin:", userId);
 
-    // Get all maintenance requests to create admin notifications
-    const { data: maintenanceRequests } = await (
-      supabase.from("maintenance_requests") as any
+    // Fetch real notifications from database
+    const { data: dbNotifications } = await (
+      supabase.from("notifications") as any
     )
-      .select(
-        `
-        *,
-        profiles (
-          full_name
-        )
-      `,
-      )
+      .select("*")
+      .eq("user_id", userId)
       .order("created_at", { ascending: false })
       .limit(20);
 
-    console.log(
-      "Maintenance requests for admin notifications:",
-      maintenanceRequests,
-    );
-
-    // Get read status from localStorage
-    const storageKey = `admin_notif_read_${userId}`;
-    const storedReadStatus =
-      typeof window !== "undefined"
-        ? JSON.parse(localStorage.getItem(storageKey) || "{}")
-        : {};
+    console.log("Database notifications:", dbNotifications);
 
     // Get emergency shown status from localStorage
     const emergencyStorageKey = `admin_emergency_shown_${userId}`;
@@ -225,78 +209,40 @@ export default function AdminDashboardClient({
     // Update ref with stored emergency shown status
     emergencyShownRef.current = storedEmergencyShown;
 
-    // Create admin notifications from maintenance requests data
-    const newNotifications =
-      maintenanceRequests?.map((request: any) => ({
-        id: `admin-${request.id}`,
-        dbId: request.id,
-        title:
-          request.urgency === "Emergency"
-            ? "🚨 EMERGENCY Maintenance Request"
-            : "New Maintenance Request",
-        message:
-          request.urgency === "Emergency"
-            ? `🚨 EMERGENCY: ${request.profiles?.full_name || "Unknown"} submitted an emergency request: ${request.nature}`
-            : `New request from ${request.profiles?.full_name || "Unknown"}: ${request.nature}`,
-        created_at: request.created_at,
-        request_id: request.id,
-        urgency: request.urgency,
-      })) || [];
+    // Use database notifications directly
+    const notificationsData = dbNotifications || [];
 
-    // Use functional update to get latest notifications and preserve read status
-    setNotifications((prevNotifications) => {
-      const updatedNotifications = newNotifications.map((newNotif: any) => {
-        const existingNotif = prevNotifications.find(
-          (n) => n.id === newNotif.id,
-        );
-        // Check localStorage first, then local state
-        const storedRead = storedReadStatus[newNotif.id];
-        return {
-          ...newNotif,
-          is_read:
-            storedRead !== undefined
-              ? storedRead
-              : existingNotif
-                ? existingNotif.is_read
-                : false,
-        };
-      });
+    // Update state with database notifications
+    setNotifications(notificationsData);
 
-      console.log("Generated admin notifications:", updatedNotifications);
+    // Update unread count
+    const unreadCount = notificationsData.filter((n: any) => !n.is_read).length;
+    setUnreadCount(unreadCount);
 
-      // Update unread count
-      const unreadCount = updatedNotifications.filter(
-        (n: any) => !n.is_read,
-      ).length;
-      setUnreadCount(unreadCount);
+    // Check for emergency requests and show popup (only once per emergency ID)
+    const unreadEmergencies = notificationsData.filter(
+      (n: any) =>
+        !n.is_read &&
+        (n.title.includes("EMERGENCY") || n.message.includes("EMERGENCY")),
+    );
 
-      // Check for emergency requests and show popup (only once per emergency ID)
-      const unreadEmergencies = updatedNotifications.filter(
-        (n: any) =>
-          !n.is_read &&
-          (n.title.includes("EMERGENCY") || n.message.includes("EMERGENCY")),
+    // Show first emergency that hasn't been shown yet
+    const newEmergency = unreadEmergencies.find(
+      (n: any) => !emergencyShownRef.current.has(n.id),
+    );
+
+    if (newEmergency && !emergencyPopup) {
+      emergencyShownRef.current.add(newEmergency.id);
+      // Save to localStorage
+      localStorage.setItem(
+        emergencyStorageKey,
+        JSON.stringify([...emergencyShownRef.current]),
       );
-
-      // Show first emergency that hasn't been shown yet
-      const newEmergency = unreadEmergencies.find(
-        (n: any) => !emergencyShownRef.current.has(n.id),
-      );
-
-      if (newEmergency && !emergencyPopup) {
-        emergencyShownRef.current.add(newEmergency.id);
-        // Save to localStorage
-        localStorage.setItem(
-          emergencyStorageKey,
-          JSON.stringify([...emergencyShownRef.current]),
-        );
-        // Use setTimeout to avoid calling setState during render
-        setTimeout(() => {
-          setEmergencyPopup(newEmergency);
-        }, 0);
-      }
-
-      return updatedNotifications;
-    });
+      // Use setTimeout to avoid calling setState during render
+      setTimeout(() => {
+        setEmergencyPopup(newEmergency);
+      }, 0);
+    }
   };
 
   const markNotificationRead = async (notificationId: string) => {
@@ -308,13 +254,10 @@ export default function AdminDashboardClient({
     );
     setUnreadCount((prev) => Math.max(0, prev - 1));
 
-    // Persist to localStorage
-    const storageKey = `admin_notif_read_${userId}`;
-    const storedReadStatus = JSON.parse(
-      localStorage.getItem(storageKey) || "{}",
-    );
-    storedReadStatus[notificationId] = true;
-    localStorage.setItem(storageKey, JSON.stringify(storedReadStatus));
+    // Persist to database
+    await (supabase.from("notifications") as any)
+      .update({ is_read: true })
+      .eq("id", notificationId);
   };
 
   const markAllNotificationsRead = async () => {
@@ -329,17 +272,13 @@ export default function AdminDashboardClient({
     });
     setUnreadCount(0);
 
-    // Persist all to localStorage
-    const storageKey = `admin_notif_read_${userId}`;
-    const storedReadStatus = JSON.parse(
-      localStorage.getItem(storageKey) || "{}",
-    );
-    notifications.forEach((n) => {
-      storedReadStatus[n.id] = true;
-    });
-    localStorage.setItem(storageKey, JSON.stringify(storedReadStatus));
+    // Persist all to database
+    await (supabase.from("notifications") as any)
+      .update({ is_read: true })
+      .eq("user_id", userId)
+      .eq("is_read", false);
 
-    // Save emergency shown status
+    // Save emergency shown status to localStorage
     const emergencyStorageKey = `admin_emergency_shown_${userId}`;
     localStorage.setItem(
       emergencyStorageKey,

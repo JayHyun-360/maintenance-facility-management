@@ -196,6 +196,28 @@ export default function UserDashboardClient({
         return;
       }
 
+      // Get all admin user IDs to send notifications
+      const { data: admins } = await (supabase.from("profiles") as any)
+        .select("id")
+        .eq("database_role", "admin");
+
+      if (admins && admins.length > 0) {
+        const notifications = (admins as { id: string }[]).map((admin) => ({
+          user_id: admin.id,
+          title:
+            formData.urgency === "Emergency"
+              ? "🚨 EMERGENCY Maintenance Request"
+              : "New Maintenance Request",
+          message:
+            formData.urgency === "Emergency"
+              ? `🚨 EMERGENCY: A new emergency request has been submitted: ${formData.nature}`
+              : `New maintenance request: ${formData.nature} at ${formData.location}`,
+          link_url: "/admin/dashboard",
+        }));
+
+        await (supabase.from("notifications") as any).insert(notifications);
+      }
+
       // Reset form and refresh requests
       setFormData({
         nature: "",
