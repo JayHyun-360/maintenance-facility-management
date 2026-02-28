@@ -988,22 +988,26 @@ export default function UserDashboardClient({
           </div>
           <div className="p-4">
             <div className="flex justify-between items-center mb-4">
-              {unreadCount > 0 && (
-                <button
-                  onClick={markAllNotificationsRead}
-                  className="text-sm text-green-600 hover:text-green-700"
-                >
-                  Mark all as read
-                </button>
-              )}
-              {notifications.some((n: any) => n.is_read) && (
-                <button
-                  onClick={deleteAllReadNotifications}
-                  className="text-sm text-red-500 hover:text-red-600"
-                >
-                  Delete all read
-                </button>
-              )}
+              <div>
+                {unreadCount > 0 && (
+                  <button
+                    onClick={markAllNotificationsRead}
+                    className="text-sm text-green-600 hover:text-green-700"
+                  >
+                    Mark all as read
+                  </button>
+                )}
+              </div>
+              <div>
+                {notifications.some((n: any) => n.is_read) && (
+                  <button
+                    onClick={deleteAllReadNotifications}
+                    className="text-sm text-red-500 hover:text-red-600"
+                  >
+                    Delete all read
+                  </button>
+                )}
+              </div>
             </div>
             {notifications.length === 0 ? (
               <div className="p-4 text-center text-gray-500">

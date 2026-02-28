@@ -206,7 +206,7 @@ export default function AdminDashboardClient({
     );
 
     // Create admin notifications from maintenance requests data
-    const adminNotifications =
+    const newNotifications =
       maintenanceRequests?.map((request: any) => ({
         id: `admin-${request.id}`,
         title:
@@ -218,26 +218,36 @@ export default function AdminDashboardClient({
             ? `🚨 EMERGENCY: ${request.profiles?.full_name || "Unknown"} submitted an emergency request: ${request.nature}`
             : `New request from ${request.profiles?.full_name || "Unknown"}: ${request.nature}`,
         created_at: request.created_at,
-        is_read: false, // Treat all as unread for admin visibility
         request_id: request.id,
         urgency: request.urgency,
       })) || [];
 
-    console.log("Generated admin notifications:", adminNotifications);
+    // Preserve read status from existing notifications
+    const updatedNotifications = newNotifications.map((newNotif: any) => {
+      const existingNotif = notifications.find((n) => n.id === newNotif.id);
+      return {
+        ...newNotif,
+        is_read: existingNotif ? existingNotif.is_read : false,
+      };
+    });
 
-    if (adminNotifications) {
-      setNotifications(adminNotifications);
-      setUnreadCount(adminNotifications.filter((n: any) => !n.is_read).length);
+    console.log("Generated admin notifications:", updatedNotifications);
 
-      // Check for emergency requests and show popup
-      const emergencyNotifications = adminNotifications.filter(
+    if (updatedNotifications) {
+      setNotifications(updatedNotifications);
+      setUnreadCount(
+        updatedNotifications.filter((n: any) => !n.is_read).length,
+      );
+
+      // Check for emergency requests and show popup (only for NEW emergencies)
+      const unreadEmergencies = updatedNotifications.filter(
         (n: any) =>
           !n.is_read &&
           (n.title.includes("EMERGENCY") || n.message.includes("EMERGENCY")),
       );
 
-      if (emergencyNotifications.length > 0 && !emergencyPopup) {
-        setEmergencyPopup(emergencyNotifications[0]);
+      if (unreadEmergencies.length > 0 && !emergencyPopup) {
+        setEmergencyPopup(unreadEmergencies[0]);
         // Auto-hide popup after 5 seconds
         setTimeout(() => setEmergencyPopup(null), 5000);
       }
@@ -2184,22 +2194,26 @@ export default function AdminDashboardClient({
           </div>
           <div className="p-4">
             <div className="flex justify-between items-center mb-4">
-              {unreadCount > 0 && (
-                <button
-                  onClick={markAllNotificationsRead}
-                  className="text-sm text-green-600 hover:text-green-700"
-                >
-                  Mark all as read
-                </button>
-              )}
-              {notifications.some((n: any) => n.is_read) && (
-                <button
-                  onClick={deleteAllReadNotifications}
-                  className="text-sm text-red-500 hover:text-red-600"
-                >
-                  Delete all read
-                </button>
-              )}
+              <div>
+                {unreadCount > 0 && (
+                  <button
+                    onClick={markAllNotificationsRead}
+                    className="text-sm text-green-600 hover:text-green-700"
+                  >
+                    Mark all as read
+                  </button>
+                )}
+              </div>
+              <div>
+                {notifications.some((n: any) => n.is_read) && (
+                  <button
+                    onClick={deleteAllReadNotifications}
+                    className="text-sm text-red-500 hover:text-red-600"
+                  >
+                    Delete all read
+                  </button>
+                )}
+              </div>
             </div>
             {notifications.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
