@@ -136,6 +136,8 @@ export default function AdminDashboardClient({
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
   const [broadcastMessage, setBroadcastMessage] = useState("");
   const [showUserInfoPanel, setShowUserInfoPanel] = useState(false);
+  const [showDetailModal, setShowDetailModal] =
+    useState<RequestWithProfile | null>(null);
   const [editFormData, setEditFormData] = useState({
     nature: "",
     urgency: "",
@@ -664,9 +666,35 @@ export default function AdminDashboardClient({
           </td>
           <td className="px-6 py-4">
             <div className="max-w-xs">
-              <p className="text-sm text-gray-900 truncate">
-                {request.description}
-              </p>
+              <div className="flex items-start gap-2">
+                <p
+                  className="text-sm text-gray-900 truncate"
+                  style={{ maxWidth: "200px" }}
+                >
+                  {request.description}
+                </p>
+                {request.description && request.description.length > 50 && (
+                  <button
+                    onClick={() => setShowDetailModal(request)}
+                    className="flex-shrink-0 p-1 text-gray-400 hover:text-[#427A43] hover:bg-gray-100 rounded transition-colors"
+                    title="See more information"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  </button>
+                )}
+              </div>
               {request.photos && request.photos.length > 0 && (
                 <div className="mt-2">
                   {!isExpanded ? (
@@ -2192,6 +2220,98 @@ export default function AdminDashboardClient({
                   className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
                 >
                   Update Status
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Detail Modal */}
+      {showDetailModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="bg-[#427A43] p-6 rounded-t-xl">
+              <div className="flex justify-between items-center">
+                <h2 className="font-header text-xl font-bold text-white">
+                  Request Details
+                </h2>
+                <button
+                  onClick={() => setShowDetailModal(null)}
+                  className="text-white/80 hover:text-white"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase">
+                  Nature
+                </label>
+                <p className="text-gray-900 mt-1">{showDetailModal.nature}</p>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase">
+                  Location
+                </label>
+                <p className="text-gray-900 mt-1">{showDetailModal.location}</p>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase">
+                  Urgency
+                </label>
+                <p className="text-gray-900 mt-1">{showDetailModal.urgency}</p>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase">
+                  Status
+                </label>
+                <p className="text-gray-900 mt-1">{showDetailModal.status}</p>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase">
+                  Description
+                </label>
+                <p className="text-gray-900 mt-1 whitespace-pre-wrap">
+                  {showDetailModal.description}
+                </p>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase">
+                  Requester
+                </label>
+                <p className="text-gray-900 mt-1">
+                  {showDetailModal.profiles?.full_name || "Unknown"} (
+                  {showDetailModal.profiles?.visual_role || "N/A"})
+                </p>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-gray-500 uppercase">
+                  Created
+                </label>
+                <p className="text-gray-900 mt-1">
+                  {new Date(showDetailModal.created_at).toLocaleString()}
+                </p>
+              </div>
+              <div className="pt-4">
+                <button
+                  onClick={() => setShowDetailModal(null)}
+                  className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                >
+                  Close
                 </button>
               </div>
             </div>
