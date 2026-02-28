@@ -101,6 +101,7 @@ export default function AdminDashboardClient({
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+  const [expandedPhotos, setExpandedPhotos] = useState<Set<string>>(new Set());
   const [editingRequest, setEditingRequest] =
     useState<RequestWithProfile | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
@@ -485,6 +486,18 @@ export default function AdminDashboardClient({
     window.location.href = "/login";
   };
 
+  const togglePhotos = (requestId: string) => {
+    setExpandedPhotos((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(requestId)) {
+        newSet.delete(requestId);
+      } else {
+        newSet.add(requestId);
+      }
+      return newSet;
+    });
+  };
+
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
       case "Emergency":
@@ -529,6 +542,8 @@ export default function AdminDashboardClient({
   // Memoized RequestRow component for performance
   const RequestRow = React.memo(
     ({ request }: { request: RequestWithProfile }) => {
+      const isExpanded = expandedPhotos.has(request.id);
+
       return (
         <tr key={request.id} className="hover:bg-gray-50">
           <td className="px-6 py-4">
@@ -554,22 +569,55 @@ export default function AdminDashboardClient({
                 {request.description}
               </p>
               {request.photos && request.photos.length > 0 && (
-                <div className="flex gap-1 mt-2">
-                  {request.photos.slice(0, 2).map((photo, idx) => (
-                    <img
-                      key={idx}
-                      src={photo}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                      className="w-8 h-8 object-cover rounded"
-                      onClick={() => setSelectedPhoto(photo)}
-                    />
-                  ))}
-                  {request.photos.length > 2 && (
-                    <span className="text-xs text-gray-500 self-center">
-                      +{request.photos.length - 2}
-                    </span>
+                <div className="mt-2">
+                  {!isExpanded ? (
+                    <button
+                      onClick={() => togglePhotos(request.id)}
+                      className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
+                    >
+                      <svg
+                        className="w-3 h-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                      View {request.photos.length} Photo
+                      {request.photos.length > 1 ? "s" : ""}
+                    </button>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="flex gap-1">
+                        {request.photos.slice(0, 2).map((photo, idx) => (
+                          <img
+                            key={idx}
+                            src={photo}
+                            alt=""
+                            loading="lazy"
+                            decoding="async"
+                            className="w-8 h-8 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => setSelectedPhoto(photo)}
+                          />
+                        ))}
+                        {request.photos.length > 2 && (
+                          <span className="text-xs text-gray-500 self-center">
+                            +{request.photos.length - 2}
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => togglePhotos(request.id)}
+                        className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                      >
+                        Hide photos
+                      </button>
+                    </div>
                   )}
                 </div>
               )}
