@@ -182,50 +182,52 @@ export default function AdminDashboardClient({
   const fetchNotifications = async () => {
     console.log("Fetching notifications for admin:", userId);
 
-    // First, let's see what notifications exist for this user
-    const { data: allNotifications } = await (
-      supabase.from("notifications") as any
+    // Get all maintenance requests to create admin notifications
+    const { data: maintenanceRequests } = await (
+      supabase.from("maintenance_requests") as any
     )
-      .select("*")
-      .eq("user_id", userId)
+      .select(
+        `
+        *,
+        profiles (
+          full_name
+        )
+      `,
+      )
       .order("created_at", { ascending: false })
       .limit(20);
 
-    console.log("All notifications for user:", allNotifications);
+    console.log(
+      "Maintenance requests for admin notifications:",
+      maintenanceRequests,
+    );
 
-    // Log each notification's title and message for debugging
-    if (allNotifications) {
-      allNotifications.forEach((notif: any, index: number) => {
-        console.log(`Notification ${index + 1}:`, {
-          id: notif.id,
-          title: notif.title,
-          message: notif.message,
-          is_read: notif.is_read,
-        });
-      });
-    }
+    // Create admin notifications from maintenance requests data
+    const adminNotifications =
+      maintenanceRequests?.map((request: any) => ({
+        id: `admin-${request.id}`,
+        title:
+          request.urgency === "Emergency"
+            ? "🚨 EMERGENCY Maintenance Request"
+            : "New Maintenance Request",
+        message:
+          request.urgency === "Emergency"
+            ? `🚨 EMERGENCY: ${request.profiles?.full_name || "Unknown"} submitted an emergency request: ${request.nature}`
+            : `New request from ${request.profiles?.full_name || "Unknown"}: ${request.nature}`,
+        created_at: request.created_at,
+        is_read: false, // Treat all as unread for admin visibility
+        request_id: request.id,
+        urgency: request.urgency,
+      })) || [];
 
-    // Admin should NOT receive user notifications like "Request Updated", "Request Completed"
-    // Admin should ONLY receive notifications about new requests from users
-    const { data } = await (supabase.from("notifications") as any)
-      .select("*")
-      .eq("user_id", userId)
-      .not(
-        "title",
-        "in",
-        '("Request Updated","Request Completed","Request Started")',
-      ) // Exclude user notifications
-      .order("created_at", { ascending: false })
-      .limit(20);
+    console.log("Generated admin notifications:", adminNotifications);
 
-    console.log("Filtered admin notifications:", data);
-
-    if (data) {
-      setNotifications(data);
-      setUnreadCount(data.filter((n: any) => !n.is_read).length);
+    if (adminNotifications) {
+      setNotifications(adminNotifications);
+      setUnreadCount(adminNotifications.filter((n: any) => !n.is_read).length);
 
       // Check for emergency requests and show popup
-      const emergencyNotifications = data.filter(
+      const emergencyNotifications = adminNotifications.filter(
         (n: any) =>
           !n.is_read &&
           (n.title.includes("EMERGENCY") || n.message.includes("EMERGENCY")),
@@ -240,19 +242,21 @@ export default function AdminDashboardClient({
   };
 
   const markNotificationRead = async (notificationId: string) => {
-    await (supabase.from("notifications") as any)
-      .update({ is_read: true })
-      .eq("id", notificationId)
-      .eq("user_id", userId);
-    fetchNotifications();
+    // For generated admin notifications, just update local state
+    setNotifications((prev) =>
+      prev.map((notif) =>
+        notif.id === notificationId ? { ...notif, is_read: true } : notif,
+      ),
+    );
+    setUnreadCount((prev) => Math.max(0, prev - 1));
   };
 
   const markAllNotificationsRead = async () => {
-    await (supabase.from("notifications") as any)
-      .update({ is_read: true })
-      .eq("user_id", userId)
-      .eq("is_read", false);
-    fetchNotifications();
+    // For generated admin notifications, just update local state
+    setNotifications((prev) =>
+      prev.map((notif) => ({ ...notif, is_read: true })),
+    );
+    setUnreadCount(0);
   };
 
   // Fetch notifications on mount and poll
