@@ -41,7 +41,7 @@ export async function createUserProfile(formData: {
     // Check if profile already exists
     const { data: existingProfile, error: checkError } = await supabase
       .from("profiles")
-      .select("id")
+      .select("id, database_role")
       .eq("id", userId)
       .maybeSingle();
 
@@ -54,11 +54,53 @@ export async function createUserProfile(formData: {
     }
 
     if (existingProfile) {
-      console.log("Profile already exists, redirecting to dashboard");
+      // Profile exists - check if this is a role switch scenario
+      // If current role is different from requested role, allow update
+      if (existingProfile.database_role !== formData.databaseRole) {
+        console.log("Role switch detected, updating profile...");
+
+        const { error: updateError } = await supabase
+          .from("profiles")
+          .update({
+            full_name: formData.fullName,
+            database_role: formData.databaseRole,
+            visual_role:
+              formData.databaseRole === "admin" ? "Staff" : formData.visualRole,
+            educational_level:
+              formData.databaseRole === "admin"
+                ? null
+                : formData.educationalLevel,
+            department:
+              formData.databaseRole === "admin" ? null : formData.department,
+          })
+          .eq("id", userId);
+
+        if (updateError) {
+          console.error("Profile update error:", updateError);
+          return {
+            error: `Failed to update profile: ${updateError.message}`,
+            success: false,
+          };
+        }
+
+        console.log("Profile updated successfully for role switch");
+        const redirectUrl =
+          formData.databaseRole === "admin" ? "/admin/dashboard" : "/dashboard";
+        return {
+          error: null,
+          success: true,
+          redirect: redirectUrl,
+        };
+      }
+
+      // Same role - just redirect to appropriate dashboard
+      console.log("Profile already exists with same role, redirecting");
+      const redirectUrl =
+        formData.databaseRole === "admin" ? "/admin/dashboard" : "/dashboard";
       return {
         error: null,
         success: true,
-        redirect: "/dashboard",
+        redirect: redirectUrl,
       };
     }
 

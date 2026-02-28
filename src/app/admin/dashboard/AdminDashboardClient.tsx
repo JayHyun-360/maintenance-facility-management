@@ -362,11 +362,25 @@ export default function AdminDashboardClient({
     setBroadcastMessage("");
     setShowBroadcastModal(false);
     alert(`Broadcast message sent to ${allUsers.length} users!`);
+
+    // Fetch recent broadcasts for display
+    fetchBroadcasts();
+  };
+
+  const fetchBroadcasts = async () => {
+    const { data } = await (supabase.from("admin_messages") as any)
+      .select("*")
+      .eq("is_broadcast", true)
+      .order("created_at", { ascending: false })
+      .limit(10);
+
+    if (data) {
+      setUserMessages((prev) => ({ ...prev, broadcast: data }));
+    }
   };
 
   useEffect(() => {
-    fetchUsers();
-    fetchBlockedUsers();
+    fetchBroadcasts();
   }, []);
 
   const handleStatusChange = (request: RequestWithProfile) => {
@@ -1783,12 +1797,12 @@ export default function AdminDashboardClient({
           )}
         </div>
 
-        {/* Manage Users Tab */}
+        {/* Manage Users Tab - Broadcast Only */}
         {activeTab === "manage-users" && (
           <div className="bg-white rounded-xl shadow-sm p-6">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-6">
               <h2 className="font-header text-lg font-semibold text-gray-900">
-                Manage Users
+                Announcements
               </h2>
               <button
                 onClick={() => setShowBroadcastModal(true)}
@@ -1807,290 +1821,58 @@ export default function AdminDashboardClient({
                     d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
                   />
                 </svg>
-                Broadcast to All
+                Send Announcement
               </button>
             </div>
 
-            <div className="flex gap-6 h-[600px]">
-              {/* Left Side - User List */}
-              <div className="w-1/3 border border-gray-200 rounded-lg overflow-hidden flex flex-col">
-                <div className="p-3 border-b border-gray-200 bg-gray-50">
-                  <input
-                    type="text"
-                    placeholder="Search users..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
-                  />
-                </div>
-                <div className="overflow-y-auto flex-1">
-                  {users
-                    .filter(
-                      (u) =>
-                        searchQuery === "" ||
-                        u.full_name
-                          .toLowerCase()
-                          .includes(searchQuery.toLowerCase()) ||
-                        u.visual_role
-                          ?.toLowerCase()
-                          .includes(searchQuery.toLowerCase()),
-                    )
-                    .map((user) => (
+            <div className="bg-gray-50 rounded-xl p-8 text-center">
+              <svg
+                className="w-16 h-16 mx-auto mb-4 text-[#427A43]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+                />
+              </svg>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Broadcast Announcements
+              </h3>
+              <p className="text-gray-500 max-w-md mx-auto">
+                Send important announcements to all users at once. Messages will
+                appear as notifications in their dashboard.
+              </p>
+            </div>
+
+            {/* Recent Broadcasts */}
+            <div className="mt-6">
+              <h3 className="font-medium text-gray-900 mb-4">
+                Recent Announcements
+              </h3>
+              <div className="space-y-3">
+                {userMessages["broadcast"]?.length > 0 ? (
+                  userMessages["broadcast"]
+                    .slice(-5)
+                    .reverse()
+                    .map((msg) => (
                       <div
-                        key={user.id}
-                        className={`p-3 border-b border-gray-100 cursor-pointer transition-colors ${
-                          selectedUser?.id === user.id
-                            ? "bg-green-50"
-                            : "hover:bg-gray-50"
-                        }`}
+                        key={msg.id}
+                        className="p-4 bg-gray-50 rounded-lg border border-gray-100"
                       >
-                        <div className="flex items-center gap-3">
-                          {/* User Avatar with Profile Picture */}
-                          <div className="relative flex-shrink-0">
-                            {user.avatar_url ? (
-                              <img
-                                src={user.avatar_url}
-                                alt={user.full_name}
-                                className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
-                                onError={(e) => {
-                                  e.currentTarget.style.display = "none";
-                                  e.currentTarget.nextElementSibling?.classList.remove(
-                                    "hidden",
-                                  );
-                                }}
-                              />
-                            ) : null}
-                            <div
-                              className={`w-12 h-12 rounded-full bg-[#427A43] flex items-center justify-center text-white font-semibold text-lg flex-shrink-0 ${user.avatar_url ? "hidden" : ""}`}
-                            >
-                              {user.full_name.charAt(0).toUpperCase()}
-                            </div>
-                            {/* Online/Offline indicator */}
-                            <div
-                              className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white ${user.is_blocked ? "bg-red-400" : "bg-green-400"}`}
-                            ></div>
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-gray-900 truncate">
-                              {user.full_name}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              {user.visual_role || "User"}
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              {user.department ||
-                                user.educational_level ||
-                                "No department"}
-                            </p>
-                          </div>
-                          {/* User Info Button */}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setSelectedUser(user);
-                              setShowUserInfoPanel(true);
-                            }}
-                            className="p-1.5 text-gray-400 hover:text-[#427A43] hover:bg-gray-100 rounded-lg transition-colors"
-                            title="View User Info"
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                          </button>
-                          {blockedUsers.includes(user.id) && (
-                            <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded">
-                              Blocked
-                            </span>
-                          )}
-                        </div>
+                        <p className="text-gray-700">{msg.message}</p>
+                        <p className="text-xs text-gray-400 mt-2">
+                          {new Date(msg.created_at).toLocaleString()}
+                        </p>
                       </div>
-                    ))}
-                  {users.length === 0 && (
-                    <div className="text-center py-8 text-gray-500">
-                      <p>No users found</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Right Side - Chat/Notice Panel */}
-              <div className="flex-1 border border-gray-200 rounded-lg overflow-hidden flex flex-col">
-                {selectedUser ? (
-                  <>
-                    {/* User Info Header */}
-                    <div className="p-4 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[#427A43] flex items-center justify-center text-white font-semibold">
-                          {selectedUser.full_name.charAt(0).toUpperCase()}
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">
-                            {selectedUser.full_name}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {selectedUser.visual_role || "User"}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {/* Email Button */}
-                        <a
-                          href={`mailto:${selectedUser.id}@placeholder.com`}
-                          className="p-2 text-gray-500 hover:text-[#427A43] hover:bg-gray-100 rounded-lg transition-colors"
-                          title="Send Email"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                            />
-                          </svg>
-                        </a>
-                        {/* Block Button */}
-                        <button
-                          onClick={() => toggleBlockUser(selectedUser.id)}
-                          className={`p-2 rounded-lg transition-colors ${
-                            blockedUsers.includes(selectedUser.id)
-                              ? "text-red-500 bg-red-50 hover:bg-red-100"
-                              : "text-gray-500 hover:text-red-500 hover:bg-red-50"
-                          }`}
-                          title={
-                            blockedUsers.includes(selectedUser.id)
-                              ? "Unblock User"
-                              : "Block User"
-                          }
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Messages Area */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
-                      {userMessages[selectedUser.id]?.length > 0 ? (
-                        userMessages[selectedUser.id].map((msg) => (
-                          <div
-                            key={msg.id}
-                            className={`flex ${msg.from_admin ? "justify-end" : "justify-start"}`}
-                          >
-                            <div
-                              className={`max-w-[70%] px-4 py-2 rounded-lg ${
-                                msg.from_admin
-                                  ? "bg-[#427A43] text-white"
-                                  : "bg-white border border-gray-200 text-gray-900"
-                              }`}
-                            >
-                              <p className="text-sm">{msg.message}</p>
-                              <p
-                                className={`text-xs mt-1 ${msg.from_admin ? "text-white/70" : "text-gray-400"}`}
-                              >
-                                {new Date(msg.created_at).toLocaleString()}
-                              </p>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="text-center py-8 text-gray-400">
-                          <svg
-                            className="w-12 h-12 mx-auto mb-2 text-gray-300"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                            />
-                          </svg>
-                          <p>No messages yet</p>
-                          <p className="text-sm">Send a notice to this user</p>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Message Input */}
-                    <div className="p-4 border-t border-gray-200 bg-white">
-                      <div className="flex gap-2">
-                        <input
-                          type="text"
-                          value={newMessage}
-                          onChange={(e) => setNewMessage(e.target.value)}
-                          onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-                          placeholder="Type a notice message..."
-                          className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
-                        />
-                        <button
-                          onClick={sendMessage}
-                          disabled={!newMessage.trim()}
-                          className="px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          <svg
-                            className="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-                    </div>
-                  </>
+                    ))
                 ) : (
-                  <div className="flex-1 flex items-center justify-center text-gray-400">
-                    <div className="text-center">
-                      <svg
-                        className="w-16 h-16 mx-auto mb-2 text-gray-300"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                        />
-                      </svg>
-                      <p>Select a user to view details</p>
-                    </div>
-                  </div>
+                  <p className="text-gray-400 text-sm">
+                    No announcements sent yet
+                  </p>
                 )}
               </div>
             </div>
