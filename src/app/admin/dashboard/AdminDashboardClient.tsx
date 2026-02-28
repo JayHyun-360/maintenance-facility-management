@@ -1390,9 +1390,10 @@ export default function AdminDashboardClient({
                         }}
                         formatter={(
                           value: number | undefined,
-                          name: string,
+                          name: string | undefined,
                         ) => {
-                          if (value === undefined) return ["", name];
+                          if (value === undefined || name === undefined)
+                            return ["", ""];
                           const total =
                             stats.pending + stats.inProgress + stats.completed;
                           return [
