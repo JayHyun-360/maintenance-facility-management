@@ -193,6 +193,18 @@ export default function AdminDashboardClient({
 
     console.log("All notifications for user:", allNotifications);
 
+    // Log each notification's title and message for debugging
+    if (allNotifications) {
+      allNotifications.forEach((notif: any, index: number) => {
+        console.log(`Notification ${index + 1}:`, {
+          id: notif.id,
+          title: notif.title,
+          message: notif.message,
+          is_read: notif.is_read,
+        });
+      });
+    }
+
     // Fetch admin notifications only (when users submit new requests)
     const { data } = await (supabase.from("notifications") as any)
       .select("*")
