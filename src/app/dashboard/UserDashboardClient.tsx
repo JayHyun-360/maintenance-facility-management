@@ -208,7 +208,7 @@ export default function UserDashboardClient({
       if (admins && admins.length > 0) {
         // Use database function to create admin notifications (bypasses RLS)
         for (const admin of admins as { id: string }[]) {
-          await supabase.rpc("create_admin_notification", {
+          await (supabase.rpc("create_admin_notification", {
             p_user_id: admin.id,
             p_title:
               formData.urgency === "Emergency"
@@ -220,7 +220,7 @@ export default function UserDashboardClient({
                 : `New maintenance request: ${formData.nature} at ${formData.location}`,
             p_link_url: "/admin/dashboard",
             p_target_role: "admin",
-          });
+          }) as any);
         }
       }
 
