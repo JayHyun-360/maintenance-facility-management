@@ -203,7 +203,9 @@ export default function AdminDashboardClient({
     const emergencyStorageKey = `admin_emergency_shown_${userId}`;
     const storedEmergencyShown =
       typeof window !== "undefined"
-        ? new Set(JSON.parse(localStorage.getItem(emergencyStorageKey) || "[]"))
+        ? new Set<string>(
+            JSON.parse(localStorage.getItem(emergencyStorageKey) || "[]"),
+          )
         : new Set<string>();
 
     // Update ref with stored emergency shown status
