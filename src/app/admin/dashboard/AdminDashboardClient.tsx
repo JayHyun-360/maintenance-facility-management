@@ -2764,15 +2764,35 @@ export default function AdminDashboardClient({
         }`}
       >
         <div className="h-full flex flex-col">
-          {/* Enhanced Header */}
-          <div className="bg-gradient-to-r from-[#427A43] via-emerald-600 to-green-600 p-6 relative overflow-hidden">
-            <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
+          {/* Enhanced Header with Neural Network Pattern */}
+          <div className="bg-gradient-to-br from-[#427A43] via-emerald-600 to-teal-600 p-6 relative overflow-hidden">
+            {/* Neural Network Background Animation */}
+            <div className="absolute inset-0 opacity-20">
+              <svg className="w-full h-full" viewBox="0 0 400 200">
+                <defs>
+                  <linearGradient id="neuralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#427A43" stopOpacity="0.8" />
+                    <stop offset="100%" stopColor="#14b8a6" stopOpacity="0.8" />
+                  </linearGradient>
+                </defs>
+                {/* Neural connections */}
+                <path d="M50,100 Q150,50 250,100 T350,100" stroke="url(#neuralGradient)" strokeWidth="1" fill="none" className="animate-pulse" />
+                <path d="M50,100 Q150,150 250,100 T350,100" stroke="url(#neuralGradient)" strokeWidth="1" fill="none" className="animate-pulse" style={{animationDelay: '1s'}} />
+                {/* Neural nodes */}
+                <circle cx="50" cy="100" r="3" fill="#427A43" className="animate-pulse" />
+                <circle cx="150" cy="50" r="2" fill="#14b8a6" className="animate-pulse" style={{animationDelay: '0.5s'}} />
+                <circle cx="150" cy="150" r="2" fill="#14b8a6" className="animate-pulse" style={{animationDelay: '1.5s'}} />
+                <circle cx="250" cy="100" r="3" fill="#427A43" className="animate-pulse" style={{animationDelay: '1s'}} />
+                <circle cx="350" cy="100" r="2" fill="#14b8a6" className="animate-pulse" style={{animationDelay: '2s'}} />
+              </svg>
+            </div>
+            
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-[#427A43]/30 to-emerald-600/30 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-white/20 to-white/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20">
                     <svg
-                      className="w-5 h-5 text-white/70"
+                      className="w-6 h-6 text-white"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -2789,17 +2809,40 @@ export default function AdminDashboardClient({
                     <h2 className="font-header text-xl font-bold text-white">
                       AI Assistant
                     </h2>
-                    <p className="text-xs text-white/80 flex items-center gap-1">
+                    <p className="text-xs text-white/90 flex items-center gap-2">
                       <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                      Always ready to help
+                      <span>Neural Engine v3.2</span>
                     </p>
                   </div>
                 </div>
+                <button
+                  onClick={() => setShowAIChat(false)}
+                  className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
 
-              {/* Action Icons */}
+              {/* AI Capabilities Bar */}
               <div className="flex gap-2">
-                <button className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg text-xs font-medium text-white hover:bg-white/30 transition-all duration-200 flex items-center gap-1.5">
+                <span className="px-2 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs text-white/80 border border-white/20">
+                  GPT-4
+                </span>
+                <span className="px-2 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs text-white/80 border border-white/20">
+                  Vision
+                </span>
+                <span className="px-2 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs text-white/80 border border-white/20">
+                  Analysis
+                </span>
+              </div>
+            </div>
+          </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2">
+                <button className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg text-xs font-medium text-white hover:bg-white/30 transition-all duration-200 flex items-center gap-1.5 border border-white/10">
                   <svg
                     className="w-3.5 h-3.5"
                     fill="none"
@@ -2815,7 +2858,7 @@ export default function AdminDashboardClient({
                   </svg>
                   Quick Actions
                 </button>
-                <button className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg text-xs font-medium text-white hover:bg-white/30 transition-all duration-200 flex items-center gap-1.5">
+                <button className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg text-xs font-medium text-white hover:bg-white/30 transition-all duration-200 flex items-center gap-1.5 border border-white/10">
                   <svg
                     className="w-3.5 h-3.5"
                     fill="none"
@@ -2831,7 +2874,7 @@ export default function AdminDashboardClient({
                   </svg>
                   Insights
                 </button>
-                <button className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg text-xs font-medium text-white hover:bg-white/30 transition-all duration-200 flex items-center gap-1.5">
+                <button className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg text-xs font-medium text-white hover:bg-white/30 transition-all duration-200 flex items-center gap-1.5 border border-white/10">
                   <svg
                     className="w-3.5 h-3.5"
                     fill="none"
@@ -2845,13 +2888,13 @@ export default function AdminDashboardClient({
                       d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
                     />
                   </svg>
-                  Help
+                  Training
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Enhanced Chat Area */}
+          {/* Enhanced Chat Area with Interactive Elements */}
           <div className="flex-1 flex items-center justify-center p-6 relative">
             {/* Animated Background Pattern */}
             <div className="absolute inset-0">
@@ -2868,16 +2911,17 @@ export default function AdminDashboardClient({
             </div>
 
             <div className="text-center relative z-10">
-              {/* Enhanced AI Icon with glow effect */}
+              {/* Enhanced AI Icon with holographic effect */}
               <div className="w-32 h-32 mx-auto mb-6 relative">
-                {/* Outer glow ring */}
-                <div className="absolute inset-0 bg-gradient-to-br from-[#427A43]/20 to-emerald-600/20 rounded-full blur-xl animate-pulse"></div>
-                {/* Middle ring */}
-                <div className="absolute inset-2 bg-gradient-to-br from-[#427A43]/30 to-emerald-600/30 rounded-full blur-lg animate-pulse"></div>
-                {/* Inner circle */}
-                <div className="absolute inset-4 bg-gradient-to-br from-[#427A43]/40 to-emerald-600/40 rounded-full flex items-center justify-center backdrop-blur-sm">
+                {/* Holographic rings */}
+                <div className="absolute inset-0 bg-gradient-to-br from-[#427A43]/30 via-emerald-500/20 to-teal-500/30 rounded-full blur-xl animate-pulse"></div>
+                <div className="absolute inset-2 bg-gradient-to-br from-[#427A43]/40 to-emerald-600/40 rounded-full blur-lg animate-pulse" style={{animationDelay: '0.5s'}}></div>
+                <div className="absolute inset-4 bg-gradient-to-br from-[#427A43]/50 to-emerald-600/50 rounded-full blur-md animate-pulse" style={{animationDelay: '1s'}}></div>
+                
+                {/* Core AI icon */}
+                <div className="absolute inset-6 bg-gradient-to-br from-slate-900/80 to-slate-800/80 rounded-full flex items-center justify-center backdrop-blur-md border border-white/20">
                   <svg
-                    className="w-16 h-16 text-white/80 relative z-10 drop-shadow-lg"
+                    className="w-12 h-12 text-white/90 relative z-10 drop-shadow-lg"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -2890,36 +2934,40 @@ export default function AdminDashboardClient({
                     />
                   </svg>
                 </div>
-                {/* Orbiting dots */}
+                
+                {/* Orbiting data points */}
                 <div className="absolute inset-0">
-                  <div className="absolute top-4 left-1/2 -translate-x-1/2 w-2 h-2 bg-white/60 rounded-full animate-orbit"></div>
+                  <div className="absolute top-6 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-orbit shadow-lg shadow-cyan-400/50"></div>
                   <div
-                    className="absolute bottom-4 left-1/2 -translate-x-1/2 w-2 h-2 bg-emerald-400/60 rounded-full animate-orbit"
+                    className="absolute bottom-6 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-emerald-400 rounded-full animate-orbit shadow-lg shadow-emerald-400/50"
                     style={{ animationDelay: "0.5s" }}
                   ></div>
                   <div
-                    className="absolute left-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-white/50 rounded-full animate-orbit"
+                    className="absolute left-6 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-blue-400 rounded-full animate-orbit shadow-lg shadow-blue-400/50"
                     style={{ animationDelay: "1s" }}
                   ></div>
                   <div
-                    className="absolute right-4 top-1/2 -translate-y-1/2 w-2 h-2 bg-emerald-400/50 rounded-full animate-orbit"
+                    className="absolute right-6 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-teal-400 rounded-full animate-orbit shadow-lg shadow-teal-400/50"
                     style={{ animationDelay: "1.5s" }}
                   ></div>
                 </div>
               </div>
 
               <h3 className="font-header text-2xl font-bold text-white mb-3 bg-gradient-to-r from-white to-white/80 bg-clip-text text-transparent">
-                Coming Soon
+                AI Assistant
               </h3>
+              <div className="mb-4">
+                <span className="px-3 py-1 bg-gradient-to-r from-amber-500 to-orange-500 text-white text-xs font-bold rounded-full shadow-lg shadow-amber-500/30 animate-pulse">
+                  COMING SOON
+                </span>
+              </div>
               <p className="text-sm text-white/70 mb-8 max-w-sm mx-auto leading-relaxed">
-                Experience AI-powered maintenance management with intelligent
-                automation, predictive insights, and seamless workflow
-                optimization
+                Next-generation AI powered by advanced neural networks. Get ready for intelligent maintenance automation and predictive analytics.
               </p>
 
-              {/* Enhanced Feature Preview */}
+              {/* Interactive Feature Cards */}
               <div className="space-y-3 text-left max-w-sm mx-auto">
-                <div className="flex items-center gap-3 p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 group hover:bg-white/10 transition-all duration-300">
+                <div className="flex items-center gap-3 p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 group hover:bg-white/10 transition-all duration-300 cursor-pointer hover:scale-[1.02]">
                   <div className="w-8 h-8 bg-gradient-to-br from-[#427A43] to-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <svg
                       className="w-4 h-4 text-white"
@@ -2935,7 +2983,7 @@ export default function AdminDashboardClient({
                       />
                     </svg>
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-sm font-medium text-white">
                       Smart Prioritization
                     </p>
@@ -2943,8 +2991,9 @@ export default function AdminDashboardClient({
                       AI-powered request ranking
                     </p>
                   </div>
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 group hover:bg-white/10 transition-all duration-300">
+                <div className="flex items-center gap-3 p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 group hover:bg-white/10 transition-all duration-300 cursor-pointer hover:scale-[1.02]">
                   <div className="w-8 h-8 bg-gradient-to-br from-[#427A43] to-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <svg
                       className="w-4 h-4 text-white"
@@ -2960,7 +3009,7 @@ export default function AdminDashboardClient({
                       />
                     </svg>
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-sm font-medium text-white">
                       Predictive Analytics
                     </p>
@@ -2968,8 +3017,9 @@ export default function AdminDashboardClient({
                       Data-driven insights
                     </p>
                   </div>
+                  <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 group hover:bg-white/10 transition-all duration-300">
+                <div className="flex items-center gap-3 p-3 bg-white/5 backdrop-blur-sm rounded-lg border border-white/10 group hover:bg-white/10 transition-all duration-300 cursor-pointer hover:scale-[1.02]">
                   <div className="w-8 h-8 bg-gradient-to-br from-[#427A43] to-emerald-600 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <svg
                       className="w-4 h-4 text-white"
@@ -2985,7 +3035,7 @@ export default function AdminDashboardClient({
                       />
                     </svg>
                   </div>
-                  <div>
+                  <div className="flex-1">
                     <p className="text-sm font-medium text-white">
                       Workflow Automation
                     </p>
@@ -2993,16 +3043,43 @@ export default function AdminDashboardClient({
                       Streamlined processes
                     </p>
                   </div>
+                  <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Enhanced Input Area */}
+          {/* Enhanced Input Area with Coming Soon Status */}
           <div className="p-4 border-t border-white/10 bg-slate-900/50 backdrop-blur-sm">
+            {/* Coming Soon Notice */}
+            <div className="mb-3 p-3 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 rounded-lg">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"></div>
+                <p className="text-xs text-amber-300 font-medium">
+                  AI Assistant is currently in development
+                </p>
+              </div>
+              <p className="text-xs text-amber-200/70 mt-1">
+                  Full implementation coming in next release
+                </p>
+            </div>
+            
+            {/* Preview of Future Capabilities */}
+            <div className="flex gap-2 mb-3 overflow-x-auto">
+              <span className="px-3 py-1.5 bg-white/5 backdrop-blur-sm rounded-full text-xs text-white/60 border border-white/10 whitespace-nowrap">
+                🎯 Smart prioritization
+              </span>
+              <span className="px-3 py-1.5 bg-white/5 backdrop-blur-sm rounded-full text-xs text-white/60 border border-white/10 whitespace-nowrap">
+                📊 Predictive analytics
+              </span>
+              <span className="px-3 py-1.5 bg-white/5 backdrop-blur-sm rounded-full text-xs text-white/60 border border-white/10 whitespace-nowrap">
+                ⚡ Workflow automation
+              </span>
+            </div>
+            
             <div className="relative">
               <div className="flex items-center gap-2 mb-3">
-                <button className="p-2 text-white/40 hover:text-white/60 transition-colors">
+                <button className="p-2 text-white/20 transition-colors rounded-lg" disabled>
                   <svg
                     className="w-4 h-4"
                     fill="none"
@@ -3017,7 +3094,7 @@ export default function AdminDashboardClient({
                     />
                   </svg>
                 </button>
-                <button className="p-2 text-white/40 hover:text-white/60 transition-colors">
+                <button className="p-2 text-white/20 transition-colors rounded-lg" disabled>
                   <svg
                     className="w-4 h-4"
                     fill="none"
@@ -3032,7 +3109,7 @@ export default function AdminDashboardClient({
                     />
                   </svg>
                 </button>
-                <button className="p-2 text-white/40 hover:text-white/60 transition-colors">
+                <button className="p-2 text-white/20 transition-colors rounded-lg" disabled>
                   <svg
                     className="w-4 h-4"
                     fill="none"
@@ -3050,12 +3127,12 @@ export default function AdminDashboardClient({
               </div>
               <input
                 type="text"
-                placeholder="Ask me anything about maintenance..."
-                className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#427A43] focus:border-transparent transition-all duration-200"
+                placeholder="AI chat interface coming soon..."
+                className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white/50 placeholder-white/30 focus:outline-none transition-all duration-200 cursor-not-allowed"
                 disabled
               />
               <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#427A43] text-white rounded-lg hover:bg-[#4d8c4f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-white/10 text-white/50 rounded-lg transition-all duration-200 cursor-not-allowed"
                 disabled
               >
                 <svg
@@ -3074,17 +3151,17 @@ export default function AdminDashboardClient({
               </button>
             </div>
             <div className="flex items-center justify-between mt-2">
-              <p className="text-xs text-white/40">
-                AI assistant is getting ready
+              <p className="text-xs text-white/30">
+                Anticipated release: Q2 2026
               </p>
               <div className="flex items-center gap-1">
-                <div className="w-1.5 h-1.5 bg-[#427A43] rounded-full animate-bounce"></div>
+                <div className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-bounce"></div>
                 <div
-                  className="w-1.5 h-1.5 bg-[#427A43] rounded-full animate-bounce"
+                  className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-bounce"
                   style={{ animationDelay: "0.1s" }}
                 ></div>
                 <div
-                  className="w-1.5 h-1.5 bg-[#427A43] rounded-full animate-bounce"
+                  className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-bounce"
                   style={{ animationDelay: "0.2s" }}
                 ></div>
               </div>
