@@ -2777,13 +2777,13 @@ export default function AdminDashboardClient({
                 </defs>
                 {/* Neural connections */}
                 <path d="M50,100 Q150,50 250,100 T350,100" stroke="url(#neuralGradient)" strokeWidth="1" fill="none" className="animate-pulse" />
-                <path d="M50,100 Q150,150 250,100 T350,100" stroke="url(#neuralGradient)" strokeWidth="1" fill="none" className="animate-pulse" style={{animationDelay: '1s'}} />
+                <path d="M50,100 Q150,150 250,100 T350,100" stroke="url(#neuralGradient)" strokeWidth="1" fill="none" className="animate-pulse" style={{animationDelay: "1s"}} />
                 {/* Neural nodes */}
                 <circle cx="50" cy="100" r="3" fill="#427A43" className="animate-pulse" />
-                <circle cx="150" cy="50" r="2" fill="#14b8a6" className="animate-pulse" style={{animationDelay: '0.5s'}} />
-                <circle cx="150" cy="150" r="2" fill="#14b8a6" className="animate-pulse" style={{animationDelay: '1.5s'}} />
-                <circle cx="250" cy="100" r="3" fill="#427A43" className="animate-pulse" style={{animationDelay: '1s'}} />
-                <circle cx="350" cy="100" r="2" fill="#14b8a6" className="animate-pulse" style={{animationDelay: '2s'}} />
+                <circle cx="150" cy="50" r="2" fill="#14b8a6" className="animate-pulse" style={{animationDelay: "0.5s"}} />
+                <circle cx="150" cy="150" r="2" fill="#14b8a6" className="animate-pulse" style={{animationDelay: "1.5s"}} />
+                <circle cx="250" cy="100" r="3" fill="#427A43" className="animate-pulse" style={{animationDelay: "1s"}} />
+                <circle cx="350" cy="100" r="2" fill="#14b8a6" className="animate-pulse" style={{animationDelay: "2s"}} />
               </svg>
             </div>
             
