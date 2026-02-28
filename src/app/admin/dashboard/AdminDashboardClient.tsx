@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type {
@@ -25,6 +25,18 @@ import {
   Cell,
 } from "recharts";
 import { format, subDays, eachDayOfInterval, startOfDay } from "date-fns";
+
+// Debounce hook for performance optimization
+const useDebounce = <T,>(value: T, delay: number): T => {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(handler);
+  }, [value, delay]);
+
+  return debouncedValue;
+};
 
 interface RequestWithProfile extends MaintenanceRequest {
   profiles: Profile | null;
@@ -81,6 +93,7 @@ export default function AdminDashboardClient({
     }
   }, [activeTab]);
   const [searchQuery, setSearchQuery] = useState("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
   const [editingRequest, setEditingRequest] =
     useState<RequestWithProfile | null>(null);
@@ -502,6 +515,124 @@ export default function AdminDashboardClient({
     });
   };
 
+  // Memoized RequestRow component for performance
+  const RequestRow = React.memo(
+    ({ request }: { request: RequestWithProfile }) => {
+      return (
+        <tr key={request.id} className="hover:bg-gray-50">
+          <td className="px-6 py-4">
+            <div className="text-sm font-medium text-gray-900">
+              {request.nature}
+            </div>
+            <div className="text-sm text-gray-500">{request.location}</div>
+            <div className="text-xs text-gray-400">
+              {new Date(request.created_at).toLocaleDateString()}
+            </div>
+          </td>
+          <td className="px-6 py-4">
+            <div className="text-sm font-medium text-gray-900">
+              {request.profiles?.full_name || "Unknown"}
+            </div>
+            <div className="text-sm text-gray-500">
+              {request.profiles?.visual_role}
+            </div>
+          </td>
+          <td className="px-6 py-4">
+            <div className="max-w-xs">
+              <p className="text-sm text-gray-900 truncate">
+                {request.description}
+              </p>
+              {request.photos && request.photos.length > 0 && (
+                <div className="flex gap-1 mt-2">
+                  {request.photos.slice(0, 2).map((photo, idx) => (
+                    <img
+                      key={idx}
+                      src={photo}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      className="w-8 h-8 object-cover rounded"
+                      onClick={() => setSelectedPhoto(photo)}
+                    />
+                  ))}
+                  {request.photos.length > 2 && (
+                    <span className="text-xs text-gray-500 self-center">
+                      +{request.photos.length - 2}
+                    </span>
+                  )}
+                </div>
+              )}
+              <span
+                className={`inline-block px-2 py-1 text-xs rounded-full mt-1 ${request.urgency === "Emergency" ? "bg-red-100 text-red-700" : request.urgency === "Urgent" ? "bg-orange-100 text-orange-700" : "bg-gray-100 text-gray-700"}`}
+              >
+                {request.urgency}
+              </span>
+            </div>
+          </td>
+          <td className="px-6 py-4">
+            <span
+              className={`px-2 py-1 text-xs rounded-full ${request.status === "Pending" ? "bg-yellow-100 text-yellow-700" : request.status === "In Progress" ? "bg-blue-100 text-blue-700" : request.status === "Completed" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+            >
+              {request.status}
+            </span>
+          </td>
+          <td className="px-6 py-4">
+            <div className="flex items-center gap-2">
+              {/* Status Dropdown */}
+              <select
+                value={request.status}
+                onChange={(e) =>
+                  handleStatusUpdate(
+                    request.id,
+                    e.target.value as RequestStatus,
+                  )
+                }
+                className={`text-xs px-2 py-1.5 rounded border focus:outline-none focus:ring-1 focus:ring-[#427A43] cursor-pointer ${
+                  request.status === "Pending"
+                    ? "bg-yellow-50 border-yellow-200 text-yellow-700"
+                    : request.status === "In Progress"
+                      ? "bg-blue-50 border-blue-200 text-blue-700"
+                      : request.status === "Completed"
+                        ? "bg-green-50 border-green-200 text-green-700"
+                        : "bg-red-50 border-red-200 text-red-700"
+                }`}
+              >
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+
+              {/* Report Button */}
+              <button
+                onClick={() => {
+                  setSelectedRequestForReport(request);
+                  setShowReportSidebar(true);
+                }}
+                className="p-1.5 text-gray-500 hover:text-[#427A43] hover:bg-gray-100 rounded transition-colors"
+                title="Generate Report"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      );
+    },
+  );
+
   // Generate distribution data for pie chart
   const generateDistributionData = () => {
     const total = stats.pending + stats.inProgress + stats.completed;
@@ -514,11 +645,31 @@ export default function AdminDashboardClient({
     ];
   };
 
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    window.location.href = "/login";
-  };
-
+  // Memoized filtered requests for performance
+  const filteredRequests = useMemo(() => {
+    return requests.filter((r) => {
+      const matchesSearch =
+        debouncedSearchQuery === "" ||
+        r.nature.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+        r.location.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+        r.description
+          .toLowerCase()
+          .includes(debouncedSearchQuery.toLowerCase());
+      const matchesStatus =
+        selectAll ||
+        filters.status.length === 0 ||
+        filters.status.includes(r.status);
+      const matchesNature =
+        selectAll ||
+        filters.nature.length === 0 ||
+        filters.nature.includes(r.nature);
+      const matchesUrgency =
+        selectAll ||
+        filters.urgency.length === 0 ||
+        filters.urgency.includes(r.urgency);
+      return matchesSearch && matchesStatus && matchesNature && matchesUrgency;
+    });
+  }, [requests, debouncedSearchQuery, filters, selectAll]);
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
@@ -1704,215 +1855,12 @@ export default function AdminDashboardClient({
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                      {requests
-                        .filter((r) => {
-                          const matchesSearch =
-                            searchQuery === "" ||
-                            r.nature
-                              .toLowerCase()
-                              .includes(searchQuery.toLowerCase()) ||
-                            r.location
-                              .toLowerCase()
-                              .includes(searchQuery.toLowerCase()) ||
-                            r.description
-                              .toLowerCase()
-                              .includes(searchQuery.toLowerCase());
-                          const matchesStatus =
-                            selectAll ||
-                            filters.status.length === 0 ||
-                            filters.status.includes(r.status);
-                          const matchesNature =
-                            selectAll ||
-                            filters.nature.length === 0 ||
-                            filters.nature.includes(r.nature);
-                          const matchesUrgency =
-                            selectAll ||
-                            filters.urgency.length === 0 ||
-                            filters.urgency.includes(r.urgency);
-                          return (
-                            matchesSearch &&
-                            matchesStatus &&
-                            matchesNature &&
-                            matchesUrgency
-                          );
-                        })
-                        .map((request) => (
-                          <tr key={request.id} className="hover:bg-gray-50">
-                            <td className="px-6 py-4">
-                              <div className="text-sm font-medium text-gray-900">
-                                {request.nature}
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {request.location}
-                              </div>
-                              <div className="text-xs text-gray-400">
-                                {new Date(
-                                  request.created_at,
-                                ).toLocaleDateString()}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4">
-                              <div className="text-sm font-medium text-gray-900">
-                                {request.profiles?.full_name || "Unknown"}
-                              </div>
-                              <div className="text-sm text-gray-500">
-                                {request.profiles?.visual_role}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4">
-                              <div className="max-w-xs">
-                                <p className="text-sm text-gray-900 truncate">
-                                  {request.description}
-                                </p>
-                                {request.photos &&
-                                  request.photos.length > 0 && (
-                                    <div className="flex gap-1 mt-2">
-                                      {request.photos
-                                        .slice(0, 2)
-                                        .map((photo, idx) => (
-                                          <img
-                                            key={idx}
-                                            src={photo}
-                                            alt=""
-                                            className="w-8 h-8 object-cover rounded"
-                                            onClick={() =>
-                                              setSelectedPhoto(photo)
-                                            }
-                                          />
-                                        ))}
-                                      {request.photos.length > 2 && (
-                                        <span className="text-xs text-gray-500 self-center">
-                                          +{request.photos.length - 2}
-                                        </span>
-                                      )}
-                                    </div>
-                                  )}
-                                <span
-                                  className={`inline-block px-2 py-1 text-xs rounded-full mt-1 ${request.urgency === "Emergency" ? "bg-red-100 text-red-700" : request.urgency === "Urgent" ? "bg-orange-100 text-orange-700" : "bg-gray-100 text-gray-700"}`}
-                                >
-                                  {request.urgency}
-                                </span>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4">
-                              <span
-                                className={`px-2 py-1 text-xs rounded-full ${request.status === "Pending" ? "bg-yellow-100 text-yellow-700" : request.status === "In Progress" ? "bg-blue-100 text-blue-700" : request.status === "Completed" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
-                              >
-                                {request.status}
-                              </span>
-                            </td>
-                            <td className="px-6 py-4">
-                              <div className="flex items-center gap-2">
-                                {/* Status Dropdown */}
-                                <select
-                                  value={request.status}
-                                  onChange={(e) =>
-                                    handleStatusUpdate(
-                                      request.id,
-                                      e.target.value as RequestStatus,
-                                    )
-                                  }
-                                  className={`text-xs px-2 py-1.5 rounded border focus:outline-none focus:ring-1 focus:ring-[#427A43] cursor-pointer ${
-                                    request.status === "Pending"
-                                      ? "bg-yellow-50 border-yellow-200 text-yellow-700"
-                                      : request.status === "In Progress"
-                                        ? "bg-blue-50 border-blue-200 text-blue-700"
-                                        : request.status === "Completed"
-                                          ? "bg-green-50 border-green-200 text-green-700"
-                                          : "bg-red-50 border-red-200 text-red-700"
-                                  }`}
-                                >
-                                  <option value="Pending">Pending</option>
-                                  <option value="In Progress">
-                                    In Progress
-                                  </option>
-                                  <option value="Completed">Completed</option>
-                                  <option value="Cancelled">Cancelled</option>
-                                </select>
-
-                                {/* Report Button */}
-                                <button
-                                  onClick={() => {
-                                    setSelectedRequestForReport(request);
-                                    setShowReportSidebar(true);
-                                  }}
-                                  className="p-1.5 text-gray-500 hover:text-[#427A43] hover:bg-gray-100 rounded transition-colors"
-                                  title="Generate Report"
-                                >
-                                  <svg
-                                    className="w-4 h-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                                    />
-                                  </svg>
-                                </button>
-
-                                {/* Delete Button */}
-                                <button
-                                  onClick={() =>
-                                    handleDeleteRequest(request.id)
-                                  }
-                                  className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
-                                  title="Delete Request"
-                                >
-                                  <svg
-                                    className="w-4 h-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                    />
-                                  </svg>
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
+                      {filteredRequests.map((request) => (
+                        <RequestRow key={request.id} request={request} />
+                      ))}
                     </tbody>
                   </table>
-                  {requests.filter((r) => {
-                    const matchesSearch =
-                      searchQuery === "" ||
-                      r.nature
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase()) ||
-                      r.location
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase()) ||
-                      r.description
-                        .toLowerCase()
-                        .includes(searchQuery.toLowerCase());
-                    const matchesStatus =
-                      selectAll ||
-                      filters.status.length === 0 ||
-                      filters.status.includes(r.status);
-                    const matchesNature =
-                      selectAll ||
-                      filters.nature.length === 0 ||
-                      filters.nature.includes(r.nature);
-                    const matchesUrgency =
-                      selectAll ||
-                      filters.urgency.length === 0 ||
-                      filters.urgency.includes(r.urgency);
-                    return (
-                      matchesSearch &&
-                      matchesStatus &&
-                      matchesNature &&
-                      matchesUrgency
-                    );
-                  }).length === 0 && (
+                  {filteredRequests.length === 0 && (
                     <div className="text-center py-12 text-gray-500">
                       <p>No requests found</p>
                     </div>
