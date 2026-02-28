@@ -9,6 +9,19 @@ import type {
   RequestStatus,
   ThemePreference,
 } from "@/types/database";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Area,
+  AreaChart,
+} from "recharts";
+import { format, subDays, eachDayOfInterval, startOfDay } from "date-fns";
 
 interface RequestWithProfile extends MaintenanceRequest {
   profiles: Profile | null;
@@ -456,6 +469,34 @@ export default function AdminDashboardClient({
       default:
         return "bg-gray-100 text-gray-800";
     }
+  };
+
+  // Generate chart data for status trends over time
+  const generateStatusTrendData = () => {
+    const endDate = new Date();
+    const startDate = subDays(endDate, 30); // Last 30 days
+
+    const dates = eachDayOfInterval({ start: startDate, end: endDate });
+
+    return dates.map((date) => {
+      const dateStr = format(date, "MM/dd");
+      const dayStart = startOfDay(date);
+      const dayEnd = new Date(date.getTime() + 24 * 60 * 60 * 1000 - 1);
+
+      const dayRequests = requests.filter((req) => {
+        const reqDate = new Date(req.created_at);
+        return reqDate >= dayStart && reqDate <= dayEnd;
+      });
+
+      return {
+        date: dateStr,
+        pending: dayRequests.filter((r) => r.status === "Pending").length,
+        inProgress: dayRequests.filter((r) => r.status === "In Progress")
+          .length,
+        completed: dayRequests.filter((r) => r.status === "Completed").length,
+        total: dayRequests.length,
+      };
+    });
   };
 
   const handleSignOut = async () => {
@@ -1167,60 +1208,131 @@ export default function AdminDashboardClient({
                 </div>
               </div>
 
-              {/* Status Distribution - Bento Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all duration-200">
-                  <h4 className="text-sm font-medium text-gray-600 mb-3">
-                    Status Overview
-                  </h4>
-                  <div className="flex items-end justify-around h-32 gap-2">
-                    {[
-                      {
-                        status: "Pending",
-                        count: stats.pending,
-                        color: "#EAB308",
-                      },
-                      {
-                        status: "In Progress",
-                        count: stats.inProgress,
-                        color: "#3B82F6",
-                      },
-                      {
-                        status: "Completed",
-                        count: stats.completed,
-                        color: "#22C55E",
-                      },
-                    ].map((item) => {
-                      const maxCount =
-                        Math.max(
-                          stats.pending,
-                          stats.inProgress,
-                          stats.completed,
-                        ) || 1;
-                      const height = (item.count / maxCount) * 100;
-                      return (
-                        <div
-                          key={item.status}
-                          className="flex flex-col items-center flex-1"
-                        >
-                          <span className="text-xs font-semibold text-gray-700">
-                            {item.count}
-                          </span>
-                          <div
-                            className="w-full max-w-[40px] rounded-t-sm mt-1"
-                            style={{
-                              height: `${height}%`,
-                              minHeight: item.count > 0 ? "6px" : "0",
-                              backgroundColor: item.color,
-                            }}
-                          />
-                          <span className="text-[10px] text-gray-500 mt-1">
-                            {item.status}
-                          </span>
-                        </div>
-                      );
-                    })}
+              {/* Status Distribution - Interactive Line Chart */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="bg-white rounded-lg p-6 border border-gray-100 hover:shadow-md transition-all duration-200">
+                  <div className="flex items-center justify-between mb-4">
+                    <h4 className="text-sm font-medium text-gray-600">
+                      Status Trends (30 Days)
+                    </h4>
+                    <div className="flex items-center gap-4 text-xs">
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                        <span className="text-gray-600">Pending</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
+                        <span className="text-gray-600">In Progress</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+                        <span className="text-gray-600">Completed</span>
+                      </div>
+                    </div>
                   </div>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <AreaChart data={generateStatusTrendData()}>
+                      <defs>
+                        <linearGradient
+                          id="pendingGradient"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="#EAB308"
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="#EAB308"
+                            stopOpacity={0.1}
+                          />
+                        </linearGradient>
+                        <linearGradient
+                          id="inProgressGradient"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="#3B82F6"
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="#3B82F6"
+                            stopOpacity={0.1}
+                          />
+                        </linearGradient>
+                        <linearGradient
+                          id="completedGradient"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="#22C55E"
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="#22C55E"
+                            stopOpacity={0.1}
+                          />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis
+                        dataKey="date"
+                        tick={{ fontSize: 10 }}
+                        interval="preserveStartEnd"
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 10 }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "rgba(255, 255, 255, 0.95)",
+                          border: "1px solid #e5e7eb",
+                          borderRadius: "8px",
+                          fontSize: "12px",
+                        }}
+                        labelStyle={{ color: "#374151", fontWeight: "bold" }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="pending"
+                        stroke="#EAB308"
+                        strokeWidth={2}
+                        fill="url(#pendingGradient)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="inProgress"
+                        stroke="#3B82F6"
+                        strokeWidth={2}
+                        fill="url(#inProgressGradient)"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="completed"
+                        stroke="#22C55E"
+                        strokeWidth={2}
+                        fill="url(#completedGradient)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </div>
 
                 <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md transition-all duration-200">
