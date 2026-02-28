@@ -271,9 +271,14 @@ export default function AdminDashboardClient({
 
   const markAllNotificationsRead = async () => {
     // For generated admin notifications, just update local state
-    setNotifications((prev) =>
-      prev.map((notif) => ({ ...notif, is_read: true })),
-    );
+    setNotifications((prev) => {
+      // Also mark all current emergencies as shown so popup doesn't reappear
+      const unreadEmergencies = prev.filter(
+        (n) => !n.is_read && n.title.includes("EMERGENCY"),
+      );
+      unreadEmergencies.forEach((e) => emergencyShownRef.current.add(e.id));
+      return prev.map((notif) => ({ ...notif, is_read: true }));
+    });
     setUnreadCount(0);
   };
 
@@ -627,7 +632,11 @@ export default function AdminDashboardClient({
       const isExpanded = expandedPhotos.has(request.id);
 
       return (
-        <tr key={request.id} className="hover:bg-gray-50">
+        <tr
+          id={`request-${request.id}`}
+          key={request.id}
+          className="hover:bg-gray-50"
+        >
           <td className="px-6 py-4">
             <div className="text-sm font-medium text-gray-900">
               {request.nature}
@@ -3250,16 +3259,16 @@ export default function AdminDashboardClient({
 
       {/* Emergency Popup */}
       {emergencyPopup && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-8">
+        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16">
           <div
             className="absolute inset-0 bg-black/40"
             onClick={() => setEmergencyPopup(null)}
           />
-          <div className="relative bg-gradient-to-r from-red-600 to-red-700 text-white px-8 py-6 rounded-xl shadow-2xl border-4 border-red-500 max-w-2xl w-full mx-4">
-            <div className="flex items-center justify-center gap-4 mb-4">
+          <div className="relative bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-4 rounded-xl shadow-2xl border-4 border-red-500 max-w-md w-full mx-4">
+            <div className="flex items-center justify-center gap-3 mb-3">
               <div className="animate-pulse">
                 <svg
-                  className="w-12 h-12"
+                  className="w-8 h-8"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -3272,30 +3281,42 @@ export default function AdminDashboardClient({
                   />
                 </svg>
               </div>
-              <h3 className="font-bold text-2xl">🚨 EMERGENCY REQUEST</h3>
-              <div className="animate-pulse">
-                <svg
-                  className="w-12 h-12"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
-                  />
-                </svg>
-              </div>
+              <h3 className="font-bold text-xl">🚨 EMERGENCY</h3>
             </div>
-            <div className="bg-white/10 rounded-lg p-4 mb-4">
-              <p className="text-center text-lg">{emergencyPopup.message}</p>
+            <div className="bg-white/10 rounded-lg p-3 mb-3">
+              <p className="text-center text-sm">{emergencyPopup.message}</p>
             </div>
-            <div className="flex justify-center">
+            <div className="flex justify-center gap-3">
+              <button
+                onClick={() => {
+                  setEmergencyPopup(null);
+                  // Scroll to or highlight the emergency request in the list
+                  const requestId = emergencyPopup.request_id;
+                  if (requestId) {
+                    const element = document.getElementById(
+                      `request-${requestId}`,
+                    );
+                    if (element) {
+                      element.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      });
+                      element.classList.add("ring-4", "ring-red-500");
+                      setTimeout(
+                        () =>
+                          element.classList.remove("ring-4", "ring-red-500"),
+                        3000,
+                      );
+                    }
+                  }
+                }}
+                className="px-4 py-2 bg-white text-red-600 font-bold rounded-lg hover:bg-gray-100 transition-colors shadow"
+              >
+                View
+              </button>
               <button
                 onClick={() => setEmergencyPopup(null)}
-                className="px-8 py-3 bg-white text-red-600 font-bold text-lg rounded-full hover:bg-gray-100 transition-colors shadow-lg"
+                className="px-4 py-2 bg-white/20 text-white font-bold rounded-lg hover:bg-white/30 transition-colors"
               >
                 Dismiss
               </button>
