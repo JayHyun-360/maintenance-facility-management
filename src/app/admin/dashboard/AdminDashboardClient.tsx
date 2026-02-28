@@ -205,13 +205,16 @@ export default function AdminDashboardClient({
       });
     }
 
-    // Fetch admin notifications only (when users submit new requests)
+    // Admin should NOT receive user notifications like "Request Updated", "Request Completed"
+    // Admin should ONLY receive notifications about new requests from users
     const { data } = await (supabase.from("notifications") as any)
       .select("*")
       .eq("user_id", userId)
-      .or(
-        "title.like.New Maintenance Request%,title.like.EMERGENCY Maintenance Request%",
-      ) // Both normal and emergency
+      .not(
+        "title",
+        "in",
+        '("Request Updated","Request Completed","Request Started")',
+      ) // Exclude user notifications
       .order("created_at", { ascending: false })
       .limit(20);
 
