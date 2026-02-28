@@ -343,7 +343,7 @@ export default function AdminDashboardClient({
       return;
     }
 
-    const messages = allUsers.map((user) => ({
+    const messages = allUsers.map((user: { id: string }) => ({
       user_id: user.id,
       message: broadcastMessage.trim(),
       from_admin: true,
