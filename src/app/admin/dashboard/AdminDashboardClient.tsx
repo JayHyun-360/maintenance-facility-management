@@ -208,10 +208,22 @@ export default function AdminDashboardClient({
       maintenanceRequests,
     );
 
+    // Fetch read status from database
+    const { data: dbNotifications } = await (
+      supabase.from("notifications") as any
+    )
+      .select("id, is_read")
+      .eq("user_id", userId);
+
+    const readStatusMap = new Map(
+      (dbNotifications || []).map((n: any) => [n.id, n.is_read]),
+    );
+
     // Create admin notifications from maintenance requests data
     const newNotifications =
       maintenanceRequests?.map((request: any) => ({
         id: `admin-${request.id}`,
+        dbId: request.id,
         title:
           request.urgency === "Emergency"
             ? "🚨 EMERGENCY Maintenance Request"
@@ -231,9 +243,16 @@ export default function AdminDashboardClient({
         const existingNotif = prevNotifications.find(
           (n) => n.id === newNotif.id,
         );
+        // Check database first, then local state
+        const dbReadStatus = readStatusMap.get(newNotif.dbId);
         return {
           ...newNotif,
-          is_read: existingNotif ? existingNotif.is_read : false,
+          is_read:
+            dbReadStatus !== undefined
+              ? dbReadStatus
+              : existingNotif
+                ? existingNotif.is_read
+                : false,
         };
       });
 
@@ -270,17 +289,23 @@ export default function AdminDashboardClient({
   };
 
   const markNotificationRead = async (notificationId: string) => {
-    // For generated admin notifications, just update local state
+    // Update local state
     setNotifications((prev) =>
       prev.map((notif) =>
         notif.id === notificationId ? { ...notif, is_read: true } : notif,
       ),
     );
     setUnreadCount((prev) => Math.max(0, prev - 1));
+
+    // Persist to database
+    const dbNotificationId = notificationId.replace("admin-", "");
+    await (supabase.from("notifications") as any)
+      .update({ is_read: true })
+      .eq("id", dbNotificationId);
   };
 
   const markAllNotificationsRead = async () => {
-    // For generated admin notifications, just update local state
+    // Update local state
     setNotifications((prev) => {
       // Also mark all current emergencies as shown so popup doesn't reappear
       const unreadEmergencies = prev.filter(
@@ -290,6 +315,16 @@ export default function AdminDashboardClient({
       return prev.map((notif) => ({ ...notif, is_read: true }));
     });
     setUnreadCount(0);
+
+    // Persist all to database
+    const notificationIds = notifications.map((n) =>
+      n.id.replace("admin-", ""),
+    );
+    if (notificationIds.length > 0) {
+      await (supabase.from("notifications") as any)
+        .update({ is_read: true })
+        .in("id", notificationIds);
+    }
   };
 
   const deleteNotification = async (notificationId: string) => {
