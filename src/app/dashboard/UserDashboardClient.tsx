@@ -206,21 +206,22 @@ export default function UserDashboardClient({
         .eq("database_role", "admin");
 
       if (admins && admins.length > 0) {
-        const notifications = (admins as { id: string }[]).map((admin) => ({
-          user_id: admin.id,
-          title:
-            formData.urgency === "Emergency"
-              ? "🚨 EMERGENCY Maintenance Request"
-              : "New Maintenance Request",
-          message:
-            formData.urgency === "Emergency"
-              ? `🚨 EMERGENCY: A new emergency request has been submitted: ${formData.nature}`
-              : `New maintenance request: ${formData.nature} at ${formData.location}`,
-          link_url: "/admin/dashboard",
-          target_role: "admin",
-        }));
-
-        await (supabase.from("notifications") as any).insert(notifications);
+        // Use database function to create admin notifications (bypasses RLS)
+        for (const admin of admins as { id: string }[]) {
+          await supabase.rpc("create_admin_notification", {
+            p_user_id: admin.id,
+            p_title:
+              formData.urgency === "Emergency"
+                ? "🚨 EMERGENCY Maintenance Request"
+                : "New Maintenance Request",
+            p_message:
+              formData.urgency === "Emergency"
+                ? `🚨 EMERGENCY: A new emergency request has been submitted: ${formData.nature}`
+                : `New maintenance request: ${formData.nature} at ${formData.location}`,
+            p_link_url: "/admin/dashboard",
+            p_target_role: "admin",
+          });
+        }
       }
 
       // Reset form and refresh requests
