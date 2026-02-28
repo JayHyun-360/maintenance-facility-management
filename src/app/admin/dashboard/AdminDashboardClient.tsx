@@ -1388,10 +1388,18 @@ export default function AdminDashboardClient({
                           borderRadius: "8px",
                           fontSize: "12px",
                         }}
-                        formatter={(value: number, name: string) => [
-                          `${value} (${Math.round((value / (stats.pending + stats.inProgress + stats.completed)) * 100)}%)`,
-                          name,
-                        ]}
+                        formatter={(
+                          value: number | undefined,
+                          name: string,
+                        ) => {
+                          if (value === undefined) return ["", name];
+                          const total =
+                            stats.pending + stats.inProgress + stats.completed;
+                          return [
+                            `${value} (${Math.round((value / total) * 100)}%)`,
+                            name,
+                          ];
+                        }}
                       />
                     </PieChart>
                   </ResponsiveContainer>
