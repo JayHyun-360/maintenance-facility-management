@@ -198,7 +198,7 @@ export default function AdminDashboardClient({
       .select("*")
       .eq("user_id", userId)
       .or(
-        "title.like.*New Maintenance Request*,title.like.*EMERGENCY Maintenance Request*",
+        "title.like.New Maintenance Request%,title.like.EMERGENCY Maintenance Request%",
       ) // Both normal and emergency
       .order("created_at", { ascending: false })
       .limit(20);
