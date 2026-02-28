@@ -2795,42 +2795,9 @@ export default function AdminDashboardClient({
                     </p>
                   </div>
                 </div>
-                <button
-                  onClick={() => setShowAIChat(false)}
-                  className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
               </div>
 
-              {/* AI Capabilities Bar */}
-              <div className="flex gap-2">
-                <span className="px-2 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs text-white/80 border border-white/20">
-                  GPT-4
-                </span>
-                <span className="px-2 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs text-white/80 border border-white/20">
-                  Vision
-                </span>
-                <span className="px-2 py-1 bg-white/10 backdrop-blur-sm rounded-full text-xs text-white/80 border border-white/20">
-                  Analysis
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Action Icons */}
+              {/* Action Icons */}
               <div className="flex gap-2">
                 <button className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-lg text-xs font-medium text-white hover:bg-white/30 transition-all duration-200 flex items-center gap-1.5">
                   <svg
