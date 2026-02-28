@@ -25,6 +25,7 @@ export interface Database {
           is_anonymous: boolean;
           is_blocked: boolean | null;
           theme_preference: "light" | "dark" | "system";
+          avatar_url: string | null;
           created_at: string;
         };
         Insert: {
@@ -37,6 +38,7 @@ export interface Database {
           is_anonymous?: boolean;
           is_blocked?: boolean | null;
           theme_preference?: "light" | "dark" | "system";
+          avatar_url?: string | null;
           created_at?: string;
         };
         Update: {
@@ -49,6 +51,7 @@ export interface Database {
           is_anonymous?: boolean | null;
           is_blocked?: boolean | null;
           theme_preference?: "light" | "dark" | "system" | null;
+          avatar_url?: string | null;
           created_at?: string | null;
         };
       };

@@ -92,6 +92,9 @@ export default function AdminDashboardClient({
   }>({});
   const [newMessage, setNewMessage] = useState("");
   const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
+  const [showBroadcastModal, setShowBroadcastModal] = useState(false);
+  const [broadcastMessage, setBroadcastMessage] = useState("");
+  const [showUserInfoPanel, setShowUserInfoPanel] = useState(false);
   const [editFormData, setEditFormData] = useState({
     nature: "",
     urgency: "",
@@ -318,8 +321,52 @@ export default function AdminDashboardClient({
       .eq("id", userId);
   };
 
+  const fetchBlockedUsers = async () => {
+    const { data } = await (supabase.from("profiles") as any)
+      .select("id")
+      .eq("is_blocked", true);
+    if (data) {
+      setBlockedUsers(data.map((u: any) => u.id));
+    }
+  };
+
+  const sendBroadcastMessage = async () => {
+    if (!broadcastMessage.trim()) return;
+
+    const { data: allUsers, error: fetchError } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("database_role", "user");
+
+    if (fetchError || !allUsers || allUsers.length === 0) {
+      alert("No users found to send broadcast");
+      return;
+    }
+
+    const messages = allUsers.map((user) => ({
+      user_id: user.id,
+      message: broadcastMessage.trim(),
+      from_admin: true,
+      is_broadcast: true,
+    }));
+
+    const { error: insertError } = await (
+      supabase.from("admin_messages") as any
+    ).insert(messages);
+
+    if (insertError) {
+      alert("Error sending broadcast message");
+      return;
+    }
+
+    setBroadcastMessage("");
+    setShowBroadcastModal(false);
+    alert(`Broadcast message sent to ${allUsers.length} users!`);
+  };
+
   useEffect(() => {
     fetchUsers();
+    fetchBlockedUsers();
   }, []);
 
   const handleStatusChange = (request: RequestWithProfile) => {
@@ -1739,9 +1786,30 @@ export default function AdminDashboardClient({
         {/* Manage Users Tab */}
         {activeTab === "manage-users" && (
           <div className="bg-white rounded-xl shadow-sm p-6">
-            <h2 className="font-header text-lg font-semibold text-gray-900 mb-4">
-              Manage Users
-            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-header text-lg font-semibold text-gray-900">
+                Manage Users
+              </h2>
+              <button
+                onClick={() => setShowBroadcastModal(true)}
+                className="px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors flex items-center gap-2 text-sm font-medium"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+                  />
+                </svg>
+                Broadcast to All
+              </button>
+            </div>
 
             <div className="flex gap-6 h-[600px]">
               {/* Left Side - User List */}
@@ -1770,10 +1838,6 @@ export default function AdminDashboardClient({
                     .map((user) => (
                       <div
                         key={user.id}
-                        onClick={() => {
-                          setSelectedUser(user);
-                          fetchUserMessages(user.id);
-                        }}
                         className={`p-3 border-b border-gray-100 cursor-pointer transition-colors ${
                           selectedUser?.id === user.id
                             ? "bg-green-50"
@@ -1781,8 +1845,30 @@ export default function AdminDashboardClient({
                         }`}
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-full bg-[#427A43] flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">
-                            {user.full_name.charAt(0).toUpperCase()}
+                          {/* User Avatar with Profile Picture */}
+                          <div className="relative flex-shrink-0">
+                            {user.avatar_url ? (
+                              <img
+                                src={user.avatar_url}
+                                alt={user.full_name}
+                                className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = "none";
+                                  e.currentTarget.nextElementSibling?.classList.remove(
+                                    "hidden",
+                                  );
+                                }}
+                              />
+                            ) : null}
+                            <div
+                              className={`w-12 h-12 rounded-full bg-[#427A43] flex items-center justify-center text-white font-semibold text-lg flex-shrink-0 ${user.avatar_url ? "hidden" : ""}`}
+                            >
+                              {user.full_name.charAt(0).toUpperCase()}
+                            </div>
+                            {/* Online/Offline indicator */}
+                            <div
+                              className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white ${user.is_blocked ? "bg-red-400" : "bg-green-400"}`}
+                            ></div>
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="font-medium text-gray-900 truncate">
@@ -1797,6 +1883,30 @@ export default function AdminDashboardClient({
                                 "No department"}
                             </p>
                           </div>
+                          {/* User Info Button */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedUser(user);
+                              setShowUserInfoPanel(true);
+                            }}
+                            className="p-1.5 text-gray-400 hover:text-[#427A43] hover:bg-gray-100 rounded-lg transition-colors"
+                            title="View User Info"
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                              />
+                            </svg>
+                          </button>
                           {blockedUsers.includes(user.id) && (
                             <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded">
                               Blocked
@@ -2780,6 +2890,261 @@ export default function AdminDashboardClient({
                 />
               </svg>
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Broadcast Modal */}
+      {showBroadcastModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h3 className="font-header text-lg font-semibold text-gray-900">
+                  Broadcast Message to All Users
+                </h3>
+                <button
+                  onClick={() => setShowBroadcastModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <p className="text-sm text-gray-500 mt-1">
+                This message will be sent to all users and will appear in their
+                notifications.
+              </p>
+            </div>
+            <div className="p-6">
+              <textarea
+                value={broadcastMessage}
+                onChange={(e) => setBroadcastMessage(e.target.value)}
+                placeholder="Type your broadcast message here..."
+                rows={4}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent resize-none"
+              />
+              <div className="flex justify-end gap-3 mt-4">
+                <button
+                  onClick={() => setShowBroadcastModal(false)}
+                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={sendBroadcastMessage}
+                  disabled={!broadcastMessage.trim()}
+                  className="px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Send to All ({users.length} users)
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* User Info Panel */}
+      {showUserInfoPanel && selectedUser && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h3 className="font-header text-lg font-semibold text-gray-900">
+                  User Information
+                </h3>
+                <button
+                  onClick={() => setShowUserInfoPanel(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="p-6">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="relative">
+                  {selectedUser.avatar_url ? (
+                    <img
+                      src={selectedUser.avatar_url}
+                      alt={selectedUser.full_name}
+                      className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 rounded-full bg-[#427A43] flex items-center justify-center text-white text-2xl font-semibold">
+                      {selectedUser.full_name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <div
+                    className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${selectedUser.is_blocked ? "bg-red-400" : "bg-green-400"}`}
+                  ></div>
+                </div>
+                <div>
+                  <h4 className="text-xl font-semibold text-gray-900">
+                    {selectedUser.full_name}
+                  </h4>
+                  <p className="text-gray-500">
+                    {selectedUser.visual_role || "User"}
+                  </p>
+                  {selectedUser.is_blocked && (
+                    <span className="inline-block mt-1 text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded">
+                      Blocked
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-5 h-5 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Department</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {selectedUser.department || "Not specified"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-5 h-5 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Education Level</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {selectedUser.educational_level || "Not specified"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <svg
+                      className="w-5 h-5 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-400">Member Since</p>
+                    <p className="text-sm font-medium text-gray-900">
+                      {selectedUser.created_at
+                        ? new Date(selectedUser.created_at).toLocaleDateString()
+                        : "Unknown"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setShowUserInfoPanel(false);
+                    setSelectedUser(selectedUser);
+                    fetchUserMessages(selectedUser.id);
+                  }}
+                  className="flex-1 px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                    />
+                  </svg>
+                  Send Message
+                </button>
+                <button
+                  onClick={() => {
+                    toggleBlockUser(selectedUser.id);
+                    setShowUserInfoPanel(false);
+                  }}
+                  className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 ${
+                    blockedUsers.includes(selectedUser.id)
+                      ? "bg-green-100 text-green-700 hover:bg-green-200"
+                      : "bg-red-100 text-red-700 hover:bg-red-200"
+                  }`}
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                    />
+                  </svg>
+                  {blockedUsers.includes(selectedUser.id) ? "Unblock" : "Block"}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
