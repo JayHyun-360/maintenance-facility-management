@@ -78,6 +78,7 @@ export default function UserDashboardClient({
   });
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const supabase = createClient()!;
 
