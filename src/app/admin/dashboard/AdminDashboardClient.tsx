@@ -480,6 +480,11 @@ export default function AdminDashboardClient({
     }
   };
 
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/login";
+  };
+
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
       case "Emergency":
