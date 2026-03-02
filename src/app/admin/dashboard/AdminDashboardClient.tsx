@@ -1369,16 +1369,10 @@ export default function AdminDashboardClient({
                       icon: (
                         <svg
                           className="w-6 h-6 transition-transform duration-300 group-hover:rotate-12"
-                          fill="none"
-                          stroke="currentColor"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-                          />
+                          <circle cx="12" cy="12" r="3" />
                         </svg>
                       ),
                     },
@@ -1388,16 +1382,10 @@ export default function AdminDashboardClient({
                       icon: (
                         <svg
                           className="w-6 h-6 transition-transform duration-300 group-hover:rotate-180"
-                          fill="none"
-                          stroke="currentColor"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13 10V3L4 14h7v7l9-11h-7z"
-                          />
+                          <path d="M13 2L3 14h6v7l11-11z" />
                         </svg>
                       ),
                     },
@@ -1407,22 +1395,10 @@ export default function AdminDashboardClient({
                       icon: (
                         <svg
                           className="w-6 h-6 transition-transform duration-300 group-hover:scale-110"
-                          fill="none"
-                          stroke="currentColor"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M14 2v6h6"
-                          />
+                          <rect x="6" y="4" width="12" height="16" rx="2" />
                         </svg>
                       ),
                     },
@@ -1432,16 +1408,10 @@ export default function AdminDashboardClient({
                       icon: (
                         <svg
                           className="w-6 h-6 transition-transform duration-300 group-hover:rotate-180"
-                          fill="none"
-                          stroke="currentColor"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                          />
+                          <circle cx="12" cy="12" r="4" />
                         </svg>
                       ),
                     },
@@ -1451,16 +1421,10 @@ export default function AdminDashboardClient({
                       icon: (
                         <svg
                           className="w-6 h-6 transition-transform duration-300 group-hover:rotate-45"
-                          fill="none"
-                          stroke="currentColor"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
+                          <rect x="8" y="6" width="8" height="12" rx="1" />
                         </svg>
                       ),
                     },
@@ -1470,16 +1434,10 @@ export default function AdminDashboardClient({
                       icon: (
                         <svg
                           className="w-6 h-6 transition-transform duration-300 group-hover:scale-125"
-                          fill="none"
-                          stroke="currentColor"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                          />
+                          <rect x="6" y="8" width="12" height="8" rx="1" />
                         </svg>
                       ),
                     },
@@ -1668,16 +1626,10 @@ export default function AdminDashboardClient({
                       icon: (
                         <svg
                           className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12"
-                          fill="none"
-                          stroke="currentColor"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
-                          />
+                          <circle cx="12" cy="12" r="3" />
                         </svg>
                       ),
                     },
@@ -1687,16 +1639,10 @@ export default function AdminDashboardClient({
                       icon: (
                         <svg
                           className="w-5 h-5 transition-transform duration-300 group-hover:rotate-180"
-                          fill="none"
-                          stroke="currentColor"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M13 10V3L4 14h7v7l9-11h-7z"
-                          />
+                          <path d="M13 2L3 14h6v7l11-11z" />
                         </svg>
                       ),
                     },
@@ -1706,22 +1652,10 @@ export default function AdminDashboardClient({
                       icon: (
                         <svg
                           className="w-5 h-5 transition-transform duration-300 group-hover:scale-110"
-                          fill="none"
-                          stroke="currentColor"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M14 2v6h6"
-                          />
+                          <rect x="6" y="4" width="12" height="16" rx="2" />
                         </svg>
                       ),
                     },
@@ -1731,16 +1665,10 @@ export default function AdminDashboardClient({
                       icon: (
                         <svg
                           className="w-5 h-5 transition-transform duration-300 group-hover:rotate-180"
-                          fill="none"
-                          stroke="currentColor"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                          />
+                          <circle cx="12" cy="12" r="4" />
                         </svg>
                       ),
                     },
@@ -1750,16 +1678,10 @@ export default function AdminDashboardClient({
                       icon: (
                         <svg
                           className="w-5 h-5 transition-transform duration-300 group-hover:rotate-45"
-                          fill="none"
-                          stroke="currentColor"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
+                          <rect x="8" y="6" width="8" height="12" rx="1" />
                         </svg>
                       ),
                     },
@@ -1769,16 +1691,10 @@ export default function AdminDashboardClient({
                       icon: (
                         <svg
                           className="w-5 h-5 transition-transform duration-300 group-hover:scale-125"
-                          fill="none"
-                          stroke="currentColor"
+                          fill="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                          />
+                          <rect x="6" y="8" width="12" height="8" rx="1" />
                         </svg>
                       ),
                     },
