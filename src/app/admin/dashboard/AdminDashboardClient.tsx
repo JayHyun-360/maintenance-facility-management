@@ -1366,32 +1366,122 @@ export default function AdminDashboardClient({
                     {
                       name: "Plumbing",
                       color: "bg-blue-500",
-                      icon: "🔧",
+                      icon: (
+                        <svg
+                          className="w-6 h-6 transition-transform duration-300 group-hover:rotate-12"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                      ),
                     },
                     {
                       name: "Electrical",
                       color: "bg-yellow-500",
-                      icon: "⚡",
+                      icon: (
+                        <svg
+                          className="w-6 h-6 transition-transform duration-300 group-hover:rotate-180"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                          />
+                        </svg>
+                      ),
                     },
                     {
                       name: "Carpentry",
                       color: "bg-amber-700",
-                      icon: "🔨",
+                      icon: (
+                        <svg
+                          className="w-6 h-6 transition-transform duration-300 group-hover:scale-110"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M14.25 6.087c0-.355-.186-.676-.401-.959-.221-.29-.349-.634-.349-1.003 0-1.036.992-1.896 2.148-1.896 1.165 0 2.148.86 2.148 1.896 0 .369-.128.713-.349 1.003-.215.283-.401.604-.401.959v0a.64.64 0 001.28 0v-.505c0-.189.047-.37.142-.53.195-.33.305-.746.305-1.199 0-1.785-1.715-3.233-3.825-3.233S8.25 1.505 8.25 3.29c0 .453.11.869.305 1.199.095.16.142.341.142.53v.505a.64.64 0 001.28 0v0zM21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                          />
+                        </svg>
+                      ),
                     },
                     {
                       name: "HVAC",
                       color: "bg-cyan-500",
-                      icon: "❄️",
+                      icon: (
+                        <svg
+                          className="w-6 h-6 transition-transform duration-300 group-hover:rotate-180"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                          />
+                        </svg>
+                      ),
                     },
                     {
                       name: "Cleaning",
                       color: "bg-purple-500",
-                      icon: "🧹",
+                      icon: (
+                        <svg
+                          className="w-6 h-6 transition-transform duration-300 group-hover:rotate-45"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      ),
                     },
                     {
                       name: "Other",
                       color: "bg-gray-500",
-                      icon: "📦",
+                      icon: (
+                        <svg
+                          className="w-6 h-6 transition-transform duration-300 group-hover:scale-125"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                          />
+                        </svg>
+                      ),
                     },
                   ].map((nature) => {
                     const count = requests.filter(
@@ -1575,32 +1665,122 @@ export default function AdminDashboardClient({
                     {
                       name: "Plumbing",
                       color: "#3B82F6",
-                      icon: "🔧",
+                      icon: (
+                        <svg
+                          className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                      ),
                     },
                     {
                       name: "Electrical",
                       color: "#EAB308",
-                      icon: "⚡",
+                      icon: (
+                        <svg
+                          className="w-5 h-5 transition-transform duration-300 group-hover:rotate-180"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                          />
+                        </svg>
+                      ),
                     },
                     {
                       name: "Carpentry",
                       color: "#92400E",
-                      icon: "🔨",
+                      icon: (
+                        <svg
+                          className="w-5 h-5 transition-transform duration-300 group-hover:scale-110"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M14.25 6.087c0-.355-.186-.676-.401-.959-.221-.29-.349-.634-.349-1.003 0-1.036.992-1.896 2.148-1.896 1.165 0 2.148.86 2.148 1.896 0 .369-.128.713-.349 1.003-.215.283-.401.604-.401.959v0a.64.64 0 001.28 0v-.505c0-.189.047-.37.142-.53.195-.33.305-.746.305-1.199 0-1.785-1.715-3.233-3.825-3.233S8.25 1.505 8.25 3.29c0 .453.11.869.305 1.199.095.16.142.341.142.53v.505a.64.64 0 001.28 0v0zM21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
+                          />
+                        </svg>
+                      ),
                     },
                     {
                       name: "HVAC",
                       color: "#06B6D4",
-                      icon: "❄️",
+                      icon: (
+                        <svg
+                          className="w-5 h-5 transition-transform duration-300 group-hover:rotate-180"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                          />
+                        </svg>
+                      ),
                     },
                     {
                       name: "Cleaning",
                       color: "#A855F7",
-                      icon: "🧹",
+                      icon: (
+                        <svg
+                          className="w-5 h-5 transition-transform duration-300 group-hover:rotate-45"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                          />
+                        </svg>
+                      ),
                     },
                     {
                       name: "Other",
                       color: "#6B7280",
-                      icon: "📦",
+                      icon: (
+                        <svg
+                          className="w-5 h-5 transition-transform duration-300 group-hover:scale-125"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                          />
+                        </svg>
+                      ),
                     },
                   ].map((nature) => {
                     const count = requests.filter(
