@@ -1468,7 +1468,14 @@ export default function AdminDashboardClient({
                             <div
                               className={`p-2 rounded-lg ${nature.color} bg-opacity-10 group-hover:scale-110 transition-transform duration-300`}
                             >
-                              <span className="text-2xl filter drop-shadow-sm group-hover:rotate-12 transition-transform duration-300">
+                              <span
+                                className="text-2xl filter drop-shadow-sm group-hover:rotate-12 transition-transform duration-300"
+                                style={{
+                                  color: nature.color
+                                    .replace("bg-", "#")
+                                    .replace("500", "600"),
+                                }}
+                              >
                                 {nature.icon}
                               </span>
                             </div>
@@ -1717,7 +1724,10 @@ export default function AdminDashboardClient({
                             className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-12"
                             style={{ backgroundColor: `${nature.color}20` }}
                           >
-                            <span className="text-xl group-hover:scale-125 transition-transform duration-300">
+                            <span
+                              className="text-xl group-hover:scale-125 transition-transform duration-300"
+                              style={{ color: nature.color }}
+                            >
                               {nature.icon}
                             </span>
                           </div>
