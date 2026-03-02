@@ -244,13 +244,8 @@ export default function LoginPage() {
     setSuccessMessage("");
 
     try {
-      console.log("Initiating Google OAuth via server action...");
-
       // Use server action to initiate OAuth (stores PKCE verifier in cookies)
       await signInWithGoogle();
-
-      // The server action will handle redirect, so this shouldn't execute
-      console.log("Server action completed");
     } catch (error) {
       console.error("Google sign in error:", error);
       setErrors({
@@ -309,7 +304,6 @@ export default function LoginPage() {
       // Check if guest user has profile before redirecting
       try {
         if (!data?.user?.id) {
-          console.error("No user data in guest sign in result");
           router.push("/dashboard"); // Fallback
           return;
         }
@@ -330,7 +324,6 @@ export default function LoginPage() {
           );
         }
       } catch (error) {
-        console.error("Error checking guest profile:", error);
         router.push("/dashboard"); // Fallback
       }
     } catch (error) {

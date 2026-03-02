@@ -14,8 +14,6 @@ export const createCustomStorage = () => {
   return {
     getItem: (key: string) => {
       try {
-        console.log(`Storage: Getting item for key: ${key}`);
-
         // Try sessionStorage first (for PKCE verifier)
         let value = sessionStorage.getItem(key);
 
@@ -31,17 +29,13 @@ export const createCustomStorage = () => {
           }
         }
 
-        console.log(`Storage: Retrieved value:`, value ? "exists" : "null");
         return value;
       } catch (error) {
-        console.error("Storage: getItem error:", error);
         return null;
       }
     },
     setItem: (key: string, value: string) => {
       try {
-        console.log(`Storage: Setting item for key: ${key}`);
-
         // Store PKCE verifiers in sessionStorage
         if (key.includes("pkce") || key.includes("verifier")) {
           sessionStorage.setItem(key, value);
@@ -49,19 +43,15 @@ export const createCustomStorage = () => {
           // For other items, use sessionStorage as fallback
           sessionStorage.setItem(key, value);
         }
-
-        console.log(`Storage: Successfully set item`);
       } catch (error) {
-        console.error("Storage: setItem error:", error);
+        // Silent fail for storage operations
       }
     },
     removeItem: (key: string) => {
       try {
-        console.log(`Storage: Removing item for key: ${key}`);
         sessionStorage.removeItem(key);
-        console.log(`Storage: Successfully removed item`);
       } catch (error) {
-        console.error("Storage: removeItem error:", error);
+        // Silent fail for storage operations
       }
     },
   };

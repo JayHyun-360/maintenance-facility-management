@@ -10,15 +10,8 @@ export async function GET(request: NextRequest) {
   const next = requestUrl.searchParams.get("next") || "/";
   const cookieStore = await cookies();
 
-  console.log("=== SERVER-SIDE OAUTH ROUTE HANDLER ===");
-  console.log("Full URL:", request.url);
-  console.log("Code:", code);
-  console.log("Error:", error);
-  console.log("Error Description:", errorDescription);
-
   // If there's an error, redirect to error page
   if (error) {
-    console.error("OAuth error from server:", error, errorDescription);
     const errorParams = new URLSearchParams({
       error: error || "oauth_error",
       error_description: errorDescription || "OAuth authentication failed",
@@ -29,7 +22,6 @@ export async function GET(request: NextRequest) {
   }
 
   if (!code) {
-    console.error("No OAuth code found in callback");
     const errorParams = new URLSearchParams({
       error: "no_code",
       error_description: "No authentication code found in callback",
@@ -40,18 +32,13 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    console.log("Creating server client for OAuth exchange...");
     const supabase = await createServerClient();
 
     // Exchange the code for a session
-    console.log("Exchanging code for session...");
     const { data, error: exchangeError } =
       await supabase.auth.exchangeCodeForSession(code);
 
     if (exchangeError) {
-      console.error("Server-side code exchange error:", exchangeError);
-      console.error("Error details:", JSON.stringify(exchangeError, null, 2));
-
       // Redirect to error page with detailed error information
       const errorParams = new URLSearchParams({
         error: exchangeError.code || "server_exchange_error",
@@ -63,14 +50,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    console.log("Server-side session exchange successful!");
-    console.log("User ID:", data.session?.user.id);
-    console.log("User email:", data.session?.user.email);
-    console.log("User metadata:", data.session?.user.user_metadata);
-    console.log("App metadata:", data.session?.user.app_metadata);
-
     if (!data.session?.user) {
-      console.error("No session user found after exchange");
       const errorParams = new URLSearchParams({
         error: "no_session_user",
         error_description: "No user session found after code exchange",
@@ -81,64 +61,28 @@ export async function GET(request: NextRequest) {
     }
 
     // Wait a moment for the trigger to execute and session to be fully established
-    console.log("Waiting for database trigger and session persistence...");
-    await new Promise((resolve) => setTimeout(resolve, 1500)); // Reduced from 3000ms
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Check if profile exists
-    console.log("Checking if profile exists...");
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
       .select("id, database_role, full_name")
       .eq("id", data.session.user.id)
       .maybeSingle();
 
-    console.log("Profile check result:", profile);
-    console.log("Profile error:", profileError);
-
     let redirectUrl: string;
 
     if (profileError) {
-      console.error("Profile query failed:", profileError);
-      console.error(
-        "Full error object:",
-        JSON.stringify(profileError, null, 2),
-      );
-
-      // Check if it's a schema-related error
-      if (
-        profileError?.message?.includes("column") ||
-        profileError?.code === "42703"
-      ) {
-        console.error("SCHEMA MISMATCH: Column reference error detected.");
-        console.error(
-          "Possible cause: user_id vs id column mismatch in profiles table",
-        );
-      }
-
       // If profile query fails but session is valid, assume new user
-      console.log(
-        "Profile query failed but session is valid, assuming new user",
-      );
       const email = data.session.user.email || "";
       const name =
         data.session.user.user_metadata?.full_name || email.split("@")[0];
 
       redirectUrl = `/profile-creation?role=user&name=${encodeURIComponent(name)}`;
-      console.log("Fallback: redirecting to profile creation:", redirectUrl);
     } else if (profile) {
-      // Existing user - redirect to appropriate dashboard.
-      // Use profile.database_role as the SOURCE OF TRUTH (not the JWT),
-      // because an admin may have changed the role directly in the database.
-      // The DB trigger will have already stamped auth.users.raw_app_metadata,
-      // but we trust the profile table here for the redirect decision.
+      // Existing user - redirect to appropriate dashboard
       const isAdmin = profile.database_role === "admin";
       redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
-      console.log(
-        "Existing user, database_role:",
-        profile.database_role,
-        "→ redirecting to:",
-        redirectUrl,
-      );
     } else {
       // New user - redirect to profile creation (default to user role)
       const email = data.session.user.email || "";
@@ -146,22 +90,15 @@ export async function GET(request: NextRequest) {
         data.session.user.user_metadata?.full_name || email.split("@")[0];
 
       redirectUrl = `/profile-creation?role=user&name=${encodeURIComponent(name)}`;
-      console.log("New user, redirecting to profile creation:", redirectUrl);
     }
-
-    // Create a response with proper redirect
-    console.log("Final redirect URL:", redirectUrl);
 
     // Verify session is properly accessible before redirecting
     try {
       const testClient = await createServerClient();
 
       const { data: testSession } = await testClient.auth.getSession();
-      console.log("Session verification test:", testSession);
 
       if (!testSession?.session?.user?.id) {
-        console.error("Session not properly accessible after OAuth exchange");
-        // Still redirect but with error indicator
         const errorParams = new URLSearchParams({
           error: "session_not_accessible",
           error_description: "Session created but not accessible to client",
@@ -171,25 +108,15 @@ export async function GET(request: NextRequest) {
         );
       }
     } catch (testError) {
-      console.error("Session verification failed:", testError);
+      // Continue with redirect
     }
 
     // The session cookies should already be set by exchangeCodeForSession call
     // Just need to redirect to the appropriate page
     const response = NextResponse.redirect(new URL(redirectUrl, request.url));
 
-    // Ensure session cookies are properly set in the response
-    // The exchangeCodeForSession should have set cookies, but let's make sure they're included
-    const cookieList = await cookieStore.getAll();
-    console.log(
-      "Available cookies after OAuth:",
-      cookieList.map((c: any) => c.name),
-    );
-
     return response;
   } catch (error) {
-    console.error("Unexpected server-side auth error:", error);
-
     const errorParams = new URLSearchParams({
       error: "unexpected_server_error",
       error_description: "Unexpected error during authentication",

@@ -36,17 +36,11 @@ function AuthErrorContent() {
         } = await supabase.auth.getSession();
 
         if (session) {
-          console.log(
-            "Valid session found on error page - not redirecting to login",
-          );
           setHasValidSession(true);
           return; // Don't redirect if session is valid
         }
 
         // Only redirect if no valid session
-        console.log(
-          "No valid session found - starting countdown to login redirect",
-        );
         let countdown = 5; // Reduced from 10 to 5 seconds
         setRedirectCountdown(countdown);
 
@@ -56,14 +50,12 @@ function AuthErrorContent() {
 
           if (countdown <= 0) {
             clearInterval(countdownInterval);
-            console.log("Redirecting to login due to no valid session");
             window.location.href = "/login";
           }
         }, 1000);
 
         return () => clearInterval(countdownInterval);
       } catch (error) {
-        console.error("Error checking session on error page:", error);
         // Don't auto-redirect on error - let user decide manually
         setHasValidSession(false);
         setRedirectCountdown(0); // Disable countdown

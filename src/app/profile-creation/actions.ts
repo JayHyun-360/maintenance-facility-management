@@ -27,16 +27,6 @@ export async function createUserProfile(formData: {
 
   const userId = session.user.id;
 
-  console.log("=== SERVER ACTION: CREATING PROFILE ===");
-  console.log("User ID:", userId);
-  console.log("Profile data:", {
-    fullName: formData.fullName,
-    databaseRole: formData.databaseRole,
-    visualRole: formData.visualRole,
-    educationalLevel: formData.educationalLevel,
-    department: formData.department,
-  });
-
   try {
     // Check if profile already exists
     const { data: existingProfile, error: checkError } = await supabase
@@ -46,7 +36,6 @@ export async function createUserProfile(formData: {
       .maybeSingle();
 
     if (checkError) {
-      console.error("Error checking existing profile:", checkError);
       return {
         error: "Failed to check existing profile",
         success: false,
@@ -57,8 +46,6 @@ export async function createUserProfile(formData: {
       // Profile exists - check if this is a role switch scenario
       // If current role is different from requested role, allow update
       if (existingProfile.database_role !== formData.databaseRole) {
-        console.log("Role switch detected, updating profile...");
-
         const { error: updateError } = await supabase
           .from("profiles")
           .update({
@@ -76,14 +63,12 @@ export async function createUserProfile(formData: {
           .eq("id", userId);
 
         if (updateError) {
-          console.error("Profile update error:", updateError);
           return {
             error: `Failed to update profile: ${updateError.message}`,
             success: false,
           };
         }
 
-        console.log("Profile updated successfully for role switch");
         const redirectUrl =
           formData.databaseRole === "admin" ? "/admin/dashboard" : "/dashboard";
         return {
@@ -94,7 +79,6 @@ export async function createUserProfile(formData: {
       }
 
       // Same role - just redirect to appropriate dashboard
-      console.log("Profile already exists with same role, redirecting");
       const redirectUrl =
         formData.databaseRole === "admin" ? "/admin/dashboard" : "/dashboard";
       return {
@@ -119,14 +103,11 @@ export async function createUserProfile(formData: {
     });
 
     if (insertError) {
-      console.error("Profile insert error:", insertError);
       return {
         error: `Failed to create profile: ${insertError.message}`,
         success: false,
       };
     }
-
-    console.log("Profile created successfully");
 
     // Determine redirect URL
     const redirectUrl =
@@ -138,7 +119,6 @@ export async function createUserProfile(formData: {
       redirect: redirectUrl,
     };
   } catch (error) {
-    console.error("=== SERVER ACTION ERROR ===", error);
     return {
       error: `Server error: ${error instanceof Error ? error.message : "Unknown error"}`,
       success: false,

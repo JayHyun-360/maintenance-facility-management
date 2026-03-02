@@ -20,10 +20,6 @@ export async function switchAdminMode(enableAdmin: boolean) {
 
   const userId = session.user.id;
 
-  console.log("=== SWITCH ADMIN MODE ===");
-  console.log("User ID:", userId);
-  console.log("Enable Admin:", enableAdmin);
-
   try {
     // First, get current profile to verify permissions and preserve data
     const { data: currentProfile, error: fetchError } = await supabase
@@ -33,7 +29,6 @@ export async function switchAdminMode(enableAdmin: boolean) {
       .single();
 
     if (fetchError || !currentProfile) {
-      console.error("Error fetching current profile:", fetchError);
       return {
         error: "Profile not found",
         success: false,
@@ -42,9 +37,6 @@ export async function switchAdminMode(enableAdmin: boolean) {
 
     // SECURITY: Check if user actually has admin privileges in the database
     if (enableAdmin && currentProfile.database_role !== "admin") {
-      console.error(
-        "Security violation: Non-admin trying to enable admin mode",
-      );
       return {
         error: "You do not have admin privileges",
         success: false,
@@ -63,7 +55,6 @@ export async function switchAdminMode(enableAdmin: boolean) {
         educational_level: null,
         department: null,
       };
-      console.log("Preparing to switch TO admin mode");
     } else {
       // Switching TO user mode
       // Preserve existing visual_role unless it's Staff (from admin mode)
@@ -79,7 +70,6 @@ export async function switchAdminMode(enableAdmin: boolean) {
         educational_level: currentProfile.educational_level || "",
         department: currentProfile.department || "",
       };
-      console.log("Preparing to switch TO user mode");
     }
 
     // Execute atomic update
@@ -89,14 +79,11 @@ export async function switchAdminMode(enableAdmin: boolean) {
       .eq("id", userId);
 
     if (updateError) {
-      console.error("Error updating profile:", updateError);
       return {
         error: `Failed to switch mode: ${updateError.message}`,
         success: false,
       };
     }
-
-    console.log("Successfully switched mode. New data:", updateData);
 
     return {
       error: null,
@@ -105,7 +92,6 @@ export async function switchAdminMode(enableAdmin: boolean) {
       redirect: enableAdmin ? "/admin/dashboard" : "/dashboard",
     };
   } catch (error) {
-    console.error("=== SWITCH ADMIN MODE ERROR ===", error);
     return {
       error: `Server error: ${error instanceof Error ? error.message : "Unknown error"}`,
       success: false,

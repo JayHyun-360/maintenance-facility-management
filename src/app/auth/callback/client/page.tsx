@@ -41,39 +41,19 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
 
   useEffect(() => {
     const handleAuthCallback = async () => {
-      console.log("=== CLIENT-SIDE AUTH CALLBACK (FALLBACK) ===");
-
-      const fullUrl = window.location.href;
-      const url = new URL(fullUrl);
-
-      console.log("Full URL:", fullUrl);
-      console.log("Hash:", url.hash);
-      console.log(
-        "Search params:",
-        Object.fromEntries(searchParamsClient.entries()),
-      );
-
       const code = searchParamsClient.get("code");
       const error = searchParamsClient.get("error");
       const errorDescription = searchParamsClient.get("error_description");
 
-      console.log("OAuth code:", code);
-      console.log("OAuth error:", error);
-      console.log("OAuth error description:", errorDescription);
-
       if (error) {
-        console.error("OAuth error from server:", error, errorDescription);
         return;
       }
 
       if (code) {
-        console.log("Code found, checking if server already handled it...");
-
         const { data: sessionData, error: sessionError } =
           await supabase.auth.getSession();
 
         if (sessionError) {
-          console.error("Error checking session:", sessionError);
           router.push(
             `/auth/error?message=${encodeURIComponent(`Session check failed: ${sessionError.message}`)}`,
           );
@@ -81,39 +61,23 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
         }
 
         if (sessionData?.session) {
-          console.log("Session found from server-side callback!");
-          console.log("Session user ID:", sessionData.session.user.id);
-          console.log("Session user email:", sessionData.session.user.email);
-
           const userRole = sessionData.session.user.app_metadata?.role;
           const isAdmin = userRole === "admin";
           const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
 
-          console.log("Fallback redirect to:", redirectUrl);
           router.push(redirectUrl);
           return;
         }
 
-        console.log(
-          "No session found, trying client-side code exchange as fallback...",
-        );
         const { data, error: exchangeError } =
           await supabase.auth.exchangeCodeForSession(code);
 
         if (exchangeError) {
-          console.error("Client-side code exchange error:", exchangeError);
-          console.error(
-            "Full error object:",
-            JSON.stringify(exchangeError, null, 2),
-          );
-
           const errorDetails = {
             message: exchangeError.message || "Unknown error",
             status: exchangeError.status,
             code: (exchangeError as any).code || "unknown_code",
           };
-
-          console.error("Extracted error details:", errorDetails);
 
           const errorParams = new URLSearchParams({
             error: errorDetails.code,
@@ -124,12 +88,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
           return;
         }
 
-        console.log("Client-side session exchange successful!");
-        console.log("Session user ID:", data.session?.user.id);
-        console.log("Session user email:", data.session?.user.email);
-        console.log("Session user metadata:", data.session?.user.user_metadata);
-        console.log("Session app metadata:", data.session?.user.app_metadata);
-
         if (data.session) {
           await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -137,7 +95,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
             await supabase.auth.getUser();
 
           if (userError) {
-            console.error("Error getting user after session:", userError);
             router.push(
               `/auth/error?message=${encodeURIComponent(`Failed to get user: ${userError.message}`)}`,
             );
@@ -145,37 +102,13 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
           }
 
           if (userData.user) {
-            console.log("User authenticated:", userData.user.email);
-            console.log("User app_metadata:", userData.user.app_metadata);
-
             const { data: profile, error: profileError } = await supabase
               .from("profiles")
               .select("id, user_id, database_role, full_name, created_at")
               .eq("user_id", userData.user.id)
               .maybeSingle();
 
-            console.log("Profile query result:", profile);
-            console.log("Profile query error:", profileError);
-
             if (profileError) {
-              console.error("Profile query failed:", profileError);
-              console.error(
-                "Full error object:",
-                JSON.stringify(profileError, null, 2),
-              );
-
-              try {
-                const { data: debugData } = await supabase.rpc(
-                  "debug_user_creation",
-                  {
-                    user_id: userData.user.id,
-                  } as any,
-                );
-                console.log("Debug user creation data:", debugData);
-              } catch (debugError) {
-                console.error("Debug function failed:", debugError);
-              }
-
               router.push(
                 `/auth/error?message=${encodeURIComponent(`Profile creation failed: ${profileError.message}`)}`,
               );
@@ -187,19 +120,13 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
                 userData.user.app_metadata?.role || profile.database_role;
               const isAdmin = userRole === "admin";
               const redirectUrl = isAdmin ? "/admin/dashboard" : "/dashboard";
-              console.log("Existing user, redirecting to:", redirectUrl);
               router.push(redirectUrl);
             } else {
-              console.log("No profile found - trigger may have failed");
               const email = userData.user.email || "";
               const name =
                 userData.user.user_metadata?.full_name || email.split("@")[0];
 
               const profileCreationUrl = `/profile-creation?role=user&name=${encodeURIComponent(name)}`;
-              console.log(
-                "New user, redirecting to profile creation:",
-                profileCreationUrl,
-              );
               router.push(profileCreationUrl);
             }
           }
@@ -208,7 +135,6 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
         const { data: sessionData, error } = await supabase.auth.getSession();
 
         if (error) {
-          console.error("Error getting session:", error);
           const errorMessage =
             typeof error === "string"
               ? error
@@ -220,10 +146,8 @@ function AuthCallbackContent({ searchParams }: AuthCallbackContentProps) {
         }
 
         if (sessionData?.session) {
-          console.log("Session found:", sessionData.session);
           router.push("/dashboard");
         } else {
-          console.log("No session found and no OAuth code");
           router.push("/auth/error?message=No authentication parameters found");
         }
       }
