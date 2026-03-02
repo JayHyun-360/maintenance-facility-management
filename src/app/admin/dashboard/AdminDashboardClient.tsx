@@ -1340,9 +1340,27 @@ export default function AdminDashboardClient({
 
               {/* Analytics - Nature of Requests */}
               <div className="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn">
-                <h2 className="font-header text-lg font-semibold text-gray-900 mb-4">
-                  Requests by Nature
-                </h2>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="font-header text-lg font-semibold text-gray-900">
+                    Requests by Nature
+                  </h2>
+                  <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                      />
+                    </svg>
+                    <span>{stats.total} total requests</span>
+                  </div>
+                </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                   {[
                     {
@@ -1470,27 +1488,109 @@ export default function AdminDashboardClient({
                     return (
                       <div
                         key={nature.name}
-                        className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-300"
+                        className="group relative border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden bg-gradient-to-br from-white to-gray-50"
                       >
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-2xl">{nature.icon}</span>
-                          <span className="text-sm font-medium text-gray-700">
-                            {nature.name}
-                          </span>
+                        {/* Animated background effect */}
+                        <div
+                          className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-10 transition-opacity duration-300"
+                          style={{
+                            backgroundImage: `linear-gradient(135deg, ${nature.color.replace("bg-", "#").replace("500", "400")} 0%, ${nature.color.replace("bg-", "#").replace("500", "600")} 100%)`,
+                          }}
+                        ></div>
+
+                        {/* Icon with animation */}
+                        <div className="flex items-center justify-between mb-3 relative z-10">
+                          <div className="flex items-center gap-2">
+                            <div
+                              className={`p-2 rounded-lg ${nature.color} bg-opacity-10 group-hover:scale-110 transition-transform duration-300`}
+                            >
+                              <span className="text-2xl filter drop-shadow-sm">
+                                {nature.icon}
+                              </span>
+                            </div>
+                            <span className="text-sm font-semibold text-gray-800 group-hover:text-gray-900 transition-colors">
+                              {nature.name}
+                            </span>
+                          </div>
+                          {count > 0 && (
+                            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                          )}
                         </div>
-                        <div className="flex items-end gap-2">
-                          <span className="text-2xl font-bold text-gray-900">
-                            {count}
-                          </span>
-                          <span className="text-sm text-gray-500 mb-1">
-                            ({percentage}%)
-                          </span>
+
+                        {/* Count and percentage with improved typography */}
+                        <div className="flex items-end justify-between relative z-10">
+                          <div>
+                            <div className="flex items-baseline gap-1">
+                              <span className="text-3xl font-bold text-gray-900 group-hover:text-gray-800 transition-colors">
+                                {count}
+                              </span>
+                              <span className="text-sm text-gray-500 mb-1 font-medium">
+                                ({percentage}%)
+                              </span>
+                            </div>
+                            {count > 0 && (
+                              <p className="text-xs text-gray-400 mt-1">
+                                {count === 1 ? "request" : "requests"}
+                              </p>
+                            )}
+                          </div>
+
+                          {/* Mini pie chart indicator */}
+                          <div className="relative w-12 h-12">
+                            <svg className="w-12 h-12 transform -rotate-90">
+                              <circle
+                                cx="24"
+                                cy="24"
+                                r="20"
+                                stroke="currentColor"
+                                strokeWidth="3"
+                                fill="none"
+                                className="text-gray-200"
+                              />
+                              <circle
+                                cx="24"
+                                cy="24"
+                                r="20"
+                                stroke="currentColor"
+                                strokeWidth="3"
+                                fill="none"
+                                strokeDasharray={`${percentage * 1.26} 126`}
+                                className={`transition-all duration-500 ${nature.color.replace("bg-", "text-")}`}
+                                strokeLinecap="round"
+                              />
+                            </svg>
+                            {count > 0 && (
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <span className="text-xs font-bold text-gray-700">
+                                  {percentage}%
+                                </span>
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        <div className="mt-2 h-2 bg-gray-100 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${nature.color} transition-all duration-500`}
-                            style={{ width: `${percentage}%` }}
-                          />
+
+                        {/* Enhanced progress bar */}
+                        <div className="mt-3 relative z-10">
+                          <div className="h-2 bg-gray-100 rounded-full overflow-hidden shadow-inner">
+                            <div
+                              className={`h-full ${nature.color} transition-all duration-700 ease-out rounded-full relative overflow-hidden`}
+                              style={{ width: `${percentage}%` }}
+                            >
+                              {/* Animated shimmer effect */}
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-pulse"></div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Hover tooltip */}
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-20">
+                          <div className="font-semibold">{nature.name}</div>
+                          <div>
+                            {count} requests ({percentage}% of total)
+                          </div>
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                            <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
+                          </div>
                         </div>
                       </div>
                     );
@@ -1532,11 +1632,29 @@ export default function AdminDashboardClient({
               </div>
 
               {/* Nature Breakdown - Compact Bento */}
-              <div className="bg-white rounded-lg p-4 mb-6 border border-gray-100 hover:shadow-md transition-all duration-200">
-                <h3 className="font-header text-base font-semibold text-gray-900 mb-3">
-                  Requests by Nature
-                </h3>
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+              <div className="bg-white rounded-lg p-6 mb-6 border border-gray-100 hover:shadow-lg transition-all duration-300">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-header text-base font-semibold text-gray-900">
+                    Requests by Nature
+                  </h3>
+                  <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full">
+                    <svg
+                      className="w-3 h-3"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                      />
+                    </svg>
+                    <span>Live data</span>
+                  </div>
+                </div>
+                <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
                   {[
                     { name: "Plumbing", color: "#3B82F6" },
                     { name: "Electrical", color: "#EAB308" },
@@ -1555,22 +1673,77 @@ export default function AdminDashboardClient({
                     return (
                       <div
                         key={nature.name}
-                        className="text-center p-2 rounded hover:bg-gray-50 transition-colors"
+                        className="group relative text-center p-3 rounded-lg hover:bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer border border-transparent hover:border-gray-200"
                       >
-                        <p className="text-xs font-medium text-gray-700">
+                        {/* Nature icon with color */}
+                        <div className="flex justify-center mb-2">
+                          <div
+                            className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110"
+                            style={{ backgroundColor: `${nature.color}20` }}
+                          >
+                            <div
+                              className="w-6 h-6 rounded-full flex items-center justify-center"
+                              style={{ backgroundColor: nature.color }}
+                            >
+                              <svg
+                                className="w-3 h-3 text-white"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <circle cx="10" cy="10" r="3" />
+                              </svg>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Nature name */}
+                        <p className="text-xs font-semibold text-gray-700 mb-1 group-hover:text-gray-900 transition-colors">
                           {nature.name}
                         </p>
-                        <p className="text-xl font-bold text-gray-900 mt-1">
-                          {count}
-                        </p>
-                        <div className="mt-1 h-1 bg-gray-100 rounded-full overflow-hidden">
-                          <div
-                            className="h-full rounded-full"
-                            style={{
-                              width: `${percentage}%`,
-                              backgroundColor: nature.color,
-                            }}
-                          />
+
+                        {/* Count with emphasis */}
+                        <div className="relative">
+                          <p className="text-2xl font-bold text-gray-900 group-hover:text-gray-800 transition-colors">
+                            {count}
+                          </p>
+                          {count > 0 && (
+                            <div className="absolute -top-1 -right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                          )}
+                        </div>
+
+                        {/* Enhanced progress bar with percentage */}
+                        <div className="mt-2">
+                          <div className="relative h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-700 ease-out relative overflow-hidden"
+                              style={{
+                                width: `${percentage}%`,
+                                backgroundColor: nature.color,
+                              }}
+                            >
+                              {/* Subtle shimmer effect */}
+                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-pulse"></div>
+                            </div>
+                          </div>
+                          {percentage > 0 && (
+                            <p className="text-xs text-gray-500 mt-1 font-medium">
+                              {percentage}%
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Interactive tooltip */}
+                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1.5 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-30">
+                          <div className="font-semibold">{nature.name}</div>
+                          <div>
+                            {count} request{count !== 1 ? "s" : ""}
+                          </div>
+                          <div className="text-gray-300">
+                            {percentage}% of total
+                          </div>
+                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                            <div className="w-0 h-0 border-l-3 border-r-3 border-t-3 border-transparent border-t-gray-900"></div>
+                          </div>
                         </div>
                       </div>
                     );
