@@ -13,7 +13,9 @@
     "env": {
       "NEXT_TELEMETRY_DISABLED": "1",
       "ESLINT_NO_DEV_ERRORS": "true",
-      "NEXT_PRIVATE_CACHE_KEY": "v2"
+      "NEXT_PRIVATE_CACHE_KEY": "v3",
+      "NEXT_DISABLE_TURBOPACK": "1"
     }
-  }
+  },
+  "regions": ["iad1"]
 }
