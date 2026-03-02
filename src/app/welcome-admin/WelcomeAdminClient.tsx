@@ -48,8 +48,8 @@ export default function WelcomeAdminClient({
             Welcome, {userName}!
           </h1>
           <p className="text-gray-600">
-            Your admin account has been successfully created. You're ready to
-            manage the Maintenance Facility system.
+            Your admin account has been successfully created. You&apos;re ready
+            to manage the Maintenance Facility system.
           </p>
         </div>
 

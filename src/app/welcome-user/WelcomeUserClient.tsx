@@ -53,8 +53,8 @@ export default function WelcomeUserClient({
             Welcome, {userName}!
           </h1>
           <p className="text-gray-600">
-            Your account has been successfully created and you're ready to start
-            using the Maintenance Portal.
+            Your account has been successfully created and you&apos;re ready to
+            start using the Maintenance Portal.
           </p>
         </div>
 

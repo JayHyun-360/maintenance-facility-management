@@ -553,7 +553,7 @@ export default function LoginPage() {
                       onClick={() => setShowSignUp(true)}
                       className="text-sm text-green-600 hover:text-green-700"
                     >
-                      Don't have an account? Sign up
+                      Don&apos;t have an account? Sign up
                     </button>
                   </div>
                 </form>

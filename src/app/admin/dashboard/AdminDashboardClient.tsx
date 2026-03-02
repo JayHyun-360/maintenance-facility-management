@@ -849,6 +849,8 @@ export default function AdminDashboardClient({
     },
   );
 
+  RequestRow.displayName = "RequestRow";
+
   // Generate distribution data for pie chart
   const generateDistributionData = () => {
     const total = stats.pending + stats.inProgress + stats.completed;
