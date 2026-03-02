@@ -31,6 +31,18 @@ import {
   Cell,
 } from "recharts";
 import { format, subDays, eachDayOfInterval, startOfDay } from "date-fns";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Wrench,
+  Zap,
+  Hammer,
+  Wind,
+  Sparkles,
+  MoreHorizontal,
+  TrendingUp,
+  Activity,
+  BarChart3,
+} from "lucide-react";
 
 // Debounce hook for performance optimization
 const useDebounce = <T,>(value: T, delay: number): T => {
@@ -1338,236 +1350,252 @@ export default function AdminDashboardClient({
                 })()}
               </div>
 
-              {/* Analytics - Nature of Requests */}
-              <div className="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="font-header text-lg font-semibold text-gray-900">
-                    Requests by Nature
-                  </h2>
-                  <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+              {/* Enhanced Analytics - Nature of Requests */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="bg-gradient-to-br from-white via-white to-gray-50/30 rounded-2xl shadow-lg border border-gray-100/50 p-8 mb-8 backdrop-blur-sm relative overflow-hidden"
+              >
+                {/* Background decoration */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/5 to-purple-400/5 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-green-400/5 to-cyan-400/5 rounded-full blur-2xl"></div>
+
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                      <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.2, duration: 0.3 }}
+                        className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
+                      >
+                        <BarChart3 className="w-6 h-6 text-white" />
+                      </motion.div>
+                      <div>
+                        <h2 className="font-bold text-xl text-gray-900 tracking-tight">
+                          Requests by Nature
+                        </h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Distribution of maintenance requests
+                        </p>
+                      </div>
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3, duration: 0.3 }}
+                      className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                      />
-                    </svg>
-                    <span>{stats.total} total requests</span>
+                      <Activity className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm font-semibold text-gray-700">
+                        {stats.total}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        total requests
+                      </span>
+                    </motion.div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                    {[
+                      {
+                        name: "Plumbing",
+                        color: "from-blue-500 to-blue-600",
+                        bgLight: "bg-blue-50",
+                        icon: Wrench,
+                        gradient:
+                          "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+                      },
+                      {
+                        name: "Electrical",
+                        color: "from-yellow-500 to-orange-500",
+                        bgLight: "bg-yellow-50",
+                        icon: Zap,
+                        gradient:
+                          "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
+                      },
+                      {
+                        name: "Carpentry",
+                        color: "from-amber-600 to-amber-700",
+                        bgLight: "bg-amber-50",
+                        icon: Hammer,
+                        gradient:
+                          "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
+                      },
+                      {
+                        name: "HVAC",
+                        color: "from-cyan-500 to-cyan-600",
+                        bgLight: "bg-cyan-50",
+                        icon: Wind,
+                        gradient:
+                          "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
+                      },
+                      {
+                        name: "Cleaning",
+                        color: "from-purple-500 to-purple-600",
+                        bgLight: "bg-purple-50",
+                        icon: Sparkles,
+                        gradient:
+                          "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
+                      },
+                      {
+                        name: "Other",
+                        color: "from-gray-500 to-gray-600",
+                        bgLight: "bg-gray-50",
+                        icon: MoreHorizontal,
+                        gradient:
+                          "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
+                      },
+                    ].map((nature, index) => {
+                      const count = requests.filter(
+                        (r) => r.nature === nature.name,
+                      ).length;
+                      const percentage =
+                        stats.total > 0
+                          ? Math.round((count / stats.total) * 100)
+                          : 0;
+                      const Icon = nature.icon;
+
+                      return (
+                        <motion.div
+                          key={nature.name}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            delay: 0.1 * index,
+                            duration: 0.4,
+                            ease: "easeOut",
+                          }}
+                          whileHover={{
+                            y: -4,
+                            scale: 1.02,
+                            transition: { duration: 0.2 },
+                          }}
+                          whileTap={{ scale: 0.98 }}
+                          className="group relative"
+                        >
+                          <div className="relative bg-white rounded-2xl p-5 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+                            {/* Animated background gradient */}
+                            <motion.div
+                              className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
+                              style={{ background: nature.gradient }}
+                            />
+
+                            {/* Top decoration line */}
+                            <motion.div
+                              className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${nature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                              initial={{ scaleX: 0 }}
+                              whileHover={{ scaleX: 1 }}
+                              transition={{ duration: 0.3 }}
+                            />
+
+                            <div className="relative z-10">
+                              {/* Icon section */}
+                              <div className="flex items-center justify-between mb-4">
+                                <motion.div
+                                  className={`p-3 rounded-xl ${nature.bgLight} group-hover:scale-110 transition-transform duration-300`}
+                                  whileHover={{ rotate: [0, -10, 10, 0] }}
+                                  transition={{ duration: 0.5 }}
+                                >
+                                  <Icon
+                                    className="w-5 h-5"
+                                    style={{
+                                      color:
+                                        nature.gradient.match(
+                                          /#[0-9A-F]{6}/,
+                                        )?.[0] || "#000",
+                                    }}
+                                  />
+                                </motion.div>
+                                {count > 0 && (
+                                  <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 0.2 + index * 0.1 }}
+                                    className="w-2 h-2 bg-green-400 rounded-full"
+                                  />
+                                )}
+                              </div>
+
+                              {/* Content */}
+                              <div className="space-y-3">
+                                <div>
+                                  <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-700 transition-colors">
+                                    {nature.name}
+                                  </h3>
+                                </div>
+
+                                <div className="flex items-baseline gap-2">
+                                  <motion.span
+                                    className="text-2xl font-bold text-gray-900"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.3 + index * 0.1 }}
+                                  >
+                                    {count}
+                                  </motion.span>
+                                  <span className="text-sm text-gray-500 font-medium">
+                                    {percentage}%
+                                  </span>
+                                </div>
+
+                                {/* Progress bar */}
+                                <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
+                                  <motion.div
+                                    className={`h-full bg-gradient-to-r ${nature.color} rounded-full relative`}
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${percentage}%` }}
+                                    transition={{
+                                      delay: 0.4 + index * 0.1,
+                                      duration: 0.8,
+                                      ease: "easeOut",
+                                    }}
+                                  >
+                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
+                                  </motion.div>
+                                </div>
+
+                                {count > 0 && (
+                                  <motion.p
+                                    className="text-xs text-gray-400"
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ delay: 0.5 + index * 0.1 }}
+                                  >
+                                    {count === 1 ? "request" : "requests"}
+                                  </motion.p>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Hover tooltip */}
+                            <AnimatePresence>
+                              <motion.div
+                                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-50 whitespace-nowrap"
+                                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                                transition={{ duration: 0.2 }}
+                              >
+                                <div className="font-semibold">
+                                  {nature.name}
+                                </div>
+                                <div>
+                                  {count} requests ({percentage}% of total)
+                                </div>
+                                <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                                  <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />
+                                </div>
+                              </motion.div>
+                            </AnimatePresence>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                  {[
-                    {
-                      name: "Plumbing",
-                      color: "bg-blue-500",
-                      icon: (
-                        <svg
-                          className="w-6 h-6 transition-transform duration-300 group-hover:rotate-12"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle cx="12" cy="12" r="3" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Electrical",
-                      color: "bg-yellow-500",
-                      icon: (
-                        <svg
-                          className="w-6 h-6 transition-transform duration-300 group-hover:rotate-180"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M13 2L3 14h6v7l11-11z" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Carpentry",
-                      color: "bg-amber-700",
-                      icon: (
-                        <svg
-                          className="w-6 h-6 transition-transform duration-300 group-hover:scale-110"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <rect x="6" y="4" width="12" height="16" rx="2" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "HVAC",
-                      color: "bg-cyan-500",
-                      icon: (
-                        <svg
-                          className="w-6 h-6 transition-transform duration-300 group-hover:rotate-180"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle cx="12" cy="12" r="4" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Cleaning",
-                      color: "bg-purple-500",
-                      icon: (
-                        <svg
-                          className="w-6 h-6 transition-transform duration-300 group-hover:rotate-45"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <rect x="8" y="6" width="8" height="12" rx="1" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Other",
-                      color: "bg-gray-500",
-                      icon: (
-                        <svg
-                          className="w-6 h-6 transition-transform duration-300 group-hover:scale-125"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <rect x="6" y="8" width="12" height="8" rx="1" />
-                        </svg>
-                      ),
-                    },
-                  ].map((nature) => {
-                    const count = requests.filter(
-                      (r) => r.nature === nature.name,
-                    ).length;
-                    const percentage =
-                      stats.total > 0
-                        ? Math.round((count / stats.total) * 100)
-                        : 0;
-                    return (
-                      <div
-                        key={nature.name}
-                        className="group relative border border-gray-200 rounded-xl p-4 hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer overflow-hidden bg-gradient-to-br from-white to-gray-50"
-                      >
-                        {/* Animated background effect */}
-                        <div
-                          className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-10 transition-opacity duration-300"
-                          style={{
-                            backgroundImage: `linear-gradient(135deg, ${nature.color.replace("bg-", "#").replace("500", "400")} 0%, ${nature.color.replace("bg-", "#").replace("500", "600")} 100%)`,
-                          }}
-                        ></div>
-
-                        {/* Icon with animation */}
-                        <div className="flex items-center justify-between mb-3 relative z-10">
-                          <div className="flex items-center gap-2">
-                            <div
-                              className={`p-2 rounded-lg ${nature.color} bg-opacity-10 group-hover:scale-110 transition-transform duration-300`}
-                            >
-                              <span
-                                className="text-2xl filter drop-shadow-sm group-hover:rotate-12 transition-transform duration-300"
-                                style={{
-                                  color: nature.color
-                                    .replace("bg-", "#")
-                                    .replace("500", "600"),
-                                }}
-                              >
-                                {nature.icon}
-                              </span>
-                            </div>
-                            <span className="text-sm font-semibold text-gray-800 group-hover:text-gray-900 transition-colors">
-                              {nature.name}
-                            </span>
-                          </div>
-                          {count > 0 && (
-                            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                          )}
-                        </div>
-
-                        {/* Count and percentage with improved typography */}
-                        <div className="flex items-end justify-between relative z-10">
-                          <div>
-                            <div className="flex items-baseline gap-1">
-                              <span className="text-3xl font-bold text-gray-900 group-hover:text-gray-800 transition-colors">
-                                {count}
-                              </span>
-                              <span className="text-sm text-gray-500 mb-1 font-medium">
-                                ({percentage}%)
-                              </span>
-                            </div>
-                            {count > 0 && (
-                              <p className="text-xs text-gray-400 mt-1">
-                                {count === 1 ? "request" : "requests"}
-                              </p>
-                            )}
-                          </div>
-
-                          {/* Mini pie chart indicator */}
-                          <div className="relative w-12 h-12">
-                            <svg className="w-12 h-12 transform -rotate-90">
-                              <circle
-                                cx="24"
-                                cy="24"
-                                r="20"
-                                stroke="currentColor"
-                                strokeWidth="3"
-                                fill="none"
-                                className="text-gray-200"
-                              />
-                              <circle
-                                cx="24"
-                                cy="24"
-                                r="20"
-                                stroke="currentColor"
-                                strokeWidth="3"
-                                fill="none"
-                                strokeDasharray={`${percentage * 1.26} 126`}
-                                className={`transition-all duration-500 ${nature.color.replace("bg-", "text-")}`}
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                            {count > 0 && (
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-xs font-bold text-gray-700">
-                                  {percentage}%
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
-                        {/* Enhanced progress bar */}
-                        <div className="mt-3 relative z-10">
-                          <div className="h-2 bg-gray-100 rounded-full overflow-hidden shadow-inner">
-                            <div
-                              className={`h-full ${nature.color} transition-all duration-700 ease-out rounded-full relative overflow-hidden`}
-                              style={{ width: `${percentage}%` }}
-                            >
-                              {/* Animated shimmer effect */}
-                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12 animate-pulse"></div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Hover tooltip */}
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-20">
-                          <div className="font-semibold">{nature.name}</div>
-                          <div>
-                            {count} requests ({percentage}% of total)
-                          </div>
-                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-                            <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+              </motion.div>
             </>
           )}
 
