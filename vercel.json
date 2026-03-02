@@ -12,7 +12,8 @@
   "build": {
     "env": {
       "NEXT_TELEMETRY_DISABLED": "1",
-      "ESLINT_NO_DEV_ERRORS": "true"
+      "ESLINT_NO_DEV_ERRORS": "true",
+      "NEXT_PRIVATE_CACHE_KEY": "v2"
     }
   }
 }
