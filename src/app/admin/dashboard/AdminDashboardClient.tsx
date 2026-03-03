@@ -2999,7 +2999,7 @@ export default function AdminDashboardClient({
       {/* AI Chat Sidebar */}
       <div
         ref={aiChatRef}
-        className={`fixed top-20 left-0 h-[calc(100vh-5rem)] w-80 bg-slate-900 shadow-xl z-[60] transform transition-all duration-500 ease-out ${
+        className={`fixed top-0 left-0 h-screen w-80 bg-slate-900 shadow-xl z-[60] transform transition-all duration-500 ease-out ${
           showAIChat ? "translate-x-0" : "-translate-x-full"
         }`}
       >
