@@ -2999,17 +2999,18 @@ export default function AdminDashboardClient({
       {/* AI Chat Sidebar */}
       <div
         ref={aiChatRef}
-        className={`fixed top-0 left-0 h-screen w-80 bg-slate-900 shadow-xl z-[60] transform transition-all duration-500 ease-out ${
+        className={`fixed top-0 left-0 h-screen w-96 bg-slate-900 shadow-2xl z-[60] transform transition-all duration-500 ease-out ${
           showAIChat ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         <div className="h-full flex flex-col">
-          {/* Simplified Header */}
-          <div className="bg-[#427A43] p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+          {/* Enhanced Header with Robot Icon */}
+          <div className="bg-gradient-to-r from-[#427A43] to-emerald-600 p-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                {/* Cool Robot Icon */}
                 <svg
-                  className="w-5 h-5 text-white"
+                  className="w-7 h-7 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -3018,24 +3019,27 @@ export default function AdminDashboardClient({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={1.5}
-                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
                   />
                 </svg>
               </div>
               <div>
-                <h2 className="text-white font-semibold">AI Assistant</h2>
-                <p className="text-white/70 text-xs">Coming soon</p>
+                <h2 className="text-white font-bold text-lg">AI Assistant</h2>
+                <p className="text-white/80 text-xs flex items-center gap-2">
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                  Neural Engine Ready
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Clean Chat Area */}
-          <div className="flex-1 flex items-center justify-center p-6">
-            <div className="text-center">
-              {/* Simple AI Icon */}
-              <div className="w-16 h-16 bg-[#427A43]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          {/* Chat Messages Area */}
+          <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            {/* Sample AI Message */}
+            <div className="flex gap-3">
+              <div className="w-8 h-8 bg-[#427A43]/20 rounded-lg flex items-center justify-center flex-shrink-0">
                 <svg
-                  className="w-8 h-8 text-[#427A43]"
+                  className="w-4 h-4 text-[#427A43]"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -3044,36 +3048,163 @@ export default function AdminDashboardClient({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={1.5}
-                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
                   />
                 </svg>
               </div>
+              <div className="flex-1">
+                <div className="bg-slate-800 rounded-2xl rounded-tl-none p-3 max-w-xs">
+                  <p className="text-white text-sm">
+                    Hello! I'm your AI maintenance assistant. I'm currently
+                    getting ready to help you manage maintenance requests
+                    efficiently.
+                  </p>
+                </div>
+                <p className="text-slate-500 text-xs mt-1">AI • Coming soon</p>
+              </div>
+            </div>
 
-              <h3 className="text-white font-semibold text-lg mb-2">
-                AI Assistant
-              </h3>
-              <p className="text-slate-400 text-sm max-w-xs mx-auto">
-                Get ready for intelligent maintenance management with AI-powered
-                insights and automation
-              </p>
+            {/* Coming Soon Features */}
+            <div className="bg-gradient-to-r from-[#427A43]/10 to-emerald-600/10 rounded-xl p-4 border border-[#427A43]/20">
+              <div className="flex items-center gap-2 mb-3">
+                <svg
+                  className="w-5 h-5 text-[#427A43]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+                <h3 className="text-white font-semibold">
+                  Coming Soon Features
+                </h3>
+              </div>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-[#427A43] rounded-full"></div>
+                  <p className="text-slate-300 text-sm">
+                    Smart request prioritization
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-[#427A43] rounded-full"></div>
+                  <p className="text-slate-300 text-sm">
+                    Predictive maintenance insights
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 bg-[#427A43] rounded-full"></div>
+                  <p className="text-slate-300 text-sm">
+                    Automated workflow optimization
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid grid-cols-2 gap-2">
+              <button className="p-3 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors group">
+                <svg
+                  className="w-5 h-5 text-[#427A43] group-hover:text-emerald-400 mx-auto mb-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                  />
+                </svg>
+                <p className="text-white text-xs">Reports</p>
+              </button>
+              <button className="p-3 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors group">
+                <svg
+                  className="w-5 h-5 text-[#427A43] group-hover:text-emerald-400 mx-auto mb-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
+                </svg>
+                <p className="text-white text-xs">Analytics</p>
+              </button>
             </div>
           </div>
 
-          {/* Minimal Input Area */}
-          <div className="p-4 border-t border-slate-800">
+          {/* Enhanced Input Area */}
+          <div className="p-4 border-t border-slate-800 bg-slate-900/50">
+            <div className="flex items-center gap-2 mb-3">
+              <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                  />
+                </svg>
+              </button>
+              <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </button>
+              <button className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors">
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </button>
+            </div>
             <div className="relative">
               <input
                 type="text"
-                placeholder="Ask me anything..."
-                className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
+                placeholder="Ask me anything about maintenance..."
+                className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
                 disabled
               />
               <button
-                className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-[#427A43] text-white rounded-md hover:bg-[#4d8c4f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-[#427A43] text-white rounded-lg hover:bg-[#4d8c4f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled
               >
                 <svg
-                  className="w-3.5 h-3.5"
+                  className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -3086,6 +3217,22 @@ export default function AdminDashboardClient({
                   />
                 </svg>
               </button>
+            </div>
+            <div className="flex items-center justify-center mt-2">
+              <p className="text-xs text-slate-500 flex items-center gap-2">
+                <span>AI assistant is getting ready</span>
+                <div className="flex items-center gap-1">
+                  <div className="w-1.5 h-1.5 bg-[#427A43] rounded-full animate-bounce"></div>
+                  <div
+                    className="w-1.5 h-1.5 bg-[#427A43] rounded-full animate-bounce"
+                    style={{ animationDelay: "0.1s" }}
+                  ></div>
+                  <div
+                    className="w-1.5 h-1.5 bg-[#427A43] rounded-full animate-bounce"
+                    style={{ animationDelay: "0.2s" }}
+                  ></div>
+                </div>
+              </p>
             </div>
           </div>
         </div>
