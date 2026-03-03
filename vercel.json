@@ -16,6 +16,5 @@
       "NEXT_PRIVATE_CACHE_KEY": "v3",
       "NEXT_DISABLE_TURBOPACK": "1"
     }
-  },
-  "regions": ["iad1"]
+  }
 }
