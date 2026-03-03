@@ -1737,128 +1737,120 @@ export default function AdminDashboardClient({
                         gradient:
                           "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
                       },
-                    ]
-                      .map((nature) => ({
-                        ...nature,
-                        count: requests.filter((r) => r.nature === nature.name)
-                          .length,
-                      }))
-                      .sort((a, b) => b.count - a.count)
-                      .slice(0, 3)
-                      .map((nature, index) => {
-                        const count = requests.filter(
-                          (r) => r.nature === nature.name,
-                        ).length;
-                        const percentage =
-                          stats.total > 0
-                            ? Math.round((count / stats.total) * 100)
-                            : 0;
-                        const Icon = nature.icon;
+                    ].map((nature, index) => {
+                      const count = requests.filter(
+                        (r) => r.nature === nature.name,
+                      ).length;
+                      const percentage =
+                        stats.total > 0
+                          ? Math.round((count / stats.total) * 100)
+                          : 0;
+                      const Icon = nature.icon;
 
-                        return (
-                          <motion.div
-                            key={nature.name}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                              delay: 0.1 * index,
-                              duration: 0.4,
-                              ease: "easeOut",
-                            }}
-                            whileHover={{
-                              y: -4,
-                              scale: 1.02,
-                              transition: { duration: 0.2 },
-                            }}
-                            whileTap={{ scale: 0.98 }}
-                            className="group relative"
-                          >
-                            <div className="relative bg-white rounded-2xl p-5 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
-                              {/* Animated background gradient */}
-                              <motion.div
-                                className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
-                                style={{ background: nature.gradient }}
-                              />
+                      return (
+                        <motion.div
+                          key={nature.name}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            delay: 0.1 * index,
+                            duration: 0.4,
+                            ease: "easeOut",
+                          }}
+                          whileHover={{
+                            y: -4,
+                            scale: 1.02,
+                            transition: { duration: 0.2 },
+                          }}
+                          whileTap={{ scale: 0.98 }}
+                          className="group relative"
+                        >
+                          <div className="relative bg-white rounded-2xl p-5 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+                            {/* Animated background gradient */}
+                            <motion.div
+                              className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
+                              style={{ background: nature.gradient }}
+                            />
 
-                              {/* Top decoration line */}
-                              <motion.div
-                                className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${nature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-                                initial={{ scaleX: 0 }}
-                                whileHover={{ scaleX: 1 }}
-                                transition={{ duration: 0.3 }}
-                              />
+                            {/* Top decoration line */}
+                            <motion.div
+                              className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${nature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                              initial={{ scaleX: 0 }}
+                              whileHover={{ scaleX: 1 }}
+                              transition={{ duration: 0.3 }}
+                            />
 
-                              <div className="relative z-10">
-                                {/* Icon section */}
-                                <div className="flex items-center justify-between mb-4">
+                            <div className="relative z-10">
+                              {/* Icon section */}
+                              <div className="flex items-center justify-between mb-4">
+                                <motion.div
+                                  className={`p-3 rounded-xl ${nature.bgLight} group-hover:scale-110 transition-transform duration-300`}
+                                  whileHover={{ rotate: [0, -10, 10, 0] }}
+                                  transition={{ duration: 0.5 }}
+                                >
+                                  <Icon
+                                    className="w-5 h-5"
+                                    style={{
+                                      color:
+                                        nature.gradient.match(
+                                          /#[0-9A-F]{6}/,
+                                        )?.[0] || "#000",
+                                    }}
+                                  />
+                                </motion.div>
+                                {count > 0 && (
                                   <motion.div
-                                    className={`p-3 rounded-xl ${nature.bgLight} group-hover:scale-110 transition-transform duration-300`}
-                                    whileHover={{ rotate: [0, -10, 10, 0] }}
-                                    transition={{ duration: 0.5 }}
-                                  >
-                                    <Icon
-                                      className="w-5 h-5"
-                                      style={{
-                                        color:
-                                          nature.gradient.match(
-                                            /#[0-9A-F]{6}/,
-                                          )?.[0] || "#000",
-                                      }}
-                                    />
-                                  </motion.div>
-                                  {count > 0 && (
-                                    <motion.div
-                                      initial={{ scale: 0 }}
-                                      animate={{ scale: 1 }}
-                                      transition={{ delay: 0.2 + index * 0.1 }}
-                                      className="w-2 h-2 bg-green-400 rounded-full"
-                                    />
-                                  )}
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 0.2 + index * 0.1 }}
+                                    className="w-2 h-2 bg-green-400 rounded-full"
+                                  />
+                                )}
+                              </div>
+
+                              {/* Content */}
+                              <div className="space-y-3">
+                                <div>
+                                  <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-700 transition-colors">
+                                    {nature.name}
+                                  </h3>
                                 </div>
 
-                                {/* Content */}
-                                <div className="space-y-3">
-                                  <div>
-                                    <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-700 transition-colors">
-                                      {nature.name}
-                                    </h3>
-                                  </div>
+                                <div className="flex items-baseline gap-2">
+                                  <motion.span
+                                    className="text-2xl font-bold text-gray-900"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.3 + index * 0.1 }}
+                                  >
+                                    {count}
+                                  </motion.span>
+                                  <span className="text-sm text-gray-500 font-medium">
+                                    {percentage}%
+                                  </span>
+                                </div>
 
-                                  <div className="flex items-baseline gap-2">
-                                    <motion.span
-                                      className="text-2xl font-bold text-gray-900"
-                                      initial={{ opacity: 0, y: 10 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                      transition={{ delay: 0.3 + index * 0.1 }}
-                                    >
-                                      {count}
-                                    </motion.span>
-                                    <span className="text-sm text-gray-500 font-medium">
-                                      {percentage}%
-                                    </span>
-                                  </div>
-
-                                  {/* Progress bar */}
-                                  <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
-                                    <motion.div
-                                      className={`h-full bg-gradient-to-r ${nature.color} rounded-full relative`}
-                                      initial={{ width: 0 }}
-                                      animate={{ width: `${percentage}%` }}
-                                      transition={{
-                                        delay: 0.4 + index * 0.1,
-                                        duration: 0.8,
-                                        ease: "easeOut",
-                                      }}
-                                    >
-                                      <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                                    </motion.div>
-                                  </div>
+                                {/* Progress bar */}
+                                <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
+                                  <motion.div
+                                    className={`h-full bg-gradient-to-r ${nature.color} rounded-full relative`}
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${percentage}%` }}
+                                    transition={{
+                                      delay: 0.4 + index * 0.1,
+                                      duration: 0.8,
+                                      ease: "easeOut",
+                                    }}
+                                  >
+                                    <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                                  </motion.div>
                                 </div>
                               </div>
                             </div>
-                          </motion.div>
-                        );
-                      })}
+                          </div>
+                        </motion.div>
+                      );
+                    })}
                   </div>
                 </div>
               </motion.div>
