@@ -1352,7 +1352,7 @@ export default function AdminDashboardClient({
                 })()}
               </div>
 
-              {/* Enhanced Analytics - Nature of Requests */}
+              {/* Nature Breakdown - Most Requests (Top 3) */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1376,10 +1376,10 @@ export default function AdminDashboardClient({
                       </motion.div>
                       <div>
                         <h2 className="font-bold text-xl text-gray-900 tracking-tight">
-                          Requests by Nature
+                          Most Requests by Nature
                         </h2>
                         <p className="text-sm text-gray-500 mt-1">
-                          Distribution of maintenance requests
+                          Top 3 maintenance request categories
                         </p>
                       </div>
                     </div>
@@ -1399,7 +1399,7 @@ export default function AdminDashboardClient({
                     </motion.div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {[
                       {
                         name: "Plumbing",
@@ -1449,152 +1449,160 @@ export default function AdminDashboardClient({
                         gradient:
                           "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
                       },
-                    ].map((nature, index) => {
-                      const count = requests.filter(
-                        (r) => r.nature === nature.name,
-                      ).length;
-                      const percentage =
-                        stats.total > 0
-                          ? Math.round((count / stats.total) * 100)
-                          : 0;
-                      const Icon = nature.icon;
+                    ]
+                      .map((nature) => ({
+                        ...nature,
+                        count: requests.filter((r) => r.nature === nature.name)
+                          .length,
+                      }))
+                      .sort((a, b) => b.count - a.count)
+                      .slice(0, 3)
+                      .map((nature, index) => {
+                        const count = requests.filter(
+                          (r) => r.nature === nature.name,
+                        ).length;
+                        const percentage =
+                          stats.total > 0
+                            ? Math.round((count / stats.total) * 100)
+                            : 0;
+                        const Icon = nature.icon;
 
-                      return (
-                        <motion.div
-                          key={nature.name}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{
-                            delay: 0.1 * index,
-                            duration: 0.4,
-                            ease: "easeOut",
-                          }}
-                          whileHover={{
-                            y: -4,
-                            scale: 1.02,
-                            transition: { duration: 0.2 },
-                          }}
-                          whileTap={{ scale: 0.98 }}
-                          className="group relative"
-                        >
-                          <div className="relative bg-white rounded-2xl p-5 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
-                            {/* Animated background gradient */}
-                            <motion.div
-                              className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
-                              style={{ background: nature.gradient }}
-                            />
-
-                            {/* Top decoration line */}
-                            <motion.div
-                              className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${nature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-                              initial={{ scaleX: 0 }}
-                              whileHover={{ scaleX: 1 }}
-                              transition={{ duration: 0.3 }}
-                            />
-
-                            <div className="relative z-10">
-                              {/* Icon section */}
-                              <div className="flex items-center justify-between mb-4">
-                                <motion.div
-                                  className={`p-3 rounded-xl ${nature.bgLight} group-hover:scale-110 transition-transform duration-300`}
-                                  whileHover={{ rotate: [0, -10, 10, 0] }}
-                                  transition={{ duration: 0.5 }}
-                                >
-                                  <Icon
-                                    className="w-5 h-5"
-                                    style={{
-                                      color:
-                                        nature.gradient.match(
-                                          /#[0-9A-F]{6}/,
-                                        )?.[0] || "#000",
-                                    }}
-                                  />
-                                </motion.div>
-                                {count > 0 && (
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ delay: 0.2 + index * 0.1 }}
-                                    className="w-2 h-2 bg-green-400 rounded-full"
-                                  />
-                                )}
-                              </div>
-
-                              {/* Content */}
-                              <div className="space-y-3">
-                                <div>
-                                  <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-700 transition-colors">
-                                    {nature.name}
-                                  </h3>
-                                </div>
-
-                                <div className="flex items-baseline gap-2">
-                                  <motion.span
-                                    className="text-2xl font-bold text-gray-900"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.3 + index * 0.1 }}
-                                  >
-                                    {count}
-                                  </motion.span>
-                                  <span className="text-sm text-gray-500 font-medium">
-                                    {percentage}%
-                                  </span>
-                                </div>
-
-                                {/* Progress bar */}
-                                <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
-                                  <motion.div
-                                    className={`h-full bg-gradient-to-r ${nature.color} rounded-full relative`}
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${percentage}%` }}
-                                    transition={{
-                                      delay: 0.4 + index * 0.1,
-                                      duration: 0.8,
-                                      ease: "easeOut",
-                                    }}
-                                  >
-                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
-                                  </motion.div>
-                                </div>
-
-                                {count > 0 && (
-                                  <motion.p
-                                    className="text-xs text-gray-400"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ delay: 0.5 + index * 0.1 }}
-                                  >
-                                    {count === 1 ? "request" : "requests"}
-                                  </motion.p>
-                                )}
-                              </div>
-                            </div>
-
-                            {/* Hover tooltip */}
-                            <AnimatePresence>
+                        return (
+                          <motion.div
+                            key={nature.name}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{
+                              delay: 0.1 * index,
+                              duration: 0.4,
+                              ease: "easeOut",
+                            }}
+                            whileHover={{
+                              y: -4,
+                              scale: 1.02,
+                              transition: { duration: 0.2 },
+                            }}
+                            whileTap={{ scale: 0.98 }}
+                            className="group relative"
+                          >
+                            <div className="relative bg-white rounded-2xl p-5 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+                              {/* Animated background gradient */}
                               <motion.div
-                                className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-50 whitespace-nowrap"
-                                initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                                animate={{ opacity: 1, y: 0, scale: 1 }}
-                                exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                                transition={{ duration: 0.2 }}
-                              >
-                                <div className="font-semibold">
-                                  {nature.name}
+                                className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
+                                style={{ background: nature.gradient }}
+                              />
+
+                              {/* Top decoration line */}
+                              <motion.div
+                                className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${nature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                                initial={{ scaleX: 0 }}
+                                whileHover={{ scaleX: 1 }}
+                                transition={{ duration: 0.3 }}
+                              />
+
+                              <div className="relative z-10">
+                                {/* Icon section */}
+                                <div className="flex items-center justify-between mb-4">
+                                  <motion.div
+                                    className={`p-3 rounded-xl ${nature.bgLight} group-hover:scale-110 transition-transform duration-300`}
+                                    whileHover={{ rotate: [0, -10, 10, 0] }}
+                                    transition={{ duration: 0.5 }}
+                                  >
+                                    <Icon
+                                      className="w-5 h-5"
+                                      style={{
+                                        color:
+                                          nature.gradient.match(
+                                            /#[0-9A-F]{6}/,
+                                          )?.[0] || "#000",
+                                      }}
+                                    />
+                                  </motion.div>
+                                  {count > 0 && (
+                                    <motion.div
+                                      initial={{ scale: 0 }}
+                                      animate={{ scale: 1 }}
+                                      transition={{ delay: 0.2 + index * 0.1 }}
+                                      className="w-2 h-2 bg-green-400 rounded-full"
+                                    />
+                                  )}
                                 </div>
-                                <div>
-                                  {count} requests ({percentage}% of total)
+
+                                {/* Content */}
+                                <div className="space-y-3">
+                                  <div>
+                                    <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-700 transition-colors">
+                                      {nature.name}
+                                    </h3>
+                                  </div>
+
+                                  <div className="flex items-baseline gap-2">
+                                    <motion.span
+                                      className="text-2xl font-bold text-gray-900"
+                                      initial={{ opacity: 0, y: 10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      transition={{ delay: 0.3 + index * 0.1 }}
+                                    >
+                                      {count}
+                                    </motion.span>
+                                    <span className="text-sm text-gray-500 font-medium">
+                                      {percentage}%
+                                    </span>
+                                  </div>
+
+                                  {/* Progress bar */}
+                                  <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <motion.div
+                                      className={`h-full bg-gradient-to-r ${nature.color} rounded-full relative`}
+                                      initial={{ width: 0 }}
+                                      animate={{ width: `${percentage}%` }}
+                                      transition={{
+                                        delay: 0.4 + index * 0.1,
+                                        duration: 0.8,
+                                        ease: "easeOut",
+                                      }}
+                                    >
+                                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
+                                    </motion.div>
+                                  </div>
+
+                                  {count > 0 && (
+                                    <motion.p
+                                      className="text-xs text-gray-400"
+                                      initial={{ opacity: 0 }}
+                                      animate={{ opacity: 1 }}
+                                      transition={{ delay: 0.5 + index * 0.1 }}
+                                    >
+                                      {count === 1 ? "request" : "requests"}
+                                    </motion.p>
+                                  )}
                                 </div>
-                                <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-                                  <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />
-                                </div>
-                              </motion.div>
-                            </AnimatePresence>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
+                              </div>
+
+                              {/* Hover tooltip */}
+                              <AnimatePresence>
+                                <motion.div
+                                  className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-50 whitespace-nowrap"
+                                  initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                                  exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                                  transition={{ duration: 0.2 }}
+                                >
+                                  <div className="font-semibold">
+                                    {nature.name}
+                                  </div>
+                                  <div>
+                                    {count} requests ({percentage}% of total)
+                                  </div>
+                                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                                    <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />
+                                  </div>
+                                </motion.div>
+                              </AnimatePresence>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
                   </div>
                 </div>
               </motion.div>
@@ -1632,7 +1640,7 @@ export default function AdminDashboardClient({
                 </div>
               </div>
 
-              {/* Nature Breakdown - Most Requests (Top 3) */}
+              {/* Nature Breakdown - Requests by Nature (All) */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -1656,10 +1664,10 @@ export default function AdminDashboardClient({
                       </motion.div>
                       <div>
                         <h2 className="font-bold text-xl text-gray-900 tracking-tight">
-                          Most Requests by Nature
+                          Requests by Nature
                         </h2>
                         <p className="text-sm text-gray-500 mt-1">
-                          Top 3 maintenance request categories
+                          Distribution of maintenance requests
                         </p>
                       </div>
                     </div>
@@ -1679,7 +1687,7 @@ export default function AdminDashboardClient({
                     </motion.div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
                     {[
                       {
                         name: "Plumbing",
