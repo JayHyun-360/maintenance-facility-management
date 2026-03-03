@@ -1376,7 +1376,7 @@ export default function AdminDashboardClient({
                       </motion.div>
                       <div>
                         <h2 className="font-bold text-xl text-gray-900 tracking-tight">
-                          Requests by Nature
+                          Most Requests by Nature
                         </h2>
                         <p className="text-sm text-gray-500 mt-1">
                           Distribution of maintenance requests
@@ -1632,191 +1632,220 @@ export default function AdminDashboardClient({
                 </div>
               </div>
 
-              {/* Nature Breakdown - Compact Bento */}
-              <div className="bg-white rounded-lg p-6 mb-6 border border-gray-100 hover:shadow-lg transition-all duration-300">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-header text-base font-semibold text-gray-900">
-                    Requests by Nature
-                  </h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 px-3 py-1.5 rounded-full">
-                    <svg
-                      className="w-3 h-3"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
-                      />
-                    </svg>
-                    <span>Live data</span>
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
-                  {[
-                    {
-                      name: "Plumbing",
-                      color: "#3B82F6",
-                      icon: (
-                        <svg
-                          className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle cx="12" cy="12" r="3" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Electrical",
-                      color: "#EAB308",
-                      icon: (
-                        <svg
-                          className="w-5 h-5 transition-transform duration-300 group-hover:rotate-180"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M13 2L3 14h6v7l11-11z" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Carpentry",
-                      color: "#92400E",
-                      icon: (
-                        <svg
-                          className="w-5 h-5 transition-transform duration-300 group-hover:scale-110"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <rect x="6" y="4" width="12" height="16" rx="2" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "HVAC",
-                      color: "#06B6D4",
-                      icon: (
-                        <svg
-                          className="w-5 h-5 transition-transform duration-300 group-hover:rotate-180"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <circle cx="12" cy="12" r="4" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Cleaning",
-                      color: "#A855F7",
-                      icon: (
-                        <svg
-                          className="w-5 h-5 transition-transform duration-300 group-hover:rotate-45"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <rect x="8" y="6" width="8" height="12" rx="1" />
-                        </svg>
-                      ),
-                    },
-                    {
-                      name: "Other",
-                      color: "#6B7280",
-                      icon: (
-                        <svg
-                          className="w-5 h-5 transition-transform duration-300 group-hover:scale-125"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <rect x="6" y="8" width="12" height="8" rx="1" />
-                        </svg>
-                      ),
-                    },
-                  ].map((nature) => {
-                    const count = requests.filter(
-                      (r) => r.nature === nature.name,
-                    ).length;
-                    const percentage =
-                      stats.total > 0
-                        ? Math.round((count / stats.total) * 100)
-                        : 0;
-                    return (
-                      <div
-                        key={nature.name}
-                        className="group relative text-center p-3 rounded-lg hover:bg-gray-50 hover:shadow-md transition-all duration-300 cursor-pointer border border-transparent hover:border-gray-200"
+              {/* Nature Breakdown - Consistent with Analytics */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="bg-gradient-to-br from-white via-white to-gray-50/30 rounded-2xl shadow-lg border border-gray-100/50 p-8 mb-8 backdrop-blur-sm relative overflow-hidden"
+              >
+                {/* Background decoration */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/5 to-purple-400/5 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-green-400/5 to-cyan-400/5 rounded-full blur-2xl"></div>
+
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                      <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.2, duration: 0.3 }}
+                        className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
                       >
-                        {/* Nature icon with emoji and animation */}
-                        <div className="flex justify-center mb-2">
-                          <div
-                            className="w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-12"
-                            style={{ backgroundColor: `${nature.color}20` }}
-                          >
-                            <span
-                              className="text-xl group-hover:scale-125 transition-transform duration-300"
-                              style={{ color: nature.color }}
-                            >
-                              {nature.icon}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Nature name */}
-                        <p className="text-xs font-semibold text-gray-700 mb-1 group-hover:text-gray-900 transition-colors">
-                          {nature.name}
+                        <BarChart3 className="w-6 h-6 text-white" />
+                      </motion.div>
+                      <div>
+                        <h2 className="font-bold text-xl text-gray-900 tracking-tight">
+                          Most Requests by Nature
+                        </h2>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Distribution of maintenance requests
                         </p>
+                      </div>
+                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3, duration: 0.3 }}
+                      className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100"
+                    >
+                      <Activity className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm font-semibold text-gray-700">
+                        {stats.total}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        total requests
+                      </span>
+                    </motion.div>
+                  </div>
 
-                        {/* Count with emphasis */}
-                        <div className="relative">
-                          <p className="text-2xl font-bold text-gray-900 group-hover:text-gray-800 transition-colors">
-                            {count}
-                          </p>
-                          {count > 0 && (
-                            <div className="absolute -top-1 -right-2 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                          )}
-                        </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                    {[
+                      {
+                        name: "Plumbing",
+                        color: "from-blue-500 to-blue-600",
+                        bgLight: "bg-blue-50",
+                        icon: Wrench,
+                        gradient:
+                          "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+                      },
+                      {
+                        name: "Electrical",
+                        color: "from-yellow-500 to-orange-500",
+                        bgLight: "bg-yellow-50",
+                        icon: Zap,
+                        gradient:
+                          "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
+                      },
+                      {
+                        name: "Carpentry",
+                        color: "from-amber-600 to-amber-700",
+                        bgLight: "bg-amber-50",
+                        icon: Hammer,
+                        gradient:
+                          "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
+                      },
+                      {
+                        name: "HVAC",
+                        color: "from-cyan-500 to-cyan-600",
+                        bgLight: "bg-cyan-50",
+                        icon: Wind,
+                        gradient:
+                          "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
+                      },
+                      {
+                        name: "Cleaning",
+                        color: "from-purple-500 to-purple-600",
+                        bgLight: "bg-purple-50",
+                        icon: Sparkles,
+                        gradient:
+                          "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
+                      },
+                      {
+                        name: "Other",
+                        color: "from-gray-500 to-gray-600",
+                        bgLight: "bg-gray-50",
+                        icon: MoreHorizontal,
+                        gradient:
+                          "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
+                      },
+                    ].map((nature, index) => {
+                      const count = requests.filter(
+                        (r) => r.nature === nature.name,
+                      ).length;
+                      const percentage =
+                        stats.total > 0
+                          ? Math.round((count / stats.total) * 100)
+                          : 0;
+                      const Icon = nature.icon;
 
-                        {/* Enhanced progress bar with percentage */}
-                        <div className="mt-2">
-                          <div className="relative h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full transition-all duration-700 ease-out relative overflow-hidden"
-                              style={{
-                                width: `${percentage}%`,
-                                backgroundColor: nature.color,
-                              }}
-                            >
-                              {/* Subtle shimmer effect */}
-                              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-pulse"></div>
+                      return (
+                        <motion.div
+                          key={nature.name}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            delay: 0.1 * index,
+                            duration: 0.4,
+                            ease: "easeOut",
+                          }}
+                          whileHover={{
+                            y: -4,
+                            scale: 1.02,
+                            transition: { duration: 0.2 },
+                          }}
+                          whileTap={{ scale: 0.98 }}
+                          className="group relative"
+                        >
+                          <div className="relative bg-white rounded-2xl p-5 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+                            {/* Animated background gradient */}
+                            <motion.div
+                              className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
+                              style={{ background: nature.gradient }}
+                            />
+
+                            {/* Top decoration line */}
+                            <motion.div
+                              className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${nature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                              initial={{ scaleX: 0 }}
+                              whileHover={{ scaleX: 1 }}
+                              transition={{ duration: 0.3 }}
+                            />
+
+                            <div className="relative z-10">
+                              {/* Icon section */}
+                              <div className="flex items-center justify-between mb-4">
+                                <motion.div
+                                  className={`p-3 rounded-xl ${nature.bgLight} group-hover:scale-110 transition-transform duration-300`}
+                                  whileHover={{ rotate: [0, -10, 10, 0] }}
+                                  transition={{ duration: 0.5 }}
+                                >
+                                  <Icon
+                                    className="w-5 h-5"
+                                    style={{
+                                      color:
+                                        nature.gradient.match(
+                                          /#[0-9A-F]{6}/,
+                                        )?.[0] || "#000",
+                                    }}
+                                  />
+                                </motion.div>
+                                {count > 0 && (
+                                  <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 0.2 + index * 0.1 }}
+                                    className="w-2 h-2 bg-green-400 rounded-full"
+                                  />
+                                )}
+                              </div>
+
+                              {/* Content */}
+                              <div className="space-y-3">
+                                <div>
+                                  <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-700 transition-colors">
+                                    {nature.name}
+                                  </h3>
+                                </div>
+
+                                <div className="flex items-baseline gap-2">
+                                  <motion.span
+                                    className="text-2xl font-bold text-gray-900"
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.3 + index * 0.1 }}
+                                  >
+                                    {count}
+                                  </motion.span>
+                                  <span className="text-sm text-gray-500 font-medium">
+                                    {percentage}%
+                                  </span>
+                                </div>
+
+                                {/* Progress bar */}
+                                <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
+                                  <motion.div
+                                    className={`h-full bg-gradient-to-r ${nature.color} rounded-full relative`}
+                                    initial={{ width: 0 }}
+                                    animate={{ width: `${percentage}%` }}
+                                    transition={{
+                                      delay: 0.4 + index * 0.1,
+                                      duration: 0.8,
+                                      ease: "easeOut",
+                                    }}
+                                  >
+                                    <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                                  </motion.div>
+                                </div>
+                              </div>
                             </div>
                           </div>
-                          {percentage > 0 && (
-                            <p className="text-xs text-gray-500 mt-1 font-medium">
-                              {percentage}%
-                            </p>
-                          )}
-                        </div>
-
-                        {/* Interactive tooltip */}
-                        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1.5 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-30">
-                          <div className="font-semibold">{nature.name}</div>
-                          <div>
-                            {count} request{count !== 1 ? "s" : ""}
-                          </div>
-                          <div className="text-gray-300">
-                            {percentage}% of total
-                          </div>
-                          <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-                            <div className="w-0 h-0 border-l-3 border-r-3 border-t-3 border-transparent border-t-gray-900"></div>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
+                        </motion.div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Status Distribution - Interactive Line Chart */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
