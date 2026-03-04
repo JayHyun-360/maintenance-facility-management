@@ -3613,7 +3613,7 @@ export default function AdminDashboardClient({
                         ].map((option) => (
                           <label
                             key={option.value}
-                            className="flex items-start space-x-2 cursor-pointer opacity-75"
+                            className="flex items-start space-x-2 opacity-75"
                           >
                             <input
                               type="radio"
@@ -3629,6 +3629,7 @@ export default function AdminDashboardClient({
                                 }))
                               }
                               className="w-4 h-4 text-[#427A43] border-gray-300 focus:ring-[#427A43] mt-0.5"
+                              disabled
                             />
                             <div>
                               <span className="text-sm text-gray-700 font-medium">
