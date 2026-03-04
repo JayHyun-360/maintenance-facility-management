@@ -1028,7 +1028,9 @@ export default function AdminDashboardClient({
           pdf.line(ux, uy - 4, ux + 6, uy + 2);
           pdf.line(ux, uy + 2, ux + 6, uy - 4);
         }
+        pdf.setFontSize(8.5);
         pdf.text(opt, ux + 10, uy + 1);
+        pdf.setFontSize(9);
         uy += 8;
       });
 
@@ -1044,20 +1046,22 @@ export default function AdminDashboardClient({
       pdf.text(`${reportFormData.date || ""}`, dx + 16, dateY);
       pdf.text(`${reportFormData.time || ""}`, dx + 16, timeY);
 
-      // Main request table with full grid (header + 6 rows)
+      // Main request table with full grid (header + rows)
       const tableTop = blockY + blockH + 7.5;
       const headerH = 8;
       const rowH = 6.8;
       const rows = 8;
       const tableH = headerH + rowH * rows;
-      const w1 = 50;
-      const w2 = 56;
-      const w3 = 50;
+      // Slightly rebalance columns so long headers fit better
+      const w1 = 48;
+      const w2 = 58;
+      const w3 = 52;
       const w4 = contentWidth - (w1 + w2 + w3);
       const colW = [w1, w2, w3, w4];
 
       pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(9);
+      // Smaller header font so titles fit like the printed form
+      pdf.setFontSize(7.5);
       pdf.rect(left, tableTop, contentWidth, tableH);
       // vertical lines
       let vx = left;
@@ -1077,7 +1081,7 @@ export default function AdminDashboardClient({
         ["LOCATION"],
         ["DESCRIPTION OF", "PROBLEM"],
         ["WHAT WILL BE", "DONE"],
-        ["SUPPORTING REASON(S)"],
+        ["SUPPORTING", "REASON(S)"],
       ];
       const colX = [
         left + 3,
@@ -1088,7 +1092,7 @@ export default function AdminDashboardClient({
       pdf.setTextColor(...headerGray);
       headerTexts.forEach((lines, idx) => {
         lines.forEach((line, li) => {
-          pdf.text(line, colX[idx], tableTop + 6 + li * 4);
+          pdf.text(line, colX[idx], tableTop + 5 + li * 3.5);
         });
       });
       pdf.setTextColor(...bodyBlack);
@@ -1115,7 +1119,7 @@ export default function AdminDashboardClient({
 
       // Signature area (two columns with lines)
       const sigTop = tableTop + tableH + 10;
-      pdf.setFontSize(8);
+      pdf.setFontSize(7.5);
       pdf.setTextColor(...headerGray);
       pdf.text("Requested by: (Requesting Department)", left, sigTop);
       pdf.text(
@@ -1132,21 +1136,21 @@ export default function AdminDashboardClient({
       pdf.line(left + half + 8, lineY1, right - 8, lineY1);
       pdf.setTextColor(...headerGray);
       pdf.text("Name of Employee", left + 28, lineY1 + 5);
-      pdf.text("VP - AASD", left + half + 36, lineY1 + 5);
+      pdf.text("VP - AASD", left + half + 38, lineY1 + 5);
       pdf.setTextColor(...bodyBlack);
 
       pdf.line(left + 8, lineY2, left + half - 8, lineY2);
       pdf.line(left + half + 8, lineY2, right - 8, lineY2);
       pdf.setTextColor(...headerGray);
       pdf.text("Department Head", left + 30, lineY2 + 5);
-      pdf.text("GMS Head", left + half + 36, lineY2 + 5);
+      pdf.text("GMS Head", left + half + 38, lineY2 + 5);
       pdf.setTextColor(...bodyBlack);
 
       // Work Evaluation block (boxed, with right rating table)
       const weTop = sigTop + 29;
       const weH = 36;
-      const weLeftW = 120;
-      const weMidW = 28;
+      const weLeftW = 118;
+      const weMidW = 26;
       pdf.rect(left, weTop, contentWidth, weH);
       pdf.line(left + weLeftW, weTop, left + weLeftW, weTop + weH);
       pdf.line(
@@ -1191,7 +1195,9 @@ export default function AdminDashboardClient({
         "Poor",
       ];
       ratings.forEach((r, i) => {
-        pdf.text(r, left + weLeftW + weMidW + 6, weTop + weRowH * i + 5);
+        pdf.setFontSize(7.5);
+        pdf.text(r, left + weLeftW + weMidW + 5, weTop + weRowH * i + 5);
+        pdf.setFontSize(8);
       });
 
       // Fill we values (small)
@@ -1211,8 +1217,8 @@ export default function AdminDashboardClient({
       });
 
       // Bottom rating descriptions
-      const descTop = weTop + weH + 8;
-      pdf.setFontSize(8);
+      const descTop = weTop + weH + 7;
+      pdf.setFontSize(7.5);
       const descMidX = left + 46;
       const descRows = [
         {
