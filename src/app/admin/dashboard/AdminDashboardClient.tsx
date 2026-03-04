@@ -3619,9 +3619,6 @@ export default function AdminDashboardClient({
                               type="radio"
                               name="workEvaluation"
                               value={option.value}
-                              checked={
-                                reportFormData.workEvaluation === option.value
-                              }
                               onChange={(e) =>
                                 setReportFormData((prev) => ({
                                   ...prev,
