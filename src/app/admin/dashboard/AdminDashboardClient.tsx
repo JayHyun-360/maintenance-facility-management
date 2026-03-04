@@ -9,6 +9,8 @@ import React, {
 } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
 import type {
   Profile,
   MaintenanceRequest,
@@ -127,6 +129,40 @@ export default function AdminDashboardClient({
   const [showReportSidebar, setShowReportSidebar] = useState(false);
   const [selectedRequestForReport, setSelectedRequestForReport] =
     useState<RequestWithProfile | null>(null);
+
+  // Enhanced Report Form State
+  const [reportFormData, setReportFormData] = useState({
+    // Nature of Request
+    natureOfRequest: {
+      plumbing: false,
+      carpentry: false,
+      electrical: false,
+      personnelServices: false,
+    },
+    urgency: "Not Urgent",
+    date: "",
+    time: "",
+
+    // Table Data
+    location: "",
+    descriptionOfProblem: "",
+    whatWillBeDone: "",
+    supportingReasons: "",
+
+    // Request/Approval Section
+    requestingDepartment: "",
+    nameOfEmployee: "",
+    departmentHead: "",
+    vpAASD: "",
+    gmsHead: "",
+
+    // Work Evaluation
+    dateTimeReceived: "",
+    performedBy: "",
+    dateTimeCompleted: "",
+    acknowledgeBy: "",
+    workEvaluation: "Satisfactory",
+  });
   const [filters, setFilters] = useState({
     status: [] as string[],
     nature: [] as string[],
@@ -889,6 +925,298 @@ export default function AdminDashboardClient({
       return matchesSearch && matchesStatus && matchesNature && matchesUrgency;
     });
   }, [requests, debouncedSearchQuery, filters, selectAll]);
+
+  // PDF Generation Function
+  const generatePDFReport = async () => {
+    if (!selectedRequestForReport) return;
+
+    try {
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+
+      // Header
+      pdf.setFontSize(16);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("DE LA SALLE JOHN BOSCO COLLEGE", pageWidth / 2, 20, {
+        align: "center",
+      });
+
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "normal");
+      pdf.text("Mangagoy, Bislig City, Surigao del Sur", pageWidth / 2, 28, {
+        align: "center",
+      });
+
+      // Title
+      pdf.setFontSize(14);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("PHYSICAL PLANT / FACILITIES REQUEST", pageWidth / 2, 40, {
+        align: "center",
+      });
+
+      // Nature of Request Section
+      let yPosition = 55;
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("NATURE OF REQUEST:", 20, yPosition);
+
+      yPosition += 8;
+      pdf.setFontSize(10);
+      pdf.setFont("helvetica", "normal");
+
+      // Checkboxes for nature of request
+      const natureOptions = [
+        { key: "plumbing", label: "PLUMBING" },
+        { key: "carpentry", label: "CARPENTRY" },
+        { key: "electrical", label: "ELECTRICAL" },
+        { key: "personnelServices", label: "PERSONNEL SERVICES" },
+      ];
+
+      natureOptions.forEach((option, index) => {
+        const xPosition = 25 + (index % 2) * 90;
+        const yPos = yPosition + Math.floor(index / 2) * 8;
+
+        // Checkbox
+        pdf.rect(xPosition, yPos - 4, 4, 4);
+        if (
+          reportFormData.natureOfRequest[
+            option.key as keyof typeof reportFormData.natureOfRequest
+          ]
+        ) {
+          pdf.line(xPosition, yPos - 4, xPosition + 4, yPos);
+          pdf.line(xPosition, yPos, xPosition + 4, yPos - 4);
+        }
+        pdf.text(option.label, xPosition + 8, yPos);
+      });
+
+      yPosition += 20;
+
+      // Urgency
+      pdf.setFont("helvetica", "bold");
+      pdf.text("URGENCY:", 20, yPosition);
+      yPosition += 8;
+      pdf.setFont("helvetica", "normal");
+
+      const urgencyOptions = ["Very Urgent/Emergency", "Urgent", "Not Urgent"];
+      urgencyOptions.forEach((option, index) => {
+        const xPosition = 25 + index * 60;
+        pdf.rect(xPosition, yPosition - 4, 4, 4);
+        if (reportFormData.urgency === option) {
+          pdf.line(xPosition, yPosition - 4, xPosition + 4, yPosition);
+          pdf.line(xPosition, yPosition, xPosition + 4, yPosition - 4);
+        }
+        pdf.text(option, xPosition + 8, yPosition);
+      });
+
+      yPosition += 15;
+
+      // Date and Time
+      pdf.text(
+        `Date: ${reportFormData.date || new Date().toLocaleDateString()}`,
+        20,
+        yPosition,
+      );
+      pdf.text(
+        `Time: ${reportFormData.time || new Date().toLocaleTimeString()}`,
+        120,
+        yPosition,
+      );
+
+      yPosition += 15;
+
+      // Table
+      pdf.setFont("helvetica", "bold");
+      pdf.text("REQUEST DETAILS:", 20, yPosition);
+      yPosition += 10;
+
+      // Table headers
+      const tableHeaders = ["LOCATION", "DESCRIPTION", "ACTION", "REASONS"];
+      const columnWidths = [40, 60, 60, 40];
+      let xPos = 20;
+
+      pdf.setFont("helvetica", "bold");
+      tableHeaders.forEach((header, index) => {
+        pdf.text(header, xPos, yPosition);
+        xPos += columnWidths[index];
+      });
+
+      yPosition += 2;
+      pdf.line(20, yPosition, pageWidth - 20, yPosition);
+      yPosition += 8;
+
+      // Table data
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(9);
+      xPos = 20;
+
+      const tableData = [
+        reportFormData.location || selectedRequestForReport.location,
+        reportFormData.descriptionOfProblem ||
+          selectedRequestForReport.description,
+        reportFormData.whatWillBeDone || "To be determined",
+        reportFormData.supportingReasons || "Maintenance request",
+      ];
+
+      tableData.forEach((data, index) => {
+        const lines = pdf.splitTextToSize(data || "", columnWidths[index] - 2);
+        lines.forEach((line: string) => {
+          pdf.text(line, xPos, yPosition);
+          yPosition += 5;
+        });
+        xPos += columnWidths[index];
+        yPosition -= (lines.length - 1) * 5;
+      });
+
+      yPosition += 15;
+
+      // Request/Approval Section
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("REQUEST/APPROVAL SECTION:", 20, yPosition);
+      yPosition += 15;
+
+      pdf.setFontSize(10);
+      pdf.setFont("helvetica", "normal");
+
+      // Requested by
+      pdf.text("Requested by: (Requesting Department)", 20, yPosition);
+      yPosition += 8;
+      pdf.text(
+        `Name of Employee: ${reportFormData.nameOfEmployee || selectedRequestForReport.profiles?.full_name || ""}`,
+        25,
+        yPosition,
+      );
+      yPosition += 6;
+      pdf.text(
+        `Department Head: ${reportFormData.departmentHead || ""}`,
+        25,
+        yPosition,
+      );
+
+      yPosition += 12;
+
+      // Approved by
+      pdf.text(
+        "Approved by: Administrative Affairs & Services Division",
+        20,
+        yPosition,
+      );
+      yPosition += 8;
+      pdf.text(`VP - AASD: ${reportFormData.vpAASD || ""}`, 25, yPosition);
+
+      yPosition += 12;
+
+      // Received by
+      pdf.text("Received by:", 20, yPosition);
+      yPosition += 8;
+      pdf.text(`GMS Head: ${reportFormData.gmsHead || ""}`, 25, yPosition);
+
+      yPosition += 15;
+
+      // Work Evaluation Section
+      pdf.setFont("helvetica", "bold");
+      pdf.text("WORK EVALUATION:", 20, yPosition);
+      yPosition += 12;
+
+      pdf.setFont("helvetica", "normal");
+      pdf.text(
+        `Date/Time Received: ${reportFormData.dateTimeReceived || new Date().toLocaleString()}`,
+        25,
+        yPosition,
+      );
+      yPosition += 6;
+      pdf.text(
+        `Performed by: ${reportFormData.performedBy || ""}`,
+        25,
+        yPosition,
+      );
+      yPosition += 6;
+      pdf.text(
+        `Date/Time Completed: ${reportFormData.dateTimeCompleted || ""}`,
+        25,
+        yPosition,
+      );
+      yPosition += 6;
+      pdf.text(
+        `Acknowledge by: ${reportFormData.acknowledgeBy || ""}`,
+        25,
+        yPosition,
+      );
+
+      yPosition += 12;
+
+      // Work Evaluation checkboxes
+      pdf.text("Work Evaluation:", 20, yPosition);
+      yPosition += 8;
+
+      const evaluationOptions = [
+        {
+          value: "Outstanding",
+          description:
+            "Excellent Workmanship. Completed before the date needed/required.",
+        },
+        {
+          value: "Very Satisfactory",
+          description:
+            "Above Average Workmanship. Completed before the date needed/required.",
+        },
+        {
+          value: "Satisfactory",
+          description:
+            "Average/Acceptable Workmanship. Completed on the date needed.",
+        },
+        {
+          value: "Poor",
+          description: "Messy/Unacceptable Workmanship. Very late.",
+        },
+      ];
+
+      evaluationOptions.forEach((option) => {
+        pdf.rect(25, yPosition - 4, 4, 4);
+        if (reportFormData.workEvaluation === option.value) {
+          pdf.line(25, yPosition - 4, 29, yPosition);
+          pdf.line(25, yPosition, 29, yPosition - 4);
+        }
+        pdf.text(option.value, 33, yPosition);
+        yPosition += 6;
+        pdf.setFontSize(8);
+        pdf.text(option.description, 33, yPosition);
+        pdf.setFontSize(10);
+        yPosition += 10;
+      });
+
+      // Save the PDF
+      pdf.save(
+        `maintenance-request-${selectedRequestForReport.id.slice(0, 8)}.pdf`,
+      );
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Error generating PDF report. Please try again.");
+    }
+  };
+
+  // Initialize form data when request is selected
+  useEffect(() => {
+    if (selectedRequestForReport) {
+      setReportFormData((prev) => ({
+        ...prev,
+        location: selectedRequestForReport.location,
+        descriptionOfProblem: selectedRequestForReport.description,
+        urgency:
+          selectedRequestForReport.urgency === "Emergency"
+            ? "Very Urgent/Emergency"
+            : selectedRequestForReport.urgency === "Urgent"
+              ? "Urgent"
+              : "Not Urgent",
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString(),
+        nameOfEmployee: selectedRequestForReport.profiles?.full_name || "",
+        dateTimeReceived: new Date().toLocaleString(),
+      }));
+    }
+  }, [selectedRequestForReport]);
+
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
@@ -2864,17 +3192,17 @@ export default function AdminDashboardClient({
           onClick={() => setShowReportSidebar(false)}
         />
         <div
-          className={`fixed top-0 right-0 h-full w-[500px] bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showReportSidebar ? "translate-x-0" : "translate-x-full"}`}
+          className={`fixed top-0 right-0 h-full w-[600px] bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showReportSidebar ? "translate-x-0" : "translate-x-full"}`}
         >
           <div className="h-full overflow-y-auto">
             <div className="bg-[#427A43] shadow-lg border-b p-6 sticky top-0 z-10">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="font-header text-xl font-bold text-white">
-                    Maintenance Report
+                    Physical Plant/Facilities Request
                   </h2>
                   <p className="text-white/80 text-sm mt-1">
-                    Edit and generate report for this request
+                    Generate official De La Salle John Bosco College report
                   </p>
                 </div>
                 <button
@@ -2900,114 +3228,417 @@ export default function AdminDashboardClient({
 
             {selectedRequestForReport && (
               <div className="p-6 space-y-6">
-                {/* Request Details */}
-                <div className="bg-gray-50 rounded-lg p-4 space-y-4">
-                  <div>
-                    <label className="text-xs font-medium text-gray-500 uppercase">
-                      Nature
-                    </label>
-                    <input
-                      type="text"
-                      defaultValue={selectedRequestForReport.nature}
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-gray-500 uppercase">
-                      Location
-                    </label>
-                    <input
-                      type="text"
-                      defaultValue={selectedRequestForReport.location}
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-gray-500 uppercase">
-                      Urgency
-                    </label>
-                    <select
-                      defaultValue={selectedRequestForReport.urgency}
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                    >
-                      <option value="Normal">Normal</option>
-                      <option value="Urgent">Urgent</option>
-                      <option value="Emergency">Emergency</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-gray-500 uppercase">
-                      Status
-                    </label>
-                    <select
-                      defaultValue={selectedRequestForReport.status}
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                    >
-                      <option value="Pending">Pending</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Completed">Completed</option>
-                      <option value="Cancelled">Cancelled</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs font-medium text-gray-500 uppercase">
-                      Description
-                    </label>
-                    <textarea
-                      defaultValue={selectedRequestForReport.description}
-                      rows={4}
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                    />
-                  </div>
-                </div>
-
-                {/* Requester Info */}
-                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                  <h3 className="font-header text-sm font-semibold text-gray-900">
-                    Requester Information
+                {/* Nature of Request Section */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h3 className="font-header text-sm font-semibold text-gray-900 mb-4">
+                    NATURE OF REQUEST
                   </h3>
-                  <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="grid grid-cols-2 gap-3 mb-4">
+                    {[
+                      { key: "plumbing", label: "PLUMBING" },
+                      { key: "carpentry", label: "CARPENTRY" },
+                      { key: "electrical", label: "ELECTRICAL" },
+                      { key: "personnelServices", label: "PERSONNEL SERVICES" },
+                    ].map((option) => (
+                      <label
+                        key={option.key}
+                        className="flex items-center space-x-2 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={
+                            reportFormData.natureOfRequest[
+                              option.key as keyof typeof reportFormData.natureOfRequest
+                            ]
+                          }
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+                              natureOfRequest: {
+                                ...prev.natureOfRequest,
+                                [option.key]: e.target.checked,
+                              },
+                            }))
+                          }
+                          className="w-4 h-4 text-[#427A43] border-gray-300 rounded focus:ring-[#427A43]"
+                        />
+                        <span className="text-sm text-gray-700">
+                          {option.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+
+                  <div className="space-y-3">
                     <div>
-                      <p className="text-xs text-gray-500">Name</p>
-                      <p className="text-gray-900">
-                        {selectedRequestForReport.profiles?.full_name ||
-                          "Unknown"}
-                      </p>
+                      <label className="block text-xs font-medium text-gray-500 uppercase mb-2">
+                        URGENCY
+                      </label>
+                      <div className="space-y-2">
+                        {["Very Urgent/Emergency", "Urgent", "Not Urgent"].map(
+                          (option) => (
+                            <label
+                              key={option}
+                              className="flex items-center space-x-2 cursor-pointer"
+                            >
+                              <input
+                                type="radio"
+                                name="urgency"
+                                value={option}
+                                checked={reportFormData.urgency === option}
+                                onChange={(e) =>
+                                  setReportFormData((prev) => ({
+                                    ...prev,
+                                    urgency: e.target.value,
+                                  }))
+                                }
+                                className="w-4 h-4 text-[#427A43] border-gray-300 focus:ring-[#427A43]"
+                              />
+                              <span className="text-sm text-gray-700">
+                                {option}
+                              </span>
+                            </label>
+                          ),
+                        )}
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Role</p>
-                      <p className="text-gray-900">
-                        {selectedRequestForReport.profiles?.visual_role ||
-                          "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Created</p>
-                      <p className="text-gray-900">
-                        {new Date(
-                          selectedRequestForReport.created_at,
-                        ).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Request ID</p>
-                      <p className="text-gray-900 text-xs font-mono">
-                        {selectedRequestForReport.id.slice(0, 8)}
-                      </p>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          DATE
+                        </label>
+                        <input
+                          type="date"
+                          value={reportFormData.date}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+                              date: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          TIME
+                        </label>
+                        <input
+                          type="time"
+                          value={reportFormData.time}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+                              time: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Admin Notes */}
-                <div>
-                  <label className="text-xs font-medium text-gray-500 uppercase">
-                    Admin Notes
-                  </label>
-                  <textarea
-                    placeholder="Add notes about this maintenance request..."
-                    rows={4}
-                    className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                  />
+                {/* Request Details Table */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h3 className="font-header text-sm font-semibold text-gray-900 mb-4">
+                    REQUEST DETAILS
+                  </h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                        LOCATION
+                      </label>
+                      <input
+                        type="text"
+                        value={reportFormData.location}
+                        onChange={(e) =>
+                          setReportFormData((prev) => ({
+                            ...prev,
+                            location: e.target.value,
+                          }))
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                        placeholder="Enter location"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                        DESCRIPTION OF PROBLEM
+                      </label>
+                      <textarea
+                        value={reportFormData.descriptionOfProblem}
+                        onChange={(e) =>
+                          setReportFormData((prev) => ({
+                            ...prev,
+                            descriptionOfProblem: e.target.value,
+                          }))
+                        }
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                        placeholder="Describe the problem"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                        WHAT WILL BE DONE
+                      </label>
+                      <textarea
+                        value={reportFormData.whatWillBeDone}
+                        onChange={(e) =>
+                          setReportFormData((prev) => ({
+                            ...prev,
+                            whatWillBeDone: e.target.value,
+                          }))
+                        }
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                        placeholder="Action to be taken"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                        SUPPORTING REASON(S)
+                      </label>
+                      <textarea
+                        value={reportFormData.supportingReasons}
+                        onChange={(e) =>
+                          setReportFormData((prev) => ({
+                            ...prev,
+                            supportingReasons: e.target.value,
+                          }))
+                        }
+                        rows={2}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                        placeholder="Reasons for this request"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Request/Approval Section */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h3 className="font-header text-sm font-semibold text-gray-900 mb-4">
+                    REQUEST/APPROVAL SECTION
+                  </h3>
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                        REQUESTED BY: (REQUESTING DEPARTMENT)
+                      </label>
+                      <input
+                        type="text"
+                        value={reportFormData.requestingDepartment}
+                        onChange={(e) =>
+                          setReportFormData((prev) => ({
+                            ...prev,
+                            requestingDepartment: e.target.value,
+                          }))
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm mb-2"
+                        placeholder="Department name"
+                      />
+                      <input
+                        type="text"
+                        value={reportFormData.nameOfEmployee}
+                        onChange={(e) =>
+                          setReportFormData((prev) => ({
+                            ...prev,
+                            nameOfEmployee: e.target.value,
+                          }))
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm mb-2"
+                        placeholder="Name of Employee"
+                      />
+                      <input
+                        type="text"
+                        value={reportFormData.departmentHead}
+                        onChange={(e) =>
+                          setReportFormData((prev) => ({
+                            ...prev,
+                            departmentHead: e.target.value,
+                          }))
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                        placeholder="Department Head"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                        APPROVED BY: ADMINISTRATIVE AFFAIRS & SERVICES DIVISION
+                      </label>
+                      <input
+                        type="text"
+                        value={reportFormData.vpAASD}
+                        onChange={(e) =>
+                          setReportFormData((prev) => ({
+                            ...prev,
+                            vpAASD: e.target.value,
+                          }))
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                        placeholder="VP - AASD"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                        RECEIVED BY:
+                      </label>
+                      <input
+                        type="text"
+                        value={reportFormData.gmsHead}
+                        onChange={(e) =>
+                          setReportFormData((prev) => ({
+                            ...prev,
+                            gmsHead: e.target.value,
+                          }))
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                        placeholder="GMS Head"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Work Evaluation Section */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h3 className="font-header text-sm font-semibold text-gray-900 mb-4">
+                    WORK EVALUATION
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          DATE/TIME RECEIVED
+                        </label>
+                        <input
+                          type="text"
+                          value={reportFormData.dateTimeReceived}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+                              dateTimeReceived: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          PERFORMED BY
+                        </label>
+                        <input
+                          type="text"
+                          value={reportFormData.performedBy}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+                              performedBy: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          placeholder="Technician name"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          DATE/TIME COMPLETED
+                        </label>
+                        <input
+                          type="text"
+                          value={reportFormData.dateTimeCompleted}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+                              dateTimeCompleted: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          ACKNOWLEDGE BY
+                        </label>
+                        <input
+                          type="text"
+                          value={reportFormData.acknowledgeBy}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+                              acknowledgeBy: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          placeholder="Acknowledged by"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500 uppercase mb-2">
+                        WORK EVALUATION
+                      </label>
+                      <div className="space-y-2">
+                        {[
+                          {
+                            value: "Outstanding",
+                            description:
+                              "Excellent Workmanship. Completed before the date needed/required.",
+                          },
+                          {
+                            value: "Very Satisfactory",
+                            description:
+                              "Above Average Workmanship. Completed before the date needed/required.",
+                          },
+                          {
+                            value: "Satisfactory",
+                            description:
+                              "Average/Acceptable Workmanship. Completed on the date needed.",
+                          },
+                          {
+                            value: "Poor",
+                            description:
+                              "Messy/Unacceptable Workmanship. Very late.",
+                          },
+                        ].map((option) => (
+                          <label
+                            key={option.value}
+                            className="flex items-start space-x-2 cursor-pointer"
+                          >
+                            <input
+                              type="radio"
+                              name="workEvaluation"
+                              value={option.value}
+                              checked={
+                                reportFormData.workEvaluation === option.value
+                              }
+                              onChange={(e) =>
+                                setReportFormData((prev) => ({
+                                  ...prev,
+                                  workEvaluation: e.target.value,
+                                }))
+                              }
+                              className="w-4 h-4 text-[#427A43] border-gray-300 focus:ring-[#427A43] mt-0.5"
+                            />
+                            <div>
+                              <span className="text-sm text-gray-700 font-medium">
+                                {option.value}
+                              </span>
+                              <p className="text-xs text-gray-500">
+                                {option.description}
+                              </p>
+                            </div>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Actions */}
@@ -3019,13 +3650,23 @@ export default function AdminDashboardClient({
                     Cancel
                   </button>
                   <button
-                    onClick={() => {
-                      alert("Report saved successfully!");
-                      setShowReportSidebar(false);
-                    }}
-                    className="flex-1 px-4 py-2.5 bg-[#427A43] text-white font-medium rounded-lg hover:bg-[#366337] transition-colors"
+                    onClick={generatePDFReport}
+                    className="flex-1 px-4 py-2.5 bg-[#427A43] text-white font-medium rounded-lg hover:bg-[#366337] transition-colors flex items-center justify-center gap-2"
                   >
-                    Save Report
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                    Generate PDF Report
                   </button>
                 </div>
               </div>
