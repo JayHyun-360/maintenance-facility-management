@@ -944,6 +944,9 @@ export default function AdminDashboardClient({
       pdf.setTextColor(0);
       pdf.setLineWidth(0.18);
 
+      const headerGray: [number, number, number] = [90, 90, 90];
+      const bodyBlack: [number, number, number] = [0, 0, 0];
+
       // Header (small, centered as in the scan)
       pdf.setFont("helvetica", "bold");
       pdf.setFontSize(11);
@@ -958,7 +961,9 @@ export default function AdminDashboardClient({
 
       // TO line
       pdf.setFontSize(9);
+      pdf.setTextColor(...headerGray);
       pdf.text("TO:", left, 29);
+      pdf.setTextColor(...bodyBlack);
       pdf.line(left + 10, 29.5, left + 95, 29.5);
 
       // Title box
@@ -972,7 +977,9 @@ export default function AdminDashboardClient({
 
       // NATURE OF REQUEST caption under title (centered)
       pdf.setFontSize(10);
+      pdf.setTextColor(...headerGray);
       pdf.text("NATURE OF REQUEST", pageWidth / 2, 52.5, { align: "center" });
+      pdf.setTextColor(...bodyBlack);
 
       // Combined block (Nature | Urgency | Date/Time) with grid
       const blockY = 56.5;
@@ -1039,9 +1046,9 @@ export default function AdminDashboardClient({
 
       // Main request table with full grid (header + 6 rows)
       const tableTop = blockY + blockH + 7.5;
-      const headerH = 8.5;
-      const rowH = 7.5;
-      const rows = 7;
+      const headerH = 8;
+      const rowH = 6.8;
+      const rows = 8;
       const tableH = headerH + rowH * rows;
       const w1 = 50;
       const w2 = 56;
@@ -1078,16 +1085,18 @@ export default function AdminDashboardClient({
         left + colW[0] + colW[1] + 3,
         left + colW[0] + colW[1] + colW[2] + 3,
       ];
+      pdf.setTextColor(...headerGray);
       headerTexts.forEach((lines, idx) => {
         lines.forEach((line, li) => {
           pdf.text(line, colX[idx], tableTop + 6 + li * 4);
         });
       });
+      pdf.setTextColor(...bodyBlack);
 
       // Fill first row with values only (rest blank like the form)
       pdf.setFont("helvetica", "normal");
       pdf.setFontSize(8);
-      const firstRowY = tableTop + headerH + 5;
+      const firstRowY = tableTop + headerH + 4.5;
       const values = [
         reportFormData.location || selectedRequestForReport.location || "",
         reportFormData.descriptionOfProblem ||
@@ -1107,25 +1116,31 @@ export default function AdminDashboardClient({
       // Signature area (two columns with lines)
       const sigTop = tableTop + tableH + 10;
       pdf.setFontSize(8);
+      pdf.setTextColor(...headerGray);
       pdf.text("Requested by: (Requesting Department)", left, sigTop);
       pdf.text(
         "Approved by: Administrative Affairs & Services Division",
         left + contentWidth / 2,
         sigTop,
       );
+      pdf.setTextColor(...bodyBlack);
 
       const half = contentWidth / 2;
       const lineY1 = sigTop + 11;
       const lineY2 = sigTop + 22;
       pdf.line(left + 8, lineY1, left + half - 8, lineY1);
       pdf.line(left + half + 8, lineY1, right - 8, lineY1);
+      pdf.setTextColor(...headerGray);
       pdf.text("Name of Employee", left + 28, lineY1 + 5);
       pdf.text("VP - AASD", left + half + 36, lineY1 + 5);
+      pdf.setTextColor(...bodyBlack);
 
       pdf.line(left + 8, lineY2, left + half - 8, lineY2);
       pdf.line(left + half + 8, lineY2, right - 8, lineY2);
+      pdf.setTextColor(...headerGray);
       pdf.text("Department Head", left + 30, lineY2 + 5);
       pdf.text("GMS Head", left + half + 36, lineY2 + 5);
+      pdf.setTextColor(...bodyBlack);
 
       // Work Evaluation block (boxed, with right rating table)
       const weTop = sigTop + 29;
@@ -1159,9 +1174,11 @@ export default function AdminDashboardClient({
         "Date/Time Completed",
         "Acknowledge by:",
       ];
+      pdf.setTextColor(...headerGray);
       weLabels.forEach((label, i) => {
         pdf.text(label, left + 3, weTop + weRowH * i + 5);
       });
+      pdf.setTextColor(...bodyBlack);
 
       pdf.setFont("helvetica", "bold");
       pdf.text("Work Evaluation", left + weLeftW + 3.5, weTop + weH / 2);
