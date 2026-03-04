@@ -1182,17 +1182,17 @@ export default function AdminDashboardClient({
         yPosition += 6;
         pdf.setFontSize(8);
         pdf.text(option.description, 33, yPosition);
+        yPosition += 6;
         pdf.setFontSize(10);
-        yPosition += 10;
       });
 
-      // Save the PDF
+      // Save PDF
       pdf.save(
-        `maintenance-request-${selectedRequestForReport.id.slice(0, 8)}.pdf`,
+        `maintenance-form-${selectedRequestForReport.id.slice(0, 8)}.pdf`,
       );
     } catch (error) {
       console.error("Error generating PDF:", error);
-      alert("Error generating PDF report. Please try again.");
+      alert("Error generating PDF form. Please try again.");
     }
   };
 
@@ -3199,10 +3199,10 @@ export default function AdminDashboardClient({
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="font-header text-xl font-bold text-white">
-                    Physical Plant/Facilities Request
+                    Physical Plant/Facilities Form
                   </h2>
                   <p className="text-white/80 text-sm mt-1">
-                    Generate official De La Salle John Bosco College report
+                    Generate official De La Salle John Bosco College form
                   </p>
                 </div>
                 <button
@@ -3523,7 +3523,8 @@ export default function AdminDashboardClient({
                               dateTimeReceived: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm bg-gray-100"
+                          readOnly
                         />
                       </div>
                       <div>
@@ -3539,7 +3540,8 @@ export default function AdminDashboardClient({
                               performedBy: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm bg-gray-100"
+                          readOnly
                           placeholder="Technician name"
                         />
                       </div>
@@ -3558,7 +3560,8 @@ export default function AdminDashboardClient({
                               dateTimeCompleted: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm bg-gray-100"
+                          readOnly
                         />
                       </div>
                       <div>
@@ -3574,7 +3577,8 @@ export default function AdminDashboardClient({
                               acknowledgeBy: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm bg-gray-100"
+                          readOnly
                           placeholder="Acknowledged by"
                         />
                       </div>
@@ -3609,7 +3613,7 @@ export default function AdminDashboardClient({
                         ].map((option) => (
                           <label
                             key={option.value}
-                            className="flex items-start space-x-2 cursor-pointer"
+                            className="flex items-start space-x-2 cursor-pointer opacity-75"
                           >
                             <input
                               type="radio"
@@ -3666,7 +3670,7 @@ export default function AdminDashboardClient({
                         d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                       />
                     </svg>
-                    Generate PDF Report
+                    Generate PDF Form
                   </button>
                 </div>
               </div>
