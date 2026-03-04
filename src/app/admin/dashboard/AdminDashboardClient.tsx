@@ -804,7 +804,7 @@ export default function AdminDashboardClient({
                   setSelectedRequestForReport(request);
                   setShowReportSidebar(true);
                 }}
-                className="p-1.5 text-gray-500 hover:text-[#427A43] hover:bg-gray-100 rounded transition-colors"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#427A43] text-white text-xs font-medium rounded hover:bg-[#366337] transition-colors shadow-sm hover:shadow-md"
                 title="Generate Report"
               >
                 <svg
@@ -817,9 +817,10 @@ export default function AdminDashboardClient({
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M9 12h6m-6 4h6m2 5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    d="M9 17v1a1 1 0 001 1h4a1 1 0 001-1v-1m3-2V8a2 2 0 00-2-2H8a2 2 0 00-2 2v8m5-4h4"
                   />
                 </svg>
+                <span>Report</span>
               </button>
 
               {/* Delete Button */}
