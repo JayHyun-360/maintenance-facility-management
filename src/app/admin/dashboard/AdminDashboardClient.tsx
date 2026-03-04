@@ -935,14 +935,14 @@ export default function AdminDashboardClient({
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
 
-      const marginX = 18;
+      const marginX = 16;
       const left = marginX;
       const right = pageWidth - marginX;
       const contentWidth = right - left;
 
       pdf.setDrawColor(0);
       pdf.setTextColor(0);
-      pdf.setLineWidth(0.2);
+      pdf.setLineWidth(0.18);
 
       // Header (small, centered as in the scan)
       pdf.setFont("helvetica", "bold");
@@ -958,30 +958,30 @@ export default function AdminDashboardClient({
 
       // TO line
       pdf.setFontSize(9);
-      pdf.text("TO:", left, 30);
-      pdf.line(left + 10, 30.5, left + 92, 30.5);
+      pdf.text("TO:", left, 29);
+      pdf.line(left + 10, 29.5, left + 95, 29.5);
 
       // Title box
-      pdf.setLineWidth(0.5);
-      pdf.rect(left, 35, contentWidth, 14);
+      pdf.setLineWidth(0.45);
+      pdf.rect(left, 33.5, contentWidth, 13.5);
       pdf.setFont("helvetica", "bold");
       pdf.setFontSize(11);
-      pdf.text("PHYSICAL PLANT / FACILITIES REQUEST", pageWidth / 2, 44, {
+      pdf.text("PHYSICAL PLANT / FACILITIES REQUEST", pageWidth / 2, 41.8, {
         align: "center",
       });
 
       // NATURE OF REQUEST caption under title (centered)
       pdf.setFontSize(10);
-      pdf.text("NATURE OF REQUEST", pageWidth / 2, 54, { align: "center" });
+      pdf.text("NATURE OF REQUEST", pageWidth / 2, 52.5, { align: "center" });
 
       // Combined block (Nature | Urgency | Date/Time) with grid
-      const blockY = 58;
-      const blockH = 28;
-      const col1 = 68;
-      const col2 = 68;
+      const blockY = 56.5;
+      const blockH = 29;
+      const col1 = 66;
+      const col2 = 66;
       const col3 = contentWidth - col1 - col2;
 
-      pdf.setLineWidth(0.3);
+      pdf.setLineWidth(0.22);
       pdf.rect(left, blockY, contentWidth, blockH);
       pdf.line(left + col1, blockY, left + col1, blockY + blockH);
       pdf.line(left + col1 + col2, blockY, left + col1 + col2, blockY + blockH);
@@ -995,7 +995,7 @@ export default function AdminDashboardClient({
         { key: "electrical", label: "ELECTRICAL" },
         { key: "personnelServices", label: "PERSONNEL SERVICES" },
       ];
-      let ny = blockY + 7;
+      let ny = blockY + 7.5;
       const nx = left + 6;
       natureOptions.forEach((opt) => {
         pdf.rect(nx, ny - 4, 6, 6);
@@ -1008,12 +1008,12 @@ export default function AdminDashboardClient({
           pdf.line(nx, ny + 2, nx + 6, ny - 4);
         }
         pdf.text(opt.label, nx + 10, ny + 1);
-        ny += 6.5;
+        ny += 7;
       });
 
       // Urgency checkboxes (middle column)
       const ux = left + col1 + 6;
-      let uy = blockY + 7;
+      let uy = blockY + 7.5;
       const urgencyOptions = ["Very Urgent/Emergency", "Urgent", "Not Urgent"];
       urgencyOptions.forEach((opt) => {
         pdf.rect(ux, uy - 4, 6, 6);
@@ -1022,13 +1022,13 @@ export default function AdminDashboardClient({
           pdf.line(ux, uy + 2, ux + 6, uy - 4);
         }
         pdf.text(opt, ux + 10, uy + 1);
-        uy += 7.5;
+        uy += 8;
       });
 
       // Date / Time underlines (right column)
       const dx = left + col1 + col2 + 6;
-      const dateY = blockY + 12;
-      const timeY = blockY + 22;
+      const dateY = blockY + 12.5;
+      const timeY = blockY + 23;
       pdf.text("Date:", dx, dateY);
       pdf.line(dx + 14, dateY + 0.5, right - 6, dateY + 0.5);
       pdf.text("Time:", dx, timeY);
@@ -1038,14 +1038,14 @@ export default function AdminDashboardClient({
       pdf.text(`${reportFormData.time || ""}`, dx + 16, timeY);
 
       // Main request table with full grid (header + 6 rows)
-      const tableTop = blockY + blockH + 8;
-      const headerH = 9;
-      const rowH = 8;
-      const rows = 6;
+      const tableTop = blockY + blockH + 7.5;
+      const headerH = 8.5;
+      const rowH = 7.5;
+      const rows = 7;
       const tableH = headerH + rowH * rows;
-      const w1 = 48;
+      const w1 = 50;
       const w2 = 56;
-      const w3 = 48;
+      const w3 = 50;
       const w4 = contentWidth - (w1 + w2 + w3);
       const colW = [w1, w2, w3, w4];
 
@@ -1105,7 +1105,7 @@ export default function AdminDashboardClient({
       });
 
       // Signature area (two columns with lines)
-      const sigTop = tableTop + tableH + 12;
+      const sigTop = tableTop + tableH + 10;
       pdf.setFontSize(8);
       pdf.text("Requested by: (Requesting Department)", left, sigTop);
       pdf.text(
@@ -1115,8 +1115,8 @@ export default function AdminDashboardClient({
       );
 
       const half = contentWidth / 2;
-      const lineY1 = sigTop + 12;
-      const lineY2 = sigTop + 24;
+      const lineY1 = sigTop + 11;
+      const lineY2 = sigTop + 22;
       pdf.line(left + 8, lineY1, left + half - 8, lineY1);
       pdf.line(left + half + 8, lineY1, right - 8, lineY1);
       pdf.text("Name of Employee", left + 28, lineY1 + 5);
@@ -1128,10 +1128,10 @@ export default function AdminDashboardClient({
       pdf.text("GMS Head", left + half + 36, lineY2 + 5);
 
       // Work Evaluation block (boxed, with right rating table)
-      const weTop = sigTop + 32;
-      const weH = 38;
-      const weLeftW = 118;
-      const weMidW = 30;
+      const weTop = sigTop + 29;
+      const weH = 36;
+      const weLeftW = 120;
+      const weMidW = 28;
       pdf.rect(left, weTop, contentWidth, weH);
       pdf.line(left + weLeftW, weTop, left + weLeftW, weTop + weH);
       pdf.line(
@@ -1164,7 +1164,7 @@ export default function AdminDashboardClient({
       });
 
       pdf.setFont("helvetica", "bold");
-      pdf.text("Work Evaluation", left + weLeftW + 4, weTop + weH / 2);
+      pdf.text("Work Evaluation", left + weLeftW + 3.5, weTop + weH / 2);
       pdf.setFont("helvetica", "normal");
 
       const ratings = [
@@ -1194,7 +1194,7 @@ export default function AdminDashboardClient({
       });
 
       // Bottom rating descriptions
-      const descTop = weTop + weH + 10;
+      const descTop = weTop + weH + 8;
       pdf.setFontSize(8);
       const descMidX = left + 46;
       const descRows = [
