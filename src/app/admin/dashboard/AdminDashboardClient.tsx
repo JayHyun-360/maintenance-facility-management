@@ -935,276 +935,291 @@ export default function AdminDashboardClient({
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
 
-      // Header Section
-      pdf.setFontSize(16);
+      const marginX = 18;
+      const left = marginX;
+      const right = pageWidth - marginX;
+      const contentWidth = right - left;
+
+      pdf.setDrawColor(0);
+      pdf.setTextColor(0);
+      pdf.setLineWidth(0.2);
+
+      // Header (small, centered as in the scan)
       pdf.setFont("helvetica", "bold");
-      pdf.text("DE LA SALLE JOHN BOSCO COLLEGE", pageWidth / 2, 15, {
+      pdf.setFontSize(11);
+      pdf.text("DE LA SALLE JOHN BOSCO COLLEGE", pageWidth / 2, 16, {
         align: "center",
       });
-
-      pdf.setFontSize(12);
       pdf.setFont("helvetica", "normal");
-      pdf.text(
-        "Mangagoy, Bislig City, Surigao del Sur, 8307, Philippines",
-        pageWidth / 2,
-        22,
-        { align: "center" },
-      );
-      pdf.text("Tel. No. (086) 828-3902", pageWidth / 2, 28, {
+      pdf.setFontSize(9);
+      pdf.text("Mangagoy, Bislig City, Surigao del Sur", pageWidth / 2, 20, {
         align: "center",
       });
 
-      // Main Title with Box
-      pdf.setLineWidth(1.5);
-      pdf.rect(15, 35, pageWidth - 30, 15);
-      pdf.setFontSize(14);
+      // TO line
+      pdf.setFontSize(9);
+      pdf.text("TO:", left, 30);
+      pdf.line(left + 10, 30.5, left + 92, 30.5);
+
+      // Title box
+      pdf.setLineWidth(0.5);
+      pdf.rect(left, 35, contentWidth, 14);
       pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(11);
       pdf.text("PHYSICAL PLANT / FACILITIES REQUEST", pageWidth / 2, 44, {
         align: "center",
       });
 
-      // Date and Time
-      let yPosition = 60;
-      pdf.setFontSize(11);
-      pdf.setFont("helvetica", "normal");
-      pdf.text(
-        `DATE: ${reportFormData.date || new Date().toLocaleDateString()}`,
-        20,
-        yPosition,
-      );
-      pdf.text(
-        `TIME: ${reportFormData.time || new Date().toLocaleTimeString()}`,
-        pageWidth - 60,
-        yPosition,
-      );
-
-      // Nature of Request Section
-      yPosition += 15;
-      pdf.setFontSize(12);
-      pdf.setFont("helvetica", "bold");
-      pdf.text("NATURE OF REQUEST:", 20, yPosition);
-
-      yPosition += 8;
+      // NATURE OF REQUEST caption under title (centered)
       pdf.setFontSize(10);
-      pdf.setFont("helvetica", "normal");
+      pdf.text("NATURE OF REQUEST", pageWidth / 2, 54, { align: "center" });
 
+      // Combined block (Nature | Urgency | Date/Time) with grid
+      const blockY = 58;
+      const blockH = 28;
+      const col1 = 68;
+      const col2 = 68;
+      const col3 = contentWidth - col1 - col2;
+
+      pdf.setLineWidth(0.3);
+      pdf.rect(left, blockY, contentWidth, blockH);
+      pdf.line(left + col1, blockY, left + col1, blockY + blockH);
+      pdf.line(left + col1 + col2, blockY, left + col1 + col2, blockY + blockH);
+
+      // Nature checkboxes (left column, vertical)
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(9);
       const natureOptions = [
         { key: "plumbing", label: "PLUMBING" },
         { key: "carpentry", label: "CARPENTRY" },
         { key: "electrical", label: "ELECTRICAL" },
         { key: "personnelServices", label: "PERSONNEL SERVICES" },
       ];
-
-      natureOptions.forEach((option, index) => {
-        const xPosition = 25 + (index % 2) * 90;
-        const yPos = yPosition + Math.floor(index / 2) * 10;
-
-        // Checkbox
-        pdf.rect(xPosition, yPos - 4, 4, 4);
+      let ny = blockY + 7;
+      const nx = left + 6;
+      natureOptions.forEach((opt) => {
+        pdf.rect(nx, ny - 4, 6, 6);
         if (
           reportFormData.natureOfRequest[
-            option.key as keyof typeof reportFormData.natureOfRequest
+            opt.key as keyof typeof reportFormData.natureOfRequest
           ]
         ) {
-          pdf.line(xPosition, yPos - 4, xPosition + 4, yPos);
-          pdf.line(xPosition, yPos, xPosition + 4, yPos - 4);
+          pdf.line(nx, ny - 4, nx + 6, ny + 2);
+          pdf.line(nx, ny + 2, nx + 6, ny - 4);
         }
-        pdf.text(option.label, xPosition + 8, yPos);
+        pdf.text(opt.label, nx + 10, ny + 1);
+        ny += 6.5;
       });
 
-      yPosition += 30;
-
-      // Urgency Section
-      pdf.setFontSize(12);
-      pdf.setFont("helvetica", "bold");
-      pdf.text("URGENCY:", 20, yPosition);
-
-      yPosition += 8;
-      pdf.setFontSize(10);
-      pdf.setFont("helvetica", "normal");
-
+      // Urgency checkboxes (middle column)
+      const ux = left + col1 + 6;
+      let uy = blockY + 7;
       const urgencyOptions = ["Very Urgent/Emergency", "Urgent", "Not Urgent"];
-      urgencyOptions.forEach((option, index) => {
-        const xPosition = 25 + index * 60;
-        pdf.rect(xPosition, yPosition - 4, 4, 4);
-        if (reportFormData.urgency === option) {
-          pdf.line(xPosition, yPosition - 4, xPosition + 4, yPosition);
-          pdf.line(xPosition, yPosition, xPosition + 4, yPosition - 4);
+      urgencyOptions.forEach((opt) => {
+        pdf.rect(ux, uy - 4, 6, 6);
+        if (reportFormData.urgency === opt) {
+          pdf.line(ux, uy - 4, ux + 6, uy + 2);
+          pdf.line(ux, uy + 2, ux + 6, uy - 4);
         }
-        pdf.text(option, xPosition + 8, yPosition);
+        pdf.text(opt, ux + 10, uy + 1);
+        uy += 7.5;
       });
 
-      yPosition += 15;
+      // Date / Time underlines (right column)
+      const dx = left + col1 + col2 + 6;
+      const dateY = blockY + 12;
+      const timeY = blockY + 22;
+      pdf.text("Date:", dx, dateY);
+      pdf.line(dx + 14, dateY + 0.5, right - 6, dateY + 0.5);
+      pdf.text("Time:", dx, timeY);
+      pdf.line(dx + 14, timeY + 0.5, right - 6, timeY + 0.5);
+      pdf.setFontSize(8);
+      pdf.text(`${reportFormData.date || ""}`, dx + 16, dateY);
+      pdf.text(`${reportFormData.time || ""}`, dx + 16, timeY);
 
-      // Request Details Table
-      pdf.setFontSize(12);
+      // Main request table with full grid (header + 6 rows)
+      const tableTop = blockY + blockH + 8;
+      const headerH = 9;
+      const rowH = 8;
+      const rows = 6;
+      const tableH = headerH + rowH * rows;
+      const w1 = 48;
+      const w2 = 56;
+      const w3 = 48;
+      const w4 = contentWidth - (w1 + w2 + w3);
+      const colW = [w1, w2, w3, w4];
+
       pdf.setFont("helvetica", "bold");
-      pdf.text("REQUEST DETAILS:", 20, yPosition);
+      pdf.setFontSize(9);
+      pdf.rect(left, tableTop, contentWidth, tableH);
+      // vertical lines
+      let vx = left;
+      for (let i = 0; i < colW.length - 1; i++) {
+        vx += colW[i];
+        pdf.line(vx, tableTop, vx, tableTop + tableH);
+      }
+      // header line
+      pdf.line(left, tableTop + headerH, right, tableTop + headerH);
+      // row lines
+      for (let i = 1; i <= rows; i++) {
+        const yy = tableTop + headerH + rowH * i;
+        pdf.line(left, yy, right, yy);
+      }
 
-      yPosition += 10;
-
-      // Table headers
-      const tableHeaders = ["LOCATION", "DESCRIPTION", "ACTION", "REASONS"];
-      const columnWidths = [45, 55, 55, 35];
-      let xPos = 20;
-
-      // Draw table border
-      pdf.setLineWidth(0.5);
-      pdf.rect(20, yPosition - 8, pageWidth - 40, 60);
-
-      // Draw vertical lines
-      let currentX = 20;
-      columnWidths.forEach((width) => {
-        currentX += width;
-        pdf.line(currentX, yPosition - 8, currentX, yPosition + 52);
-      });
-
-      // Headers
-      pdf.setFont("helvetica", "bold");
-      tableHeaders.forEach((header, index) => {
-        const x = 25 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0);
-        pdf.text(header, x, yPosition);
-      });
-
-      yPosition += 8;
-      pdf.setFont("helvetica", "normal");
-
-      // Table data
-      const tableData = [
-        reportFormData.location || selectedRequestForReport.location,
-        reportFormData.descriptionOfProblem ||
-          selectedRequestForReport.description,
-        reportFormData.whatWillBeDone || "To be determined",
-        reportFormData.supportingReasons || "Maintenance request",
+      const headerTexts = [
+        ["LOCATION"],
+        ["DESCRIPTION OF", "PROBLEM"],
+        ["WHAT WILL BE", "DONE"],
+        ["SUPPORTING REASON(S)"],
       ];
-
-      xPos = 25;
-      tableData.forEach((data, index) => {
-        const x = 25 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0);
-        const lines = pdf.splitTextToSize(data || "", columnWidths[index] - 5);
-        lines.forEach((line: string, lineIndex: number) => {
-          pdf.text(line, x, yPosition + lineIndex * 5);
+      const colX = [
+        left + 3,
+        left + colW[0] + 3,
+        left + colW[0] + colW[1] + 3,
+        left + colW[0] + colW[1] + colW[2] + 3,
+      ];
+      headerTexts.forEach((lines, idx) => {
+        lines.forEach((line, li) => {
+          pdf.text(line, colX[idx], tableTop + 6 + li * 4);
         });
       });
 
-      yPosition += 65;
+      // Fill first row with values only (rest blank like the form)
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(8);
+      const firstRowY = tableTop + headerH + 5;
+      const values = [
+        reportFormData.location || selectedRequestForReport.location || "",
+        reportFormData.descriptionOfProblem ||
+          selectedRequestForReport.description ||
+          "",
+        reportFormData.whatWillBeDone || "",
+        reportFormData.supportingReasons || "",
+      ];
+      values.forEach((val, idx) => {
+        const maxW = colW[idx] - 6;
+        const lines = pdf.splitTextToSize(val, maxW);
+        lines.slice(0, 2).forEach((line: string, li: number) => {
+          pdf.text(line, colX[idx], firstRowY + li * 3.8);
+        });
+      });
 
-      // Request/Approval Section
-      pdf.setFontSize(12);
+      // Signature area (two columns with lines)
+      const sigTop = tableTop + tableH + 12;
+      pdf.setFontSize(8);
+      pdf.text("Requested by: (Requesting Department)", left, sigTop);
+      pdf.text(
+        "Approved by: Administrative Affairs & Services Division",
+        left + contentWidth / 2,
+        sigTop,
+      );
+
+      const half = contentWidth / 2;
+      const lineY1 = sigTop + 12;
+      const lineY2 = sigTop + 24;
+      pdf.line(left + 8, lineY1, left + half - 8, lineY1);
+      pdf.line(left + half + 8, lineY1, right - 8, lineY1);
+      pdf.text("Name of Employee", left + 28, lineY1 + 5);
+      pdf.text("VP - AASD", left + half + 36, lineY1 + 5);
+
+      pdf.line(left + 8, lineY2, left + half - 8, lineY2);
+      pdf.line(left + half + 8, lineY2, right - 8, lineY2);
+      pdf.text("Department Head", left + 30, lineY2 + 5);
+      pdf.text("GMS Head", left + half + 36, lineY2 + 5);
+
+      // Work Evaluation block (boxed, with right rating table)
+      const weTop = sigTop + 32;
+      const weH = 38;
+      const weLeftW = 118;
+      const weMidW = 30;
+      pdf.rect(left, weTop, contentWidth, weH);
+      pdf.line(left + weLeftW, weTop, left + weLeftW, weTop + weH);
+      pdf.line(
+        left + weLeftW + weMidW,
+        weTop,
+        left + weLeftW + weMidW,
+        weTop + weH,
+      );
+
+      const weRowH = weH / 4;
+      for (let i = 1; i < 4; i++) {
+        pdf.line(left, weTop + weRowH * i, left + weLeftW, weTop + weRowH * i);
+        pdf.line(
+          left + weLeftW + weMidW,
+          weTop + weRowH * i,
+          right,
+          weTop + weRowH * i,
+        );
+      }
+
+      pdf.setFontSize(8);
+      const weLabels = [
+        "Date/Time Received",
+        "Performed by:",
+        "Date/Time Completed",
+        "Acknowledge by:",
+      ];
+      weLabels.forEach((label, i) => {
+        pdf.text(label, left + 3, weTop + weRowH * i + 5);
+      });
+
       pdf.setFont("helvetica", "bold");
-      pdf.text("REQUEST/APPROVAL SECTION:", 20, yPosition);
-
-      yPosition += 12;
-      pdf.setFontSize(10);
+      pdf.text("Work Evaluation", left + weLeftW + 4, weTop + weH / 2);
       pdf.setFont("helvetica", "normal");
 
-      // Requested by section
-      pdf.text("REQUESTED BY: (REQUESTING DEPARTMENT)", 20, yPosition);
+      const ratings = [
+        "Outstanding",
+        "Very Satisfactory",
+        "Satisfactory",
+        "Poor",
+      ];
+      ratings.forEach((r, i) => {
+        pdf.text(r, left + weLeftW + weMidW + 6, weTop + weRowH * i + 5);
+      });
 
-      yPosition += 8;
-      pdf.text(
-        `Name of Employee: ${reportFormData.nameOfEmployee || selectedRequestForReport.profiles?.full_name || ""}`,
-        25,
-        yPosition,
-      );
+      // Fill we values (small)
+      pdf.setFontSize(7.5);
+      const weValues = [
+        reportFormData.dateTimeReceived || "",
+        reportFormData.performedBy || "",
+        reportFormData.dateTimeCompleted || "",
+        reportFormData.acknowledgeBy || "",
+      ];
+      weValues.forEach((v, i) => {
+        const y = weTop + weRowH * i + 5;
+        const x = left + 42;
+        const maxW = weLeftW - 45;
+        const lines = pdf.splitTextToSize(v, maxW);
+        pdf.text(lines[0] || "", x, y);
+      });
 
-      yPosition += 6;
-      pdf.text(
-        `Department Head: ${reportFormData.departmentHead || ""}`,
-        25,
-        yPosition,
-      );
-
-      yPosition += 12;
-      pdf.text(
-        "APPROVED BY: ADMINISTRATIVE AFFAIRS & SERVICES DIVISION",
-        20,
-        yPosition,
-      );
-
-      yPosition += 8;
-      pdf.text(`VP - AASD: ${reportFormData.vpAASD || ""}`, 25, yPosition);
-
-      yPosition += 12;
-      pdf.text("RECEIVED BY:", 20, yPosition);
-
-      yPosition += 8;
-      pdf.text(`GMS Head: ${reportFormData.gmsHead || ""}`, 25, yPosition);
-
-      yPosition += 20;
-
-      // Work Evaluation Section
-      pdf.setFontSize(12);
-      pdf.setFont("helvetica", "bold");
-      pdf.text("WORK EVALUATION:", 20, yPosition);
-
-      yPosition += 12;
-      pdf.setFontSize(10);
-      pdf.setFont("helvetica", "normal");
-
-      pdf.text(
-        `Date/Time Received: ${reportFormData.dateTimeReceived || new Date().toLocaleString()}`,
-        25,
-        yPosition,
-      );
-
-      yPosition += 6;
-      pdf.text(
-        `Performed by: ${reportFormData.performedBy || ""}`,
-        25,
-        yPosition,
-      );
-
-      yPosition += 6;
-      pdf.text(
-        `Date/Time Completed: ${reportFormData.dateTimeCompleted || ""}`,
-        25,
-        yPosition,
-      );
-
-      yPosition += 6;
-      pdf.text(
-        `Acknowledge by: ${reportFormData.acknowledgeBy || ""}`,
-        25,
-        yPosition,
-      );
-
-      yPosition += 12;
-
-      // Work Evaluation checkboxes
-      pdf.text("Work Evaluation:", 20, yPosition);
-      yPosition += 8;
-
-      const evaluationOptions = [
+      // Bottom rating descriptions
+      const descTop = weTop + weH + 10;
+      pdf.setFontSize(8);
+      const descMidX = left + 46;
+      const descRows = [
         {
-          value: "Outstanding",
-          description:
-            "Excellent Workmanship. Completed before the date needed/required.",
+          k: "Outstanding",
+          v: "Excellent Workmanship. Completed before the date needed/required.",
         },
         {
-          value: "Very Satisfactory",
-          description:
-            "Above Average Workmanship. Completed before the date needed/required.",
+          k: "Very Satisfactory",
+          v: "Above Average Workmanship. Completed before the date needed/required.",
         },
         {
-          value: "Satisfactory",
-          description:
-            "Average/Acceptable Workmanship. Completed on the date needed.",
+          k: "Satisfactory",
+          v: "Average/Acceptable Workmanship. Completed on the date needed.",
         },
         {
-          value: "Poor",
-          description: "Messy/Unacceptable Workmanship. Very late.",
+          k: "Poor",
+          v: "Messy/Unacceptable Workmanship. Very late.",
         },
       ];
-
-      evaluationOptions.forEach((option) => {
-        pdf.rect(25, yPosition - 4, 4, 4);
-        pdf.text(option.value, 33, yPosition);
-        yPosition += 6;
-        pdf.setFontSize(8);
-        pdf.text(option.description, 33, yPosition);
-        yPosition += 8;
-        pdf.setFontSize(10);
+      descRows.forEach((row, i) => {
+        const y = descTop + i * 5;
+        pdf.text(row.k, left, y);
+        const lines = pdf.splitTextToSize(row.v, right - descMidX);
+        pdf.text(lines[0] || "", descMidX, y);
       });
 
       // Save PDF
