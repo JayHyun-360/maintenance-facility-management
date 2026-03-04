@@ -935,28 +935,51 @@ export default function AdminDashboardClient({
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
 
-      // Header
+      // Header Section
       pdf.setFontSize(16);
       pdf.setFont("helvetica", "bold");
-      pdf.text("DE LA SALLE JOHN BOSCO COLLEGE", pageWidth / 2, 20, {
+      pdf.text("DE LA SALLE JOHN BOSCO COLLEGE", pageWidth / 2, 15, {
         align: "center",
       });
 
       pdf.setFontSize(12);
       pdf.setFont("helvetica", "normal");
-      pdf.text("Mangagoy, Bislig City, Surigao del Sur", pageWidth / 2, 28, {
+      pdf.text(
+        "Mangagoy, Bislig City, Surigao del Sur, 8307, Philippines",
+        pageWidth / 2,
+        22,
+        { align: "center" },
+      );
+      pdf.text("Tel. No. (086) 828-3902", pageWidth / 2, 28, {
         align: "center",
       });
 
-      // Title
+      // Main Title with Box
+      pdf.setLineWidth(1.5);
+      pdf.rect(15, 35, pageWidth - 30, 15);
       pdf.setFontSize(14);
       pdf.setFont("helvetica", "bold");
-      pdf.text("PHYSICAL PLANT / FACILITIES REQUEST", pageWidth / 2, 40, {
+      pdf.text("PHYSICAL PLANT / FACILITIES REQUEST", pageWidth / 2, 44, {
         align: "center",
       });
 
+      // Date and Time
+      let yPosition = 60;
+      pdf.setFontSize(11);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(
+        `DATE: ${reportFormData.date || new Date().toLocaleDateString()}`,
+        20,
+        yPosition,
+      );
+      pdf.text(
+        `TIME: ${reportFormData.time || new Date().toLocaleTimeString()}`,
+        pageWidth - 60,
+        yPosition,
+      );
+
       // Nature of Request Section
-      let yPosition = 55;
+      yPosition += 15;
       pdf.setFontSize(12);
       pdf.setFont("helvetica", "bold");
       pdf.text("NATURE OF REQUEST:", 20, yPosition);
@@ -965,7 +988,6 @@ export default function AdminDashboardClient({
       pdf.setFontSize(10);
       pdf.setFont("helvetica", "normal");
 
-      // Checkboxes for nature of request
       const natureOptions = [
         { key: "plumbing", label: "PLUMBING" },
         { key: "carpentry", label: "CARPENTRY" },
@@ -975,7 +997,7 @@ export default function AdminDashboardClient({
 
       natureOptions.forEach((option, index) => {
         const xPosition = 25 + (index % 2) * 90;
-        const yPos = yPosition + Math.floor(index / 2) * 8;
+        const yPos = yPosition + Math.floor(index / 2) * 10;
 
         // Checkbox
         pdf.rect(xPosition, yPos - 4, 4, 4);
@@ -990,12 +1012,15 @@ export default function AdminDashboardClient({
         pdf.text(option.label, xPosition + 8, yPos);
       });
 
-      yPosition += 20;
+      yPosition += 30;
 
-      // Urgency
+      // Urgency Section
+      pdf.setFontSize(12);
       pdf.setFont("helvetica", "bold");
       pdf.text("URGENCY:", 20, yPosition);
+
       yPosition += 8;
+      pdf.setFontSize(10);
       pdf.setFont("helvetica", "normal");
 
       const urgencyOptions = ["Very Urgent/Emergency", "Urgent", "Not Urgent"];
@@ -1011,45 +1036,40 @@ export default function AdminDashboardClient({
 
       yPosition += 15;
 
-      // Date and Time
-      pdf.text(
-        `Date: ${reportFormData.date || new Date().toLocaleDateString()}`,
-        20,
-        yPosition,
-      );
-      pdf.text(
-        `Time: ${reportFormData.time || new Date().toLocaleTimeString()}`,
-        120,
-        yPosition,
-      );
-
-      yPosition += 15;
-
-      // Table
+      // Request Details Table
+      pdf.setFontSize(12);
       pdf.setFont("helvetica", "bold");
       pdf.text("REQUEST DETAILS:", 20, yPosition);
+
       yPosition += 10;
 
       // Table headers
       const tableHeaders = ["LOCATION", "DESCRIPTION", "ACTION", "REASONS"];
-      const columnWidths = [40, 60, 60, 40];
+      const columnWidths = [45, 55, 55, 35];
       let xPos = 20;
 
-      pdf.setFont("helvetica", "bold");
-      tableHeaders.forEach((header, index) => {
-        pdf.text(header, xPos, yPosition);
-        xPos += columnWidths[index];
+      // Draw table border
+      pdf.setLineWidth(0.5);
+      pdf.rect(20, yPosition - 8, pageWidth - 40, 60);
+
+      // Draw vertical lines
+      let currentX = 20;
+      columnWidths.forEach((width) => {
+        currentX += width;
+        pdf.line(currentX, yPosition - 8, currentX, yPosition + 52);
       });
 
-      yPosition += 2;
-      pdf.line(20, yPosition, pageWidth - 20, yPosition);
+      // Headers
+      pdf.setFont("helvetica", "bold");
+      tableHeaders.forEach((header, index) => {
+        const x = 25 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0);
+        pdf.text(header, x, yPosition);
+      });
+
       yPosition += 8;
+      pdf.setFont("helvetica", "normal");
 
       // Table data
-      pdf.setFont("helvetica", "normal");
-      pdf.setFontSize(9);
-      xPos = 20;
-
       const tableData = [
         reportFormData.location || selectedRequestForReport.location,
         reportFormData.descriptionOfProblem ||
@@ -1058,35 +1078,36 @@ export default function AdminDashboardClient({
         reportFormData.supportingReasons || "Maintenance request",
       ];
 
+      xPos = 25;
       tableData.forEach((data, index) => {
-        const lines = pdf.splitTextToSize(data || "", columnWidths[index] - 2);
-        lines.forEach((line: string) => {
-          pdf.text(line, xPos, yPosition);
-          yPosition += 5;
+        const x = 25 + columnWidths.slice(0, index).reduce((a, b) => a + b, 0);
+        const lines = pdf.splitTextToSize(data || "", columnWidths[index] - 5);
+        lines.forEach((line: string, lineIndex: number) => {
+          pdf.text(line, x, yPosition + lineIndex * 5);
         });
-        xPos += columnWidths[index];
-        yPosition -= (lines.length - 1) * 5;
       });
 
-      yPosition += 15;
+      yPosition += 65;
 
       // Request/Approval Section
       pdf.setFontSize(12);
       pdf.setFont("helvetica", "bold");
       pdf.text("REQUEST/APPROVAL SECTION:", 20, yPosition);
-      yPosition += 15;
 
+      yPosition += 12;
       pdf.setFontSize(10);
       pdf.setFont("helvetica", "normal");
 
-      // Requested by
-      pdf.text("Requested by: (Requesting Department)", 20, yPosition);
+      // Requested by section
+      pdf.text("REQUESTED BY: (REQUESTING DEPARTMENT)", 20, yPosition);
+
       yPosition += 8;
       pdf.text(
         `Name of Employee: ${reportFormData.nameOfEmployee || selectedRequestForReport.profiles?.full_name || ""}`,
         25,
         yPosition,
       );
+
       yPosition += 6;
       pdf.text(
         `Department Head: ${reportFormData.departmentHead || ""}`,
@@ -1095,48 +1116,52 @@ export default function AdminDashboardClient({
       );
 
       yPosition += 12;
-
-      // Approved by
       pdf.text(
-        "Approved by: Administrative Affairs & Services Division",
+        "APPROVED BY: ADMINISTRATIVE AFFAIRS & SERVICES DIVISION",
         20,
         yPosition,
       );
+
       yPosition += 8;
       pdf.text(`VP - AASD: ${reportFormData.vpAASD || ""}`, 25, yPosition);
 
       yPosition += 12;
+      pdf.text("RECEIVED BY:", 20, yPosition);
 
-      // Received by
-      pdf.text("Received by:", 20, yPosition);
       yPosition += 8;
       pdf.text(`GMS Head: ${reportFormData.gmsHead || ""}`, 25, yPosition);
 
-      yPosition += 15;
+      yPosition += 20;
 
       // Work Evaluation Section
+      pdf.setFontSize(12);
       pdf.setFont("helvetica", "bold");
       pdf.text("WORK EVALUATION:", 20, yPosition);
-      yPosition += 12;
 
+      yPosition += 12;
+      pdf.setFontSize(10);
       pdf.setFont("helvetica", "normal");
+
       pdf.text(
         `Date/Time Received: ${reportFormData.dateTimeReceived || new Date().toLocaleString()}`,
         25,
         yPosition,
       );
+
       yPosition += 6;
       pdf.text(
         `Performed by: ${reportFormData.performedBy || ""}`,
         25,
         yPosition,
       );
+
       yPosition += 6;
       pdf.text(
         `Date/Time Completed: ${reportFormData.dateTimeCompleted || ""}`,
         25,
         yPosition,
       );
+
       yPosition += 6;
       pdf.text(
         `Acknowledge by: ${reportFormData.acknowledgeBy || ""}`,
@@ -1174,15 +1199,11 @@ export default function AdminDashboardClient({
 
       evaluationOptions.forEach((option) => {
         pdf.rect(25, yPosition - 4, 4, 4);
-        if (reportFormData.workEvaluation === option.value) {
-          pdf.line(25, yPosition - 4, 29, yPosition);
-          pdf.line(25, yPosition, 29, yPosition - 4);
-        }
         pdf.text(option.value, 33, yPosition);
         yPosition += 6;
         pdf.setFontSize(8);
         pdf.text(option.description, 33, yPosition);
-        yPosition += 6;
+        yPosition += 8;
         pdf.setFontSize(10);
       });
 
