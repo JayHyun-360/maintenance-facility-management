@@ -91,7 +91,7 @@ export default function AdminDashboardClient({
   const [showNotifications, setShowNotifications] = useState(false);
   const [showAIChat, setShowAIChat] = useState(false);
   const [activeTab, setActiveTab] = useState<
-    "overview" | "analytics" | "master-queue" | "manage-users"
+    "overview" | "analytics" | "master-queue" | "manage-users" | "announcements"
   >("overview");
   const tabRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({});
 
@@ -1147,8 +1147,8 @@ export default function AdminDashboardClient({
               ),
             },
             {
-              id: "manage-users",
-              label: "Manage Users",
+              id: "announcements",
+              label: "Announcements",
               icon: (
                 <svg
                   className="w-5 h-5"
@@ -2352,8 +2352,8 @@ export default function AdminDashboardClient({
           )}
         </div>
 
-        {/* Manage Users Tab - Broadcast Only */}
-        {activeTab === "manage-users" && (
+        {/* Announcements Tab - Broadcast Only */}
+        {activeTab === "announcements" && (
           <div className="bg-white rounded-xl shadow-sm p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="font-header text-lg font-semibold text-gray-900">
