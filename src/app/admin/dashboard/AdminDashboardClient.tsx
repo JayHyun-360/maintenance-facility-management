@@ -123,6 +123,8 @@ interface AdminDashboardClientProps {
   userAvatar?: string | null;
 
   userId: string;
+
+  initialRequestId?: string;
 }
 
 export default function AdminDashboardClient({
@@ -135,6 +137,8 @@ export default function AdminDashboardClient({
   userAvatar,
 
   userId,
+
+  initialRequestId,
 }: AdminDashboardClientProps) {
   const router = useRouter();
 
@@ -565,6 +569,16 @@ export default function AdminDashboardClient({
 
     return () => clearInterval(notificationInterval);
   }, []);
+
+  // Open detail modal when request ID is provided via URL (from notification click)
+  useEffect(() => {
+    if (initialRequestId && requests.length > 0) {
+      const request = requests.find((r) => r.id === initialRequestId);
+      if (request) {
+        setShowDetailModal(request);
+      }
+    }
+  }, [initialRequestId, requests]);
 
   const fetchRequests = async () => {
     const { data } = await supabase
@@ -5612,30 +5626,45 @@ export default function AdminDashboardClient({
                 onClick={() => {
                   setEmergencyPopup(null);
 
-                  // Scroll to or highlight the emergency request in the list
+                  // Extract request ID from link_url or use request_id field
+                  let requestId = emergencyPopup.request_id;
 
-                  const requestId = emergencyPopup.request_id;
+                  if (!requestId && emergencyPopup.link_url) {
+                    // Extract from URL like /admin/dashboard?request=xxx
+                    const urlParams = new URL(
+                      emergencyPopup.link_url,
+                      "http://localhost",
+                    );
+                    requestId = urlParams.searchParams.get("request");
+                  }
 
                   if (requestId) {
-                    const element = document.getElementById(
-                      `request-${requestId}`,
-                    );
-
-                    if (element) {
-                      element.scrollIntoView({
-                        behavior: "smooth",
-
-                        block: "center",
-                      });
-
-                      element.classList.add("ring-4", "ring-red-500");
-
-                      setTimeout(
-                        () =>
-                          element.classList.remove("ring-4", "ring-red-500"),
-
-                        3000,
+                    // Find the request and open detail modal
+                    const request = requests.find((r) => r.id === requestId);
+                    if (request) {
+                      setShowDetailModal(request);
+                    } else {
+                      // Scroll to or highlight the emergency request in the list
+                      const element = document.getElementById(
+                        `request-${requestId}`,
                       );
+
+                      if (element) {
+                        element.scrollIntoView({
+                          behavior: "smooth",
+
+                          block: "center",
+                        });
+
+                        element.classList.add("ring-4", "ring-red-500");
+
+                        setTimeout(
+                          () =>
+                            element.classList.remove("ring-4", "ring-red-500"),
+
+                          3000,
+                        );
+                      }
                     }
                   }
                 }}

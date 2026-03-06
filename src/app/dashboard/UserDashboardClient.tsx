@@ -327,6 +327,16 @@ export default function UserDashboardClient({
 
         const adminIds = admins as unknown as { id: string }[];
 
+        // Get the new request ID for linking
+        const { data: newRequest } = await (
+          supabase.from("maintenance_requests") as any
+        )
+          .select("id")
+          .eq("requester_id", userId)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .single();
+
         for (const admin of adminIds) {
           const args = {
             p_user_id: admin.id,
@@ -341,7 +351,9 @@ export default function UserDashboardClient({
                 ? `🚨 EMERGENCY: A new emergency request has been submitted: ${formData.nature}`
                 : `New maintenance request: ${formData.nature} at ${formData.location}`,
 
-            p_link_url: "/admin/dashboard",
+            p_link_url: newRequest?.id
+              ? `/admin/dashboard?request=${newRequest.id}`
+              : "/admin/dashboard",
 
             p_target_role: "admin",
           };

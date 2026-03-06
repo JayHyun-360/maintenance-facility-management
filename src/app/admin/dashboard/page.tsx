@@ -8,7 +8,14 @@ interface RequestWithProfile extends MaintenanceRequest {
   requester_name?: string;
 }
 
-export default async function AdminDashboard() {
+interface PageProps {
+  searchParams: Promise<{ request?: string }>;
+}
+
+export default async function AdminDashboard({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  const requestId = resolvedSearchParams?.request;
+
   // ✅ Check session on SERVER where it always works!
   const supabase = await createServerClient();
   const {
@@ -105,6 +112,7 @@ export default async function AdminDashboard() {
       initialProfile={fullProfile}
       userAvatar={userAvatar}
       userId={session.user.id}
+      initialRequestId={requestId}
     />
   );
 }
