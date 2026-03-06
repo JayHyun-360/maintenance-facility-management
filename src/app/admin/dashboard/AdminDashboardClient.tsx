@@ -2907,35 +2907,14 @@ export default function AdminDashboardClient({
 
       {/* Detail Modal */}
       {showDetailModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex z-50">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div
             className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300"
             onClick={() => setShowDetailModal(null)}
           />
-          <div className="fixed top-0 left-0 h-full w-96 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-out translate-x-0">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100">
             {/* Header */}
-            <div className="relative bg-gradient-to-r from-[#427A43] to-[#2d5a2e] p-4">
-              <div className="absolute top-2 right-2">
-                <button
-                  onClick={() => setShowDetailModal(null)}
-                  className="p-1.5 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition-all duration-200"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-
+            <div className="bg-gradient-to-r from-[#427A43] to-[#2d5a2e] p-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                   {showDetailModal.nature === "Plumbing" && (
@@ -3197,20 +3176,14 @@ export default function AdminDashboardClient({
               )}
 
               {/* Action Buttons */}
-              <div className="flex gap-2 pt-3 border-t border-gray-200">
-                <button
-                  onClick={() => setShowDetailModal(null)}
-                  className="flex-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
-                >
-                  Close
-                </button>
+              <div className="p-3 border-t border-gray-200">
                 <button
                   onClick={() => {
                     setSelectedRequestForReport(showDetailModal);
                     setShowReportSidebar(true);
                     setShowDetailModal(null);
                   }}
-                  className="flex-1 px-3 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors font-medium text-sm flex items-center justify-center gap-1.5"
+                  className="w-full px-3 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors font-medium text-sm flex items-center justify-center gap-1.5"
                 >
                   <svg
                     className="w-3 h-3"
@@ -3225,7 +3198,7 @@ export default function AdminDashboardClient({
                       d="M9 17v1a1 1 0 001 1h4a1 1 0 001-1v-1m3-2V8a2 2 0 00-2-2H8a2 2 0 00-2 2v8m5-4h4"
                     />
                   </svg>
-                  Report
+                  Generate Report
                 </button>
               </div>
             </div>
