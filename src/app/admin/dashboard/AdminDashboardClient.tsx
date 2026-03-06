@@ -621,27 +621,48 @@ export default function AdminDashboardClient({
 
     if (!user) return;
 
+    // Get the current request to find the requester
+    const { data: currentRequest } = await (
+      supabase.from("maintenance_requests") as any
+    )
+      .select("requester_id, nature, status")
+      .eq("id", requestId)
+      .single();
+
     const { error: updateError } = await (
       supabase.from("maintenance_requests") as any
     )
-
       .update({ status: newStatus })
-
       .eq("id", requestId);
 
     if (updateError) {
       alert("Error updating request status");
-
       return;
+    }
+
+    // Create notification for the user
+    if (currentRequest?.requester_id) {
+      const statusMessages: Record<string, string> = {
+        Pending: "Your request is now pending review",
+        "In Progress": "Your request is being worked on",
+        Completed: "Your request has been completed",
+        Cancelled: "Your request has been cancelled",
+      };
+
+      await (supabase as any).rpc("create_user_notification", {
+        p_user_id: currentRequest.requester_id,
+        p_title: `Request Status Updated: ${newStatus}`,
+        p_message: `Your maintenance request "${currentRequest.nature}" status has been updated to: ${newStatus}. ${statusMessages[newStatus] || ""}`,
+        p_link_url: "/dashboard",
+        p_target_role: "user",
+      });
     }
 
     const { error: auditError } = await (
       supabase.from("audit_logs") as any
     ).insert({
       request_id: requestId,
-
       actor_id: user.id,
-
       action: `Status changed to ${newStatus}`,
     });
 
