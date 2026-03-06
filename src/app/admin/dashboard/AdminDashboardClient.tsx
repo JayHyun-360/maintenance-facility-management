@@ -690,7 +690,8 @@ export default function AdminDashboardClient({
         <tr
           id={`request-${request.id}`}
           key={request.id}
-          className="hover:bg-gray-50"
+          className="hover:bg-gray-50 cursor-pointer transition-colors"
+          onClick={() => setShowDetailModal(request)}
         >
           <td className="px-6 py-4">
             <div className="text-sm font-medium text-gray-900">
@@ -720,7 +721,10 @@ export default function AdminDashboardClient({
                 </p>
                 {request.description && request.description.length > 50 && (
                   <button
-                    onClick={() => setShowDetailModal(request)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowDetailModal(request);
+                    }}
                     className="flex-shrink-0 p-1 text-gray-400 hover:text-[#427A43] hover:bg-gray-100 rounded transition-colors"
                     title="See more information"
                   >
@@ -744,7 +748,10 @@ export default function AdminDashboardClient({
                 <div className="mt-2">
                   {!isExpanded ? (
                     <button
-                      onClick={() => togglePhotos(request.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        togglePhotos(request.id);
+                      }}
                       className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
                     >
                       <svg
@@ -784,7 +791,10 @@ export default function AdminDashboardClient({
                         )}
                       </div>
                       <button
-                        onClick={() => togglePhotos(request.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          togglePhotos(request.id);
+                        }}
                         className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
                       >
                         Hide photos
@@ -812,12 +822,14 @@ export default function AdminDashboardClient({
               {/* Status Dropdown */}
               <select
                 value={request.status}
-                onChange={(e) =>
+                onChange={(e) => {
+                  e.stopPropagation();
                   handleStatusUpdate(
                     request.id,
                     e.target.value as RequestStatus,
-                  )
-                }
+                  );
+                }}
+                onClick={(e) => e.stopPropagation()}
                 className={`text-xs px-2 py-1.5 rounded border focus:outline-none focus:ring-1 focus:ring-[#427A43] cursor-pointer ${
                   request.status === "Pending"
                     ? "bg-yellow-50 border-yellow-200 text-yellow-700"
@@ -836,7 +848,8 @@ export default function AdminDashboardClient({
 
               {/* Report Button */}
               <button
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   setSelectedRequestForReport(request);
                   setShowReportSidebar(true);
                 }}
@@ -861,7 +874,10 @@ export default function AdminDashboardClient({
 
               {/* Delete Button */}
               <button
-                onClick={() => handleDeleteRequest(request.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteRequest(request.id);
+                }}
                 className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                 title="Delete Request"
               >
@@ -2891,19 +2907,17 @@ export default function AdminDashboardClient({
 
       {/* Detail Modal */}
       {showDetailModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
-            <div className="bg-[#427A43] p-6 rounded-t-xl">
-              <div className="flex justify-between items-center">
-                <h2 className="font-header text-xl font-bold text-white">
-                  Request Details
-                </h2>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden transform transition-all">
+            {/* Header with gradient background */}
+            <div className="relative bg-gradient-to-r from-[#427A43] to-[#2d5a2e] p-8 rounded-t-2xl">
+              <div className="absolute top-4 right-4">
                 <button
                   onClick={() => setShowDetailModal(null)}
-                  className="text-white/80 hover:text-white"
+                  className="p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition-all duration-200"
                 >
                   <svg
-                    className="w-6 h-6"
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -2917,63 +2931,321 @@ export default function AdminDashboardClient({
                   </svg>
                 </button>
               </div>
+
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                  {showDetailModal.nature === "Plumbing" && (
+                    <Wrench className="w-6 h-6 text-white" />
+                  )}
+                  {showDetailModal.nature === "Electrical" && (
+                    <Zap className="w-6 h-6 text-white" />
+                  )}
+                  {showDetailModal.nature === "Carpentry" && (
+                    <Hammer className="w-6 h-6 text-white" />
+                  )}
+                  {showDetailModal.nature === "Personnel Services" && (
+                    <Sparkles className="w-6 h-6 text-white" />
+                  )}
+                  {![
+                    "Plumbing",
+                    "Electrical",
+                    "Carpentry",
+                    "Personnel Services",
+                  ].includes(showDetailModal.nature) && (
+                    <Activity className="w-6 h-6 text-white" />
+                  )}
+                </div>
+                <div>
+                  <h2 className="font-header text-2xl font-bold text-white">
+                    {showDetailModal.nature}
+                  </h2>
+                  <p className="text-white/80 text-sm mt-1">
+                    Request ID: {showDetailModal.id.slice(0, 8).toUpperCase()}
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase">
-                  Nature
-                </label>
-                <p className="text-gray-900 mt-1">{showDetailModal.nature}</p>
+
+            {/* Content */}
+            <div className="p-8 space-y-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+              {/* Status and Urgency Badges */}
+              <div className="flex items-center gap-3">
+                <span
+                  className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
+                    showDetailModal.status === "Pending"
+                      ? "bg-yellow-100 text-yellow-800"
+                      : showDetailModal.status === "In Progress"
+                        ? "bg-blue-100 text-blue-800"
+                        : showDetailModal.status === "Completed"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
+                  }`}
+                >
+                  <div
+                    className={`w-2 h-2 rounded-full mr-2 ${
+                      showDetailModal.status === "Pending"
+                        ? "bg-yellow-500"
+                        : showDetailModal.status === "In Progress"
+                          ? "bg-blue-500"
+                          : showDetailModal.status === "Completed"
+                            ? "bg-green-500"
+                            : "bg-red-500"
+                    }`}
+                  />
+                  {showDetailModal.status}
+                </span>
+
+                <span
+                  className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
+                    showDetailModal.urgency === "Emergency"
+                      ? "bg-red-100 text-red-800"
+                      : showDetailModal.urgency === "Urgent"
+                        ? "bg-orange-100 text-orange-800"
+                        : "bg-gray-100 text-gray-800"
+                  }`}
+                >
+                  {showDetailModal.urgency === "Emergency" && "🔴 "}
+                  {showDetailModal.urgency === "Urgent" && "🟠 "}
+                  {showDetailModal.urgency}
+                </span>
               </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase">
-                  Location
-                </label>
-                <p className="text-gray-900 mt-1">{showDetailModal.location}</p>
+
+              {/* Information Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Location */}
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-1.5 bg-[#427A43]/10 rounded-lg">
+                      <svg
+                        className="w-4 h-4 text-[#427A43]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                        />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      Location
+                    </h3>
+                  </div>
+                  <p className="text-gray-900 font-medium">
+                    {showDetailModal.location}
+                  </p>
+                </div>
+
+                {/* Requester */}
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-1.5 bg-[#427A43]/10 rounded-lg">
+                      <svg
+                        className="w-4 h-4 text-[#427A43]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      Requester
+                    </h3>
+                  </div>
+                  <p className="text-gray-900 font-medium">
+                    {showDetailModal.profiles?.full_name || "Unknown"}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {showDetailModal.profiles?.visual_role || "N/A"}
+                  </p>
+                </div>
+
+                {/* Created Date */}
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-1.5 bg-[#427A43]/10 rounded-lg">
+                      <svg
+                        className="w-4 h-4 text-[#427A43]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      Created
+                    </h3>
+                  </div>
+                  <p className="text-gray-900 font-medium">
+                    {new Date(showDetailModal.created_at).toLocaleDateString()}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {new Date(showDetailModal.created_at).toLocaleTimeString()}
+                  </p>
+                </div>
+
+                {/* Request ID */}
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-1.5 bg-[#427A43]/10 rounded-lg">
+                      <svg
+                        className="w-4 h-4 text-[#427A43]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      Request ID
+                    </h3>
+                  </div>
+                  <p className="text-gray-900 font-mono text-sm">
+                    {showDetailModal.id.slice(0, 8).toUpperCase()}
+                  </p>
+                </div>
               </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase">
-                  Urgency
-                </label>
-                <p className="text-gray-900 mt-1">{showDetailModal.urgency}</p>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase">
-                  Status
-                </label>
-                <p className="text-gray-900 mt-1">{showDetailModal.status}</p>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase">
-                  Description
-                </label>
-                <p className="text-gray-900 mt-1 whitespace-pre-wrap">
+
+              {/* Description */}
+              <div className="bg-gray-50 rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-1.5 bg-[#427A43]/10 rounded-lg">
+                    <svg
+                      className="w-4 h-4 text-[#427A43]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-sm font-semibold text-gray-700">
+                    Description
+                  </h3>
+                </div>
+                <p className="text-gray-900 leading-relaxed whitespace-pre-wrap">
                   {showDetailModal.description}
                 </p>
               </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase">
-                  Requester
-                </label>
-                <p className="text-gray-900 mt-1">
-                  {showDetailModal.profiles?.full_name || "Unknown"} (
-                  {showDetailModal.profiles?.visual_role || "N/A"})
-                </p>
-              </div>
-              <div>
-                <label className="text-xs font-medium text-gray-500 uppercase">
-                  Created
-                </label>
-                <p className="text-gray-900 mt-1">
-                  {new Date(showDetailModal.created_at).toLocaleString()}
-                </p>
-              </div>
-              <div className="pt-4">
+
+              {/* Photos Section */}
+              {showDetailModal.photos && showDetailModal.photos.length > 0 && (
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="p-1.5 bg-[#427A43]/10 rounded-lg">
+                      <svg
+                        className="w-4 h-4 text-[#427A43]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+                    <h3 className="text-sm font-semibold text-gray-700">
+                      Photos ({showDetailModal.photos.length})
+                    </h3>
+                  </div>
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    {showDetailModal.photos.map((photo, idx) => (
+                      <div
+                        key={idx}
+                        className="relative group cursor-pointer"
+                        onClick={() => setSelectedPhoto(photo)}
+                      >
+                        <img
+                          src={photo}
+                          alt={`Photo ${idx + 1}`}
+                          className="w-full h-24 object-cover rounded-lg transition-transform group-hover:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                          <svg
+                            className="w-6 h-6 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4 border-t border-gray-200">
                 <button
                   onClick={() => setShowDetailModal(null)}
-                  className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium"
                 >
                   Close
+                </button>
+                <button
+                  onClick={() => {
+                    setSelectedRequestForReport(showDetailModal);
+                    setShowReportSidebar(true);
+                    setShowDetailModal(null);
+                  }}
+                  className="flex-1 px-6 py-3 bg-[#427A43] text-white rounded-xl hover:bg-[#366337] transition-colors font-medium flex items-center justify-center gap-2"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 17v1a1 1 0 001 1h4a1 1 0 001-1v-1m3-2V8a2 2 0 00-2-2H8a2 2 0 00-2 2v8m5-4h4"
+                    />
+                  </svg>
+                  Generate Report
                 </button>
               </div>
             </div>
