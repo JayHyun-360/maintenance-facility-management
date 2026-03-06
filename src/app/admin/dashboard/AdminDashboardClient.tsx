@@ -805,53 +805,47 @@ export default function AdminDashboardClient({
     }
 
     // Create a single announcement record (not one per user)
-
     const announcementTitle = broadcastTitle.trim() || "Announcement";
 
     const { data: announcementData, error: insertError } = await (
       supabase.from("announcements") as any
     )
-
       .insert({
         title: announcementTitle,
-
         message: broadcastMessage.trim(),
-
         created_by: userId,
-
         recipient_count: allUsers.length,
       })
-
       .select();
 
     if (insertError) {
       console.error("Error creating announcement:", insertError);
-
       alert("Error sending announcement");
-
       return;
     }
 
-    // Create individual notifications for each user
-
-    const notifications = allUsers.map((user: { id: string }) => ({
-      user_id: user.id,
-
-      title: announcementTitle,
-
-      message: broadcastMessage.trim(),
-
-      link_url: "/dashboard",
-
-      target_role: "user",
-    }));
-
-    const { error: notifError } = await (
-      supabase.from("notifications") as any
-    ).insert(notifications);
+    // Use RPC function to create notifications for all users (bypasses RLS issues)
+    const { data: notifResult, error: notifError } = await (
+      supabase as any
+    ).rpc("create_broadcast_notifications", {
+      p_title: announcementTitle,
+      p_message: broadcastMessage.trim(),
+      p_link_url: "/dashboard",
+      p_target_role: "user",
+    });
 
     if (notifError) {
-      console.error("Error creating notifications:", notifError);
+      console.error("Error creating notifications via RPC:", notifError);
+      // Fallback: try direct insert
+      const notifications = allUsers.map((user: { id: string }) => ({
+        user_id: user.id,
+        title: announcementTitle,
+        message: broadcastMessage.trim(),
+        link_url: "/dashboard",
+        target_role: "user",
+      }));
+
+      await (supabase.from("notifications") as any).insert(notifications);
     }
 
     setBroadcastTitle("");
