@@ -220,11 +220,12 @@ export default function UserDashboardClient({
         .select("id, database_role, full_name")
         .eq("database_role", "admin");
 
-      console.log("Fetching admins for notifications:", {
-        admins,
-        adminError,
-        count: admins?.length,
-      });
+      console.log("=== ADMIN QUERY RESULT ===");
+      console.log("admins:", JSON.stringify(admins, null, 2));
+      console.log("adminError:", adminError);
+      console.log("admins?.length:", admins?.length);
+      console.log("Array.isArray(admins):", Array.isArray(admins));
+      console.log("admins[0]:", admins?.[0]);
 
       if (!admins || admins.length === 0) {
         console.warn(
