@@ -628,7 +628,9 @@ export default function AdminDashboardClient({
     window.location.href = "/login";
   };
 
-  const togglePhotos = (requestId: string) => {
+  const togglePhotos = (e: React.MouseEvent, requestId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
     setExpandedPhotos((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(requestId)) {
@@ -748,10 +750,9 @@ export default function AdminDashboardClient({
                 <div className="mt-2">
                   {!isExpanded ? (
                     <button
+                      type="button"
                       onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        togglePhotos(request.id);
+                        togglePhotos(e, request.id);
                       }}
                       className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
                     >
@@ -792,10 +793,9 @@ export default function AdminDashboardClient({
                         )}
                       </div>
                       <button
+                        type="button"
                         onClick={(e) => {
-                          e.stopPropagation();
-                          e.preventDefault();
-                          togglePhotos(request.id);
+                          togglePhotos(e, request.id);
                         }}
                         className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
                       >
@@ -3200,7 +3200,7 @@ export default function AdminDashboardClient({
                       d="M9 17v1a1 1 0 001 1h4a1 1 0 001-1v-1m3-2V8a2 2 0 00-2-2H8a2 2 0 00-2 2v8m5-4h4"
                     />
                   </svg>
-                  Generate Report
+                  Generate Form
                 </button>
               </div>
             </div>
