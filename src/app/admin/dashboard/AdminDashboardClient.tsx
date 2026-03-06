@@ -2908,10 +2908,10 @@ export default function AdminDashboardClient({
       {/* Detail Modal */}
       {showDetailModal && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden transform transition-all">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[85vh] overflow-hidden transform transition-all">
             {/* Header with gradient background */}
-            <div className="relative bg-gradient-to-r from-[#427A43] to-[#2d5a2e] p-8 rounded-t-2xl">
-              <div className="absolute top-4 right-4">
+            <div className="relative bg-gradient-to-r from-[#427A43] to-[#2d5a2e] p-6 rounded-t-2xl">
+              <div className="absolute top-3 right-3">
                 <button
                   onClick={() => setShowDetailModal(null)}
                   className="p-2 text-white/80 hover:text-white hover:bg-white/20 rounded-lg transition-all duration-200"
@@ -2932,19 +2932,19 @@ export default function AdminDashboardClient({
                 </button>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-white/20 rounded-xl backdrop-blur-sm">
                   {showDetailModal.nature === "Plumbing" && (
-                    <Wrench className="w-6 h-6 text-white" />
+                    <Wrench className="w-5 h-5 text-white" />
                   )}
                   {showDetailModal.nature === "Electrical" && (
-                    <Zap className="w-6 h-6 text-white" />
+                    <Zap className="w-5 h-5 text-white" />
                   )}
                   {showDetailModal.nature === "Carpentry" && (
-                    <Hammer className="w-6 h-6 text-white" />
+                    <Hammer className="w-5 h-5 text-white" />
                   )}
                   {showDetailModal.nature === "Personnel Services" && (
-                    <Sparkles className="w-6 h-6 text-white" />
+                    <Sparkles className="w-5 h-5 text-white" />
                   )}
                   {![
                     "Plumbing",
@@ -2952,14 +2952,14 @@ export default function AdminDashboardClient({
                     "Carpentry",
                     "Personnel Services",
                   ].includes(showDetailModal.nature) && (
-                    <Activity className="w-6 h-6 text-white" />
+                    <Activity className="w-5 h-5 text-white" />
                   )}
                 </div>
                 <div>
-                  <h2 className="font-header text-2xl font-bold text-white">
+                  <h2 className="font-header text-xl font-bold text-white">
                     {showDetailModal.nature}
                   </h2>
-                  <p className="text-white/80 text-sm mt-1">
+                  <p className="text-white/80 text-xs mt-0.5">
                     Request ID: {showDetailModal.id.slice(0, 8).toUpperCase()}
                   </p>
                 </div>
@@ -2967,11 +2967,11 @@ export default function AdminDashboardClient({
             </div>
 
             {/* Content */}
-            <div className="p-8 space-y-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+            <div className="p-6 space-y-4 overflow-y-auto max-h-[calc(85vh-80px)]">
               {/* Status and Urgency Badges */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <span
-                  className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
+                  className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
                     showDetailModal.status === "Pending"
                       ? "bg-yellow-100 text-yellow-800"
                       : showDetailModal.status === "In Progress"
@@ -2982,7 +2982,7 @@ export default function AdminDashboardClient({
                   }`}
                 >
                   <div
-                    className={`w-2 h-2 rounded-full mr-2 ${
+                    className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
                       showDetailModal.status === "Pending"
                         ? "bg-yellow-500"
                         : showDetailModal.status === "In Progress"
@@ -2996,7 +2996,7 @@ export default function AdminDashboardClient({
                 </span>
 
                 <span
-                  className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium ${
+                  className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
                     showDetailModal.urgency === "Emergency"
                       ? "bg-red-100 text-red-800"
                       : showDetailModal.urgency === "Urgent"
@@ -3011,13 +3011,13 @@ export default function AdminDashboardClient({
               </div>
 
               {/* Information Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                 {/* Location */}
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-1.5 bg-[#427A43]/10 rounded-lg">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="p-1 bg-[#427A43]/10 rounded">
                       <svg
-                        className="w-4 h-4 text-[#427A43]"
+                        className="w-3 h-3 text-[#427A43]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -3036,21 +3036,21 @@ export default function AdminDashboardClient({
                         />
                       </svg>
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-700">
+                    <h3 className="text-xs font-semibold text-gray-700">
                       Location
                     </h3>
                   </div>
-                  <p className="text-gray-900 font-medium">
+                  <p className="text-gray-900 font-medium text-sm">
                     {showDetailModal.location}
                   </p>
                 </div>
 
                 {/* Requester */}
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-1.5 bg-[#427A43]/10 rounded-lg">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="p-1 bg-[#427A43]/10 rounded">
                       <svg
-                        className="w-4 h-4 text-[#427A43]"
+                        className="w-3 h-3 text-[#427A43]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -3063,24 +3063,24 @@ export default function AdminDashboardClient({
                         />
                       </svg>
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-700">
+                    <h3 className="text-xs font-semibold text-gray-700">
                       Requester
                     </h3>
                   </div>
-                  <p className="text-gray-900 font-medium">
+                  <p className="text-gray-900 font-medium text-sm truncate">
                     {showDetailModal.profiles?.full_name || "Unknown"}
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-xs text-gray-500 truncate">
                     {showDetailModal.profiles?.visual_role || "N/A"}
                   </p>
                 </div>
 
                 {/* Created Date */}
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-1.5 bg-[#427A43]/10 rounded-lg">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="p-1 bg-[#427A43]/10 rounded">
                       <svg
-                        className="w-4 h-4 text-[#427A43]"
+                        className="w-3 h-3 text-[#427A43]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -3093,24 +3093,27 @@ export default function AdminDashboardClient({
                         />
                       </svg>
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-700">
+                    <h3 className="text-xs font-semibold text-gray-700">
                       Created
                     </h3>
                   </div>
-                  <p className="text-gray-900 font-medium">
+                  <p className="text-gray-900 font-medium text-sm">
                     {new Date(showDetailModal.created_at).toLocaleDateString()}
                   </p>
-                  <p className="text-sm text-gray-500">
-                    {new Date(showDetailModal.created_at).toLocaleTimeString()}
+                  <p className="text-xs text-gray-500">
+                    {new Date(showDetailModal.created_at).toLocaleTimeString(
+                      [],
+                      { hour: "2-digit", minute: "2-digit" },
+                    )}
                   </p>
                 </div>
 
                 {/* Request ID */}
-                <div className="bg-gray-50 rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="p-1.5 bg-[#427A43]/10 rounded-lg">
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className="p-1 bg-[#427A43]/10 rounded">
                       <svg
-                        className="w-4 h-4 text-[#427A43]"
+                        className="w-3 h-3 text-[#427A43]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -3123,22 +3126,22 @@ export default function AdminDashboardClient({
                         />
                       </svg>
                     </div>
-                    <h3 className="text-sm font-semibold text-gray-700">
+                    <h3 className="text-xs font-semibold text-gray-700">
                       Request ID
                     </h3>
                   </div>
-                  <p className="text-gray-900 font-mono text-sm">
+                  <p className="text-gray-900 font-mono text-xs">
                     {showDetailModal.id.slice(0, 8).toUpperCase()}
                   </p>
                 </div>
               </div>
 
               {/* Description */}
-              <div className="bg-gray-50 rounded-xl p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="p-1.5 bg-[#427A43]/10 rounded-lg">
+              <div className="bg-gray-50 rounded-lg p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1.5 bg-[#427A43]/10 rounded">
                     <svg
-                      className="w-4 h-4 text-[#427A43]"
+                      className="w-3.5 h-3.5 text-[#427A43]"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -3155,18 +3158,18 @@ export default function AdminDashboardClient({
                     Description
                   </h3>
                 </div>
-                <p className="text-gray-900 leading-relaxed whitespace-pre-wrap">
+                <p className="text-gray-900 text-sm leading-relaxed whitespace-pre-wrap">
                   {showDetailModal.description}
                 </p>
               </div>
 
               {/* Photos Section */}
               {showDetailModal.photos && showDetailModal.photos.length > 0 && (
-                <div className="bg-gray-50 rounded-xl p-4">
+                <div className="bg-gray-50 rounded-lg p-4">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="p-1.5 bg-[#427A43]/10 rounded-lg">
+                    <div className="p-1.5 bg-[#427A43]/10 rounded">
                       <svg
-                        className="w-4 h-4 text-[#427A43]"
+                        className="w-3.5 h-3.5 text-[#427A43]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -3183,21 +3186,21 @@ export default function AdminDashboardClient({
                       Photos ({showDetailModal.photos.length})
                     </h3>
                   </div>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
                     {showDetailModal.photos.map((photo, idx) => (
                       <div
                         key={idx}
-                        className="relative group cursor-pointer"
+                        className="relative group cursor-pointer aspect-square"
                         onClick={() => setSelectedPhoto(photo)}
                       >
                         <img
                           src={photo}
                           alt={`Photo ${idx + 1}`}
-                          className="w-full h-24 object-cover rounded-lg transition-transform group-hover:scale-105"
+                          className="w-full h-full object-cover rounded-lg transition-transform group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
                           <svg
-                            className="w-6 h-6 text-white"
+                            className="w-4 h-4 text-white"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -3217,10 +3220,10 @@ export default function AdminDashboardClient({
               )}
 
               {/* Action Buttons */}
-              <div className="flex gap-3 pt-4 border-t border-gray-200">
+              <div className="flex gap-3 pt-3 border-t border-gray-200">
                 <button
                   onClick={() => setShowDetailModal(null)}
-                  className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-colors font-medium"
+                  className="flex-1 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
                 >
                   Close
                 </button>
@@ -3230,10 +3233,10 @@ export default function AdminDashboardClient({
                     setShowReportSidebar(true);
                     setShowDetailModal(null);
                   }}
-                  className="flex-1 px-6 py-3 bg-[#427A43] text-white rounded-xl hover:bg-[#366337] transition-colors font-medium flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-2.5 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors font-medium text-sm flex items-center justify-center gap-2"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-3.5 h-3.5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
