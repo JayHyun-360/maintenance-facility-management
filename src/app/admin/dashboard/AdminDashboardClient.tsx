@@ -2909,10 +2909,10 @@ export default function AdminDashboardClient({
       {showDetailModal && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300"
+            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => setShowDetailModal(null)}
           />
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100 relative z-10">
             {/* Header */}
             <div className="bg-gradient-to-r from-[#427A43] to-[#2d5a2e] p-4">
               <div className="flex items-center gap-3">
