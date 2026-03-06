@@ -1,4 +1,6 @@
 -- Fix: Recreate sync_role_to_metadata with correct column name
+-- Drop trigger first (if exists) to release dependency
+DROP TRIGGER IF EXISTS on_profile_role_changed ON public.profiles;
 DROP FUNCTION IF EXISTS public.sync_role_to_metadata();
 
 CREATE OR REPLACE FUNCTION public.sync_role_to_metadata()
@@ -37,3 +39,9 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 GRANT EXECUTE ON FUNCTION public.sync_role_to_metadata() TO authenticated;
 GRANT EXECUTE ON FUNCTION public.sync_role_to_metadata() TO service_role;
+
+-- Recreate trigger
+CREATE TRIGGER on_profile_role_changed
+  AFTER UPDATE ON public.profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION public.sync_role_to_metadata();

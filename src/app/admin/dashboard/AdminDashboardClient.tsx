@@ -69,6 +69,36 @@ const useDebounce = <T,>(value: T, delay: number): T => {
   return debouncedValue;
 };
 
+// Safe date formatting component that only renders on client
+function SafeDate({
+  date,
+  options,
+}: {
+  date: string | Date | undefined;
+  options?: Intl.DateTimeFormatOptions;
+}) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <span suppressHydrationWarning>Loading...</span>;
+  }
+
+  const dateObj = date ? new Date(date) : null;
+  if (!dateObj || isNaN(dateObj.getTime())) {
+    return <span>N/A</span>;
+  }
+
+  return (
+    <span suppressHydrationWarning>
+      {dateObj.toLocaleDateString(undefined, options)}
+    </span>
+  );
+}
+
 interface RequestWithProfile extends MaintenanceRequest {
   profiles: Profile | null;
 
@@ -1006,7 +1036,7 @@ export default function AdminDashboardClient({
             <div className="text-sm text-gray-500">{request.location}</div>
 
             <div className="text-xs text-gray-400">
-              {new Date(request.created_at).toLocaleDateString()}
+              <SafeDate date={request.created_at} />
             </div>
           </td>
 
@@ -3630,7 +3660,7 @@ export default function AdminDashboardClient({
                       <p className="text-gray-700 mt-2">{msg.message}</p>
 
                       <p className="text-xs text-gray-400 mt-2">
-                        {new Date(msg.created_at).toLocaleString()}
+                        <SafeDate date={msg.created_at} />
                       </p>
                     </div>
                   ))
@@ -3925,7 +3955,7 @@ export default function AdminDashboardClient({
                   </div>
 
                   <p className="text-gray-900 font-medium text-sm">
-                    {new Date(showDetailModal.created_at).toLocaleDateString()}
+                    <SafeDate date={showDetailModal.created_at} />
                   </p>
 
                   <p className="text-xs text-gray-500">
@@ -4150,7 +4180,7 @@ export default function AdminDashboardClient({
                           </p>
 
                           <p className="text-xs text-gray-400 mt-2">
-                            {new Date(notification.created_at).toLocaleString()}
+                            <SafeDate date={notification.created_at} />
                           </p>
                         </div>
 
@@ -4294,9 +4324,11 @@ export default function AdminDashboardClient({
                   <div className="text-sm text-gray-500">
                     <p>
                       Account created:{" "}
-                      {profile?.created_at
-                        ? new Date(profile.created_at).toLocaleDateString()
-                        : "N/A"}
+                      {profile?.created_at ? (
+                        <SafeDate date={profile.created_at} />
+                      ) : (
+                        "N/A"
+                      )}
                     </p>
                   </div>
                 </div>
@@ -5455,9 +5487,11 @@ export default function AdminDashboardClient({
                     <p className="text-xs text-gray-400">Member Since</p>
 
                     <p className="text-sm font-medium text-gray-900">
-                      {selectedUser.created_at
-                        ? new Date(selectedUser.created_at).toLocaleDateString()
-                        : "Unknown"}
+                      {selectedUser.created_at ? (
+                        <SafeDate date={selectedUser.created_at} />
+                      ) : (
+                        "Unknown"
+                      )}
                     </p>
                   </div>
                 </div>

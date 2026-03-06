@@ -86,4 +86,3 @@ CREATE POLICY "Users can delete own notifications" ON public.notifications
 -- 4. Ensure RLS is enabled on all tables
 ALTER TABLE public.maintenance_requests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
-ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;

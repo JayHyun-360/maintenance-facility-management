@@ -25,6 +25,9 @@ CREATE POLICY "Admins can update all requests" ON public.maintenance_requests
 -- Also fix notifications RLS if needed
 DROP POLICY IF EXISTS "Users can view own notifications" ON public.notifications;
 DROP POLICY IF EXISTS "Admins can view all notifications" ON public.notifications;
+DROP POLICY IF EXISTS "Users can create notifications" ON public.notifications;
+DROP POLICY IF EXISTS "Users can update own notifications" ON public.notifications;
+DROP POLICY IF EXISTS "Users can delete own notifications" ON public.notifications;
 
 CREATE POLICY "Users can view own notifications" ON public.notifications
   FOR SELECT USING (

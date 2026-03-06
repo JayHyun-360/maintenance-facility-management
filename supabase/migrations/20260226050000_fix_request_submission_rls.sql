@@ -62,6 +62,13 @@ DROP POLICY IF EXISTS "Allow authenticated update" ON storage.objects;
 DROP POLICY IF EXISTS "Allow authenticated delete" ON storage.objects;
 DROP POLICY IF EXISTS "Allow anon view" ON storage.objects;
 
+-- Drop existing policies if they exist (for idempotency)
+DROP POLICY IF EXISTS "allow_authenticated_upload" ON storage.objects;
+DROP POLICY IF EXISTS "allow_authenticated_view" ON storage.objects;
+DROP POLICY IF EXISTS "allow_authenticated_update" ON storage.objects;
+DROP POLICY IF EXISTS "allow_authenticated_delete" ON storage.objects;
+DROP POLICY IF EXISTS "allow_public_read" ON storage.objects;
+
 -- Allow any authenticated user to upload
 CREATE POLICY "allow_authenticated_upload" ON storage.objects
   FOR INSERT

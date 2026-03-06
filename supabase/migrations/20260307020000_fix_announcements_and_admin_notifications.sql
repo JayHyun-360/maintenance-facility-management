@@ -14,6 +14,10 @@ CREATE TABLE IF NOT EXISTS public.announcements (
 -- Enable RLS on announcements
 ALTER TABLE public.announcements ENABLE ROW LEVEL SECURITY;
 
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Admins can manage announcements" ON public.announcements;
+DROP POLICY IF EXISTS "Users can read announcements" ON public.announcements;
+
 -- Allow admins to manage announcements
 CREATE POLICY "Admins can manage announcements" ON public.announcements
   FOR ALL USING (
