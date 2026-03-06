@@ -1,8 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+
 import { useRouter } from "next/navigation";
+
 import { createClient } from "@/lib/supabase/client";
+
 import type {
   Profile,
   MaintenanceRequest,
@@ -12,43 +15,68 @@ import type {
 
 interface UserDashboardClientProps {
   initialProfile: Profile | null;
+
   initialRequests: MaintenanceRequest[];
+
   userId: string;
+
   userAvatar?: string | null;
 }
 
 export default function UserDashboardClient({
   initialProfile,
+
   initialRequests,
+
   userId,
+
   userAvatar,
 }: UserDashboardClientProps) {
   const router = useRouter();
+
   const [profile, setProfile] = useState<Profile | null>(initialProfile);
+
   const [requests, setRequests] =
     useState<MaintenanceRequest[]>(initialRequests);
+
   const [showForm, setShowForm] = useState(false);
+
   const [showProfileViewer, setShowProfileViewer] = useState(false);
+
   const [showProfileSidebar, setShowProfileSidebar] = useState(false);
+
   const [showNotifications, setShowNotifications] = useState(false);
+
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
+
   const [newMessage, setNewMessage] = useState("");
+
   const [openNotificationMenu, setOpenNotificationMenu] = useState<
     string | null
   >(null);
+
   const [showConfirm, setShowConfirm] = useState(false);
+
   const [confirmType, setConfirmType] = useState<"admin" | "user" | null>(null);
+
   const [notifications, setNotifications] = useState<any[]>([]);
+
   const [unreadCount, setUnreadCount] = useState(0);
+
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
+
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<any>(null);
+
   const profileViewerRef = useRef<HTMLDivElement>(null);
+
   const notificationsRef = useRef<HTMLDivElement>(null);
 
   // Check if user is currently in admin mode
+
   const isAdmin = profile?.database_role === "admin";
 
   // Close profile viewer when clicking outside
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -57,6 +85,7 @@ export default function UserDashboardClient({
       ) {
         setShowProfileViewer(false);
       }
+
       if (
         notificationsRef.current &&
         !notificationsRef.current.contains(event.target as Node)
@@ -66,21 +95,32 @@ export default function UserDashboardClient({
     };
 
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
   const [formData, setFormData] = useState({
     nature: "",
+
     urgency: "",
+
     location: "",
+
     description: "",
+
     supportingReason: "",
+
     photos: [] as string[],
   });
+
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
+
   const [uploading, setUploading] = useState(false);
+
   const [loading, setLoading] = useState(false);
+
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "submitting" | "success"
   >("idle");
@@ -89,9 +129,13 @@ export default function UserDashboardClient({
 
   const fetchRequests = async () => {
     const { data } = await supabase
+
       .from("maintenance_requests")
+
       .select("*")
+
       .eq("requester_id", userId)
+
       .order("created_at", { ascending: false });
 
     setRequests(data || []);
@@ -99,68 +143,99 @@ export default function UserDashboardClient({
 
   const fetchNotifications = async () => {
     // Fetch only user notifications from database
+
     const { data } = await (supabase.from("notifications") as any)
+
       .select("*")
+
       .eq("user_id", userId)
+
       .eq("target_role", "user")
+
       .order("created_at", { ascending: false })
+
       .limit(20);
 
     if (data) {
       setNotifications(data);
+
       setUnreadCount(data.filter((n: any) => !n.is_read).length);
     }
   };
 
   const markNotificationRead = async (notificationId: string) => {
     await (supabase.from("notifications") as any)
+
       .update({ is_read: true })
+
       .eq("id", notificationId);
+
     fetchNotifications();
   };
 
   const markAllNotificationsRead = async () => {
     await (supabase.from("notifications") as any)
+
       .update({ is_read: true })
+
       .eq("user_id", userId)
+
       .eq("target_role", "user")
+
       .eq("is_read", false);
+
     fetchNotifications();
   };
 
   const deleteNotification = async (notificationId: string) => {
     await (supabase.from("notifications") as any)
+
       .delete()
+
       .eq("id", notificationId);
+
     setOpenNotificationMenu(null);
+
     fetchNotifications();
   };
 
   const deleteAllReadNotifications = async () => {
     await (supabase.from("notifications") as any)
+
       .delete()
+
       .eq("user_id", userId)
+
       .eq("target_role", "user")
+
       .eq("is_read", true);
+
     fetchNotifications();
   };
 
   const viewAnnouncement = (notification: any) => {
     setSelectedAnnouncement(notification);
+
     setShowAnnouncementModal(true);
+
     markNotificationRead(notification.id);
   };
 
   // Fetch notifications on mount and set up polling
+
   useEffect(() => {
     fetchNotifications();
+
     const notificationInterval = setInterval(fetchNotifications, 10000);
+
     return () => clearInterval(notificationInterval);
   }, [userId]);
 
   // Poll for request updates
+
   useEffect(() => {
     const requestInterval = setInterval(fetchRequests, 15000);
+
     return () => clearInterval(requestInterval);
   }, [userId]);
 
@@ -168,27 +243,35 @@ export default function UserDashboardClient({
     e.preventDefault();
 
     setSubmitStatus("submitting");
+
     try {
       let photoUrls: string[] = [];
 
       // Upload photos if any
+
       if (photoFiles.length > 0) {
         for (const file of photoFiles) {
           const fileName = `${userId}/${Date.now()}-${file.name}`;
+
           const { data: uploadData, error: uploadError } =
             await supabase.storage
+
               .from("maintenance-requests-photos")
+
               .upload(fileName, file);
 
           if (uploadError) {
             console.error("Photo upload error:", uploadError);
+
             continue;
           }
 
           const {
             data: { publicUrl },
           } = supabase.storage
+
             .from("maintenance-requests-photos")
+
             .getPublicUrl(fileName);
 
           photoUrls.push(publicUrl);
@@ -199,41 +282,39 @@ export default function UserDashboardClient({
         supabase.from("maintenance_requests") as any
       ).insert({
         requester_id: userId,
+
         nature: formData.nature,
+
         urgency: formData.urgency,
+
         location: formData.location,
+
         description: formData.description,
+
         photos: photoUrls,
       });
 
       if (error) {
         alert("Error submitting request");
+
         setSubmitStatus("idle");
+
         return;
       }
 
       // Get all admin user IDs to send notifications
-      console.log("Fetching admins from profiles table...");
 
-      // First, let's see ALL profiles to debug what's in the database
-      const { data: allProfiles, error: allProfilesError } = await (
-        supabase.from("profiles") as any
-      ).select("id, database_role, full_name");
+      console.log("Fetching admins via RPC function...");
 
-      console.log("=== ALL PROFILES ===");
-      console.log("allProfiles:", JSON.stringify(allProfiles, null, 2));
-      console.log("allProfilesError:", allProfilesError);
-      console.log("Total profiles:", allProfiles?.length);
-
-      // Now filter for admins in JavaScript
-      const admins =
-        (allProfiles as any[])?.filter(
-          (p: any) => p.database_role === "admin",
-        ) || [];
+      // Use RPC function to bypass RLS and get all admin profiles
+      const { data: admins, error: adminError } = await (supabase as any).rpc(
+        "get_admin_profiles",
+      );
 
       console.log("=== ADMIN QUERY RESULT ===");
-      console.log("admins (filtered):", JSON.stringify(admins, null, 2));
-      console.log("admins.length:", admins.length);
+      console.log("admins:", JSON.stringify(admins, null, 2));
+      console.log("adminError:", adminError);
+      console.log("admins.length:", admins?.length);
 
       if (!admins || admins.length === 0) {
         console.warn(
@@ -241,54 +322,78 @@ export default function UserDashboardClient({
         );
       } else if (admins && admins.length > 0) {
         // Use database function to create admin notifications (bypasses RLS)
+
         console.log("Creating notifications for", admins.length, "admins");
+
         const adminIds = admins as unknown as { id: string }[];
+
         for (const admin of adminIds) {
           const args = {
             p_user_id: admin.id,
+
             p_title:
               formData.urgency === "Emergency"
                 ? "🚨 EMERGENCY Maintenance Request"
                 : "New Maintenance Request",
+
             p_message:
               formData.urgency === "Emergency"
                 ? `🚨 EMERGENCY: A new emergency request has been submitted: ${formData.nature}`
                 : `New maintenance request: ${formData.nature} at ${formData.location}`,
+
             p_link_url: "/admin/dashboard",
+
             p_target_role: "admin",
           };
+
           console.log("Creating notification for admin:", admin.id, args);
+
           const result = await (supabase as any).rpc(
             "create_admin_notification",
+
             args,
           );
+
           console.log("Notification result for", admin.id, ":", result);
         }
       }
 
       // Show success state
+
       setSubmitStatus("success");
 
       // Reset form and refresh requests
+
       setFormData({
         nature: "",
+
         urgency: "",
+
         location: "",
+
         description: "",
+
         supportingReason: "",
+
         photos: [],
       });
+
       setPhotoFiles([]);
+
       setShowForm(false);
+
       fetchRequests();
 
       // Reset status after delay
+
       setTimeout(() => {
         setSubmitStatus("idle");
       }, 3000);
     } catch (error) {
       console.error("Error submitting request:", error);
+
       alert("Error submitting request");
+
       setSubmitStatus("idle");
     } finally {
       setUploading(false);
@@ -298,6 +403,7 @@ export default function UserDashboardClient({
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const newFiles = Array.from(e.target.files);
+
       setPhotoFiles((prev) => [...prev, ...newFiles].slice(0, 5));
     }
   };
@@ -317,7 +423,9 @@ export default function UserDashboardClient({
           : "light";
 
     const { error } = await (supabase.from("profiles") as any)
+
       .update({ theme_preference: newTheme })
+
       .eq("id", profile.id);
 
     if (!error) {
@@ -329,12 +437,16 @@ export default function UserDashboardClient({
     switch (status) {
       case "Pending":
         return "bg-yellow-100 text-yellow-800";
+
       case "In Progress":
         return "bg-blue-100 text-blue-800";
+
       case "Completed":
         return "bg-green-100 text-green-800";
+
       case "Cancelled":
         return "bg-red-100 text-red-800";
+
       default:
         return "bg-gray-100 text-gray-800";
     }
@@ -342,21 +454,27 @@ export default function UserDashboardClient({
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
+
     window.location.href = "/login";
   };
 
   // Profile settings mode switching functionality
+
   const handleModeSwitch = async (enableAdmin: boolean) => {
     setLoading(true);
+
     try {
       console.log("=== SWITCHING MODE ===");
 
       // Call the server action
+
       const response = await fetch("/api/switch-admin-mode", {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
         },
+
         body: JSON.stringify({ enableAdmin }),
       });
 
@@ -364,14 +482,18 @@ export default function UserDashboardClient({
 
       if (!result.success) {
         alert(`Error: ${result.error}`);
+
         setShowConfirm(false);
+
         return;
       }
 
       console.log("Mode switch successful, refreshing JWT session...");
 
       // Force the browser to fetch a fresh JWT
+
       const { error: refreshError } = await supabase.auth.refreshSession();
+
       if (refreshError) {
         console.warn("JWT refresh warning (non-fatal):", refreshError.message);
       } else {
@@ -383,33 +505,39 @@ export default function UserDashboardClient({
       }
     } catch (error) {
       console.error("Mode switch error:", error);
+
       alert(
         `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
     } finally {
       setLoading(false);
+
       setShowConfirm(false);
     }
   };
 
   const handleAdminModeSwitch = () => {
     setConfirmType("user");
+
     setShowConfirm(true);
   };
 
   const handleUserModeSwitch = () => {
     setConfirmType("admin");
+
     setShowConfirm(true);
   };
 
   return (
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
+
       <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-4">
               {/* Profile Avatar */}
+
               <div className="relative">
                 <button
                   onClick={() => setShowProfileViewer(!showProfileViewer)}
@@ -423,22 +551,27 @@ export default function UserDashboardClient({
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         // Fallback to initial if image fails to load
+
                         e.currentTarget.style.display = "none";
+
                         e.currentTarget.nextElementSibling?.classList.remove(
                           "hidden",
                         );
                       }}
                     />
                   ) : null}
+
                   <span
                     className={`text-white font-bold text-lg ${userAvatar ? "hidden" : ""}`}
                   >
                     {profile?.full_name?.charAt(0).toUpperCase() || "U"}
                   </span>
                 </button>
+
                 <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
 
                 {/* Profile Picture Viewer */}
+
                 {showProfileViewer && userAvatar && (
                   <div
                     className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 ${showProfileViewer ? "opacity-100" : "opacity-0"}`}
@@ -455,13 +588,16 @@ export default function UserDashboardClient({
                             className="w-full h-full object-contain"
                             style={{
                               imageRendering: "auto",
+
                               imageResolution: "from-image",
                             }}
                           />
                         </div>
+
                         <h3 className="font-header font-semibold text-white text-lg text-center">
                           {profile?.full_name}
                         </h3>
+
                         <p className="text-sm text-white/80 text-center">
                           {profile?.visual_role}
                         </p>
@@ -472,15 +608,19 @@ export default function UserDashboardClient({
               </div>
 
               {/* Welcome Text */}
+
               <div className="text-white">
                 <h1 className="font-header text-2xl font-bold transition-all duration-300 hover:scale-105">
                   Welcome back, {profile?.full_name}!
                 </h1>
+
                 <div className="flex items-center gap-2 mt-1">
                   <span className="bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-white transition-all duration-300 hover:bg-white/30">
                     {profile?.visual_role}
                   </span>
+
                   <span className="text-white/80 text-sm">•</span>
+
                   <span className="text-white/80 text-sm font-medium">
                     {profile?.database_role === "admin"
                       ? "Administrator"
@@ -542,6 +682,7 @@ export default function UserDashboardClient({
               </button>
 
               {/* Notifications Bell */}
+
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
                 className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
@@ -560,6 +701,7 @@ export default function UserDashboardClient({
                     d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
                   />
                 </svg>
+
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {unreadCount > 9 ? "9+" : unreadCount}
@@ -588,12 +730,14 @@ export default function UserDashboardClient({
       <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 transition-all duration-300">
           {/* New Request Form */}
+
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="font-header text-lg font-semibold text-gray-900 transition-all duration-300">
                   New Request
                 </h2>
+
                 {!showForm && (
                   <button
                     onClick={() => setShowForm(true)}
@@ -610,15 +754,19 @@ export default function UserDashboardClient({
                   className="space-y-5 animate-fadeIn relative"
                 >
                   {/* Loading/Success Overlay */}
+
                   {submitStatus === "submitting" && (
                     <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-xl">
                       <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mb-4"></div>
+
                       <p className="text-gray-700 font-semibold text-lg">
                         Creating your request...
                       </p>
+
                       <p className="text-gray-500 text-sm mt-1">Please wait</p>
                     </div>
                   )}
+
                   {submitStatus === "success" && (
                     <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-xl">
                       <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
@@ -636,14 +784,17 @@ export default function UserDashboardClient({
                           />
                         </svg>
                       </div>
+
                       <p className="text-gray-700 font-semibold text-lg">
                         Request Submitted Successfully!
                       </p>
+
                       <p className="text-gray-500 text-sm mt-1">
                         Redirecting...
                       </p>
                     </div>
                   )}
+
                   <div className="relative">
                     <label className="block text-sm font-semibold text-gray-800 mb-2 transition-all duration-300 flex items-center gap-2">
                       <svg
@@ -661,6 +812,7 @@ export default function UserDashboardClient({
                       </svg>
                       Nature of Issue *
                     </label>
+
                     <div className="relative">
                       <select
                         value={formData.nature}
@@ -673,13 +825,20 @@ export default function UserDashboardClient({
                         <option value="" className="text-gray-400">
                           Select the type of maintenance needed
                         </option>
+
                         <option value="Plumbing">Plumbing</option>
+
                         <option value="Electrical">Electrical</option>
+
                         <option value="Carpentry">Carpentry</option>
+
                         <option value="HVAC">HVAC</option>
+
                         <option value="Cleaning">Cleaning</option>
+
                         <option value="Other">Other</option>
                       </select>
+
                       <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                         <svg
                           className="w-5 h-5 text-gray-400"
@@ -715,6 +874,7 @@ export default function UserDashboardClient({
                       </svg>
                       Urgency Level *
                     </label>
+
                     <div className="relative">
                       <select
                         value={formData.urgency}
@@ -727,14 +887,18 @@ export default function UserDashboardClient({
                         <option value="" className="text-gray-400">
                           How urgent is this issue?
                         </option>
+
                         <option value="Emergency">
                           Emergency - Immediate attention required
                         </option>
+
                         <option value="Urgent">Urgent - Within 24 hours</option>
+
                         <option value="Not Urgent">
                           Not Urgent - Routine maintenance
                         </option>
                       </select>
+
                       <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                         <svg
                           className="w-5 h-5 text-gray-400"
@@ -767,6 +931,7 @@ export default function UserDashboardClient({
                           strokeWidth={2}
                           d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
                         />
+
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
@@ -776,6 +941,7 @@ export default function UserDashboardClient({
                       </svg>
                       Location *
                     </label>
+
                     <input
                       type="text"
                       value={formData.location}
@@ -805,11 +971,13 @@ export default function UserDashboardClient({
                       </svg>
                       Detailed Description *
                     </label>
+
                     <textarea
                       value={formData.description}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
+
                           description: e.target.value,
                         })
                       }
@@ -818,6 +986,7 @@ export default function UserDashboardClient({
                       placeholder="Please describe the issue in detail. Include any relevant information that might help resolve it quickly..."
                       required
                     />
+
                     <div className="text-xs text-gray-500 mt-1">
                       {formData.description.length}/500 characters
                     </div>
@@ -840,11 +1009,13 @@ export default function UserDashboardClient({
                       </svg>
                       Additional Context (Optional)
                     </label>
+
                     <textarea
                       value={formData.supportingReason}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
+
                           supportingReason: e.target.value,
                         })
                       }
@@ -852,12 +1023,14 @@ export default function UserDashboardClient({
                       rows={3}
                       placeholder="Any additional information, previous attempts to fix, or special considerations..."
                     />
+
                     <div className="text-xs text-gray-500 mt-1">
                       {formData.supportingReason.length}/300 characters
                     </div>
                   </div>
 
                   {/* Photo Upload Section */}
+
                   <div className="relative">
                     <label className="block text-sm font-semibold text-gray-800 mb-2 transition-all duration-300 flex items-center gap-2">
                       <svg
@@ -875,6 +1048,7 @@ export default function UserDashboardClient({
                       </svg>
                       Attach Photos (Optional)
                     </label>
+
                     <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 hover:border-green-500 transition-colors">
                       <input
                         type="file"
@@ -885,6 +1059,7 @@ export default function UserDashboardClient({
                         id="photo-upload"
                         disabled={photoFiles.length >= 5}
                       />
+
                       <label
                         htmlFor="photo-upload"
                         className={`flex flex-col items-center justify-center cursor-pointer ${photoFiles.length >= 5 ? "opacity-50 cursor-not-allowed" : ""}`}
@@ -902,6 +1077,7 @@ export default function UserDashboardClient({
                             d="M12 4v16m8-8H4"
                           />
                         </svg>
+
                         <span className="text-sm text-gray-500">
                           {photoFiles.length >= 5
                             ? "Maximum 5 photos reached"
@@ -911,6 +1087,7 @@ export default function UserDashboardClient({
                     </div>
 
                     {/* Photo Preview */}
+
                     {photoFiles.length > 0 && (
                       <div className="flex gap-2 mt-3 flex-wrap">
                         {photoFiles.map((file, index) => (
@@ -920,6 +1097,7 @@ export default function UserDashboardClient({
                               alt={`Preview ${index + 1}`}
                               className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200"
                             />
+
                             <button
                               type="button"
                               onClick={() => removePhoto(index)}
@@ -956,6 +1134,7 @@ export default function UserDashboardClient({
                         Cancel
                       </span>
                     </button>
+
                     <button
                       type="submit"
                       className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 font-medium shadow-lg hover:shadow-xl"
@@ -994,6 +1173,7 @@ export default function UserDashboardClient({
                       d="M12 4v16m8-8H4"
                     />
                   </svg>
+
                   <p className="transition-all duration-300">
                     Click &quot;Create&quot; to submit a new maintenance request
                   </p>
@@ -1003,6 +1183,7 @@ export default function UserDashboardClient({
           </div>
 
           {/* Requests List */}
+
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
               <h2 className="font-header text-lg font-semibold text-gray-900 mb-4 transition-all duration-300">
@@ -1024,6 +1205,7 @@ export default function UserDashboardClient({
                       d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                     />
                   </svg>
+
                   <p className="transition-all duration-300">
                     No maintenance requests yet
                   </p>
@@ -1040,10 +1222,12 @@ export default function UserDashboardClient({
                           <h3 className="font-header font-medium text-gray-900 transition-all duration-300">
                             {request.nature}
                           </h3>
+
                           <p className="text-sm text-gray-600 transition-all duration-300">
                             {request.location}
                           </p>
                         </div>
+
                         <span
                           className={`px-2 py-1 text-xs font-medium rounded-full transition-all duration-300 ${getStatusColor(request.status)}`}
                         >
@@ -1056,6 +1240,7 @@ export default function UserDashboardClient({
                       </p>
 
                       {/* Photo Display */}
+
                       {request.photos && request.photos.length > 0 && (
                         <div className="flex gap-2 mt-2 overflow-x-auto pb-1">
                           {request.photos.map((photo, index) => (
@@ -1072,6 +1257,7 @@ export default function UserDashboardClient({
 
                       <div className="flex justify-between items-center text-xs text-gray-500 transition-all duration-300">
                         <span>Urgency: {request.urgency}</span>
+
                         <span>
                           {new Date(request.created_at).toLocaleDateString()}
                         </span>
@@ -1086,6 +1272,7 @@ export default function UserDashboardClient({
       </div>
 
       {/* Notifications Sidebar */}
+
       <div
         ref={notificationsRef}
         className={`fixed top-0 right-0 h-full w-96 bg-white shadow-2xl z-40 transform transition-transform duration-500 ease-out ${
@@ -1100,6 +1287,7 @@ export default function UserDashboardClient({
               </h2>
             </div>
           </div>
+
           <div className="p-4">
             <div className="flex justify-between items-center mb-4">
               <button
@@ -1108,6 +1296,7 @@ export default function UserDashboardClient({
               >
                 Mark all as read
               </button>
+
               <button
                 onClick={deleteAllReadNotifications}
                 className="text-sm text-red-500 hover:text-red-600"
@@ -1115,6 +1304,7 @@ export default function UserDashboardClient({
                 Delete all read
               </button>
             </div>
+
             {notifications.length === 0 ? (
               <div className="p-4 text-center text-gray-500">
                 No notifications yet
@@ -1136,6 +1326,7 @@ export default function UserDashboardClient({
                           !notification.is_read ? "bg-blue-500" : "bg-gray-300"
                         }`}
                       />
+
                       <div
                         className="flex-1 min-w-0 cursor-pointer"
                         onClick={() => viewAnnouncement(notification)}
@@ -1143,17 +1334,21 @@ export default function UserDashboardClient({
                         <p className="font-medium text-sm text-gray-900">
                           {notification.title}
                         </p>
+
                         <p className="text-sm text-gray-600 mt-1">
                           {notification.message}
                         </p>
+
                         <p className="text-xs text-gray-400 mt-2">
                           {new Date(notification.created_at).toLocaleString()}
                         </p>
                       </div>
+
                       <div className="relative">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+
                             setOpenNotificationMenu(
                               openNotificationMenu === notification.id
                                 ? null
@@ -1168,15 +1363,19 @@ export default function UserDashboardClient({
                             viewBox="0 0 24 24"
                           >
                             <circle cx="12" cy="6" r="2" />
+
                             <circle cx="12" cy="12" r="2" />
+
                             <circle cx="12" cy="18" r="2" />
                           </svg>
                         </button>
+
                         {openNotificationMenu === notification.id && (
                           <div className="absolute right-0 mt-1 w-32 bg-white border rounded-lg shadow-lg z-10">
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
+
                                 deleteNotification(notification.id);
                               }}
                               className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 rounded-lg"
@@ -1196,8 +1395,10 @@ export default function UserDashboardClient({
       </div>
 
       {/* Profile Settings Sidebar */}
+
       <>
         {/* Backdrop */}
+
         <div
           className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-500 ${
             showProfileSidebar ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -1206,6 +1407,7 @@ export default function UserDashboardClient({
         />
 
         {/* Sidebar */}
+
         <div
           className={`fixed top-0 left-0 h-full w-96 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${
             showProfileSidebar ? "translate-x-0" : "-translate-x-full"
@@ -1213,6 +1415,7 @@ export default function UserDashboardClient({
         >
           <div className="h-full overflow-y-auto">
             {/* Sidebar Header */}
+
             <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
               <div className="flex justify-between items-center">
                 <h2 className="font-header text-xl font-bold text-white">
@@ -1222,8 +1425,10 @@ export default function UserDashboardClient({
             </div>
 
             {/* Profile Content */}
+
             <div className="p-6 space-y-6">
               {/* Profile Information */}
+
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
                 <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <svg
@@ -1260,6 +1465,7 @@ export default function UserDashboardClient({
                       </svg>
                       Full Name
                     </label>
+
                     <p className="text-gray-900 font-medium">
                       {profile?.full_name}
                     </p>
@@ -1282,6 +1488,7 @@ export default function UserDashboardClient({
                       </svg>
                       Visual Role
                     </label>
+
                     <p className="text-gray-900 font-medium">
                       {profile?.visual_role || "Not Set"}
                     </p>
@@ -1304,17 +1511,20 @@ export default function UserDashboardClient({
                       </svg>
                       Current Access Mode
                     </label>
+
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-lg font-bold text-blue-900">
                           {isAdmin ? "Administrator" : "Regular User"}
                         </p>
+
                         <p className="text-sm text-blue-700">
                           {isAdmin
                             ? "You have full access to admin dashboard"
                             : "You can submit and view maintenance requests"}
                         </p>
                       </div>
+
                       <div
                         className={`px-3 py-1 rounded-full text-white font-semibold text-sm ${
                           isAdmin ? "bg-red-500" : "bg-green-500"
@@ -1343,6 +1553,7 @@ export default function UserDashboardClient({
                         </svg>
                         Educational Level
                       </label>
+
                       <p className="text-gray-900 font-medium">
                         {profile.educational_level}
                       </p>
@@ -1367,6 +1578,7 @@ export default function UserDashboardClient({
                         </svg>
                         Department
                       </label>
+
                       <p className="text-gray-900 font-medium">
                         {profile.department}
                       </p>
@@ -1390,6 +1602,7 @@ export default function UserDashboardClient({
                       </svg>
                       Theme Preference
                     </label>
+
                     <p className="text-gray-900 font-medium capitalize">
                       {profile?.theme_preference}
                     </p>
@@ -1405,6 +1618,7 @@ export default function UserDashboardClient({
               </div>
 
               {/* Mode Switching */}
+
               {isAdmin && (
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
                   <h3 className="font-header text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
@@ -1420,6 +1634,7 @@ export default function UserDashboardClient({
                         strokeWidth={2}
                         d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
                       />
+
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -1429,10 +1644,12 @@ export default function UserDashboardClient({
                     </svg>
                     Access Mode Management
                   </h3>
+
                   <p className="text-gray-600 text-sm mb-4">
                     As an administrator, you can switch between admin and user
                     modes to test different user experiences.
                   </p>
+
                   <button
                     onClick={handleAdminModeSwitch}
                     disabled={loading}
@@ -1461,10 +1678,12 @@ export default function UserDashboardClient({
                     </svg>
                     Admin Access Available
                   </h3>
+
                   <p className="text-gray-600 text-sm mb-4">
                     You have admin privileges but are currently in user mode.
                     You can switch back to admin mode.
                   </p>
+
                   <button
                     onClick={handleUserModeSwitch}
                     disabled={loading}
@@ -1493,6 +1712,7 @@ export default function UserDashboardClient({
                     </svg>
                     User Mode
                   </h3>
+
                   <p className="text-gray-600 text-sm">
                     You are currently in user mode. You can submit maintenance
                     requests and track their status.
@@ -1505,6 +1725,7 @@ export default function UserDashboardClient({
       </>
 
       {/* Confirmation Dialog */}
+
       {showConfirm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-xl p-8 max-w-md w-full">
@@ -1519,6 +1740,7 @@ export default function UserDashboardClient({
                   will be redirected to the user dashboard and will no longer
                   have access to admin features.
                 </p>
+
                 <p className="text-sm text-gray-500 mb-6">
                   You can switch back to admin mode from the profile settings.
                 </p>
@@ -1532,6 +1754,7 @@ export default function UserDashboardClient({
                   will be redirected to the admin dashboard with full access to
                   maintenance management tools.
                 </p>
+
                 <p className="text-sm text-gray-500 mb-6">
                   You can switch back to user mode from the profile settings.
                 </p>
@@ -1546,6 +1769,7 @@ export default function UserDashboardClient({
               >
                 Cancel
               </button>
+
               <button
                 onClick={() => handleModeSwitch(confirmType === "admin")}
                 disabled={loading}
@@ -1559,6 +1783,7 @@ export default function UserDashboardClient({
       )}
 
       {/* Photo Modal */}
+
       {selectedPhoto && (
         <div
           className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
@@ -1570,6 +1795,7 @@ export default function UserDashboardClient({
               alt="Full size"
               className="max-w-full max-h-[90vh] object-contain rounded-lg"
             />
+
             <button
               onClick={() => setSelectedPhoto(null)}
               className="absolute top-4 right-4 text-white/80 hover:text-white bg-black/50 rounded-full p-2"
@@ -1593,6 +1819,7 @@ export default function UserDashboardClient({
       )}
 
       {/* Announcement Modal */}
+
       {showAnnouncementModal && selectedAnnouncement && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
@@ -1601,6 +1828,7 @@ export default function UserDashboardClient({
                 <h3 className="font-header text-lg font-semibold text-gray-900">
                   {selectedAnnouncement.title}
                 </h3>
+
                 <button
                   onClick={() => setShowAnnouncementModal(false)}
                   className="text-gray-400 hover:text-gray-600"
@@ -1621,13 +1849,16 @@ export default function UserDashboardClient({
                 </button>
               </div>
             </div>
+
             <div className="p-6">
               <p className="text-gray-700 whitespace-pre-wrap">
                 {selectedAnnouncement.message}
               </p>
+
               <p className="text-xs text-gray-400 mt-4">
                 {new Date(selectedAnnouncement.created_at).toLocaleString()}
               </p>
+
               <div className="flex justify-end mt-6">
                 <button
                   onClick={() => setShowAnnouncementModal(false)}
