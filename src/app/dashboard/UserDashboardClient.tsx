@@ -214,18 +214,26 @@ export default function UserDashboardClient({
 
       // Get all admin user IDs to send notifications
       console.log("Fetching admins from profiles table...");
-      const { data: admins, error: adminError } = await (
+
+      // First, let's see ALL profiles to debug what's in the database
+      const { data: allProfiles, error: allProfilesError } = await (
         supabase.from("profiles") as any
-      )
-        .select("id, database_role, full_name")
-        .eq("database_role", "admin");
+      ).select("id, database_role, full_name");
+
+      console.log("=== ALL PROFILES ===");
+      console.log("allProfiles:", JSON.stringify(allProfiles, null, 2));
+      console.log("allProfilesError:", allProfilesError);
+      console.log("Total profiles:", allProfiles?.length);
+
+      // Now filter for admins in JavaScript
+      const admins =
+        (allProfiles as any[])?.filter(
+          (p: any) => p.database_role === "admin",
+        ) || [];
 
       console.log("=== ADMIN QUERY RESULT ===");
-      console.log("admins:", JSON.stringify(admins, null, 2));
-      console.log("adminError:", adminError);
-      console.log("admins?.length:", admins?.length);
-      console.log("Array.isArray(admins):", Array.isArray(admins));
-      console.log("admins[0]:", admins?.[0]);
+      console.log("admins (filtered):", JSON.stringify(admins, null, 2));
+      console.log("admins.length:", admins.length);
 
       if (!admins || admins.length === 0) {
         console.warn(
