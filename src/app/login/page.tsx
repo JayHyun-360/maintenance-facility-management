@@ -404,6 +404,10 @@ export default function LoginPage() {
 
     window.onHCaptchaVerify = (token: string) => {
       setEmailData((prev) => ({ ...prev, captchaToken: token }));
+      // Also update guest data if guest tab is active
+      if (activeTab === "guest") {
+        setGuestData((prev) => ({ ...prev, captchaToken: token }));
+      }
       setErrors((prev) => ({ ...prev, captcha: "" }));
     };
 
@@ -414,9 +418,13 @@ export default function LoginPage() {
 
     window.onHCaptchaExpire = () => {
       setEmailData((prev) => ({ ...prev, captchaToken: "" }));
+      // Also clear guest data captcha if guest tab is active
+      if (activeTab === "guest") {
+        setGuestData((prev) => ({ ...prev, captchaToken: "" }));
+      }
       setErrors({ captcha: "Captcha expired. Please verify again." });
     };
-  }, []);
+  }, [activeTab]);
 
   return (
     <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
