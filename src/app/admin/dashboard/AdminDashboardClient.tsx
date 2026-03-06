@@ -547,6 +547,12 @@ export default function AdminDashboardClient({
   };
 
   const deleteNotification = async (notificationId: string) => {
+    // Delete from database
+    await (supabase.from("notifications") as any)
+      .delete()
+      .eq("id", notificationId);
+
+    // Update local state
     setNotifications((prev) =>
       prev.filter((notif) => notif.id !== notificationId),
     );
@@ -557,6 +563,14 @@ export default function AdminDashboardClient({
   };
 
   const deleteAllReadNotifications = async () => {
+    // Delete from database
+    await (supabase.from("notifications") as any)
+      .delete()
+      .eq("user_id", userId)
+      .eq("target_role", "admin")
+      .eq("is_read", true);
+
+    // Update local state
     setNotifications((prev) => prev.filter((notif) => !notif.is_read));
   };
 
