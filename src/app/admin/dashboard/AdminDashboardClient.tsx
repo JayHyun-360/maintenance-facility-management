@@ -249,63 +249,74 @@ export default function AdminDashboardClient({
   const fetchNotifications = async () => {
     console.log("Fetching notifications for admin:", userId);
 
-    // Fetch real notifications from database - only admin notifications
-    const { data: dbNotifications } = await (
-      supabase.from("notifications") as any
-    )
-      .select("*")
-      .eq("user_id", userId)
-      .eq("target_role", "admin")
-      .order("created_at", { ascending: false })
-      .limit(20);
+    try {
+      // Fetch real notifications from database - only admin notifications
+      const { data: dbNotifications, error: notifError } = await (
+        supabase.from("notifications") as any
+      )
+        .select("*")
+        .eq("user_id", userId)
+        .eq("target_role", "admin")
+        .order("created_at", { ascending: false })
+        .limit(20);
 
-    console.log("Database notifications:", dbNotifications);
+      if (notifError) {
+        console.error("Error fetching notifications:", notifError);
+        return;
+      }
 
-    // Get emergency shown status from localStorage
-    const emergencyStorageKey = `admin_emergency_shown_${userId}`;
-    const storedEmergencyShown =
-      typeof window !== "undefined"
-        ? new Set<string>(
-            JSON.parse(localStorage.getItem(emergencyStorageKey) || "[]"),
-          )
-        : new Set<string>();
+      console.log("Database notifications:", dbNotifications);
 
-    // Update ref with stored emergency shown status
-    emergencyShownRef.current = storedEmergencyShown;
+      // Get emergency shown status from localStorage
+      const emergencyStorageKey = `admin_emergency_shown_${userId}`;
+      const storedEmergencyShown =
+        typeof window !== "undefined"
+          ? new Set<string>(
+              JSON.parse(localStorage.getItem(emergencyStorageKey) || "[]"),
+            )
+          : new Set<string>();
 
-    // Use database notifications directly
-    const notificationsData = dbNotifications || [];
+      // Update ref with stored emergency shown status
+      emergencyShownRef.current = storedEmergencyShown;
 
-    // Update state with database notifications
-    setNotifications(notificationsData);
+      // Use database notifications directly
+      const notificationsData = dbNotifications || [];
 
-    // Update unread count
-    const unreadCount = notificationsData.filter((n: any) => !n.is_read).length;
-    setUnreadCount(unreadCount);
+      // Update state with database notifications
+      setNotifications(notificationsData);
 
-    // Check for emergency requests and show popup (only once per emergency ID)
-    const unreadEmergencies = notificationsData.filter(
-      (n: any) =>
-        !n.is_read &&
-        (n.title.includes("EMERGENCY") || n.message.includes("EMERGENCY")),
-    );
+      // Update unread count
+      const unreadCount = notificationsData.filter(
+        (n: any) => !n.is_read,
+      ).length;
+      setUnreadCount(unreadCount);
 
-    // Show first emergency that hasn't been shown yet
-    const newEmergency = unreadEmergencies.find(
-      (n: any) => !emergencyShownRef.current.has(n.id),
-    );
-
-    if (newEmergency && !emergencyPopup) {
-      emergencyShownRef.current.add(newEmergency.id);
-      // Save to localStorage
-      localStorage.setItem(
-        emergencyStorageKey,
-        JSON.stringify([...emergencyShownRef.current]),
+      // Check for emergency requests and show popup (only once per emergency ID)
+      const unreadEmergencies = notificationsData.filter(
+        (n: any) =>
+          !n.is_read &&
+          (n.title.includes("EMERGENCY") || n.message.includes("EMERGENCY")),
       );
-      // Use setTimeout to avoid calling setState during render
-      setTimeout(() => {
-        setEmergencyPopup(newEmergency);
-      }, 0);
+
+      // Show first emergency that hasn't been shown yet
+      const newEmergency = unreadEmergencies.find(
+        (n: any) => !emergencyShownRef.current.has(n.id),
+      );
+
+      if (newEmergency && !emergencyPopup) {
+        emergencyShownRef.current.add(newEmergency.id);
+        // Save to localStorage
+        localStorage.setItem(
+          emergencyStorageKey,
+          JSON.stringify([...emergencyShownRef.current]),
+        );
+        // Use setTimeout to avoid calling setState during render
+        setTimeout(() => {
+          setEmergencyPopup(newEmergency);
+        }, 0);
+      }
+    } catch (err) {
+      console.error("Exception in fetchNotifications:", err);
     }
   };
 
@@ -367,7 +378,7 @@ export default function AdminDashboardClient({
     fetchNotifications();
     const notificationInterval = setInterval(fetchNotifications, 10000);
     return () => clearInterval(notificationInterval);
-  }, []);
+  }, [userId]);
 
   const fetchRequests = async () => {
     const { data } = await supabase

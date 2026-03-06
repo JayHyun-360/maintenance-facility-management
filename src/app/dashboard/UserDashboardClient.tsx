@@ -81,6 +81,9 @@ export default function UserDashboardClient({
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "submitting" | "success"
+  >("idle");
 
   const supabase = createClient()!;
 
@@ -151,7 +154,7 @@ export default function UserDashboardClient({
   // Fetch notifications on mount and set up polling
   useEffect(() => {
     fetchNotifications();
-    const notificationInterval = setInterval(fetchNotifications, 30000);
+    const notificationInterval = setInterval(fetchNotifications, 10000);
     return () => clearInterval(notificationInterval);
   }, [userId]);
 
@@ -164,7 +167,7 @@ export default function UserDashboardClient({
   const handleSubmitRequest = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    setUploading(true);
+    setSubmitStatus("submitting");
     try {
       let photoUrls: string[] = [];
 
@@ -205,6 +208,7 @@ export default function UserDashboardClient({
 
       if (error) {
         alert("Error submitting request");
+        setSubmitStatus("idle");
         return;
       }
 
@@ -234,6 +238,9 @@ export default function UserDashboardClient({
         }
       }
 
+      // Show success state
+      setSubmitStatus("success");
+
       // Reset form and refresh requests
       setFormData({
         nature: "",
@@ -246,9 +253,15 @@ export default function UserDashboardClient({
       setPhotoFiles([]);
       setShowForm(false);
       fetchRequests();
+
+      // Reset status after delay
+      setTimeout(() => {
+        setSubmitStatus("idle");
+      }, 3000);
     } catch (error) {
       console.error("Error submitting request:", error);
       alert("Error submitting request");
+      setSubmitStatus("idle");
     } finally {
       setUploading(false);
     }
@@ -566,8 +579,43 @@ export default function UserDashboardClient({
               {showForm ? (
                 <form
                   onSubmit={handleSubmitRequest}
-                  className="space-y-5 animate-fadeIn"
+                  className="space-y-5 animate-fadeIn relative"
                 >
+                  {/* Loading/Success Overlay */}
+                  {submitStatus === "submitting" && (
+                    <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-xl">
+                      <div className="animate-spin rounded-full h-12 w-12 border-4 border-green-500 border-t-transparent mb-4"></div>
+                      <p className="text-gray-700 font-semibold text-lg">
+                        Creating your request...
+                      </p>
+                      <p className="text-gray-500 text-sm mt-1">Please wait</p>
+                    </div>
+                  )}
+                  {submitStatus === "success" && (
+                    <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-xl">
+                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                        <svg
+                          className="w-8 h-8 text-green-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      </div>
+                      <p className="text-gray-700 font-semibold text-lg">
+                        Request Submitted Successfully!
+                      </p>
+                      <p className="text-gray-500 text-sm mt-1">
+                        Redirecting...
+                      </p>
+                    </div>
+                  )}
                   <div className="relative">
                     <label className="block text-sm font-semibold text-gray-800 mb-2 transition-all duration-300 flex items-center gap-2">
                       <svg
