@@ -7,15 +7,11 @@ DROP POLICY IF EXISTS "Admins can update all requests" ON public.maintenance_req
 DROP POLICY IF EXISTS "maintenance_requests_update_admin" ON public.maintenance_requests;
 DROP POLICY IF EXISTS "allow_admin_update_any" ON public.maintenance_requests;
 
--- Create new policies using database_role check
+-- Create new policies using JWT metadata (Circuit Breaker pattern)
 CREATE POLICY "Users can view own requests" ON public.maintenance_requests
   FOR SELECT USING (
     requester_id = auth.uid() OR
-    EXISTS (
-      SELECT 1 FROM public.profiles 
-      WHERE id = auth.uid() 
-      AND database_role = 'admin'
-    )
+    (auth.jwt() ->> 'role') = 'admin'
   );
 
 CREATE POLICY "Users can create requests" ON public.maintenance_requests
@@ -23,11 +19,7 @@ CREATE POLICY "Users can create requests" ON public.maintenance_requests
 
 CREATE POLICY "Admins can update all requests" ON public.maintenance_requests
   FOR UPDATE USING (
-    EXISTS (
-      SELECT 1 FROM public.profiles 
-      WHERE id = auth.uid() 
-      AND database_role = 'admin'
-    )
+    (auth.jwt() ->> 'role') = 'admin'
   );
 
 -- Also fix notifications RLS if needed
