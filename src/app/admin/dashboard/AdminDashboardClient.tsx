@@ -178,6 +178,13 @@ export default function AdminDashboardClient({
       created_at: string;
       from_admin: boolean;
     }[];
+    announcements: {
+      id: string;
+      title: string;
+      message: string;
+      created_at: string;
+      recipient_count: number;
+    }[];
   }>({});
   const [newMessage, setNewMessage] = useState("");
   const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
