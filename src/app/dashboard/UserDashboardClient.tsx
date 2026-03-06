@@ -213,12 +213,26 @@ export default function UserDashboardClient({
       }
 
       // Get all admin user IDs to send notifications
-      const { data: admins } = await (supabase.from("profiles") as any)
-        .select("id")
+      console.log("Fetching admins from profiles table...");
+      const { data: admins, error: adminError } = await (
+        supabase.from("profiles") as any
+      )
+        .select("id, database_role, full_name")
         .eq("database_role", "admin");
 
-      if (admins && admins.length > 0) {
+      console.log("Fetching admins for notifications:", {
+        admins,
+        adminError,
+        count: admins?.length,
+      });
+
+      if (!admins || admins.length === 0) {
+        console.warn(
+          "No admins found in database! Notifications will not be sent.",
+        );
+      } else if (admins && admins.length > 0) {
         // Use database function to create admin notifications (bypasses RLS)
+        console.log("Creating notifications for", admins.length, "admins");
         const adminIds = admins as unknown as { id: string }[];
         for (const admin of adminIds) {
           const args = {
@@ -234,7 +248,12 @@ export default function UserDashboardClient({
             p_link_url: "/admin/dashboard",
             p_target_role: "admin",
           };
-          await (supabase as any).rpc("create_admin_notification", args);
+          console.log("Creating notification for admin:", admin.id, args);
+          const result = await (supabase as any).rpc(
+            "create_admin_notification",
+            args,
+          );
+          console.log("Notification result for", admin.id, ":", result);
         }
       }
 
