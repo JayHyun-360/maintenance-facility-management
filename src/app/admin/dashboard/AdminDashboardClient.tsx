@@ -2914,7 +2914,7 @@ export default function AdminDashboardClient({
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => setShowDetailModal(null)}
           />
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100 relative z-10">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100 relative z-10 flex flex-col">
             {/* Header */}
             <div className="bg-gradient-to-r from-[#427A43] to-[#2d5a2e] p-4">
               <div className="flex items-center gap-3">
@@ -2952,7 +2952,7 @@ export default function AdminDashboardClient({
             </div>
 
             {/* Content */}
-            <div className="p-4 space-y-4 overflow-y-auto max-h-[calc(100vh-80px)]">
+            <div className="p-4 space-y-4 overflow-y-auto flex-1">
               {/* Status and Urgency Badges */}
               <div className="flex flex-wrap gap-2">
                 <span
@@ -3176,33 +3176,33 @@ export default function AdminDashboardClient({
                   </div>
                 </div>
               )}
+            </div>
 
-              {/* Action Buttons */}
-              <div className="p-3 border-t border-gray-200">
-                <button
-                  onClick={() => {
-                    setSelectedRequestForReport(showDetailModal);
-                    setShowReportSidebar(true);
-                    setShowDetailModal(null);
-                  }}
-                  className="w-full px-3 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors font-medium text-sm flex items-center justify-center gap-1.5"
+            {/* Action Buttons - Fixed at bottom */}
+            <div className="p-3 border-t border-gray-200">
+              <button
+                onClick={() => {
+                  setSelectedRequestForReport(showDetailModal);
+                  setShowReportSidebar(true);
+                  setShowDetailModal(null);
+                }}
+                className="w-full px-3 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors font-medium text-sm flex items-center justify-center gap-1.5"
+              >
+                <svg
+                  className="w-3 h-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  <svg
-                    className="w-3 h-3"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 17v1a1 1 0 001 1h4a1 1 0 001-1v-1m3-2V8a2 2 0 00-2-2H8a2 2 0 00-2 2v8m5-4h4"
-                    />
-                  </svg>
-                  Generate Form
-                </button>
-              </div>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 17v1a1 1 0 001 1h4a1 1 0 001-1v-1m3-2V8a2 2 0 00-2-2H8a2 2 0 00-2 2v8m5-4h4"
+                  />
+                </svg>
+                Generate Form
+              </button>
             </div>
           </div>
         </div>
