@@ -171,21 +171,26 @@ export default function AdminDashboardClient({
   const [selectAll, setSelectAll] = useState(true);
   const [users, setUsers] = useState<Profile[]>([]);
   const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
-  const [userMessages, setUserMessages] = useState<{
-    [userId: string]: {
-      id: string;
-      message: string;
-      created_at: string;
-      from_admin: boolean;
-    }[];
-    announcements: {
-      id: string;
-      title: string;
-      message: string;
-      created_at: string;
-      recipient_count: number;
-    }[];
-  }>({});
+  const [userMessages, setUserMessages] = useState<
+    {
+      announcements: {
+        id: string;
+        title: string;
+        message: string;
+        created_at: string;
+        recipient_count: number;
+      }[];
+    } & {
+      [userId: string]: {
+        id: string;
+        message: string;
+        created_at: string;
+        from_admin: boolean;
+      }[];
+    }
+  >({
+    announcements: [],
+  });
   const [newMessage, setNewMessage] = useState("");
   const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
