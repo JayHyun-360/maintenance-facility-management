@@ -182,6 +182,7 @@ export default function AdminDashboardClient({
   const [newMessage, setNewMessage] = useState("");
   const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
+  const [broadcastTitle, setBroadcastTitle] = useState("");
   const [broadcastMessage, setBroadcastMessage] = useState("");
   const [showUserInfoPanel, setShowUserInfoPanel] = useState(false);
   const [showDetailModal, setShowDetailModal] =
@@ -511,6 +512,7 @@ export default function AdminDashboardClient({
   const sendBroadcastMessage = async () => {
     if (!broadcastMessage.trim()) return;
 
+    // Get all users to notify
     const { data: allUsers, error: fetchError } = await supabase
       .from("profiles")
       .select("id")
@@ -521,44 +523,65 @@ export default function AdminDashboardClient({
       return;
     }
 
-    const messages = allUsers.map((user: { id: string }) => ({
-      user_id: user.id,
-      message: broadcastMessage.trim(),
-      from_admin: true,
-      is_broadcast: true,
-    }));
+    // Create a single announcement record (not one per user)
+    const announcementTitle = broadcastTitle.trim() || "Announcement";
 
-    const { error: insertError } = await (
-      supabase.from("admin_messages") as any
-    ).insert(messages);
+    const { data: announcementData, error: insertError } = await (
+      supabase.from("announcements") as any
+    )
+      .insert({
+        title: announcementTitle,
+        message: broadcastMessage.trim(),
+        created_by: userId,
+        recipient_count: allUsers.length,
+      })
+      .select();
 
     if (insertError) {
-      alert("Error sending broadcast message");
+      console.error("Error creating announcement:", insertError);
+      alert("Error sending announcement");
       return;
     }
 
+    // Create individual notifications for each user
+    const notifications = allUsers.map((user: { id: string }) => ({
+      user_id: user.id,
+      title: announcementTitle,
+      message: broadcastMessage.trim(),
+      link_url: "/dashboard",
+      target_role: "user",
+    }));
+
+    const { error: notifError } = await (
+      supabase.from("notifications") as any
+    ).insert(notifications);
+
+    if (notifError) {
+      console.error("Error creating notifications:", notifError);
+    }
+
+    setBroadcastTitle("");
     setBroadcastMessage("");
     setShowBroadcastModal(false);
-    alert(`Broadcast message sent to ${allUsers.length} users!`);
+    alert(`Announcement sent to ${allUsers.length} users!`);
 
-    // Fetch recent broadcasts for display
-    fetchBroadcasts();
+    // Fetch recent announcements for display
+    fetchAnnouncements();
   };
 
-  const fetchBroadcasts = async () => {
-    const { data } = await (supabase.from("admin_messages") as any)
+  const fetchAnnouncements = async () => {
+    const { data } = await (supabase.from("announcements") as any)
       .select("*")
-      .eq("is_broadcast", true)
       .order("created_at", { ascending: false })
       .limit(10);
 
     if (data) {
-      setUserMessages((prev) => ({ ...prev, broadcast: data }));
+      setUserMessages((prev) => ({ ...prev, announcements: data }));
     }
   };
 
   useEffect(() => {
-    fetchBroadcasts();
+    fetchAnnouncements();
   }, []);
 
   const handleStatusChange = (request: RequestWithProfile) => {
@@ -2815,21 +2838,26 @@ export default function AdminDashboardClient({
                 Recent Announcements
               </h3>
               <div className="space-y-3">
-                {userMessages["broadcast"]?.length > 0 ? (
-                  userMessages["broadcast"]
-                    .slice(-5)
-                    .reverse()
-                    .map((msg) => (
-                      <div
-                        key={msg.id}
-                        className="p-4 bg-gray-50 rounded-lg border border-gray-100"
-                      >
-                        <p className="text-gray-700">{msg.message}</p>
-                        <p className="text-xs text-gray-400 mt-2">
-                          {new Date(msg.created_at).toLocaleString()}
+                {userMessages["announcements"]?.length > 0 ? (
+                  userMessages["announcements"].slice(0, 5).map((msg) => (
+                    <div
+                      key={msg.id}
+                      className="p-4 bg-gray-50 rounded-lg border border-gray-100"
+                    >
+                      <div className="flex items-start justify-between">
+                        <p className="text-gray-900 font-medium">
+                          {msg.title || "Announcement"}
                         </p>
+                        <span className="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded-full">
+                          {msg.recipient_count || 0} recipients
+                        </span>
                       </div>
-                    ))
+                      <p className="text-gray-700 mt-2">{msg.message}</p>
+                      <p className="text-xs text-gray-400 mt-2">
+                        {new Date(msg.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                  ))
                 ) : (
                   <p className="text-gray-400 text-sm">
                     No announcements sent yet
@@ -4273,6 +4301,18 @@ export default function AdminDashboardClient({
               </p>
             </div>
             <div className="p-6">
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  value={broadcastTitle}
+                  onChange={(e) => setBroadcastTitle(e.target.value)}
+                  placeholder="Enter announcement title..."
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
+                />
+              </div>
               <textarea
                 value={broadcastMessage}
                 onChange={(e) => setBroadcastMessage(e.target.value)}
