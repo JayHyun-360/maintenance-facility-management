@@ -750,6 +750,7 @@ export default function AdminDashboardClient({
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
+                        e.preventDefault();
                         togglePhotos(request.id);
                       }}
                       className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
@@ -793,6 +794,7 @@ export default function AdminDashboardClient({
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
+                          e.preventDefault();
                           togglePhotos(request.id);
                         }}
                         className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
