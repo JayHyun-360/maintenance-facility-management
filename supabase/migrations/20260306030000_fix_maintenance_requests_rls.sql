@@ -37,18 +37,20 @@ DROP POLICY IF EXISTS "Admins can view all notifications" ON public.notification
 CREATE POLICY "Users can view own notifications" ON public.notifications
   FOR SELECT USING (
     user_id = auth.uid() OR
-    EXISTS (
-      SELECT 1 FROM public.profiles 
-      WHERE id = auth.uid() 
-      AND database_role = 'admin'
-    )
+    (auth.jwt() ->> 'role') = 'admin'
   );
 
 CREATE POLICY "Users can create notifications" ON public.notifications
-  FOR INSERT WITH CHECK (user_id = auth.uid());
+  FOR INSERT WITH CHECK (
+    (auth.jwt() ->> 'role') = 'admin' OR user_id = auth.uid()
+  );
 
 CREATE POLICY "Users can update own notifications" ON public.notifications
-  FOR UPDATE USING (user_id = auth.uid());
+  FOR UPDATE USING (
+    (auth.jwt() ->> 'role') = 'admin' OR user_id = auth.uid()
+  );
 
 CREATE POLICY "Users can delete own notifications" ON public.notifications
-  FOR DELETE USING (user_id = auth.uid());
+  FOR DELETE USING (
+    (auth.jwt() ->> 'role') = 'admin' OR user_id = auth.uid()
+  );
