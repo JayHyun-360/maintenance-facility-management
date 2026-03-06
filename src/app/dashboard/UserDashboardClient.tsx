@@ -40,6 +40,8 @@ export default function UserDashboardClient({
   const [confirmType, setConfirmType] = useState<"admin" | "user" | null>(null);
   const [notifications, setNotifications] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
+  const [selectedAnnouncement, setSelectedAnnouncement] = useState<any>(null);
   const profileViewerRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
 
@@ -138,6 +140,12 @@ export default function UserDashboardClient({
       .eq("target_role", "user")
       .eq("is_read", true);
     fetchNotifications();
+  };
+
+  const viewAnnouncement = (notification: any) => {
+    setSelectedAnnouncement(notification);
+    setShowAnnouncementModal(true);
+    markNotificationRead(notification.id);
   };
 
   // Fetch notifications on mount and set up polling
@@ -1054,7 +1062,7 @@ export default function UserDashboardClient({
                       />
                       <div
                         className="flex-1 min-w-0 cursor-pointer"
-                        onClick={() => markNotificationRead(notification.id)}
+                        onClick={() => viewAnnouncement(notification)}
                       >
                         <p className="font-medium text-sm text-gray-900">
                           {notification.title}
@@ -1504,6 +1512,55 @@ export default function UserDashboardClient({
                 />
               </svg>
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Announcement Modal */}
+      {showAnnouncementModal && selectedAnnouncement && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h3 className="font-header text-lg font-semibold text-gray-900">
+                  {selectedAnnouncement.title}
+                </h3>
+                <button
+                  onClick={() => setShowAnnouncementModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div className="p-6">
+              <p className="text-gray-700 whitespace-pre-wrap">
+                {selectedAnnouncement.message}
+              </p>
+              <p className="text-xs text-gray-400 mt-4">
+                {new Date(selectedAnnouncement.created_at).toLocaleString()}
+              </p>
+              <div className="flex justify-end mt-6">
+                <button
+                  onClick={() => setShowAnnouncementModal(false)}
+                  className="px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors text-sm font-medium"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
