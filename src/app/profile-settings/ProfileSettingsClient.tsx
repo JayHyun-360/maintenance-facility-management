@@ -39,7 +39,9 @@ export default function ProfileSettingsClient({
       const supabase = createClient()!;
       const { error: refreshError } = await supabase.auth.refreshSession();
       if (refreshError) {
-        console.warn("JWT refresh warning (non-fatal):", refreshError.message);
+        console.error("JWT refresh failed:", refreshError.message);
+        // Continue anyway - the mode switch was successful, but JWT might be stale
+        // User will get updated role on next login or page refresh
       } else {
         console.log("JWT refreshed successfully — new role active.");
       }
@@ -58,12 +60,12 @@ export default function ProfileSettingsClient({
     }
   };
 
-  const handleAdminModeSwitch = () => {
+  const handleSwitchToUserMode = () => {
     setConfirmType("user");
     setShowConfirm(true);
   };
 
-  const handleUserModeSwitch = () => {
+  const handleSwitchToAdminMode = () => {
     setConfirmType("admin");
     setShowConfirm(true);
   };
@@ -208,7 +210,7 @@ export default function ProfileSettingsClient({
             </div>
 
             <button
-              onClick={handleAdminModeSwitch}
+              onClick={handleSwitchToUserMode}
               disabled={loading || !isAdmin}
               className="w-full px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 disabled:bg-gray-400 transition-colors"
             >
@@ -233,7 +235,7 @@ export default function ProfileSettingsClient({
             </p>
 
             <button
-              onClick={handleUserModeSwitch}
+              onClick={handleSwitchToAdminMode}
               disabled={loading}
               className="w-full px-6 py-3 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 disabled:bg-gray-400 transition-colors"
             >

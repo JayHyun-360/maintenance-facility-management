@@ -6,6 +6,9 @@ import { redirect } from "next/navigation";
 export async function switchAdminMode(enableAdmin: boolean) {
   const supabase = await createServerClient();
 
+  console.log("=== SWITCH ADMIN MODE ACTION ===");
+  console.log("Target mode:", enableAdmin ? "admin" : "user");
+
   // Get current session
   const {
     data: { session },
@@ -27,6 +30,13 @@ export async function switchAdminMode(enableAdmin: boolean) {
       .select("*")
       .eq("id", userId)
       .single();
+
+    console.log("Current profile data:", {
+      database_role: currentProfile?.database_role,
+      visual_role: currentProfile?.visual_role,
+      educational_level: currentProfile?.educational_level,
+      department: currentProfile?.department,
+    });
 
     if (fetchError || !currentProfile) {
       return {
@@ -72,6 +82,8 @@ export async function switchAdminMode(enableAdmin: boolean) {
       };
     }
 
+    console.log("Update data prepared:", updateData);
+
     // Execute atomic update
     const { error: updateError } = await supabase
       .from("profiles")
@@ -79,11 +91,14 @@ export async function switchAdminMode(enableAdmin: boolean) {
       .eq("id", userId);
 
     if (updateError) {
+      console.error("Database update failed:", updateError);
       return {
         error: `Failed to switch mode: ${updateError.message}`,
         success: false,
       };
     }
+
+    console.log("Mode switch completed successfully");
 
     return {
       error: null,
