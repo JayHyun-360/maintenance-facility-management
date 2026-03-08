@@ -12,12 +12,12 @@ BEGIN
   FROM public.profiles
   WHERE id = auth.uid();
 
-  -- Create a notification for the user with target_role
+  -- Create a notification for the user with target_role (full message)
   INSERT INTO public.notifications (user_id, title, message, link_url, target_role)
   VALUES (
     NEW.user_id,
     'New Message from Administrator',
-    COALESCE(v_user_name, 'Administrator') || ': ' || LEFT(NEW.message, 100) || CASE WHEN LENGTH(NEW.message) > 100 THEN '...' ELSE '' END,
+    NEW.message,
     '/dashboard',
     'user'
   );
