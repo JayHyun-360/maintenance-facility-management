@@ -498,8 +498,18 @@ export default function AdminDashboardClient({
   };
 
   const markNotificationRead = async (notificationId: string) => {
-    // Update local state
+    const notification = notifications.find((n) => n.id === notificationId);
 
+    // If notification has a link_url with request ID, show the request details
+    if (notification?.link_url && notification.link_url.includes("request=")) {
+      const requestId = notification.link_url.split("request=")[1];
+      const request = requests.find((r) => r.id === requestId);
+      if (request) {
+        setShowDetailModal(request);
+      }
+    }
+
+    // Update local state
     setNotifications((prev) =>
       prev.map((notif) =>
         notif.id === notificationId ? { ...notif, is_read: true } : notif,
@@ -509,11 +519,8 @@ export default function AdminDashboardClient({
     setUnreadCount((prev) => Math.max(0, prev - 1));
 
     // Persist to database
-
     await (supabase.from("notifications") as any)
-
       .update({ is_read: true })
-
       .eq("id", notificationId);
   };
 
