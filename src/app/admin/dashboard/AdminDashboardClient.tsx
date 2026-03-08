@@ -603,6 +603,11 @@ export default function AdminDashboardClient({
     }
   }, [initialRequestId, requests]);
 
+  // Fetch users on mount for warning/notice modal
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
   const fetchRequests = async () => {
     const { data } = await supabase
 
@@ -3675,7 +3680,7 @@ export default function AdminDashboardClient({
                     d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                   />
                 </svg>
-                Send Warning
+                Send Warning / Notice
               </button>
             </div>
 
@@ -5435,7 +5440,7 @@ export default function AdminDashboardClient({
                       d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                     />
                   </svg>
-                  Send Warning to User
+                  Send Warning / Notice to User
                 </h3>
                 <button
                   onClick={() => {
@@ -5612,7 +5617,7 @@ export default function AdminDashboardClient({
                   disabled={!selectedWarningUser || !warningMessage.trim()}
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Send Warning
+                  Send Warning / Notice
                 </button>
               </div>
             </div>
