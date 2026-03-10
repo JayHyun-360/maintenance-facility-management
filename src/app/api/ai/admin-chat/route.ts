@@ -3,7 +3,33 @@ import { getAdminAssistance } from "@/lib/gemini";
 
 export async function POST(request: NextRequest) {
   try {
-    const { query, context } = await request.json();
+    const contentType = request.headers.get("content-type") || "";
+
+    let query: string;
+    let context: any;
+    let attachments: { type: string; data: string; name: string }[] = [];
+
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await request.formData();
+      query = formData.get("query") as string;
+      const contextStr = formData.get("context") as string;
+      context = contextStr ? JSON.parse(contextStr) : undefined;
+
+      const files = formData.getAll("attachments") as File[];
+      for (const file of files) {
+        const arrayBuffer = await file.arrayBuffer();
+        const base64 = Buffer.from(arrayBuffer).toString("base64");
+        attachments.push({
+          type: file.type,
+          data: base64,
+          name: file.name,
+        });
+      }
+    } else {
+      const body = await request.json();
+      query = body.query;
+      context = body.context;
+    }
 
     if (!query) {
       return NextResponse.json(
@@ -12,7 +38,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await getAdminAssistance(query, context);
+    const response = await getAdminAssistance(query, context, attachments);
 
     return NextResponse.json({ success: true, response });
   } catch (error: any) {

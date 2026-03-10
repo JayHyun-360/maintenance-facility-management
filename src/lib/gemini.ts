@@ -53,22 +53,58 @@ export async function analyzeMaintenanceRequest(
 }
 
 // Helper function for admin chat assistance
-export async function getAdminAssistance(query: string, context?: any) {
+export async function getAdminAssistance(
+  query: string,
+  context?: any,
+  attachments?: { type: string; data: string; name: string }[],
+) {
   if (!model) {
     throw new Error("Gemini API not initialized - check GOOGLE_GEMINI_API_KEY");
   }
   try {
-    const prompt = `
-    You are an AI assistant for a maintenance facility management system. 
-    Help the administrator with their query: "${query}"
-    
-    ${context ? `Context: ${JSON.stringify(context)}` : ""}
-    
-    Provide helpful, actionable advice for managing maintenance requests, user communications, and system optimization.
-    Keep responses concise and relevant to facility management.
-    `;
+    const parts: any[] = [];
 
-    const result = await model.generateContent(prompt);
+    // Build text prompt
+    let promptText = `You are an AI assistant for a maintenance facility management system. 
+Help the administrator with their query: "${query}"
+
+${context ? `Context: ${JSON.stringify(context)}` : ""}
+
+Provide helpful, actionable advice for managing maintenance requests, user communications, and system optimization.
+Keep responses concise and relevant to facility management.`;
+
+    // Add attachment context if present
+    if (attachments && attachments.length > 0) {
+      promptText += `\n\nThe user has uploaded ${attachments.length} attachment(s) for analysis.`;
+      attachments.forEach((att, index) => {
+        promptText += `\n\nAttachment ${index + 1}: ${att.name} (${att.type})`;
+      });
+    }
+
+    parts.push({ text: promptText });
+
+    // Add attachments as inline data
+    if (attachments && attachments.length > 0) {
+      for (const att of attachments) {
+        if (att.type.startsWith("image/")) {
+          parts.push({
+            inlineData: {
+              mimeType: att.type,
+              data: att.data,
+            },
+          });
+        } else {
+          // For non-image files, describe them in text
+          parts.push({
+            text: `[File: ${att.name} (${att.type}) - Base64 data available for analysis]`,
+          });
+        }
+      }
+    }
+
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts }],
+    });
     const response = await result.response;
     return response.text();
   } catch (error: any) {

@@ -169,6 +169,7 @@ export default function AdminDashboardClient({
   const [aiLoading, setAiLoading] = useState(false);
   const [attachedRequest, setAttachedRequest] =
     useState<RequestWithProfile | null>(null);
+  const [aiAttachments, setAiAttachments] = useState<File[]>([]);
 
   const [activeTab, setActiveTab] = useState<
     "overview" | "analytics" | "master-queue" | "manage-users" | "announcements"
@@ -1041,13 +1042,25 @@ export default function AdminDashboardClient({
 
   // AI Chat Functions
   const handleAiChat = async () => {
-    if (!aiInput.trim()) return;
+    if (!aiInput.trim() && aiAttachments.length === 0) return;
 
-    const userMessage = aiInput.trim();
+    const userMessage = aiInput.trim() || "Analyze the attached files";
     setAiInput("");
     setAiLoading(true);
 
-    setAiMessages((prev) => [...prev, { role: "user", content: userMessage }]);
+    // Store attachment names for display
+    const attachmentNames = aiAttachments.map((f) => f.name);
+    setAiMessages((prev) => [
+      ...prev,
+      {
+        role: "user",
+        content:
+          userMessage +
+          (attachmentNames.length > 0
+            ? ` (${attachmentNames.join(", ")})`
+            : ""),
+      },
+    ]);
 
     try {
       const context = {
@@ -1067,13 +1080,23 @@ export default function AdminDashboardClient({
           : null,
       };
 
+      // Use FormData for file uploads
+      const formData = new FormData();
+      formData.append("query", userMessage);
+      formData.append("context", JSON.stringify(context));
+      aiAttachments.forEach((file) => {
+        formData.append("attachments", file);
+      });
+
       const response = await fetch("/api/ai/admin-chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: userMessage, context }),
+        body: formData,
       });
 
       const result = await response.json();
+
+      // Clear attachments after sending
+      setAiAttachments([]);
 
       if (result.success) {
         setAiMessages((prev) => [
@@ -5533,7 +5556,69 @@ ${result.analysis.risks || "N/A"}
 
             {/* Input */}
             <div className="border-t p-4">
+              {/* Attached Files Preview */}
+              {aiAttachments.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {aiAttachments.map((file, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg text-sm"
+                    >
+                      <span className="max-w-[150px] truncate">
+                        {file.name}
+                      </span>
+                      <button
+                        onClick={() =>
+                          setAiAttachments((prev) =>
+                            prev.filter((_, i) => i !== index),
+                          )
+                        }
+                        className="text-gray-500 hover:text-red-500"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
               <div className="flex gap-2">
+                <label className="p-2 text-gray-500 hover:text-[#427A43] cursor-pointer rounded-lg hover:bg-gray-100 transition-colors">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                    />
+                  </svg>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*,.pdf,.doc,.docx,.txt"
+                    className="hidden"
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || []);
+                      setAiAttachments((prev) => [...prev, ...files]);
+                    }}
+                  />
+                </label>
                 <input
                   type="text"
                   value={aiInput}
