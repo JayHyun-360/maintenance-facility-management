@@ -167,6 +167,8 @@ export default function AdminDashboardClient({
   >([]);
   const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
+  const [attachedRequest, setAttachedRequest] =
+    useState<RequestWithProfile | null>(null);
 
   const [activeTab, setActiveTab] = useState<
     "overview" | "analytics" | "master-queue" | "manage-users" | "announcements"
@@ -1053,6 +1055,16 @@ export default function AdminDashboardClient({
         pendingRequests: stats.pending,
         activeRequests: stats.inProgress,
         completedRequests: stats.completed,
+        attachedRequest: attachedRequest
+          ? {
+              id: attachedRequest.id,
+              nature: attachedRequest.nature,
+              description: attachedRequest.description,
+              location: attachedRequest.location,
+              status: attachedRequest.status,
+              createdAt: attachedRequest.created_at,
+            }
+          : null,
       };
 
       const response = await fetch("/api/ai/admin-chat", {
@@ -1093,6 +1105,16 @@ export default function AdminDashboardClient({
   };
 
   const analyzeRequestWithAI = async (request: RequestWithProfile) => {
+    setShowAIChat(true);
+    setAttachedRequest(request);
+    setAiMessages((prev) => [
+      ...prev,
+      {
+        role: "assistant",
+        content: `I'm analyzing Request #${request.id}. Please wait...`,
+      },
+    ]);
+
     try {
       const response = await fetch("/api/ai/analyze-request", {
         method: "POST",
@@ -1116,17 +1138,31 @@ export default function AdminDashboardClient({
 ${result.analysis.actions || "N/A"}
 
 **Potential Risks:**
-${result.analysis.risks || "N/A"}`;
+${result.analysis.risks || "N/A"}
 
-        setAiMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: analysisText },
-        ]);
-        setShowAIChat(true);
+---
+
+*You can ask me to summarize this request, suggest a response, or help with anything else!*`;
+
+        setAiMessages((prev) => {
+          const newMessages = [...prev];
+          newMessages[newMessages.length - 1] = {
+            role: "assistant",
+            content: analysisText,
+          };
+          return newMessages;
+        });
       }
     } catch (error) {
       console.error("AI Analysis error:", error);
-      alert("Failed to analyze request with AI");
+      setAiMessages((prev) => {
+        const newMessages = [...prev];
+        newMessages[newMessages.length - 1] = {
+          role: "assistant",
+          content: "Sorry, I failed to analyze this request. Please try again.",
+        };
+        return newMessages;
+      });
     }
   };
 
@@ -5214,7 +5250,7 @@ ${result.analysis.risks || "N/A"}`;
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300">
           <div
             ref={aiChatRef}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col transition-all duration-300 transform scale-100"
+            className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transition-all duration-300 transform scale-100"
           >
             {/* Header */}
             <div className="bg-[#427A43] text-white px-6 py-4 rounded-t-xl flex justify-between items-center">
@@ -5267,6 +5303,53 @@ ${result.analysis.risks || "N/A"}`;
                 </button>
               </div>
             </div>
+
+            {/* Attached Request */}
+            {attachedRequest && (
+              <div className="bg-blue-50 border-b px-6 py-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4 text-blue-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                      />
+                    </svg>
+                    <span className="text-sm font-medium text-blue-800">
+                      Request #{attachedRequest.id}
+                    </span>
+                    <span className="text-xs text-blue-600">
+                      • {attachedRequest.nature}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setAttachedRequest(null)}
+                    className="text-blue-400 hover:text-blue-600"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-96">
@@ -5372,6 +5455,80 @@ ${result.analysis.risks || "N/A"}`;
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Pre-prompts */}
+            <div className="border-t px-6 py-3 bg-gray-50">
+              <p className="text-xs text-gray-500 mb-2">Quick actions:</p>
+              <div className="flex flex-wrap gap-2">
+                {attachedRequest ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        setAiInput("Summarize this request for me");
+                      }}
+                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      📝 Summarize
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAiInput(
+                          "Suggest a response to the user for this request",
+                        );
+                      }}
+                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      💬 Suggest Response
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAiInput(
+                          "What are the potential risks for this request?",
+                        );
+                      }}
+                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      ⚠️ Risks
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAiInput("Suggest actions to take for this request");
+                      }}
+                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      ✅ Actions
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => {
+                        setAiInput("Show me today's maintenance requests");
+                      }}
+                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      📋 Today's Requests
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAiInput("What are the pending requests?");
+                      }}
+                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      ⏳ Pending
+                    </button>
+                    <button
+                      onClick={() => {
+                        setAiInput("Give me an overview of maintenance stats");
+                      }}
+                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
+                    >
+                      📊 Stats Overview
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
 
             {/* Input */}
