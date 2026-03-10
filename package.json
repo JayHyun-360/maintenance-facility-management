@@ -12,6 +12,7 @@
     "clean": "rimraf .next || del /s /q .next"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "@supabase/ssr": "^0.3.0",
     "@supabase/supabase-js": "^2.39.0",
     "date-fns": "^4.1.0",
