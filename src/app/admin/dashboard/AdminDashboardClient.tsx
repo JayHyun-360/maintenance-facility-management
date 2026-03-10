@@ -179,6 +179,7 @@ export default function AdminDashboardClient({
     string | null
   >(null);
   const [showChatHistory, setShowChatHistory] = useState(false);
+  const [aiLoadingMessages, setAiLoadingMessages] = useState(false);
 
   // Load conversations when chat opens
   useEffect(() => {
@@ -200,6 +201,7 @@ export default function AdminDashboardClient({
   };
 
   const loadMessages = async (conversationId: string) => {
+    setAiLoadingMessages(true);
     try {
       const response = await fetch(
         `/api/ai/messages?conversationId=${conversationId}`,
@@ -216,6 +218,8 @@ export default function AdminDashboardClient({
       }
     } catch (error) {
       console.error("Failed to load messages:", error);
+    } finally {
+      setAiLoadingMessages(false);
     }
   };
 
@@ -257,6 +261,25 @@ export default function AdminDashboardClient({
       console.error("Failed to create conversation:", error);
     }
     return null;
+  };
+
+  const deleteConversation = async (
+    conversationId: string,
+    e: React.MouseEvent,
+  ) => {
+    e.stopPropagation();
+    try {
+      await fetch(`/api/ai/conversations?conversationId=${conversationId}`, {
+        method: "DELETE",
+      });
+      await loadConversations();
+      if (currentConversationId === conversationId) {
+        setCurrentConversationId(null);
+        setAiMessages([]);
+      }
+    } catch (error) {
+      console.error("Failed to delete conversation:", error);
+    }
   };
 
   const [activeTab, setActiveTab] = useState<
@@ -5428,27 +5451,49 @@ ${result.analysis.risks || "N/A"}
                 >
                   + New Chat
                 </button>
-                <div className="flex-1 overflow-y-auto space-y-2">
+                <div className="flex-1 overflow-y-auto space-y-2 custom-scrollbar">
                   {aiConversations.length === 0 ? (
                     <p className="text-white/40 text-sm text-center py-4">
                       No conversations yet
                     </p>
                   ) : (
                     aiConversations.map((conv) => (
-                      <button
+                      <div
                         key={conv.id}
-                        onClick={() => {
-                          loadMessages(conv.id);
-                          setShowChatHistory(false);
-                        }}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-sm truncate ${
+                        className={`w-full text-left px-3 py-2 rounded-lg text-sm truncate flex items-center justify-between group ${
                           currentConversationId === conv.id
-                            ? "bg-[#427A43] text-white"
+                            ? "bg-[#64748b] text-white"
                             : "text-white/70 hover:bg-white/10"
                         }`}
                       >
-                        {conv.title || "New Conversation"}
-                      </button>
+                        <button
+                          onClick={() => {
+                            loadMessages(conv.id);
+                            setShowChatHistory(false);
+                          }}
+                          className="flex-1 truncate"
+                        >
+                          {conv.title || "New Conversation"}
+                        </button>
+                        <button
+                          onClick={(e) => deleteConversation(conv.id, e)}
+                          className="opacity-0 group-hover:opacity-100 text-white/50 hover:text-red-400 ml-2"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </button>
+                      </div>
                     ))
                   )}
                 </div>
@@ -5576,7 +5621,7 @@ ${result.analysis.risks || "N/A"}
               )}
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-[50vh] bg-[#30364F]">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-[50vh] bg-[#374151] custom-scrollbar">
                 {aiMessages.length === 0 ? (
                   <div className="text-center text-white/50 py-8">
                     <p className="text-lg font-medium mb-2 text-white/70">
@@ -5587,6 +5632,15 @@ ${result.analysis.risks || "N/A"}
                       images for analysis.
                     </p>
                   </div>
+                ) : aiLoadingMessages ? (
+                  <div className="flex-1 flex items-center justify-center">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-8 h-8 border-2 border-[#94A3B8] border-t-transparent rounded-full animate-spin"></div>
+                      <p className="text-white/60 text-sm">
+                        Loading messages...
+                      </p>
+                    </div>
+                  </div>
                 ) : (
                   aiMessages.map((message, index) => (
                     <div
@@ -5596,7 +5650,7 @@ ${result.analysis.risks || "N/A"}
                       <div
                         className={`max-w-[85%] px-4 py-3 rounded-xl ${
                           message.role === "user"
-                            ? "bg-[#427A43] text-white"
+                            ? "bg-[#64748b] text-white"
                             : "bg-[#252B42] text-white/90 border border-white/10"
                         }`}
                       >

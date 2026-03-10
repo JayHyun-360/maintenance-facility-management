@@ -65,3 +65,40 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const conversationId = request.nextUrl.searchParams.get("conversationId");
+
+    if (!conversationId) {
+      return NextResponse.json(
+        { error: "Missing required parameter: conversationId" },
+        { status: 400 },
+      );
+    }
+
+    // Delete messages first
+    const { error: messagesError } = await supabase
+      .from("ai_chat_messages")
+      .delete()
+      .eq("conversation_id", conversationId);
+
+    if (messagesError) throw messagesError;
+
+    // Delete conversation
+    const { error } = await supabase
+      .from("ai_chat_conversations")
+      .delete()
+      .eq("id", conversationId);
+
+    if (error) throw error;
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+    console.error("Delete conversation error:", error);
+    return NextResponse.json(
+      { error: "Failed to delete conversation", details: error?.message },
+      { status: 500 },
+    );
+  }
+}
