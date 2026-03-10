@@ -34,10 +34,7 @@ declare global {
 export default function LoginPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<"email" | "google" | "guest">(
-    "email",
-  );
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showEmailForm, setShowEmailForm] = useState(false);
   const [showGuestModal, setShowGuestModal] = useState(false);
   const [showSignUp, setShowSignUp] = useState(false);
 
@@ -56,21 +53,11 @@ export default function LoginPage() {
     captchaToken: "",
   });
 
-  // Handle tab switching with smooth transition
-  const handleTabSwitch = (tab: "email" | "google" | "guest") => {
-    if (isTransitioning || tab === activeTab) return;
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setActiveTab(tab);
-      setIsTransitioning(false);
-    }, 150);
-  };
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [successMessage, setSuccessMessage] = useState("");
 
   const supabase = createClient()!;
 
-  // Check if user is already authenticated on component mount
   useEffect(() => {
     const checkExistingAuth = async () => {
       try {
@@ -79,7 +66,6 @@ export default function LoginPage() {
         } = await supabase.auth.getSession();
 
         if (session) {
-          // User is already authenticated, redirect to appropriate dashboard
           const userRole = session.user.app_metadata?.role || "user";
           const redirectUrl =
             userRole === "admin" ? "/admin/dashboard" : "/dashboard";
@@ -93,7 +79,6 @@ export default function LoginPage() {
     checkExistingAuth();
   }, [router, supabase]);
 
-  // Load hCaptcha script
   useEffect(() => {
     const script = document.createElement("script");
     script.src = "https://js.hcaptcha.com/1/api.js";
@@ -108,7 +93,6 @@ export default function LoginPage() {
     };
   }, []);
 
-  // Reset captcha
   const resetCaptcha = () => {
     if (window.hcaptcha) {
       window.hcaptcha.reset();
@@ -116,25 +100,6 @@ export default function LoginPage() {
     setEmailData((prev) => ({ ...prev, captchaToken: "" }));
   };
 
-  // Validate email form
-  const validateEmailForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!emailData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailData.email)) {
-      newErrors.email = "Invalid email format";
-    }
-
-    if (!emailData.captchaToken) {
-      newErrors.captcha = "Please complete captcha verification";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Handle email sign in (Magic Link - passwordless)
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -173,6 +138,7 @@ export default function LoginPage() {
       }
 
       setSuccessMessage("Check your email for the magic link!");
+      setShowEmailForm(false);
     } catch (error) {
       console.error("Unexpected sign in error:", error);
       setErrors({ general: "An unexpected error occurred. Please try again." });
@@ -182,7 +148,6 @@ export default function LoginPage() {
     }
   };
 
-  // Handle email sign up (Magic Link - passwordless)
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -206,7 +171,6 @@ export default function LoginPage() {
     setSuccessMessage("");
 
     try {
-      // Use signInWithOtp for magic link - works for both new and existing users
       const { error } = await supabase.auth.signInWithOtp({
         email: emailData.email,
         options: {
@@ -227,6 +191,7 @@ export default function LoginPage() {
       setSuccessMessage(
         "Check your email for the magic link to complete sign up!",
       );
+      setShowEmailForm(false);
       setShowSignUp(false);
     } catch (error) {
       console.error("Unexpected sign up error:", error);
@@ -237,14 +202,12 @@ export default function LoginPage() {
     }
   };
 
-  // Handle Google sign in
   const handleGoogleSignIn = async () => {
     setLoading(true);
     setErrors({});
     setSuccessMessage("");
 
     try {
-      // Use server action to initiate OAuth (stores PKCE verifier in cookies)
       await signInWithGoogle();
     } catch (error) {
       console.error("Google sign in error:", error);
@@ -259,7 +222,6 @@ export default function LoginPage() {
     }
   };
 
-  // Handle guest sign in
   const handleGuestSignIn = async () => {
     if (!guestData.fullName.trim()) {
       alert("Please enter your name");
@@ -301,10 +263,9 @@ export default function LoginPage() {
         return;
       }
 
-      // Check if guest user has profile before redirecting
       try {
         if (!data?.user?.id) {
-          router.push("/dashboard"); // Fallback
+          router.push("/dashboard");
           return;
         }
 
@@ -317,14 +278,13 @@ export default function LoginPage() {
         if (profile) {
           router.push("/dashboard");
         } else {
-          // New guest user - redirect to profile creation
           const name = guestData.fullName;
           router.push(
             `/profile-creation?role=user&name=${encodeURIComponent(name)}`,
           );
         }
       } catch (error) {
-        router.push("/dashboard"); // Fallback
+        router.push("/dashboard");
       }
     } catch (error) {
       console.error("Unexpected guest sign in error:", error);
@@ -337,7 +297,6 @@ export default function LoginPage() {
     }
   };
 
-  // Handle authentication errors
   const handleAuthError = (error: any) => {
     console.error("Auth error:", error);
 
@@ -396,7 +355,6 @@ export default function LoginPage() {
     }
   };
 
-  // hCaptcha callbacks
   useEffect(() => {
     window.onHCaptchaLoad = () => {
       console.log("hCaptcha loaded");
@@ -404,10 +362,7 @@ export default function LoginPage() {
 
     window.onHCaptchaVerify = (token: string) => {
       setEmailData((prev) => ({ ...prev, captchaToken: token }));
-      // Also update guest data if guest tab is active
-      if (activeTab === "guest") {
-        setGuestData((prev) => ({ ...prev, captchaToken: token }));
-      }
+      setGuestData((prev) => ({ ...prev, captchaToken: token }));
       setErrors((prev) => ({ ...prev, captcha: "" }));
     };
 
@@ -418,378 +373,321 @@ export default function LoginPage() {
 
     window.onHCaptchaExpire = () => {
       setEmailData((prev) => ({ ...prev, captchaToken: "" }));
-      // Also clear guest data captcha if guest tab is active
-      if (activeTab === "guest") {
-        setGuestData((prev) => ({ ...prev, captchaToken: "" }));
-      }
+      setGuestData((prev) => ({ ...prev, captchaToken: "" }));
       setErrors({ captcha: "Captcha expired. Please verify again." });
     };
-  }, [activeTab]);
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-          Maintenance Portal
+        <h1 className="text-2xl font-bold text-gray-900 mb-1 text-center">
+          IVF Maintenance Utility
         </h1>
+        <p className="text-sm text-gray-500 text-center mb-6">
+          Integrated Visual Feedback & Maintenance Portal
+        </p>
 
-        {/* Success Message */}
         {successMessage && (
           <div className="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
             {successMessage}
           </div>
         )}
 
-        {/* General Error Message */}
         {errors.general && (
-          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded whitespace-pre-line">
             {errors.general}
           </div>
         )}
 
-        {/* Tab Navigation */}
-        <div className="flex mb-6 border-b relative">
-          <div
-            className="absolute bottom-0 h-0.5 bg-green-500 transition-all duration-300 ease-out"
-            style={{
-              width: "33.333%",
-              transform: `translateX(${activeTab === "email" ? 0 : activeTab === "google" ? 100 : 200}%)`,
-            }}
-          />
-          <button
-            onClick={() => handleTabSwitch("email")}
-            className={`flex-1 pb-2 text-sm font-medium transition-all duration-300 ${
-              activeTab === "email"
-                ? "text-green-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Email
-          </button>
-          <button
-            onClick={() => handleTabSwitch("google")}
-            className={`flex-1 pb-2 text-sm font-medium transition-all duration-300 ${
-              activeTab === "google"
-                ? "text-green-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Google
-          </button>
-          <button
-            onClick={() => handleTabSwitch("guest")}
-            className={`flex-1 pb-2 text-sm font-medium transition-all duration-300 ${
-              activeTab === "guest"
-                ? "text-green-600"
-                : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            Guest
-          </button>
-        </div>
+        {!showEmailForm ? (
+          <div className="space-y-3">
+            <button
+              onClick={handleGoogleSignIn}
+              disabled={loading}
+              className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors disabled:opacity-50"
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path
+                  fill="#4285F4"
+                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                />
+                <path
+                  fill="#34A853"
+                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                />
+                <path
+                  fill="#FBBC05"
+                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                />
+                <path
+                  fill="#EA4335"
+                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                />
+              </svg>
+              <span className="font-medium">
+                {loading ? "Signing in..." : "Continue with Google"}
+              </span>
+            </button>
 
-        {/* Tab Content with Smooth Transitions */}
-        <div className="relative min-h-[400px]">
-          <div
-            className={`transition-all duration-300 ease-in-out ${
-              isTransitioning
-                ? "opacity-0 transform scale-95"
-                : "opacity-100 transform scale-100"
-            }`}
-          >
-            {/* Email Form */}
-            {activeTab === "email" && !showSignUp && (
-              <div className="space-y-4 animate-fadeIn">
-                <form onSubmit={handleEmailSignIn} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      value={emailData.email}
-                      onChange={(e) =>
-                        setEmailData({ ...emailData, email: e.target.value })
-                      }
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.email ? "border-red-500" : "border-gray-300"
-                      }`}
-                      placeholder="Enter your email"
-                      disabled={loading}
-                    />
-                    {errors.email && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.email}
-                      </p>
-                    )}
-                  </div>
+            <button
+              onClick={() => setShowEmailForm(true)}
+              disabled={loading}
+              className="w-full bg-green-500 text-white rounded-lg py-3 px-4 flex items-center justify-center gap-2 hover:bg-green-600 transition-colors disabled:opacity-50"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
+              </svg>
+              <span className="font-medium">Continue with Email</span>
+            </button>
 
-                  {/* hCaptcha */}
-                  <div>
-                    <div
-                      className="h-captcha"
-                      data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
-                      data-callback="onHCaptchaVerify"
-                      data-error-callback="onHCaptchaError"
-                      data-expired-callback="onHCaptchaExpire"
-                    ></div>
-                    {errors.captcha && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.captcha}
-                      </p>
-                    )}
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-green-500 text-white rounded-lg py-3 px-4 font-medium hover:bg-green-600 transition-colors disabled:opacity-50"
-                  >
-                    {loading ? "Sending..." : "Send Magic Link"}
-                  </button>
-
-                  <div className="text-center">
-                    <button
-                      type="button"
-                      onClick={() => setShowSignUp(true)}
-                      className="text-sm text-green-600 hover:text-green-700"
-                    >
-                      Don&apos;t have an account? Sign up
-                    </button>
-                  </div>
-                </form>
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-200"></div>
               </div>
-            )}
-
-            {/* Sign Up Form - Using Magic Link (passwordless) */}
-            {activeTab === "email" && showSignUp && (
-              <div className="space-y-4 animate-fadeIn">
-                <form onSubmit={handleEmailSignUp} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      value={emailData.email}
-                      onChange={(e) =>
-                        setEmailData({ ...emailData, email: e.target.value })
-                      }
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
-                        errors.email ? "border-red-500" : "border-gray-300"
-                      }`}
-                      placeholder="Enter your email"
-                      disabled={loading}
-                    />
-                    {errors.email && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.email}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* hCaptcha */}
-                  <div>
-                    <div
-                      className="h-captcha"
-                      data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
-                      data-callback="onHCaptchaVerify"
-                      data-error-callback="onHCaptchaError"
-                      data-expired-callback="onHCaptchaExpire"
-                    ></div>
-                    {errors.captcha && (
-                      <p className="mt-1 text-sm text-red-600">
-                        {errors.captcha}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setShowSignUp(false)}
-                      className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                      disabled={loading}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="flex-1 bg-green-500 text-white rounded-lg py-3 px-4 font-medium hover:bg-green-600 transition-colors disabled:opacity-50"
-                    >
-                      {loading ? "Sending..." : "Send Magic Link"}
-                    </button>
-                  </div>
-                </form>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">or</span>
               </div>
-            )}
+            </div>
 
-            {/* Google Sign In */}
-            {activeTab === "google" && (
-              <div className="space-y-4 animate-fadeIn">
-                <button
-                  onClick={handleGoogleSignIn}
-                  disabled={loading}
-                  className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 flex items-center justify-center gap-2 hover:bg-gray-50 transition-colors disabled:opacity-50"
-                >
-                  <svg className="w-5 h-5" viewBox="0 0 24 24">
-                    <path
-                      fill="#4285F4"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                    />
-                    <path
-                      fill="#EA4335"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                    />
-                  </svg>
-                  <span>
-                    {loading ? "Signing in..." : "Continue with Google"}
-                  </span>
-                </button>
-              </div>
-            )}
-
-            {/* Guest Sign In */}
-            {activeTab === "guest" && (
-              <div className="space-y-4 animate-fadeIn">
-                <button
-                  onClick={() => setShowGuestModal(true)}
-                  disabled={loading}
-                  className="w-full bg-gray-100 text-gray-700 rounded-lg py-3 px-4 font-medium hover:bg-gray-200 transition-colors disabled:opacity-50"
-                >
-                  Continue as Guest
-                </button>
-              </div>
-            )}
+            <button
+              onClick={() => setShowGuestModal(true)}
+              disabled={loading}
+              className="w-full bg-gray-100 text-gray-700 rounded-lg py-3 px-4 flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors disabled:opacity-50"
+            >
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+              <span className="font-medium">Continue as Guest</span>
+            </button>
           </div>
-        </div>
+        ) : (
+          <div className="space-y-4">
+            <button
+              onClick={() => {
+                setShowEmailForm(false);
+                setErrors({});
+              }}
+              className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 mb-2"
+            >
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+              Back to options
+            </button>
 
-        {/* Guest Modal */}
-        {showGuestModal && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">
-                Guest Information
-              </h2>
-
+            <form onSubmit={showSignUp ? handleEmailSignUp : handleEmailSignIn}>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name *
+                    Email Address
                   </label>
                   <input
-                    type="text"
-                    value={guestData.fullName}
+                    type="email"
+                    value={emailData.email}
                     onChange={(e) =>
-                      setGuestData({ ...guestData, fullName: e.target.value })
+                      setEmailData({ ...emailData, email: e.target.value })
                     }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="Enter your full name"
+                    className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${
+                      errors.email ? "border-red-500" : "border-gray-300"
+                    }`}
+                    placeholder="Enter your email"
+                    disabled={loading}
                   />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                  )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Visual Role
-                  </label>
-                  <select
-                    value={guestData.visualRole}
-                    onChange={(e) =>
-                      setGuestData({
-                        ...guestData,
-                        visualRole: e.target.value as VisualRole,
-                      })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <option value="Teacher">Teacher</option>
-                    <option value="Staff">Staff</option>
-                    <option value="Student">Student</option>
-                  </select>
+                  <div
+                    className="h-captcha"
+                    data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
+                    data-callback="onHCaptchaVerify"
+                    data-error-callback="onHCaptchaError"
+                    data-expired-callback="onHCaptchaExpire"
+                  ></div>
+                  {errors.captcha && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.captcha}
+                    </p>
+                  )}
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Educational Level
-                  </label>
-                  <select
-                    value={guestData.educationalLevel}
-                    onChange={(e) =>
-                      setGuestData({
-                        ...guestData,
-                        educationalLevel: e.target.value,
-                        department: "",
-                      })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-green-500 text-white rounded-lg py-3 px-4 font-medium hover:bg-green-600 transition-colors disabled:opacity-50"
+                >
+                  {loading
+                    ? "Sending..."
+                    : showSignUp
+                      ? "Send Magic Link"
+                      : "Send Magic Link"}
+                </button>
+
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowSignUp(!showSignUp)}
+                    className="text-sm text-green-600 hover:text-green-700"
                   >
-                    <option value="">Select Level</option>
-                    <option value="Elementary">Elementary</option>
-                    <option value="High School">High School</option>
-                    <option value="College">College</option>
-                  </select>
+                    {showSignUp
+                      ? "Already have an account? Sign in"
+                      : "Don't have an account? Sign up"}
+                  </button>
                 </div>
-
-                {guestData.educationalLevel === "College" && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Department *
-                    </label>
-                    <input
-                      type="text"
-                      value={guestData.department}
-                      onChange={(e) =>
-                        setGuestData({
-                          ...guestData,
-                          department: e.target.value,
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                      placeholder="Enter your department"
-                    />
-                  </div>
-                )}
               </div>
-
-              <div>
-                <div
-                  className="h-captcha"
-                  data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
-                  data-callback="onHCaptchaVerify"
-                  data-error-callback="onHCaptchaError"
-                  data-expired-callback="onHCaptchaExpire"
-                ></div>
-              </div>
-
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={() => setShowGuestModal(false)}
-                  className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
-                  disabled={loading}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleGuestSignIn}
-                  disabled={loading}
-                  className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
-                >
-                  {loading ? "Signing in..." : "Continue"}
-                </button>
-              </div>
-            </div>
+            </form>
           </div>
         )}
       </div>
+
+      {showGuestModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">
+              Guest Information
+            </h2>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  value={guestData.fullName}
+                  onChange={(e) =>
+                    setGuestData({ ...guestData, fullName: e.target.value })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Enter your full name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Visual Role
+                </label>
+                <select
+                  value={guestData.visualRole}
+                  onChange={(e) =>
+                    setGuestData({
+                      ...guestData,
+                      visualRole: e.target.value as VisualRole,
+                    })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <option value="Teacher">Teacher</option>
+                  <option value="Staff">Staff</option>
+                  <option value="Student">Student</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Educational Level
+                </label>
+                <select
+                  value={guestData.educationalLevel}
+                  onChange={(e) =>
+                    setGuestData({
+                      ...guestData,
+                      educationalLevel: e.target.value,
+                      department: "",
+                    })
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                >
+                  <option value="">Select Level</option>
+                  <option value="Elementary">Elementary</option>
+                  <option value="High School">High School</option>
+                  <option value="College">College</option>
+                </select>
+              </div>
+
+              {guestData.educationalLevel === "College" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Department *
+                  </label>
+                  <input
+                    type="text"
+                    value={guestData.department}
+                    onChange={(e) =>
+                      setGuestData({
+                        ...guestData,
+                        department: e.target.value,
+                      })
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                    placeholder="Enter your department"
+                  />
+                </div>
+              )}
+            </div>
+
+            <div>
+              <div
+                className="h-captcha"
+                data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
+                data-callback="onHCaptchaVerify"
+                data-error-callback="onHCaptchaError"
+                data-expired-callback="onHCaptchaExpire"
+              ></div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => setShowGuestModal(false)}
+                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                disabled={loading}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleGuestSignIn}
+                disabled={loading}
+                className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
+              >
+                {loading ? "Signing in..." : "Continue"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

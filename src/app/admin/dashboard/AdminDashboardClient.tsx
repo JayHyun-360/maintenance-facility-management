@@ -2001,9 +2001,12 @@ export default function AdminDashboardClient({
               {/* Welcome Text */}
 
               <div className="text-white">
-                <h1 className="font-header text-2xl font-bold transition-all duration-300 hover:scale-105">
-                  Welcome back, {profile?.full_name}!
+                <h1 className="font-header text-xl font-bold transition-all duration-300">
+                  IVF Maintenance Utility
                 </h1>
+                <h2 className="font-header text-2xl font-bold mt-1 transition-all duration-300 hover:scale-105">
+                  Welcome back, {profile?.full_name}!
+                </h2>
 
                 <div className="flex items-center gap-2 mt-1">
                   <span className="bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-white transition-all duration-300 hover:bg-white/30">
