@@ -43,6 +43,8 @@ import { format, subDays, eachDayOfInterval, startOfDay } from "date-fns";
 
 import { motion, AnimatePresence } from "framer-motion";
 
+import ReactMarkdown from "react-markdown";
+
 import {
   Wrench,
   Zap,
@@ -5271,11 +5273,71 @@ export default function AdminDashboardClient({
                     className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-xs px-4 py-2 rounded-lg ${message.role === "user" ? "bg-[#427A43] text-white" : "bg-gray-100 text-gray-800"}`}
+                      className={`max-w-[85%] px-4 py-3 rounded-xl ${
+                        message.role === "user"
+                          ? "bg-[#427A43] text-white"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">
-                        {message.content}
-                      </p>
+                      {message.role === "user" ? (
+                        <p className="text-sm whitespace-pre-wrap">
+                          {message.content}
+                        </p>
+                      ) : (
+                        <div className="text-sm prose prose-sm max-w-none prose-headings:font-semibold prose-strong:font-bold prose-ul:list-disc prose-ol:list-decimal prose-li:ml-2">
+                          <ReactMarkdown
+                            components={{
+                              h1: ({ node, ...props }) => (
+                                <h1
+                                  className="text-lg font-bold mb-1"
+                                  {...props}
+                                />
+                              ),
+                              h2: ({ node, ...props }) => (
+                                <h2
+                                  className="text-base font-semibold mb-1"
+                                  {...props}
+                                />
+                              ),
+                              h3: ({ node, ...props }) => (
+                                <h3
+                                  className="text-sm font-semibold mb-1"
+                                  {...props}
+                                />
+                              ),
+                              p: ({ node, ...props }) => (
+                                <p className="mb-1 last:mb-0" {...props} />
+                              ),
+                              ul: ({ node, ...props }) => (
+                                <ul
+                                  className="list-disc ml-4 mb-1"
+                                  {...props}
+                                />
+                              ),
+                              ol: ({ node, ...props }) => (
+                                <ol
+                                  className="list-decimal ml-4 mb-1"
+                                  {...props}
+                                />
+                              ),
+                              li: ({ node, ...props }) => (
+                                <li className="mb-0.5" {...props} />
+                              ),
+                              strong: ({ node, ...props }) => (
+                                <strong className="font-semibold" {...props} />
+                              ),
+                              code: ({ node, ...props }) => (
+                                <code
+                                  className="bg-gray-200 px-1 rounded text-xs"
+                                  {...props}
+                                />
+                              ),
+                            }}
+                          >
+                            {message.content}
+                          </ReactMarkdown>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))
