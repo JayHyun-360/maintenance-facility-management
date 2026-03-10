@@ -1107,9 +1107,22 @@ export default function AdminDashboardClient({
       const result = await response.json();
 
       if (result.success) {
-        alert(
-          `AI Analysis:\n\nUrgency: ${result.analysis.urgency || "N/A"}\nComplexity: ${result.analysis.complexity || "N/A"}\n\nActions: ${result.analysis.actions || "N/A"}\nRisks: ${result.analysis.risks || "N/A"}`,
-        );
+        const analysisText = `**AI Analysis for Request #${request.id}**
+
+**Urgency:** ${result.analysis.urgency || "N/A"}
+**Complexity:** ${result.analysis.complexity || "N/A"}
+
+**Suggested Actions:**
+${result.analysis.actions || "N/A"}
+
+**Potential Risks:**
+${result.analysis.risks || "N/A"}`;
+
+        setAiMessages((prev) => [
+          ...prev,
+          { role: "assistant", content: analysisText },
+        ]);
+        setShowAIChat(true);
       }
     } catch (error) {
       console.error("AI Analysis error:", error);
