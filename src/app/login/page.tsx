@@ -380,7 +380,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
+      <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md min-h-[600px]">
         <h1 className="text-2xl font-bold text-gray-900 mb-1 text-center">
           IVF Maintenance Utility
         </h1>
@@ -480,6 +480,22 @@ export default function LoginPage() {
               </svg>
               <span className="font-medium">Continue as Guest</span>
             </button>
+
+            {/* hCaptcha for Email and Guest options */}
+            <div className="mt-6">
+              <div
+                className="h-captcha"
+                data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
+                data-callback="onHCaptchaVerify"
+                data-error-callback="onHCaptchaError"
+                data-expired-callback="onHCaptchaExpire"
+              ></div>
+              {errors.captcha && (
+                <p className="mt-1 text-sm text-red-600 text-center">
+                  {errors.captcha}
+                </p>
+              )}
+            </div>
           </div>
         ) : (
           <div className="space-y-4">
