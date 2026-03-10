@@ -5413,7 +5413,7 @@ ${result.analysis.risks || "N/A"}
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300">
           <div
             ref={aiChatRef}
-            className="bg-[#30364F] rounded-xl shadow-2xl w-full max-w-4xl h-[80vh] flex transform scale-100 overflow-hidden"
+            className="bg-[#30364F] rounded-xl shadow-2xl w-full max-w-2xl h-[80vh] flex transform scale-100 overflow-hidden"
           >
             {/* Chat History Sidebar - overlay style */}
             <div
@@ -5635,7 +5635,7 @@ ${result.analysis.risks || "N/A"}
                 ) : aiLoadingMessages ? (
                   <div className="flex-1 flex items-center justify-center">
                     <div className="flex flex-col items-center gap-3">
-                      <div className="w-8 h-8 border-2 border-[#94A3B8] border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-5 h-5 border-2 border-[#94A3B8] border-t-transparent rounded-full animate-spin"></div>
                       <p className="text-white/60 text-sm">
                         Loading messages...
                       </p>
@@ -5769,10 +5769,10 @@ ${result.analysis.risks || "N/A"}
                         onClick={() =>
                           setAiInput("Summarize this request for me")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
+                        className="text-xs px-3 py-1.5 bg-[#374151] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 text-white/70"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5792,10 +5792,10 @@ ${result.analysis.risks || "N/A"}
                             "Suggest a response to the user for this request",
                           )
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
+                        className="text-xs px-3 py-1.5 bg-[#374151] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 text-white/70"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5815,10 +5815,10 @@ ${result.analysis.risks || "N/A"}
                             "What are the potential risks for this request?",
                           )
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 text-white/70"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5836,10 +5836,10 @@ ${result.analysis.risks || "N/A"}
                         onClick={() =>
                           setAiInput("Suggest actions to take for this request")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 text-white/70"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5859,10 +5859,10 @@ ${result.analysis.risks || "N/A"}
                             "What priority level should this request be?",
                           )
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 text-white/70"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5882,10 +5882,10 @@ ${result.analysis.risks || "N/A"}
                             "Estimate the cost for this maintenance request",
                           )
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 text-white/70"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5906,10 +5906,10 @@ ${result.analysis.risks || "N/A"}
                         onClick={() =>
                           setAiInput("Show me today's maintenance requests")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 text-white/70"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5927,10 +5927,10 @@ ${result.analysis.risks || "N/A"}
                         onClick={() =>
                           setAiInput("What are the pending requests?")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 text-white/70"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5948,10 +5948,10 @@ ${result.analysis.risks || "N/A"}
                         onClick={() =>
                           setAiInput("Give me an overview of maintenance stats")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 text-white/70"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5971,10 +5971,10 @@ ${result.analysis.risks || "N/A"}
                             "What are the most common maintenance issues?",
                           )
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 text-white/70"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5992,10 +5992,10 @@ ${result.analysis.risks || "N/A"}
                         onClick={() =>
                           setAiInput("Generate a weekly maintenance report")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 text-white/70"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -6013,10 +6013,10 @@ ${result.analysis.risks || "N/A"}
                         onClick={() =>
                           setAiInput("Suggest preventive maintenance tasks")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-3.5 h-3.5 text-white/70"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -6120,10 +6120,10 @@ ${result.analysis.risks || "N/A"}
                     className="px-4 py-2 bg-[#94A3B8] text-[#30364F] rounded-lg hover:bg-[#64748b] disabled:opacity-50 font-medium"
                   >
                     {aiLoading ? (
-                      <div className="w-5 h-5 border-2 border-[#30364F] border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-4 h-4 border-2 border-[#30364F] border-t-transparent rounded-full animate-spin"></div>
                     ) : (
                       <svg
-                        className="w-6 h-6"
+                        className="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
