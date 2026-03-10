@@ -242,6 +242,7 @@ export default function LoginPage() {
     try {
       const { error, data } = await supabase.auth.signInAnonymously({
         options: {
+          captchaToken: guestData.captchaToken || undefined,
           data: {
             full_name: guestData.fullName,
             database_role: "user",
@@ -668,6 +669,16 @@ export default function LoginPage() {
                   />
                 </div>
               )}
+            </div>
+
+            <div>
+              <div
+                className="h-captcha"
+                data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
+                data-callback="onHCaptchaVerify"
+                data-error-callback="onHCaptchaError"
+                data-expired-callback="onHCaptchaExpire"
+              ></div>
             </div>
 
             <div className="flex gap-3 mt-6">
