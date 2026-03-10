@@ -88,6 +88,19 @@ function ProfileCreationContent() {
 
   return (
     <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+            <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+              Creating your profile...
+            </h2>
+            <p className="text-gray-600">Redirecting you to Dashboard</p>
+          </div>
+        </div>
+      )}
+
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
         <h1 className="font-header text-2xl font-bold text-gray-900 mb-6 text-center">
           Complete Your Profile

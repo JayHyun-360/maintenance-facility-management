@@ -432,7 +432,10 @@ export default function LoginPage() {
         {!showEmailForm ? (
           <div className="space-y-3">
             <button
-              onClick={handleGoogleSignIn}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleGoogleSignIn();
+              }}
               disabled={loading}
               className="w-full bg-white border border-gray-300 rounded-lg py-3 px-4 flex items-center justify-center gap-3 hover:bg-gray-50 transition-colors disabled:opacity-50"
             >
@@ -460,7 +463,10 @@ export default function LoginPage() {
             </button>
 
             <button
-              onClick={() => setShowEmailForm(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowEmailForm(true);
+              }}
               disabled={loading}
               className="w-full bg-green-500 text-white rounded-lg py-3 px-4 flex items-center justify-center gap-2 hover:bg-green-600 transition-colors disabled:opacity-50"
             >
@@ -490,7 +496,10 @@ export default function LoginPage() {
             </div>
 
             <button
-              onClick={() => setShowGuestModal(true)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowGuestModal(true);
+              }}
               disabled={loading}
               className="w-full bg-gray-100 text-gray-700 rounded-lg py-3 px-4 flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors disabled:opacity-50"
             >
