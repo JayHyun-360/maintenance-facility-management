@@ -7,8 +7,8 @@ if (!apiKey) {
 }
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
-// Get the generative model - use gemini-2.0-flash stable model
-const model = genAI?.getGenerativeModel({ model: "gemini-2.0-flash" });
+// Get the generative model - use gemini-2.5-flash to match AI Studio quota
+const model = genAI?.getGenerativeModel({ model: "gemini-2.5-flash" });
 
 // Helper function to analyze maintenance requests
 export async function analyzeMaintenanceRequest(
