@@ -180,6 +180,85 @@ export default function AdminDashboardClient({
   >(null);
   const [showChatHistory, setShowChatHistory] = useState(false);
 
+  // Load conversations when chat opens
+  useEffect(() => {
+    if (showAIChat) {
+      loadConversations();
+    }
+  }, [showAIChat]);
+
+  const loadConversations = async () => {
+    try {
+      const response = await fetch(`/api/ai/conversations?userId=${user.id}`);
+      const result = await response.json();
+      if (result.success) {
+        setAiConversations(result.conversations || []);
+      }
+    } catch (error) {
+      console.error("Failed to load conversations:", error);
+    }
+  };
+
+  const loadMessages = async (conversationId: string) => {
+    try {
+      const response = await fetch(
+        `/api/ai/messages?conversationId=${conversationId}`,
+      );
+      const result = await response.json();
+      if (result.success && result.messages) {
+        const formattedMessages = result.messages.map((msg: any) => ({
+          role: msg.role as "user" | "assistant",
+          content: msg.content,
+          attachments: msg.attachments || [],
+        }));
+        setAiMessages(formattedMessages);
+        setCurrentConversationId(conversationId);
+      }
+    } catch (error) {
+      console.error("Failed to load messages:", error);
+    }
+  };
+
+  const saveMessage = async (
+    conversationId: string,
+    role: "user" | "assistant",
+    content: string,
+    attachments?: string[],
+  ) => {
+    try {
+      await fetch("/api/ai/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conversationId, role, content, attachments }),
+      });
+    } catch (error) {
+      console.error("Failed to save message:", error);
+    }
+  };
+
+  const createNewConversation = async (firstMessage: string) => {
+    try {
+      const response = await fetch("/api/ai/conversations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.id,
+          title:
+            firstMessage.slice(0, 50) + (firstMessage.length > 50 ? "..." : ""),
+        }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        setCurrentConversationId(result.conversation.id);
+        await loadConversations();
+        return result.conversation.id;
+      }
+    } catch (error) {
+      console.error("Failed to create conversation:", error);
+    }
+    return null;
+  };
+
   const [activeTab, setActiveTab] = useState<
     "overview" | "analytics" | "master-queue" | "manage-users" | "announcements"
   >("overview");
@@ -1112,30 +1191,54 @@ export default function AdminDashboardClient({
       // Clear attachments after sending
       setAiAttachments([]);
 
+      // Create conversation if none exists and save messages
+      let convId = currentConversationId;
+      if (!convId) {
+        convId = (await createNewConversation(userMessage)) || undefined;
+      }
+
+      // Save user message
+      if (convId) {
+        await saveMessage(convId, "user", userMessage, attachmentUrls);
+      }
+
       if (result.success) {
+        const assistantMessage = result.response;
         setAiMessages((prev) => [
           ...prev,
-          { role: "assistant", content: result.response },
+          { role: "assistant", content: assistantMessage },
         ]);
+        // Save assistant message
+        if (convId) {
+          await saveMessage(convId, "assistant", assistantMessage);
+        }
       } else {
+        const errorMessage = "Sorry, I encountered an error. Please try again.";
         setAiMessages((prev) => [
           ...prev,
           {
             role: "assistant",
-            content: "Sorry, I encountered an error. Please try again.",
+            content: errorMessage,
           },
         ]);
+        if (convId) {
+          await saveMessage(convId, "assistant", errorMessage);
+        }
       }
     } catch (error) {
       console.error("AI Chat error:", error);
+      const errorMsg =
+        "Sorry, I'm having trouble connecting. Please try again later.";
       setAiMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content:
-            "Sorry, I'm having trouble connecting. Please try again later.",
+          content: errorMsg,
         },
       ]);
+      if (currentConversationId) {
+        await saveMessage(currentConversationId, "assistant", errorMsg);
+      }
     } finally {
       setAiLoading(false);
     }
@@ -5319,6 +5422,7 @@ ${result.analysis.risks || "N/A"}
                   onClick={() => {
                     setAiMessages([]);
                     setCurrentConversationId(null);
+                    loadConversations();
                   }}
                   className="w-full text-left px-3 py-2 rounded-lg text-sm text-white/80 hover:bg-white/10 mb-2"
                 >
@@ -5334,8 +5438,8 @@ ${result.analysis.risks || "N/A"}
                       <button
                         key={conv.id}
                         onClick={() => {
-                          setCurrentConversationId(conv.id);
-                          // Load messages for this conversation
+                          loadMessages(conv.id);
+                          setShowChatHistory(false);
                         }}
                         className={`w-full text-left px-3 py-2 rounded-lg text-sm truncate ${
                           currentConversationId === conv.id
