@@ -222,6 +222,38 @@ export default function LoginPage() {
     }
   };
 
+  const handleGuestAgreementAccept = async () => {
+    setLoading(true);
+    try {
+      const { error, data } = await supabase.auth.signInAnonymously({
+        options: {
+          data: {
+            full_name: "Guest",
+            database_role: "user",
+            visual_role: "Student",
+            educational_level: null,
+            department: null,
+            is_anonymous: true,
+          },
+        },
+      });
+
+      if (error) {
+        handleAuthError(error);
+        return;
+      }
+
+      router.push("/profile-creation?role=user&name=Guest");
+    } catch (error) {
+      console.error("Unexpected guest sign in error:", error);
+      setErrors({
+        general: "An unexpected error occurred. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleGuestSignIn = async () => {
     if (!guestData.fullName.trim()) {
       alert("Please enter your name");
@@ -587,98 +619,52 @@ export default function LoginPage() {
 
       {showGuestModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+          <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md max-h-[80vh] overflow-y-auto">
             <h2 className="text-xl font-bold text-gray-900 mb-4">
-              Guest Information
+              Guest Access Agreement
             </h2>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Full Name *
-                </label>
-                <input
-                  type="text"
-                  value={guestData.fullName}
-                  onChange={(e) =>
-                    setGuestData({ ...guestData, fullName: e.target.value })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                  placeholder="Enter your full name"
-                />
-              </div>
+            <div className="space-y-4 text-sm text-gray-600">
+              <p>By continuing as a guest, you agree to the following terms:</p>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Visual Role
-                </label>
-                <select
-                  value={guestData.visualRole}
-                  onChange={(e) =>
-                    setGuestData({
-                      ...guestData,
-                      visualRole: e.target.value as VisualRole,
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="Teacher">Teacher</option>
-                  <option value="Staff">Staff</option>
-                  <option value="Student">Student</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Educational Level
-                </label>
-                <select
-                  value={guestData.educationalLevel}
-                  onChange={(e) =>
-                    setGuestData({
-                      ...guestData,
-                      educationalLevel: e.target.value,
-                      department: "",
-                    })
-                  }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="">Select Level</option>
-                  <option value="Elementary">Elementary</option>
-                  <option value="High School">High School</option>
-                  <option value="College">College</option>
-                </select>
-              </div>
-
-              {guestData.educationalLevel === "College" && (
+              <div className="bg-gray-50 p-4 rounded-lg space-y-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Department *
-                  </label>
-                  <input
-                    type="text"
-                    value={guestData.department}
-                    onChange={(e) =>
-                      setGuestData({
-                        ...guestData,
-                        department: e.target.value,
-                      })
-                    }
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-                    placeholder="Enter your department"
-                  />
+                  <span className="font-medium text-gray-700">
+                    • Limited Access:
+                  </span>{" "}
+                  Guest accounts have basic access to submit maintenance
+                  requests only.
                 </div>
-              )}
-            </div>
+                <div>
+                  <span className="font-medium text-gray-700">
+                    • No Account:
+                  </span>{" "}
+                  Your session is temporary and not linked to a permanent
+                  account.
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">
+                    • Data Retention:
+                  </span>{" "}
+                  Your profile and request history will be stored in our system.
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">
+                    • Proper Use:
+                  </span>{" "}
+                  You must use this system for legitimate maintenance requests
+                  only.
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700">• No Spam:</span>{" "}
+                  Abuse of this system may result in session termination.
+                </div>
+              </div>
 
-            <div>
-              <div
-                className="h-captcha"
-                data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
-                data-callback="onHCaptchaVerify"
-                data-error-callback="onHCaptchaError"
-                data-expired-callback="onHCaptchaExpire"
-              ></div>
+              <p className="text-xs text-gray-500">
+                For full features and permanent account, consider signing up
+                with Google or email.
+              </p>
             </div>
 
             <div className="flex gap-3 mt-6">
@@ -690,11 +676,11 @@ export default function LoginPage() {
                 Cancel
               </button>
               <button
-                onClick={handleGuestSignIn}
+                onClick={handleGuestAgreementAccept}
                 disabled={loading}
                 className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50"
               >
-                {loading ? "Signing in..." : "Continue"}
+                {loading ? "Processing..." : "I Agree & Continue"}
               </button>
             </div>
           </div>
