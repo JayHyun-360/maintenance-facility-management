@@ -189,7 +189,7 @@ export default function AdminDashboardClient({
 
   const loadConversations = async () => {
     try {
-      const response = await fetch(`/api/ai/conversations?userId=${user.id}`);
+      const response = await fetch(`/api/ai/conversations?userId=${userId}`);
       const result = await response.json();
       if (result.success) {
         setAiConversations(result.conversations || []);
@@ -242,7 +242,7 @@ export default function AdminDashboardClient({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          userId: user.id,
+          userId: userId,
           title:
             firstMessage.slice(0, 50) + (firstMessage.length > 50 ? "..." : ""),
         }),
@@ -813,7 +813,7 @@ export default function AdminDashboardClient({
       supabase.from("audit_logs") as any
     ).insert({
       request_id: requestId,
-      actor_id: user.id,
+      actor_id: userId,
       action: `Status changed to ${newStatus}`,
     });
 
