@@ -71,9 +71,11 @@ export async function getAdminAssistance(query: string, context?: any) {
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text();
-  } catch (error) {
-    console.error("Gemini API error:", error);
-    throw new Error("Failed to get AI assistance");
+  } catch (error: any) {
+    console.error("Gemini API error in getAdminAssistance:", error);
+    console.error("Original error message:", error?.message);
+    console.error("Original error stack:", error?.stack);
+    throw new Error(`Failed to get AI assistance: ${error?.message || error}`);
   }
 }
 
