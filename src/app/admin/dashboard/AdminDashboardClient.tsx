@@ -5390,11 +5390,11 @@ ${result.analysis.risks || "N/A"}
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300">
           <div
             ref={aiChatRef}
-            className="bg-[#30364F] rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex transition-all duration-300 transform scale-100 overflow-hidden"
+            className="bg-[#30364F] rounded-xl shadow-2xl w-full max-w-4xl h-[80vh] flex transform scale-100 overflow-hidden"
           >
-            {/* Chat History Sidebar */}
+            {/* Chat History Sidebar - overlay style */}
             <div
-              className={`${showChatHistory ? "w-64" : "w-0"} transition-all duration-300 border-r border-white/10 overflow-hidden`}
+              className={`absolute left-0 top-0 bottom-0 z-10 ${showChatHistory ? "w-64" : "w-0"} transition-all duration-300 bg-[#252B42] border-r border-white/10 overflow-hidden`}
             >
               <div className="w-64 p-4 flex flex-col h-full">
                 <div className="flex items-center justify-between mb-4">
@@ -5481,7 +5481,7 @@ ${result.analysis.risks || "N/A"}
                     </button>
                   )}
                   <svg
-                    className="w-6 h-6 text-[#4ADE80]"
+                    className="w-6 h-6 text-[#94A3B8]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -5494,7 +5494,7 @@ ${result.analysis.risks || "N/A"}
                     />
                   </svg>
                   <h3 className="font-bold text-lg">AI Assistant</h3>
-                  <span className="text-xs bg-[#427A43]/30 text-[#4ADE80] px-2 py-1 rounded-full">
+                  <span className="text-xs bg-[#427A43]/30 text-[#94A3B8] px-2 py-1 rounded-full">
                     Gemini 2.5
                   </span>
                 </div>
@@ -5503,7 +5503,7 @@ ${result.analysis.risks || "N/A"}
                     href="https://gemini.google.com/app"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-white/50 hover:text-[#4ADE80] underline mr-2"
+                    className="text-xs text-white/50 hover:text-[#94A3B8] underline mr-2"
                   >
                     Open Gemini Web
                   </a>
@@ -5534,7 +5534,7 @@ ${result.analysis.risks || "N/A"}
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <svg
-                        className="w-4 h-4 text-[#4ADE80]"
+                        className="w-4 h-4 text-[#94A3B8]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -5624,7 +5624,7 @@ ${result.analysis.risks || "N/A"}
                               components={{
                                 h1: ({ node, ...props }) => (
                                   <h1
-                                    className="text-lg font-bold mb-1 text-[#4ADE80]"
+                                    className="text-lg font-bold mb-1 text-[#94A3B8]"
                                     {...props}
                                   />
                                 ),
@@ -5666,13 +5666,13 @@ ${result.analysis.risks || "N/A"}
                                 ),
                                 strong: ({ node, ...props }) => (
                                   <strong
-                                    className="font-semibold text-[#4ADE80]"
+                                    className="font-semibold text-[#94A3B8]"
                                     {...props}
                                   />
                                 ),
                                 code: ({ node, ...props }) => (
                                   <code
-                                    className="bg-white/10 px-1 rounded text-xs text-[#4ADE80]"
+                                    className="bg-white/10 px-1 rounded text-xs text-[#94A3B8]"
                                     {...props}
                                   />
                                 ),
@@ -5690,13 +5690,13 @@ ${result.analysis.risks || "N/A"}
                   <div className="flex justify-start">
                     <div className="bg-[#252B42] text-white px-4 py-2 rounded-lg border border-white/10">
                       <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-[#4ADE80] rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-[#94A3B8] rounded-full animate-bounce"></div>
                         <div
-                          className="w-2 h-2 bg-[#4ADE80] rounded-full animate-bounce"
+                          className="w-2 h-2 bg-[#94A3B8] rounded-full animate-bounce"
                           style={{ animationDelay: "0.1s" }}
                         ></div>
                         <div
-                          className="w-2 h-2 bg-[#4ADE80] rounded-full animate-bounce"
+                          className="w-2 h-2 bg-[#94A3B8] rounded-full animate-bounce"
                           style={{ animationDelay: "0.2s" }}
                         ></div>
                       </div>
@@ -5715,9 +5715,22 @@ ${result.analysis.risks || "N/A"}
                         onClick={() =>
                           setAiInput("Summarize this request for me")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
                       >
-                        📝 Summarize
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                        Summarize
                       </button>
                       <button
                         onClick={() =>
@@ -5725,9 +5738,22 @@ ${result.analysis.risks || "N/A"}
                             "Suggest a response to the user for this request",
                           )
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
                       >
-                        💬 Suggest Response
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                          />
+                        </svg>
+                        Suggest Response
                       </button>
                       <button
                         onClick={() =>
@@ -5735,17 +5761,43 @@ ${result.analysis.risks || "N/A"}
                             "What are the potential risks for this request?",
                           )
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
                       >
-                        ⚠️ Risks
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                          />
+                        </svg>
+                        Risks
                       </button>
                       <button
                         onClick={() =>
                           setAiInput("Suggest actions to take for this request")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
                       >
-                        ✅ Actions
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        Actions
                       </button>
                       <button
                         onClick={() =>
@@ -5753,9 +5805,22 @@ ${result.analysis.risks || "N/A"}
                             "What priority level should this request be?",
                           )
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
                       >
-                        🎯 Priority
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
+                          />
+                        </svg>
+                        Priority
                       </button>
                       <button
                         onClick={() =>
@@ -5763,9 +5828,22 @@ ${result.analysis.risks || "N/A"}
                             "Estimate the cost for this maintenance request",
                           )
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
                       >
-                        💰 Cost Estimate
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        Cost Estimate
                       </button>
                     </>
                   ) : (
@@ -5774,25 +5852,64 @@ ${result.analysis.risks || "N/A"}
                         onClick={() =>
                           setAiInput("Show me today's maintenance requests")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
                       >
-                        📋 Today's Requests
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                          />
+                        </svg>
+                        Today's Requests
                       </button>
                       <button
                         onClick={() =>
                           setAiInput("What are the pending requests?")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
                       >
-                        ⏳ Pending
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        Pending
                       </button>
                       <button
                         onClick={() =>
                           setAiInput("Give me an overview of maintenance stats")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
                       >
-                        📊 Stats Overview
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                          />
+                        </svg>
+                        Stats Overview
                       </button>
                       <button
                         onClick={() =>
@@ -5800,25 +5917,64 @@ ${result.analysis.risks || "N/A"}
                             "What are the most common maintenance issues?",
                           )
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
                       >
-                        🔍 Common Issues
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                          />
+                        </svg>
+                        Common Issues
                       </button>
                       <button
                         onClick={() =>
                           setAiInput("Generate a weekly maintenance report")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
                       >
-                        📈 Weekly Report
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
+                          />
+                        </svg>
+                        Weekly Report
                       </button>
                       <button
                         onClick={() =>
                           setAiInput("Suggest preventive maintenance tasks")
                         }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white flex items-center gap-1.5"
                       >
-                        🛡️ Preventive Tasks
+                        <svg
+                          className="w-3.5 h-3.5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                          />
+                        </svg>
+                        Preventive Tasks
                       </button>
                     </>
                   )}
@@ -5865,7 +6021,7 @@ ${result.analysis.risks || "N/A"}
                   </div>
                 )}
                 <div className="flex gap-2">
-                  <label className="p-2 text-white/50 hover:text-[#4ADE80] cursor-pointer rounded-lg hover:bg-white/10 transition-colors">
+                  <label className="p-2 text-white/50 hover:text-[#94A3B8] cursor-pointer rounded-lg hover:bg-white/10 transition-colors">
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -5898,7 +6054,7 @@ ${result.analysis.risks || "N/A"}
                       e.key === "Enter" && !aiLoading && handleAiChat()
                     }
                     placeholder="Ask me about maintenance..."
-                    className="flex-1 px-4 py-2 bg-[#30364F] border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ADE80] text-white placeholder-white/40"
+                    className="flex-1 px-4 py-2 bg-[#30364F] border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#94A3B8] text-white placeholder-white/40"
                     disabled={aiLoading}
                   />
                   <button
@@ -5907,13 +6063,13 @@ ${result.analysis.risks || "N/A"}
                       aiLoading ||
                       (!aiInput.trim() && aiAttachments.length === 0)
                     }
-                    className="px-4 py-2 bg-[#4ADE80] text-[#30364F] rounded-lg hover:bg-[#22c55e] disabled:opacity-50 font-medium"
+                    className="px-4 py-2 bg-[#94A3B8] text-[#30364F] rounded-lg hover:bg-[#64748b] disabled:opacity-50 font-medium"
                   >
                     {aiLoading ? (
                       <div className="w-5 h-5 border-2 border-[#30364F] border-t-transparent rounded-full animate-spin"></div>
                     ) : (
                       <svg
-                        className="w-5 h-5"
+                        className="w-6 h-6"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
