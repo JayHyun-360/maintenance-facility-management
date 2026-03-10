@@ -1933,95 +1933,38 @@ export default function AdminDashboardClient({
       <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <div className="flex items-center gap-4">
-              {/* Profile Avatar */}
-
-              <div className="relative">
-                <button
-                  onClick={() => setShowProfileViewer(!showProfileViewer)}
-                  className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
-                  title="Click to view profile picture"
+            {/* Left Side - Logo and Title */}
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border-2 border-white/30">
+                <svg
+                  className="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  {userAvatar ? (
-                    <img
-                      src={userAvatar}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-
-                        e.currentTarget.nextElementSibling?.classList.remove(
-                          "hidden",
-                        );
-                      }}
-                    />
-                  ) : null}
-
-                  <span
-                    className={`text-white font-bold text-lg ${userAvatar ? "hidden" : ""}`}
-                  >
-                    {profile?.full_name?.charAt(0).toUpperCase() || "A"}
-                  </span>
-                </button>
-
-                <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
-
-                {/* Profile Picture Viewer */}
-
-                {showProfileViewer && userAvatar && (
-                  <div
-                    className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 ${showProfileViewer ? "opacity-100" : "opacity-0"}`}
-                  >
-                    <div
-                      className={`relative transform transition-all duration-300 ${showProfileViewer ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
-                      ref={profileViewerRef}
-                    >
-                      <div className="w-72 h-72 rounded-full bg-white/20 backdrop-blur-xl shadow-2xl border-2 border-white/30 flex flex-col items-center justify-center p-8">
-                        <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-white/50 shadow-lg mb-4 bg-white">
-                          <img
-                            src={userAvatar}
-                            alt="Profile Picture"
-                            className="w-full h-full object-contain"
-                          />
-                        </div>
-
-                        <h3 className="font-header font-semibold text-white text-lg text-center">
-                          {profile?.full_name}
-                        </h3>
-
-                        <p className="text-sm text-white/80 text-center">
-                          {profile?.visual_role} - Administrator
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
               </div>
-
-              {/* Welcome Text */}
-
-              <div className="text-white">
-                <h1 className="font-header text-xl font-bold transition-all duration-300">
+              <div>
+                <h1 className="font-header text-xl font-bold text-white">
                   IVF Maintenance Utility
                 </h1>
-                <h2 className="font-header text-2xl font-bold mt-1 transition-all duration-300 hover:scale-105">
-                  Welcome back, {profile?.full_name}!
-                </h2>
-
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-white transition-all duration-300 hover:bg-white/30">
-                    Administrator
-                  </span>
-
-                  <span className="text-white/80 text-sm">•</span>
-
-                  <span className="text-white/80 text-sm font-medium">
-                    Admin Dashboard
-                  </span>
-                </div>
+                <p className="text-white/70 text-xs">Admin Dashboard</p>
               </div>
             </div>
 
+            {/* Right Side - Profile, Settings, etc */}
             <div className="flex items-center gap-3">
               <button
                 onClick={handleThemeToggle}
@@ -2129,6 +2072,62 @@ export default function AdminDashboardClient({
               >
                 Settings
               </button>
+
+              {/* Profile Avatar */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowProfileViewer(!showProfileViewer)}
+                  className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
+                  title="Click to view profile picture"
+                >
+                  {userAvatar ? (
+                    <img
+                      src={userAvatar}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        e.currentTarget.nextElementSibling?.classList.remove(
+                          "hidden",
+                        );
+                      }}
+                    />
+                  ) : null}
+                  <span
+                    className={`text-white font-bold ${userAvatar ? "hidden" : ""}`}
+                  >
+                    {profile?.full_name?.charAt(0).toUpperCase() || "A"}
+                  </span>
+                </button>
+                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+
+                {showProfileViewer && userAvatar && (
+                  <div
+                    className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 ${showProfileViewer ? "opacity-100" : "opacity-0"}`}
+                  >
+                    <div
+                      className={`relative transform transition-all duration-300 ${showProfileViewer ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
+                      ref={profileViewerRef}
+                    >
+                      <div className="w-72 h-72 rounded-full bg-white/20 backdrop-blur-xl shadow-2xl border-2 border-white/30 flex flex-col items-center justify-center p-8">
+                        <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-white/50 shadow-lg mb-4 bg-white">
+                          <img
+                            src={userAvatar}
+                            alt="Profile Picture"
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <h3 className="font-header font-semibold text-white text-lg text-center">
+                          {profile?.full_name}
+                        </h3>
+                        <p className="text-sm text-white/80 text-center">
+                          {profile?.visual_role} - Administrator
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               <button
                 onClick={handleSignOut}
