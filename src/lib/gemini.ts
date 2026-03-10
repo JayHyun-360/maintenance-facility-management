@@ -1,13 +1,24 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Initialize Gemini API
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY!);
+const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
+if (!apiKey) {
+  console.error("GOOGLE_GEMINI_API_KEY is not set");
+}
+const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
 // Get the generative model
-export const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI?.getGenerativeModel({ model: "gemini-1.5-flash" });
 
 // Helper function to analyze maintenance requests
-export async function analyzeMaintenanceRequest(description: string, nature: string, location: string) {
+export async function analyzeMaintenanceRequest(
+  description: string,
+  nature: string,
+  location: string,
+) {
+  if (!model) {
+    throw new Error("Gemini API not initialized - check GOOGLE_GEMINI_API_KEY");
+  }
   try {
     const prompt = `
     Analyze this maintenance request and provide insights:
@@ -24,11 +35,11 @@ export async function analyzeMaintenanceRequest(description: string, nature: str
     
     Respond in JSON format with these keys: urgency, complexity, actions, risks
     `;
-    
+
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
-    
+
     // Try to parse as JSON, fallback to text if needed
     try {
       return JSON.parse(text);
@@ -43,6 +54,9 @@ export async function analyzeMaintenanceRequest(description: string, nature: str
 
 // Helper function for admin chat assistance
 export async function getAdminAssistance(query: string, context?: any) {
+  if (!model) {
+    throw new Error("Gemini API not initialized - check GOOGLE_GEMINI_API_KEY");
+  }
   try {
     const prompt = `
     You are an AI assistant for a maintenance facility management system. 
@@ -53,7 +67,7 @@ export async function getAdminAssistance(query: string, context?: any) {
     Provide helpful, actionable advice for managing maintenance requests, user communications, and system optimization.
     Keep responses concise and relevant to facility management.
     `;
-    
+
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text();
@@ -65,6 +79,9 @@ export async function getAdminAssistance(query: string, context?: any) {
 
 // Helper function to generate smart responses
 export async function generateResponseSuggestion(request: any) {
+  if (!model) {
+    throw new Error("Gemini API not initialized - check GOOGLE_GEMINI_API_KEY");
+  }
   try {
     const prompt = `
     Generate a professional response for this maintenance request:
@@ -74,7 +91,7 @@ export async function generateResponseSuggestion(request: any) {
     - Urgency: ${request.urgency}
     - Location: ${request.location}
     - Description: ${request.description}
-    - Requester: ${request.profiles?.full_name || 'Unknown'}
+    - Requester: ${request.profiles?.full_name || "Unknown"}
     
     Generate a response that:
     1. Acknowledges the request
@@ -84,7 +101,7 @@ export async function generateResponseSuggestion(request: any) {
     
     Keep the response under 200 words.
     `;
-    
+
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text();

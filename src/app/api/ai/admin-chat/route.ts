@@ -8,18 +8,20 @@ export async function POST(request: NextRequest) {
     if (!query) {
       return NextResponse.json(
         { error: "Missing required field: query" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     const response = await getAdminAssistance(query, context);
 
     return NextResponse.json({ success: true, response });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Admin chat error:", error);
+    console.error("Error message:", error?.message);
+    console.error("Error cause:", error?.cause);
     return NextResponse.json(
-      { error: "Failed to get AI assistance" },
-      { status: 500 }
+      { error: "Failed to get AI assistance", details: error?.message },
+      { status: 500 },
     );
   }
 }
