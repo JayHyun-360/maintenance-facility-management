@@ -5222,24 +5222,35 @@ export default function AdminDashboardClient({
                   Powered by Gemini
                 </span>
               </div>
-              <button
-                onClick={() => setShowAIChat(false)}
-                className="text-white/80 hover:text-white"
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://gemini.google.com/app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs text-white/70 hover:text-white underline mr-2"
+                  title="Open Gemini Web"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
+                  Open Gemini Web
+                </a>
+                <button
+                  onClick={() => setShowAIChat(false)}
+                  className="text-white/80 hover:text-white"
+                >
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             {/* Messages */}

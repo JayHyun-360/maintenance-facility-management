@@ -7,8 +7,8 @@ if (!apiKey) {
 }
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
-// Get the generative model
-const model = genAI?.getGenerativeModel({ model: "gemini-2.0-flash" });
+// Get the generative model - use gemini-2.0-flash-exp for free tier
+const model = genAI?.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
 // Helper function to analyze maintenance requests
 export async function analyzeMaintenanceRequest(
@@ -75,7 +75,14 @@ export async function getAdminAssistance(query: string, context?: any) {
     console.error("Gemini API error in getAdminAssistance:", error);
     console.error("Original error message:", error?.message);
     console.error("Original error stack:", error?.stack);
-    throw new Error(`Failed to get AI assistance: ${error?.message || error}`);
+
+    const errorMessage = error?.message || String(error);
+    if (errorMessage.includes("429") || errorMessage.includes("quota")) {
+      throw new Error(
+        "AI service quota exceeded. Please try again later or upgrade your plan.",
+      );
+    }
+    throw new Error(`Failed to get AI assistance: ${errorMessage}`);
   }
 }
 
