@@ -197,7 +197,7 @@ web3 = 30
 [auth.captcha]
 enabled = true
 provider = "hcaptcha"
-secret = "env(HCAPTCHA_SECRET)"
+secret = "env(HCAPTCHA_SECRET_KEY)"
 
 [auth.email]
 # Allow/disallow new user signups via email to your project.
