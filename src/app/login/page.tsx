@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { signInWithGoogle } from "./actions";
 import type { VisualRole } from "@/types/database";
+import DoodleBackground from "./DoodleBackground";
 
 interface EmailFormData {
   email: string;
@@ -409,6 +410,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#F5F5DC] flex items-center justify-center p-4">
+      <DoodleBackground />
       <div className="bg-white rounded-xl shadow-lg p-8 w-full max-w-md min-h-[600px]">
         <h1 className="text-2xl font-bold text-gray-900 mb-1 text-center">
           IVF Maintenance Utility
