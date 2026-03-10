@@ -26,6 +26,7 @@ export async function createUserProfile(formData: {
   }
 
   const userId = session.user.id;
+  const isAnonymousUser = session.user.user_metadata?.is_anonymous === true;
 
   try {
     // Check if profile already exists
@@ -59,6 +60,7 @@ export async function createUserProfile(formData: {
                 : formData.educationalLevel,
             department:
               formData.databaseRole === "admin" ? null : formData.department,
+            is_anonymous: isAnonymousUser,
           })
           .eq("id", userId);
 
@@ -99,7 +101,7 @@ export async function createUserProfile(formData: {
         formData.databaseRole === "admin" ? null : formData.educationalLevel,
       department:
         formData.databaseRole === "admin" ? null : formData.department,
-      is_anonymous: false,
+      is_anonymous: isAnonymousUser,
     });
 
     if (insertError) {
