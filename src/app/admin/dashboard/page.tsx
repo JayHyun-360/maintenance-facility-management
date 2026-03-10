@@ -72,7 +72,8 @@ export default async function AdminDashboard({ searchParams }: PageProps) {
         full_name,
         visual_role,
         educational_level,
-        database_role
+        database_role,
+        is_anonymous
       )
     `,
     )

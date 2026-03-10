@@ -635,7 +635,9 @@ export default function AdminDashboardClient({
 
           educational_level,
 
-          database_role
+          database_role,
+
+          is_anonymous
 
         )
 
@@ -1105,8 +1107,31 @@ export default function AdminDashboardClient({
           </td>
 
           <td className="px-6 py-4">
-            <div className="text-sm font-medium text-gray-900">
-              {request.profiles?.full_name || "Unknown"}
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-gray-900">
+                {request.profiles?.full_name || "Unknown"}
+              </span>
+              {request.profiles?.is_anonymous && (
+                <span
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs"
+                  title="Guest User"
+                >
+                  <svg
+                    className="w-3 h-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
+                  Guest
+                </span>
+              )}
             </div>
 
             <div className="text-sm text-gray-500">
@@ -4008,6 +4033,25 @@ export default function AdminDashboardClient({
                   <p className="text-gray-900 font-medium text-sm">
                     {showDetailModal.profiles?.full_name || "Unknown"}
                   </p>
+
+                  {showDetailModal.profiles?.is_anonymous && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs">
+                      <svg
+                        className="w-3 h-3"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                        />
+                      </svg>
+                      Guest
+                    </span>
+                  )}
 
                   <p className="text-xs text-gray-500">
                     {showDetailModal.profiles?.visual_role || "N/A"}

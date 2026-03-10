@@ -481,8 +481,26 @@ export default function UserDashboardClient({
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    // Check if user is a guest
+    if (profile?.is_anonymous) {
+      const confirmed = confirm(
+        "Are you sure you want to sign out?\n\nOnce signed out, you'll lose access to your temporary account and your profile will be deleted.\n\nNote: Your maintenance requests will be preserved but will no longer be associated with an account.",
+      );
 
+      if (!confirmed) return;
+
+      // Delete the guest profile before signing out
+      const { error: deleteError } = await supabase
+        .from("profiles")
+        .delete()
+        .eq("id", profile.id);
+
+      if (deleteError) {
+        console.error("Error deleting guest profile:", deleteError);
+      }
+    }
+
+    await supabase.auth.signOut();
     window.location.href = "/login";
   };
 
