@@ -163,13 +163,22 @@ export default function AdminDashboardClient({
 
   // AI Chat State
   const [aiMessages, setAiMessages] = useState<
-    Array<{ role: "user" | "assistant"; content: string }>
+    Array<{
+      role: "user" | "assistant";
+      content: string;
+      attachments?: string[];
+    }>
   >([]);
   const [aiInput, setAiInput] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [attachedRequest, setAttachedRequest] =
     useState<RequestWithProfile | null>(null);
   const [aiAttachments, setAiAttachments] = useState<File[]>([]);
+  const [aiConversations, setAiConversations] = useState<any[]>([]);
+  const [currentConversationId, setCurrentConversationId] = useState<
+    string | null
+  >(null);
+  const [showChatHistory, setShowChatHistory] = useState(false);
 
   const [activeTab, setActiveTab] = useState<
     "overview" | "analytics" | "master-queue" | "manage-users" | "announcements"
@@ -1048,7 +1057,11 @@ export default function AdminDashboardClient({
     setAiInput("");
     setAiLoading(true);
 
-    // Store attachment names for display
+    // Create object URLs for image previews
+    const attachmentUrls = aiAttachments
+      .filter((f) => f.type.startsWith("image/"))
+      .map((f) => URL.createObjectURL(f));
+
     const attachmentNames = aiAttachments.map((f) => f.name);
     setAiMessages((prev) => [
       ...prev,
@@ -1059,6 +1072,7 @@ export default function AdminDashboardClient({
           (attachmentNames.length > 0
             ? ` (${attachmentNames.join(", ")})`
             : ""),
+        attachments: attachmentUrls,
       },
     ]);
 
@@ -5270,91 +5284,21 @@ ${result.analysis.risks || "N/A"}
 
       {/* AI Chat Modal */}
       {showAIChat && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300">
           <div
             ref={aiChatRef}
-            className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col transition-all duration-300 transform scale-100"
+            className="bg-[#30364F] rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex transition-all duration-300 transform scale-100 overflow-hidden"
           >
-            {/* Header */}
-            <div className="bg-[#427A43] text-white px-6 py-4 rounded-t-xl flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                  />
-                </svg>
-                <h3 className="font-bold text-lg">AI Assistant</h3>
-                <span className="text-sm bg-white/20 px-2 py-1 rounded-full">
-                  Powered by Gemini
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <a
-                  href="https://gemini.google.com/app"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-white/70 hover:text-white underline mr-2"
-                  title="Open Gemini Web"
-                >
-                  Open Gemini Web
-                </a>
-                <button
-                  onClick={() => setShowAIChat(false)}
-                  className="text-white/80 hover:text-white"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            {/* Attached Request */}
-            {attachedRequest && (
-              <div className="bg-blue-50 border-b px-6 py-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <svg
-                      className="w-4 h-4 text-blue-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
-                    <span className="text-sm font-medium text-blue-800">
-                      Request #{attachedRequest.id}
-                    </span>
-                    <span className="text-xs text-blue-600">
-                      • {attachedRequest.nature}
-                    </span>
-                  </div>
+            {/* Chat History Sidebar */}
+            <div
+              className={`${showChatHistory ? "w-64" : "w-0"} transition-all duration-300 border-r border-white/10 overflow-hidden`}
+            >
+              <div className="w-64 p-4 flex flex-col h-full">
+                <div className="flex items-center justify-between mb-4">
+                  <h4 className="text-white font-semibold">History</h4>
                   <button
-                    onClick={() => setAttachedRequest(null)}
-                    className="text-blue-400 hover:text-blue-600"
+                    onClick={() => setShowChatHistory(false)}
+                    className="text-white/60 hover:text-white"
                   >
                     <svg
                       className="w-4 h-4"
@@ -5371,232 +5315,69 @@ ${result.analysis.risks || "N/A"}
                     </svg>
                   </button>
                 </div>
-              </div>
-            )}
-
-            {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-96">
-              {aiMessages.length === 0 ? (
-                <div className="text-center text-gray-500 py-8">
-                  <p className="text-lg font-medium mb-2">
-                    Hello! I'm your AI assistant
-                  </p>
-                  <p className="text-sm">
-                    Ask me anything about maintenance management.
-                  </p>
-                </div>
-              ) : (
-                aiMessages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                  >
-                    <div
-                      className={`max-w-[85%] px-4 py-3 rounded-xl ${
-                        message.role === "user"
-                          ? "bg-[#427A43] text-white"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
-                      {message.role === "user" ? (
-                        <p className="text-sm whitespace-pre-wrap">
-                          {message.content}
-                        </p>
-                      ) : (
-                        <div className="text-sm prose prose-sm max-w-none prose-headings:font-semibold prose-strong:font-bold prose-ul:list-disc prose-ol:list-decimal prose-li:ml-2">
-                          <ReactMarkdown
-                            components={{
-                              h1: ({ node, ...props }) => (
-                                <h1
-                                  className="text-lg font-bold mb-1"
-                                  {...props}
-                                />
-                              ),
-                              h2: ({ node, ...props }) => (
-                                <h2
-                                  className="text-base font-semibold mb-1"
-                                  {...props}
-                                />
-                              ),
-                              h3: ({ node, ...props }) => (
-                                <h3
-                                  className="text-sm font-semibold mb-1"
-                                  {...props}
-                                />
-                              ),
-                              p: ({ node, ...props }) => (
-                                <p className="mb-1 last:mb-0" {...props} />
-                              ),
-                              ul: ({ node, ...props }) => (
-                                <ul
-                                  className="list-disc ml-4 mb-1"
-                                  {...props}
-                                />
-                              ),
-                              ol: ({ node, ...props }) => (
-                                <ol
-                                  className="list-decimal ml-4 mb-1"
-                                  {...props}
-                                />
-                              ),
-                              li: ({ node, ...props }) => (
-                                <li className="mb-0.5" {...props} />
-                              ),
-                              strong: ({ node, ...props }) => (
-                                <strong className="font-semibold" {...props} />
-                              ),
-                              code: ({ node, ...props }) => (
-                                <code
-                                  className="bg-gray-200 px-1 rounded text-xs"
-                                  {...props}
-                                />
-                              ),
-                            }}
-                          >
-                            {message.content}
-                          </ReactMarkdown>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))
-              )}
-              {aiLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                      <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                        style={{ animationDelay: "0.1s" }}
-                      ></div>
-                      <div
-                        className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-                        style={{ animationDelay: "0.2s" }}
-                      ></div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Pre-prompts */}
-            <div className="border-t px-6 py-3 bg-gray-50">
-              <p className="text-xs text-gray-500 mb-2">Quick actions:</p>
-              <div className="flex flex-wrap gap-2">
-                {attachedRequest ? (
-                  <>
-                    <button
-                      onClick={() => {
-                        setAiInput("Summarize this request for me");
-                      }}
-                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
-                    >
-                      📝 Summarize
-                    </button>
-                    <button
-                      onClick={() => {
-                        setAiInput(
-                          "Suggest a response to the user for this request",
-                        );
-                      }}
-                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
-                    >
-                      💬 Suggest Response
-                    </button>
-                    <button
-                      onClick={() => {
-                        setAiInput(
-                          "What are the potential risks for this request?",
-                        );
-                      }}
-                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
-                    >
-                      ⚠️ Risks
-                    </button>
-                    <button
-                      onClick={() => {
-                        setAiInput("Suggest actions to take for this request");
-                      }}
-                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
-                    >
-                      ✅ Actions
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={() => {
-                        setAiInput("Show me today's maintenance requests");
-                      }}
-                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
-                    >
-                      📋 Today's Requests
-                    </button>
-                    <button
-                      onClick={() => {
-                        setAiInput("What are the pending requests?");
-                      }}
-                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
-                    >
-                      ⏳ Pending
-                    </button>
-                    <button
-                      onClick={() => {
-                        setAiInput("Give me an overview of maintenance stats");
-                      }}
-                      className="text-xs px-3 py-1.5 bg-white border border-gray-200 rounded-full hover:bg-gray-100 transition-colors"
-                    >
-                      📊 Stats Overview
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Input */}
-            <div className="border-t p-4">
-              {/* Attached Files Preview */}
-              {aiAttachments.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {aiAttachments.map((file, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 rounded-lg text-sm"
-                    >
-                      <span className="max-w-[150px] truncate">
-                        {file.name}
-                      </span>
+                <button
+                  onClick={() => {
+                    setAiMessages([]);
+                    setCurrentConversationId(null);
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-lg text-sm text-white/80 hover:bg-white/10 mb-2"
+                >
+                  + New Chat
+                </button>
+                <div className="flex-1 overflow-y-auto space-y-2">
+                  {aiConversations.length === 0 ? (
+                    <p className="text-white/40 text-sm text-center py-4">
+                      No conversations yet
+                    </p>
+                  ) : (
+                    aiConversations.map((conv) => (
                       <button
-                        onClick={() =>
-                          setAiAttachments((prev) =>
-                            prev.filter((_, i) => i !== index),
-                          )
-                        }
-                        className="text-gray-500 hover:text-red-500"
+                        key={conv.id}
+                        onClick={() => {
+                          setCurrentConversationId(conv.id);
+                          // Load messages for this conversation
+                        }}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-sm truncate ${
+                          currentConversationId === conv.id
+                            ? "bg-[#427A43] text-white"
+                            : "text-white/70 hover:bg-white/10"
+                        }`}
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
+                        {conv.title || "New Conversation"}
                       </button>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
-              )}
-              <div className="flex gap-2">
-                <label className="p-2 text-gray-500 hover:text-[#427A43] cursor-pointer rounded-lg hover:bg-gray-100 transition-colors">
+              </div>
+            </div>
+
+            {/* Main Chat Area */}
+            <div className="flex-1 flex flex-col">
+              {/* Header */}
+              <div className="bg-[#252B42] text-white px-6 py-4 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  {!showChatHistory && (
+                    <button
+                      onClick={() => setShowChatHistory(true)}
+                      className="text-white/60 hover:text-white"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 6h16M4 12h16M4 18h7"
+                        />
+                      </svg>
+                    </button>
+                  )}
                   <svg
-                    className="w-5 h-5"
+                    className="w-6 h-6 text-[#4ADE80]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -5605,39 +5386,382 @@ ${result.analysis.risks || "N/A"}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
                     />
                   </svg>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*,.pdf,.doc,.docx,.txt"
-                    className="hidden"
-                    onChange={(e) => {
-                      const files = Array.from(e.target.files || []);
-                      setAiAttachments((prev) => [...prev, ...files]);
-                    }}
-                  />
-                </label>
-                <input
-                  type="text"
-                  value={aiInput}
-                  onChange={(e) => setAiInput(e.target.value)}
-                  onKeyPress={(e) =>
-                    e.key === "Enter" && !aiLoading && handleAiChat()
-                  }
-                  placeholder="Ask me about maintenance..."
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#427A43]"
-                  disabled={aiLoading}
-                />
-                <button
-                  onClick={handleAiChat}
-                  disabled={aiLoading || !aiInput.trim()}
-                  className="px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#356837] disabled:opacity-50"
-                >
-                  {aiLoading ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <h3 className="font-bold text-lg">AI Assistant</h3>
+                  <span className="text-xs bg-[#427A43]/30 text-[#4ADE80] px-2 py-1 rounded-full">
+                    Gemini 2.5
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <a
+                    href="https://gemini.google.com/app"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-white/50 hover:text-[#4ADE80] underline mr-2"
+                  >
+                    Open Gemini Web
+                  </a>
+                  <button
+                    onClick={() => setShowAIChat(false)}
+                    className="text-white/60 hover:text-white"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* Attached Request */}
+              {attachedRequest && (
+                <div className="bg-[#252B42] border-b border-white/10 px-6 py-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <svg
+                        className="w-4 h-4 text-[#4ADE80]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                      <span className="text-sm font-medium text-white">
+                        Request #{attachedRequest.id}
+                      </span>
+                      <span className="text-xs text-white/50">
+                        • {attachedRequest.nature}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setAttachedRequest(null)}
+                      className="text-white/40 hover:text-white"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-[50vh] bg-[#30364F]">
+                {aiMessages.length === 0 ? (
+                  <div className="text-center text-white/50 py-8">
+                    <p className="text-lg font-medium mb-2 text-white/70">
+                      Hello! I'm your AI assistant
+                    </p>
+                    <p className="text-sm">
+                      Ask me anything about maintenance management or upload
+                      images for analysis.
+                    </p>
+                  </div>
+                ) : (
+                  aiMessages.map((message, index) => (
+                    <div
+                      key={index}
+                      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                    >
+                      <div
+                        className={`max-w-[85%] px-4 py-3 rounded-xl ${
+                          message.role === "user"
+                            ? "bg-[#427A43] text-white"
+                            : "bg-[#252B42] text-white/90 border border-white/10"
+                        }`}
+                      >
+                        {/* Display attached images */}
+                        {message.attachments &&
+                          message.attachments.length > 0 && (
+                            <div className="flex flex-wrap gap-2 mb-3">
+                              {message.attachments.map((url, idx) => (
+                                <img
+                                  key={idx}
+                                  src={url}
+                                  alt={`Attachment ${idx + 1}`}
+                                  className="max-w-[200px] max-h-[200px] rounded-lg object-cover border border-white/20"
+                                />
+                              ))}
+                            </div>
+                          )}
+                        {message.role === "user" ? (
+                          <p className="text-sm whitespace-pre-wrap">
+                            {message.content}
+                          </p>
+                        ) : (
+                          <div className="text-sm prose prose-sm max-w-none prose-invert prose-headings:font-semibold prose-strong:font-bold prose-ul:list-disc prose-ol:list-decimal prose-li:ml-2">
+                            <ReactMarkdown
+                              components={{
+                                h1: ({ node, ...props }) => (
+                                  <h1
+                                    className="text-lg font-bold mb-1 text-[#4ADE80]"
+                                    {...props}
+                                  />
+                                ),
+                                h2: ({ node, ...props }) => (
+                                  <h2
+                                    className="text-base font-semibold mb-1 text-white"
+                                    {...props}
+                                  />
+                                ),
+                                h3: ({ node, ...props }) => (
+                                  <h3
+                                    className="text-sm font-semibold mb-1 text-white"
+                                    {...props}
+                                  />
+                                ),
+                                p: ({ node, ...props }) => (
+                                  <p
+                                    className="mb-1 last:mb-0 text-white/80"
+                                    {...props}
+                                  />
+                                ),
+                                ul: ({ node, ...props }) => (
+                                  <ul
+                                    className="list-disc ml-4 mb-1 text-white/80"
+                                    {...props}
+                                  />
+                                ),
+                                ol: ({ node, ...props }) => (
+                                  <ol
+                                    className="list-decimal ml-4 mb-1 text-white/80"
+                                    {...props}
+                                  />
+                                ),
+                                li: ({ node, ...props }) => (
+                                  <li
+                                    className="mb-0.5 text-white/80"
+                                    {...props}
+                                  />
+                                ),
+                                strong: ({ node, ...props }) => (
+                                  <strong
+                                    className="font-semibold text-[#4ADE80]"
+                                    {...props}
+                                  />
+                                ),
+                                code: ({ node, ...props }) => (
+                                  <code
+                                    className="bg-white/10 px-1 rounded text-xs text-[#4ADE80]"
+                                    {...props}
+                                  />
+                                ),
+                              }}
+                            >
+                              {message.content}
+                            </ReactMarkdown>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                )}
+                {aiLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-[#252B42] text-white px-4 py-2 rounded-lg border border-white/10">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-[#4ADE80] rounded-full animate-bounce"></div>
+                        <div
+                          className="w-2 h-2 bg-[#4ADE80] rounded-full animate-bounce"
+                          style={{ animationDelay: "0.1s" }}
+                        ></div>
+                        <div
+                          className="w-2 h-2 bg-[#4ADE80] rounded-full animate-bounce"
+                          style={{ animationDelay: "0.2s" }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Quick Actions */}
+              <div className="border-t border-white/10 px-6 py-3 bg-[#252B42]">
+                <p className="text-xs text-white/50 mb-2">Quick actions:</p>
+                <div className="flex flex-wrap gap-2">
+                  {attachedRequest ? (
+                    <>
+                      <button
+                        onClick={() =>
+                          setAiInput("Summarize this request for me")
+                        }
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                      >
+                        📝 Summarize
+                      </button>
+                      <button
+                        onClick={() =>
+                          setAiInput(
+                            "Suggest a response to the user for this request",
+                          )
+                        }
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                      >
+                        💬 Suggest Response
+                      </button>
+                      <button
+                        onClick={() =>
+                          setAiInput(
+                            "What are the potential risks for this request?",
+                          )
+                        }
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                      >
+                        ⚠️ Risks
+                      </button>
+                      <button
+                        onClick={() =>
+                          setAiInput("Suggest actions to take for this request")
+                        }
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                      >
+                        ✅ Actions
+                      </button>
+                      <button
+                        onClick={() =>
+                          setAiInput(
+                            "What priority level should this request be?",
+                          )
+                        }
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                      >
+                        🎯 Priority
+                      </button>
+                      <button
+                        onClick={() =>
+                          setAiInput(
+                            "Estimate the cost for this maintenance request",
+                          )
+                        }
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                      >
+                        💰 Cost Estimate
+                      </button>
+                    </>
                   ) : (
+                    <>
+                      <button
+                        onClick={() =>
+                          setAiInput("Show me today's maintenance requests")
+                        }
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                      >
+                        📋 Today's Requests
+                      </button>
+                      <button
+                        onClick={() =>
+                          setAiInput("What are the pending requests?")
+                        }
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                      >
+                        ⏳ Pending
+                      </button>
+                      <button
+                        onClick={() =>
+                          setAiInput("Give me an overview of maintenance stats")
+                        }
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                      >
+                        📊 Stats Overview
+                      </button>
+                      <button
+                        onClick={() =>
+                          setAiInput(
+                            "What are the most common maintenance issues?",
+                          )
+                        }
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                      >
+                        🔍 Common Issues
+                      </button>
+                      <button
+                        onClick={() =>
+                          setAiInput("Generate a weekly maintenance report")
+                        }
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                      >
+                        📈 Weekly Report
+                      </button>
+                      <button
+                        onClick={() =>
+                          setAiInput("Suggest preventive maintenance tasks")
+                        }
+                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#427A43] hover:border-[#427A43] transition-all text-white/80 hover:text-white"
+                      >
+                        🛡️ Preventive Tasks
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              {/* Input */}
+              <div className="border-t border-white/10 p-4 bg-[#252B42]">
+                {/* Attached Files Preview */}
+                {aiAttachments.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {aiAttachments.map((file, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center gap-2 px-3 py-1.5 bg-[#30364F] rounded-lg text-sm text-white border border-white/10"
+                      >
+                        <span className="max-w-[150px] truncate">
+                          {file.name}
+                        </span>
+                        <button
+                          onClick={() =>
+                            setAiAttachments((prev) =>
+                              prev.filter((_, i) => i !== index),
+                            )
+                          }
+                          className="text-white/50 hover:text-red-400"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  <label className="p-2 text-white/50 hover:text-[#4ADE80] cursor-pointer rounded-lg hover:bg-white/10 transition-colors">
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -5648,11 +5772,58 @@ ${result.analysis.risks || "N/A"}
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
                       />
                     </svg>
-                  )}
-                </button>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*,.pdf,.doc,.docx,.txt"
+                      className="hidden"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        setAiAttachments((prev) => [...prev, ...files]);
+                      }}
+                    />
+                  </label>
+                  <input
+                    type="text"
+                    value={aiInput}
+                    onChange={(e) => setAiInput(e.target.value)}
+                    onKeyPress={(e) =>
+                      e.key === "Enter" && !aiLoading && handleAiChat()
+                    }
+                    placeholder="Ask me about maintenance..."
+                    className="flex-1 px-4 py-2 bg-[#30364F] border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4ADE80] text-white placeholder-white/40"
+                    disabled={aiLoading}
+                  />
+                  <button
+                    onClick={handleAiChat}
+                    disabled={
+                      aiLoading ||
+                      (!aiInput.trim() && aiAttachments.length === 0)
+                    }
+                    className="px-4 py-2 bg-[#4ADE80] text-[#30364F] rounded-lg hover:bg-[#22c55e] disabled:opacity-50 font-medium"
+                  >
+                    {aiLoading ? (
+                      <div className="w-5 h-5 border-2 border-[#30364F] border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                        />
+                      </svg>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
