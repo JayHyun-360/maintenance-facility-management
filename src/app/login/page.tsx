@@ -236,11 +236,6 @@ export default function LoginPage() {
       return;
     }
 
-    if (!guestData.captchaToken) {
-      alert("Please complete the captcha verification");
-      return;
-    }
-
     setLoading(true);
     setErrors({});
 
@@ -673,16 +668,6 @@ export default function LoginPage() {
                   />
                 </div>
               )}
-            </div>
-
-            <div>
-              <div
-                className="h-captcha"
-                data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
-                data-callback="onHCaptchaVerify"
-                data-error-callback="onHCaptchaError"
-                data-expired-callback="onHCaptchaExpire"
-              ></div>
             </div>
 
             <div className="flex gap-3 mt-6">
