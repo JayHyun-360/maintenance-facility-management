@@ -5912,8 +5912,8 @@ ${result.analysis.risks || "N/A"}
                       <div
                         className={`max-w-[85%] px-3 py-2 rounded-xl relative ${
                           message.role === "user"
-                            ? "bg-gradient-to-br from-[#6366F1] to-[#4F46E5] text-white shadow-lg shadow-indigo-500/20"
-                            : "bg-gradient-to-br from-[#1E293B] to-[#0F172A] text-white/90 border border-slate-700/50 shadow-lg"
+                            ? "bg-gradient-to-br from-[#1E293B] to-[#0F172A] text-white/90 border border-slate-700/50 shadow-lg"
+                            : "bg-transparent text-white/90"
                         }`}
                       >
                         {/* Display attached images */}
