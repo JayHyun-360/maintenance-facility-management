@@ -5861,7 +5861,7 @@ ${result.analysis.risks || "N/A"}
               )}
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-[50vh] bg-[#0a0f1a] custom-scrollbar">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#0a0f1a] custom-scrollbar">
                 {aiMessages.length === 0 ? (
                   <div className="text-center text-white/50 py-8">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#8B5CF6] via-[#6366F1] to-[#4F46E5] flex items-center justify-center shadow-lg shadow-purple-500/30">
