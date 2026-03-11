@@ -5427,17 +5427,22 @@ ${result.analysis.risks || "N/A"}
           <div
             ref={aiChatRef}
             className={`fixed right-0 top-0 bottom-0 w-[400px] max-w-full bg-[#0F172A] shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-out ${showAIChat ? "translate-x-0" : "translate-x-full"}`}
+            style={{
+              transition: "transform 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Chat History Sidebar - Slide in from left */}
             {showChatHistory && (
               <div
-                className="absolute inset-0 z-30 bg-black/20"
+                className="absolute inset-0 z-30 bg-black/20 transition-opacity duration-300"
+                style={{ animation: "fadeIn 300ms ease-out" }}
                 onClick={() => setShowChatHistory(false)}
               />
             )}
             <div
-              className={`absolute left-0 top-0 bottom-0 z-40 ${showChatHistory ? "w-72" : "w-0"} transition-all duration-300 bg-[#0F172A]/95 backdrop-blur-md border-r border-slate-700/50 overflow-hidden`}
+              className={`absolute left-0 top-0 bottom-0 z-40 ${showChatHistory ? "w-72" : "w-0"} transition-all duration-300 ease-out`}
+              style={{ transition: "width 300ms cubic-bezier(0.4, 0, 0.2, 1)" }}
             >
               <div className="w-72 p-4 flex flex-col h-full">
                 <div className="flex items-center justify-between mb-4">
@@ -5935,8 +5940,8 @@ ${result.analysis.risks || "N/A"}
                       <div
                         className={`max-w-[85%] px-4 py-3 rounded-2xl relative ${
                           message.role === "user"
-                            ? "bg-gradient-to-br from-[#475569] to-[#3d4f63] text-white"
-                            : "bg-gradient-to-br from-[#334155] to-[#2d3b4d] text-white/90 border border-slate-600/50"
+                            ? "bg-gradient-to-br from-[#6366F1] to-[#4F46E5] text-white shadow-lg shadow-indigo-500/20"
+                            : "bg-gradient-to-br from-[#1E293B] to-[#0F172A] text-white/90 border border-slate-700/50 shadow-lg"
                         }`}
                       >
                         {/* Display attached images */}
@@ -6144,10 +6149,10 @@ ${result.analysis.risks || "N/A"}
               )}
 
               {/* Input */}
-              <div className="border-t border-slate-700/50 p-4 bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A]">
+              <div className="border-t border-slate-700/50 p-3 bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A]">
                 {/* Attached Files Preview */}
                 {aiAttachments.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-3">
+                  <div className="flex flex-wrap gap-2 mb-2">
                     {aiAttachments.map((file, index) => (
                       <div
                         key={index}
@@ -6195,7 +6200,7 @@ ${result.analysis.risks || "N/A"}
                     ))}
                   </div>
                 )}
-                <div className="flex gap-3 items-end">
+                <div className="flex gap-2 items-end">
                   <div className="flex-1 relative">
                     <textarea
                       value={aiInput}
@@ -6213,7 +6218,7 @@ ${result.analysis.risks || "N/A"}
                       }}
                       placeholder="Ask me about maintenance..."
                       rows={1}
-                      className="w-full px-4 py-3 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 text-white placeholder-white/40 resize-none min-h-[48px] max-h-[120px] text-sm"
+                      className="w-full px-3 py-2.5 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 text-white placeholder-white/40 resize-none min-h-[40px] max-h-[100px] text-sm"
                       disabled={aiLoading}
                       style={{
                         height: "auto",
@@ -6223,51 +6228,17 @@ ${result.analysis.risks || "N/A"}
                         const target = e.target as HTMLTextAreaElement;
                         target.style.height = "auto";
                         target.style.height =
-                          Math.min(target.scrollHeight, 120) + "px";
+                          Math.min(target.scrollHeight, 100) + "px";
                       }}
                     />
-                    <div className="absolute bottom-2 right-2 text-xs text-white/30">
+                    <div className="absolute bottom-1.5 right-2 text-[10px] text-white/30">
                       {aiInput.length}/2000
                     </div>
                   </div>
-                  <label className="p-3 text-white/50 hover:text-purple-400 cursor-pointer rounded-xl hover:bg-white/10 transition-all">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 4v16m8-8H4"
-                      />
-                    </svg>
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*,.pdf,.doc,.docx,.txt"
-                      className="hidden"
-                      onChange={(e) => {
-                        const files = Array.from(e.target.files || []);
-                        setAiAttachments((prev) => [...prev, ...files]);
-                      }}
-                    />
-                  </label>
-                  <button
-                    onClick={handleAiChat}
-                    disabled={
-                      aiLoading ||
-                      (!aiInput.trim() && aiAttachments.length === 0)
-                    }
-                    className="p-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-500 hover:to-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-all shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 flex items-center justify-center"
-                  >
-                    {aiLoading ? (
-                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                    ) : (
+                  <div className="flex items-center gap-1">
+                    <label className="p-2 text-white/50 hover:text-purple-400 cursor-pointer rounded-lg hover:bg-white/10 transition-all">
                       <svg
-                        className="w-5 h-5"
+                        className="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -6276,13 +6247,106 @@ ${result.analysis.risks || "N/A"}
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                          d="M12 4v16m8-8H4"
                         />
                       </svg>
-                    )}
-                  </button>
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*,.pdf,.doc,.docx,.txt"
+                        className="hidden"
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files || []);
+                          setAiAttachments((prev) => [...prev, ...files]);
+                        }}
+                      />
+                    </label>
+                    <button
+                      className="p-2 text-white/50 hover:text-purple-400 cursor-pointer rounded-lg hover:bg-white/10 transition-all"
+                      title="Voice input"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={handleAiChat}
+                      disabled={
+                        aiLoading ||
+                        (!aiInput.trim() && aiAttachments.length === 0)
+                      }
+                      className="p-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-500 hover:to-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-all shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 flex items-center justify-center"
+                    >
+                      {aiLoading ? (
+                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      ) : (
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                          />
+                        </svg>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </div>
+
+              {/* Conversation Suggestions - Below Input */}
+              {aiMessages.length === 0 && !aiLoading && (
+                <div className="px-4 pb-3 bg-[#0F172A] border-t border-slate-700/30">
+                  <p className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">
+                    Suggestions
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => setAiInput("What's on your mind?")}
+                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                    >
+                      What's on your mind?
+                    </button>
+                    <button
+                      onClick={() =>
+                        setAiInput("Help me analyze maintenance requests")
+                      }
+                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                    >
+                      Analyze requests
+                    </button>
+                    <button
+                      onClick={() =>
+                        setAiInput("Show me recent maintenance trends")
+                      }
+                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                    >
+                      Recent trends
+                    </button>
+                    <button
+                      onClick={() => setAiInput("What can you help me with?")}
+                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                    >
+                      Capabilities
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </>
