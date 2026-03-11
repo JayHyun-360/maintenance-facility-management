@@ -6109,45 +6109,6 @@ ${result.analysis.risks || "N/A"}
                 )}
               </div>
 
-              {/* Conversation Suggestions */}
-              {aiMessages.length === 0 && !aiLoading && (
-                <div className="px-4 pb-3 bg-[#0F172A]">
-                  <p className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">
-                    Suggestions
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      onClick={() => setAiInput("What's on your mind?")}
-                      className="text-xs px-3 py-2 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
-                    >
-                      What's on your mind?
-                    </button>
-                    <button
-                      onClick={() =>
-                        setAiInput("Help me analyze maintenance requests")
-                      }
-                      className="text-xs px-3 py-2 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
-                    >
-                      Analyze requests
-                    </button>
-                    <button
-                      onClick={() =>
-                        setAiInput("Show me recent maintenance trends")
-                      }
-                      className="text-xs px-3 py-2 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
-                    >
-                      Recent trends
-                    </button>
-                    <button
-                      onClick={() => setAiInput("What can you help me with?")}
-                      className="text-xs px-3 py-2 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
-                    >
-                      Capabilities
-                    </button>
-                  </div>
-                </div>
-              )}
-
               {/* Input */}
               <div className="border-t border-slate-700/50 p-3 bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A]">
                 {/* Attached Files Preview */}
