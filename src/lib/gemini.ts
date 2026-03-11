@@ -75,13 +75,37 @@ export async function getAdminAssistance(
     const parts: any[] = [];
 
     // Build text prompt
-    let promptText = `You are an AI assistant for a maintenance facility management system. 
-Help the administrator with their query: "${query}"
+    let promptText = `You are an AI assistant for a maintenance facility management system.
+You have access to real-time dashboard data. When users ask about reports, pending items, or statistics, reference the current visible dashboard metrics: Total Reports, Pending, In Progress, and Completed counts.
 
-${context ? `Context: ${JSON.stringify(context)}` : ""}
+Current Dashboard Context:
+${
+  context
+    ? `Total Reports: ${context.totalRequests || "N/A"}
+Pending Requests: ${context.pendingRequests || "N/A"}
+In Progress: ${context.activeRequests || "N/A"}
+Completed: ${context.completedRequests || "N/A"}`
+    : "Dashboard data not available"
+}
+
+User Query: "${query}"
+
+${
+  context?.attachedRequest
+    ? `
+Attached Request Details:
+- ID: ${context.attachedRequest.id}
+- Nature: ${context.attachedRequest.nature}
+- Description: ${context.attachedRequest.description}
+- Location: ${context.attachedRequest.location}
+- Status: ${context.attachedRequest.status}
+- Created: ${context.attachedRequest.createdAt}
+`
+    : ""
+}
 
 Provide helpful, actionable advice for managing maintenance requests, user communications, and system optimization.
-Keep responses concise and relevant to facility management.`;
+Keep responses concise and relevant to facility management. When discussing statistics or trends, reference the current dashboard counts provided above.`;
 
     // Add attachment context if present
     if (attachments && attachments.length > 0) {

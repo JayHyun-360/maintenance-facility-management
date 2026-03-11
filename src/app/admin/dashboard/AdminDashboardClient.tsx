@@ -186,6 +186,9 @@ export default function AdminDashboardClient({
   const [showSearch, setShowSearch] = useState(false);
   const [copiedMessage, setCopiedMessage] = useState<number | null>(null);
   const [showExportMenu, setShowExportMenu] = useState(false);
+  const [quickActions, setQuickActions] = useState<
+    { label: string; action: string }[]
+  >([]);
 
   // Load conversations when chat opens
   useEffect(() => {
@@ -5792,6 +5795,31 @@ ${result.analysis.risks || "N/A"}
                       </div>
                     )}
                   </div>
+                  {/* Refresh/New Chat Button */}
+                  <button
+                    onClick={() => {
+                      setAiMessages([]);
+                      setCurrentConversationId(null);
+                      setAttachedRequest(null);
+                      loadConversations();
+                    }}
+                    className="p-1.5 text-white/60 hover:text-white hover:bg-white/10 rounded-md transition-all"
+                    title="New Chat"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                      />
+                    </svg>
+                  </button>
                   <button
                     onClick={() => setShowAIChat(false)}
                     className="text-white/60 hover:text-white p-1.5 hover:bg-white/10 rounded-md transition-all ml-1"
@@ -5958,7 +5986,7 @@ ${result.analysis.risks || "N/A"}
                       className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} group animate-fade-in`}
                     >
                       <div
-                        className={`max-w-[85%] px-4 py-3 rounded-2xl relative ${
+                        className={`max-w-[85%] px-3 py-2 rounded-xl relative ${
                           message.role === "user"
                             ? "bg-gradient-to-br from-[#6366F1] to-[#4F46E5] text-white shadow-lg shadow-indigo-500/20"
                             : "bg-gradient-to-br from-[#1E293B] to-[#0F172A] text-white/90 border border-slate-700/50 shadow-lg"
@@ -5988,43 +6016,43 @@ ${result.analysis.risks || "N/A"}
                               components={{
                                 h1: ({ node, ...props }) => (
                                   <h1
-                                    className="text-lg font-bold mb-1 text-purple-300"
+                                    className="text-base font-bold mb-0.5 text-purple-300"
                                     {...props}
                                   />
                                 ),
                                 h2: ({ node, ...props }) => (
                                   <h2
-                                    className="text-base font-semibold mb-1 text-white"
+                                    className="text-sm font-semibold mb-0.5 text-white"
                                     {...props}
                                   />
                                 ),
                                 h3: ({ node, ...props }) => (
                                   <h3
-                                    className="text-sm font-semibold mb-1 text-white"
+                                    className="text-sm font-medium mb-0.5 text-white"
                                     {...props}
                                   />
                                 ),
                                 p: ({ node, ...props }) => (
                                   <p
-                                    className="mb-1 last:mb-0 text-white/80"
+                                    className="mb-0.5 last:mb-0 text-white/80 leading-snug"
                                     {...props}
                                   />
                                 ),
                                 ul: ({ node, ...props }) => (
                                   <ul
-                                    className="list-disc ml-4 mb-1 text-white/80"
+                                    className="list-disc ml-3 mb-0.5 text-white/80 space-y-0"
                                     {...props}
                                   />
                                 ),
                                 ol: ({ node, ...props }) => (
                                   <ol
-                                    className="list-decimal ml-4 mb-1 text-white/80"
+                                    className="list-decimal ml-3 mb-0.5 text-white/80 space-y-0"
                                     {...props}
                                   />
                                 ),
                                 li: ({ node, ...props }) => (
                                   <li
-                                    className="mb-0.5 text-white/80"
+                                    className="mb-0 text-white/80 leading-snug"
                                     {...props}
                                   />
                                 ),
@@ -6108,20 +6136,76 @@ ${result.analysis.risks || "N/A"}
                             </svg>
                           </button>
                         </div>
+                        {/* Quick Actions for AI responses */}
+                        {message.role === "assistant" &&
+                          index === aiMessages.length - 1 && (
+                            <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-white/5">
+                              {quickActions.length > 0 ? (
+                                quickActions.map((action, actionIndex) => (
+                                  <button
+                                    key={actionIndex}
+                                    onClick={() => {
+                                      if (action.action === "view_pending") {
+                                        setShowAIChat(false);
+                                      } else if (action.action === "view_all") {
+                                        setShowAIChat(false);
+                                      } else if (
+                                        action.action === "new_request"
+                                      ) {
+                                        setShowAIChat(false);
+                                      } else {
+                                        setAiInput(action.label);
+                                      }
+                                    }}
+                                    className="text-[11px] px-2.5 py-1 bg-purple-500/10 border border-purple-500/20 rounded-md text-purple-300 hover:bg-purple-500/20 hover:border-purple-500/40 transition-all"
+                                  >
+                                    {action.label}
+                                  </button>
+                                ))
+                              ) : (
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      setAiInput("Show me pending requests")
+                                    }
+                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
+                                  >
+                                    View Pending Queue
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      setAiInput("Summarize this analysis")
+                                    }
+                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
+                                  >
+                                    Summarize
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      setAiInput("Give me more details")
+                                    }
+                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
+                                  >
+                                    More Details
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          )}
                       </div>
                     </div>
                   ))
                 )}
                 {aiLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-gradient-to-br from-[#334155] to-[#2d3b4d] text-white px-4 py-3 rounded-2xl border border-slate-600/50 flex items-center gap-1">
-                      <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></span>
+                    <div className="bg-gradient-to-br from-[#334155] to-[#2d3b4d] text-white px-3 py-2 rounded-xl border border-slate-600/50 flex items-center justify-center gap-1 min-w-[60px]">
+                      <span className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full animate-pulse"></span>
                       <span
-                        className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"
+                        className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full animate-pulse"
                         style={{ animationDelay: "0.15s" }}
                       ></span>
                       <span
-                        className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"
+                        className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full animate-pulse"
                         style={{ animationDelay: "0.3s" }}
                       ></span>
                     </div>
@@ -6138,7 +6222,7 @@ ${result.analysis.risks || "N/A"}
                   <div className="flex flex-wrap gap-2">
                     <button
                       onClick={() => setAiInput("What's on your mind?")}
-                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                      className="text-xs px-3.5 py-2 bg-[#1E293B] border border-slate-600/50 rounded-lg hover:bg-purple-600/20 hover:border-purple-500/40 hover:text-purple-300 transition-all text-white/80 cursor-pointer shadow-sm hover:shadow-md"
                     >
                       What's on your mind?
                     </button>
@@ -6146,7 +6230,7 @@ ${result.analysis.risks || "N/A"}
                       onClick={() =>
                         setAiInput("Help me analyze maintenance requests")
                       }
-                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                      className="text-xs px-3.5 py-2 bg-[#1E293B] border border-slate-600/50 rounded-lg hover:bg-purple-600/20 hover:border-purple-500/40 hover:text-purple-300 transition-all text-white/80 cursor-pointer shadow-sm hover:shadow-md"
                     >
                       Analyze requests
                     </button>
@@ -6154,13 +6238,13 @@ ${result.analysis.risks || "N/A"}
                       onClick={() =>
                         setAiInput("Show me recent maintenance trends")
                       }
-                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                      className="text-xs px-3.5 py-2 bg-[#1E293B] border border-slate-600/50 rounded-lg hover:bg-purple-600/20 hover:border-purple-500/40 hover:text-purple-300 transition-all text-white/80 cursor-pointer shadow-sm hover:shadow-md"
                     >
                       Recent trends
                     </button>
                     <button
                       onClick={() => setAiInput("What can you help me with?")}
-                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                      className="text-xs px-3.5 py-2 bg-[#1E293B] border border-slate-600/50 rounded-lg hover:bg-purple-600/20 hover:border-purple-500/40 hover:text-purple-300 transition-all text-white/80 cursor-pointer shadow-sm hover:shadow-md"
                     >
                       Capabilities
                     </button>
@@ -6220,85 +6304,95 @@ ${result.analysis.risks || "N/A"}
                     ))}
                   </div>
                 )}
-                <div className="flex gap-2 items-end">
-                  <div className="flex-1 relative">
-                    <textarea
-                      value={aiInput}
-                      onChange={(e) => setAiInput(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                          e.preventDefault();
-                          if (
-                            !aiLoading &&
-                            (aiInput.trim() || aiAttachments.length > 0)
-                          ) {
-                            handleAiChat();
-                          }
-                        }
-                      }}
-                      placeholder="Ask me about maintenance..."
-                      rows={1}
-                      className="w-full px-3 py-2.5 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 text-white placeholder-white/40 resize-none min-h-[40px] max-h-[100px] text-sm"
-                      disabled={aiLoading}
-                      style={{
-                        height: "auto",
-                        overflow: "hidden",
-                      }}
-                      onInput={(e) => {
-                        const target = e.target as HTMLTextAreaElement;
-                        target.style.height = "auto";
-                        target.style.height =
-                          Math.min(target.scrollHeight, 100) + "px";
-                      }}
-                    />
-                    <div className="absolute bottom-1.5 right-2 text-[10px] text-white/30">
+                <div className="space-y-2">
+                  {/* Sub-toolbar with attachment and voice icons */}
+                  <div className="flex items-center justify-between px-1">
+                    <div className="flex items-center gap-1">
+                      <label
+                        className="p-1.5 text-white/40 hover:text-purple-400 cursor-pointer rounded-md hover:bg-white/5 transition-all"
+                        title="Attach file"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                          />
+                        </svg>
+                        <input
+                          type="file"
+                          multiple
+                          accept="image/*,.pdf,.doc,.docx,.txt"
+                          className="hidden"
+                          onChange={(e) => {
+                            const files = Array.from(e.target.files || []);
+                            setAiAttachments((prev) => [...prev, ...files]);
+                          }}
+                        />
+                      </label>
+                      <button
+                        className="p-1.5 text-white/40 hover:text-purple-400 cursor-pointer rounded-md hover:bg-white/5 transition-all"
+                        title="Voice input"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="text-[10px] text-white/30">
                       {aiInput.length}/2000
                     </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <label className="p-2 text-white/50 hover:text-purple-400 cursor-pointer rounded-lg hover:bg-white/10 transition-all">
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 4v16m8-8H4"
-                        />
-                      </svg>
-                      <input
-                        type="file"
-                        multiple
-                        accept="image/*,.pdf,.doc,.docx,.txt"
-                        className="hidden"
-                        onChange={(e) => {
-                          const files = Array.from(e.target.files || []);
-                          setAiAttachments((prev) => [...prev, ...files]);
+
+                  {/* Text input and send button row */}
+                  <div className="flex gap-2 items-end">
+                    <div className="flex-1 relative">
+                      <textarea
+                        value={aiInput}
+                        onChange={(e) => setAiInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault();
+                            if (
+                              !aiLoading &&
+                              (aiInput.trim() || aiAttachments.length > 0)
+                            ) {
+                              handleAiChat();
+                            }
+                          }
+                        }}
+                        placeholder="Ask me about maintenance..."
+                        rows={1}
+                        className="w-full px-3 py-2.5 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 text-white placeholder-white/40 resize-none min-h-[40px] max-h-[100px] text-sm"
+                        disabled={aiLoading}
+                        style={{
+                          height: "auto",
+                          overflow: "hidden",
+                        }}
+                        onInput={(e) => {
+                          const target = e.target as HTMLTextAreaElement;
+                          target.style.height = "auto";
+                          target.style.height =
+                            Math.min(target.scrollHeight, 100) + "px";
                         }}
                       />
-                    </label>
-                    <button
-                      className="p-2 text-white/50 hover:text-purple-400 cursor-pointer rounded-lg hover:bg-white/10 transition-all"
-                      title="Voice input"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-                        />
-                      </svg>
-                    </button>
+                    </div>
                     <button
                       onClick={handleAiChat}
                       disabled={
