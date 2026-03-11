@@ -5415,20 +5415,33 @@ ${result.analysis.risks || "N/A"}
         </div>
       </>
 
-      {/* AI Chat Modal */}
+      {/* AI Chat Drawer */}
       {showAIChat && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300">
+        <>
+          <div
+            className="fixed inset-0 z-50"
+            onClick={() => setShowAIChat(false)}
+          >
+            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+          </div>
           <div
             ref={aiChatRef}
-            className="bg-[#1E293B] rounded-xl shadow-2xl w-full max-w-2xl h-[80vh] flex transform scale-100 overflow-hidden border border-slate-700"
+            className="fixed right-0 top-0 bottom-0 w-[420px] max-w-full bg-[#0F172A] shadow-2xl z-50 transform transition-transform duration-300 flex flex-col"
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Chat History Sidebar */}
+            {/* Chat History Sidebar - Slide in from left */}
+            {showChatHistory && (
+              <div
+                className="absolute inset-0 z-30 bg-black/20"
+                onClick={() => setShowChatHistory(false)}
+              />
+            )}
             <div
-              className={`absolute left-0 top-0 bottom-0 z-10 ${showChatHistory ? "w-64" : "w-0"} transition-all duration-300 bg-[#0F172A] border-r border-slate-700 overflow-hidden`}
+              className={`absolute left-0 top-0 bottom-0 z-40 ${showChatHistory ? "w-72" : "w-0"} transition-all duration-300 bg-[#0F172A]/95 backdrop-blur-md border-r border-slate-700/50 overflow-hidden`}
             >
-              <div className="w-64 p-4 flex flex-col h-full">
+              <div className="w-72 p-4 flex flex-col h-full">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-white font-semibold">History</h4>
+                  <h4 className="text-white font-semibold">Chat History</h4>
                   <button
                     onClick={() => setShowChatHistory(false)}
                     className="text-white/60 hover:text-white"
@@ -5454,23 +5467,36 @@ ${result.analysis.risks || "N/A"}
                     setCurrentConversationId(null);
                     loadConversations();
                   }}
-                  className="w-full text-left px-3 py-2 rounded-lg text-sm text-white/80 hover:bg-white/10 mb-2"
+                  className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-white/80 hover:bg-purple-500/20 hover:text-purple-300 mb-3 flex items-center gap-2 border border-dashed border-white/20 hover:border-purple-500/50 transition-all"
                 >
-                  + New Chat
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  New Chat
                 </button>
-                <div className="flex-1 overflow-y-auto space-y-2 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto space-y-1 custom-scrollbar">
                   {aiConversations.length === 0 ? (
-                    <p className="text-white/40 text-sm text-center py-4">
+                    <p className="text-white/40 text-sm text-center py-8">
                       No conversations yet
                     </p>
                   ) : (
                     aiConversations.map((conv) => (
                       <div
                         key={conv.id}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-sm truncate flex items-center justify-between group ${
+                        className={`w-full text-left px-3 py-2.5 rounded-lg text-sm truncate flex items-center justify-between group cursor-pointer transition-all ${
                           currentConversationId === conv.id
-                            ? "bg-[#64748b] text-white"
-                            : "text-white/70 hover:bg-white/10"
+                            ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                            : "text-white/70 hover:bg-white/5 border border-transparent"
                         }`}
                       >
                         <button
@@ -5478,13 +5504,28 @@ ${result.analysis.risks || "N/A"}
                             loadMessages(conv.id);
                             setShowChatHistory(false);
                           }}
-                          className="flex-1 truncate"
+                          className="flex-1 truncate text-left flex items-center gap-2"
                         >
-                          {conv.title || "New Conversation"}
+                          <svg
+                            className="w-4 h-4 text-white/40 flex-shrink-0"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                            />
+                          </svg>
+                          <span className="truncate">
+                            {conv.title || "New Conversation"}
+                          </span>
                         </button>
                         <button
                           onClick={(e) => deleteConversation(conv.id, e)}
-                          className="opacity-0 group-hover:opacity-100 text-white/50 hover:text-red-400 ml-2"
+                          className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 ml-2 transition-all"
                         >
                           <svg
                             className="w-4 h-4"
@@ -5508,14 +5549,15 @@ ${result.analysis.risks || "N/A"}
             </div>
 
             {/* Main Chat Area */}
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col h-full">
               {/* Header */}
-              <div className="bg-gradient-to-r from-[#1E293B] via-[#0F172A] to-[#1E293B] border-b border-slate-700/50 text-white px-6 py-4 flex justify-between items-center">
-                <div className="flex items-center gap-4">
+              <div className="bg-gradient-to-r from-[#1E293B] to-[#0F172A] border-b border-slate-700/50 text-white px-4 py-3 flex justify-between items-center flex-shrink-0">
+                <div className="flex items-center gap-3">
                   {!showChatHistory && (
                     <button
                       onClick={() => setShowChatHistory(true)}
-                      className="text-white/60 hover:text-white transition-colors"
+                      className="text-white/60 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
+                      title="Chat History"
                     >
                       <svg
                         className="w-5 h-5"
@@ -5532,11 +5574,11 @@ ${result.analysis.risks || "N/A"}
                       </svg>
                     </button>
                   )}
-                  {/* Custom AI Avatar with Glow */}
+                  {/* Custom AI Avatar */}
                   <div className="relative">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8B5CF6] via-[#6366F1] to-[#4F46E5] flex items-center justify-center shadow-lg shadow-purple-500/20">
+                    <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#8B5CF6] via-[#6366F1] to-[#4F46E5] flex items-center justify-center shadow-lg shadow-purple-500/20">
                       <svg
-                        className="w-5 h-5 text-white"
+                        className="w-4 h-4 text-white"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -5549,23 +5591,27 @@ ${result.analysis.risks || "N/A"}
                         />
                       </svg>
                     </div>
-                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0F172A]"></div>
+                    <div className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border-2 border-[#0F172A]"></div>
                   </div>
                   <div>
-                    <h3 className="font-bold text-lg bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                    <h3 className="font-semibold text-sm text-white">
                       AI Assistant
                     </h3>
-                    <p className="text-xs text-white/40">Powered by Gemini</p>
+                    <p className="text-[10px] text-white/40">
+                      Powered by Gemini
+                    </p>
                   </div>
-                  {/* Model Selector */}
+                  {/* Compact Model Selector */}
                   <div className="relative">
                     <button
                       onClick={() => setShowModelSelector(!showModelSelector)}
-                      className="flex items-center gap-2 px-3 py-1.5 bg-[#30364F]/80 border border-white/10 rounded-lg hover:bg-[#374151] transition-all text-sm"
+                      className="flex items-center gap-1.5 px-2 py-1 bg-[#1E293B]/80 border border-white/10 rounded-md hover:bg-[#334155] transition-all text-xs"
                     >
-                      <span className="text-white/80">{selectedModel}</span>
+                      <span className="text-white/70">
+                        {selectedModel.replace("gemini-", "")}
+                      </span>
                       <svg
-                        className={`w-4 h-4 text-white/50 transition-transform ${showModelSelector ? "rotate-180" : ""}`}
+                        className={`w-3 h-3 text-white/50 transition-transform ${showModelSelector ? "rotate-180" : ""}`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -5579,7 +5625,7 @@ ${result.analysis.risks || "N/A"}
                       </svg>
                     </button>
                     {showModelSelector && (
-                      <div className="absolute top-full mt-2 left-0 w-64 bg-[#1E293B] border border-slate-700 rounded-xl shadow-xl z-20 overflow-hidden">
+                      <div className="absolute top-full mt-1 left-0 w-48 bg-[#1E293B] border border-slate-700 rounded-lg shadow-xl z-30 overflow-hidden">
                         {[
                           {
                             id: "gemini-2.5-flash",
@@ -5589,12 +5635,12 @@ ${result.analysis.risks || "N/A"}
                           {
                             id: "gemini-2.0-flash",
                             name: "Gemini 2.0 Flash",
-                            desc: "Balanced performance",
+                            desc: "Balanced",
                           },
                           {
                             id: "gemini-1.5-pro",
                             name: "Gemini 1.5 Pro",
-                            desc: "Advanced reasoning",
+                            desc: "Advanced",
                           },
                         ].map((model) => (
                           <button
@@ -5603,23 +5649,19 @@ ${result.analysis.risks || "N/A"}
                               setSelectedModel(model.id);
                               setShowModelSelector(false);
                             }}
-                            className={`w-full text-left px-4 py-3 hover:bg-white/5 transition-colors flex items-center justify-between ${
-                              selectedModel === model.id
-                                ? "bg-purple-500/10 border-l-2 border-purple-500"
-                                : ""
-                            }`}
+                            className={`w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center justify-between ${selectedModel === model.id ? "bg-purple-500/10 border-l-2 border-purple-500" : ""}`}
                           >
                             <div>
-                              <p className="text-sm font-medium text-white">
+                              <p className="text-xs font-medium text-white">
                                 {model.name}
                               </p>
-                              <p className="text-xs text-white/40">
+                              <p className="text-[10px] text-white/40">
                                 {model.desc}
                               </p>
                             </div>
                             {selectedModel === model.id && (
                               <svg
-                                className="w-4 h-4 text-purple-400"
+                                className="w-3 h-3 text-purple-400"
                                 fill="currentColor"
                                 viewBox="0 0 20 20"
                               >
@@ -5636,15 +5678,15 @@ ${result.analysis.risks || "N/A"}
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   {/* Search Button */}
                   <button
                     onClick={() => setShowSearch(!showSearch)}
-                    className={`p-2 rounded-lg transition-all ${showSearch ? "bg-purple-500/20 text-purple-300" : "text-white/60 hover:text-white hover:bg-white/10"}`}
-                    title="Search messages"
+                    className={`p-1.5 rounded-md transition-all ${showSearch ? "bg-purple-500/20 text-purple-300" : "text-white/60 hover:text-white hover:bg-white/10"}`}
+                    title="Search"
                   >
                     <svg
-                      className="w-5 h-5"
+                      className="w-4 h-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -5661,11 +5703,11 @@ ${result.analysis.risks || "N/A"}
                   <div className="relative">
                     <button
                       onClick={() => setShowExportMenu(!showExportMenu)}
-                      className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
-                      title="Export conversation"
+                      className="p-1.5 text-white/60 hover:text-white hover:bg-white/10 rounded-md transition-all"
+                      title="Export"
                     >
                       <svg
-                        className="w-5 h-5"
+                        className="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -5674,34 +5716,20 @@ ${result.analysis.risks || "N/A"}
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                         />
                       </svg>
                     </button>
                     {showExportMenu && (
-                      <div className="absolute top-full mt-2 right-0 w-48 bg-[#1E293B] border border-slate-700 rounded-xl shadow-xl z-20 overflow-hidden">
+                      <div className="absolute top-full mt-1 right-0 w-40 bg-[#1E293B] border border-slate-700 rounded-lg shadow-xl z-30 overflow-hidden">
                         <button
                           onClick={() => {
-                            const content = aiMessages
-                              .map(
-                                (m) =>
-                                  `${m.role === "user" ? "You" : "AI"}: ${m.content}`,
-                              )
-                              .join("\n\n");
-                            const blob = new Blob([content], {
-                              type: "text/plain",
-                            });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement("a");
-                            a.href = url;
-                            a.download = `conversation-${new Date().toISOString().split("T")[0]}.txt`;
-                            a.click();
                             setShowExportMenu(false);
                           }}
-                          className="w-full text-left px-4 py-2.5 hover:bg-white/5 transition-colors text-sm text-white/80 flex items-center gap-2"
+                          className="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors text-xs text-white/80 flex items-center gap-2"
                         >
                           <svg
-                            className="w-4 h-4"
+                            className="w-3 h-3"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -5717,26 +5745,12 @@ ${result.analysis.risks || "N/A"}
                         </button>
                         <button
                           onClick={() => {
-                            const content = aiMessages
-                              .map(
-                                (m) =>
-                                  `**${m.role === "user" ? "You" : "AI"}**: ${m.content}`,
-                              )
-                              .join("\n\n");
-                            const blob = new Blob([content], {
-                              type: "text/markdown",
-                            });
-                            const url = URL.createObjectURL(blob);
-                            const a = document.createElement("a");
-                            a.href = url;
-                            a.download = `conversation-${new Date().toISOString().split("T")[0]}.md`;
-                            a.click();
                             setShowExportMenu(false);
                           }}
-                          className="w-full text-left px-4 py-2.5 hover:bg-white/5 transition-colors text-sm text-white/80 flex items-center gap-2"
+                          className="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors text-xs text-white/80 flex items-center gap-2"
                         >
                           <svg
-                            className="w-4 h-4"
+                            className="w-3 h-3"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -5753,20 +5767,12 @@ ${result.analysis.risks || "N/A"}
                       </div>
                     )}
                   </div>
-                  <a
-                    href="https://gemini.google.com/app"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-white/50 hover:text-purple-300 underline mr-2 transition-colors"
-                  >
-                    Open Gemini Web
-                  </a>
                   <button
                     onClick={() => setShowAIChat(false)}
-                    className="text-white/60 hover:text-white p-1.5 hover:bg-white/10 rounded-lg transition-all"
+                    className="text-white/60 hover:text-white p-1.5 hover:bg-white/10 rounded-md transition-all ml-1"
                   >
                     <svg
-                      className="w-5 h-5"
+                      className="w-4 h-4"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -5784,10 +5790,10 @@ ${result.analysis.risks || "N/A"}
 
               {/* Search Bar */}
               {showSearch && (
-                <div className="bg-[#0F172A] border-b border-slate-700 px-6 py-3">
+                <div className="bg-[#0F172A] border-b border-slate-700/50 px-4 py-2">
                   <div className="relative">
                     <svg
-                      className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40"
+                      className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/40"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -5804,15 +5810,15 @@ ${result.analysis.risks || "N/A"}
                       value={aiSearchQuery}
                       onChange={(e) => setAiSearchQuery(e.target.value)}
                       placeholder="Search messages..."
-                      className="w-full pl-10 pr-4 py-2 bg-[#1E293B] border border-slate-700 rounded-lg text-white placeholder-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                      className="w-full pl-8 pr-8 py-1.5 bg-[#1E293B] border border-slate-700 rounded-md text-white placeholder-white/40 text-xs focus:outline-none focus:ring-1 focus:ring-purple-500/50"
                     />
                     {aiSearchQuery && (
                       <button
                         onClick={() => setAiSearchQuery("")}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
                       >
                         <svg
-                          className="w-4 h-4"
+                          className="w-3.5 h-3.5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -6500,7 +6506,7 @@ ${result.analysis.risks || "N/A"}
               </div>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Photo Modal */}
