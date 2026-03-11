@@ -5426,7 +5426,7 @@ ${result.analysis.risks || "N/A"}
           </div>
           <div
             ref={aiChatRef}
-            className="fixed right-0 top-0 bottom-0 w-[420px] max-w-full bg-[#0F172A] shadow-2xl z-50 transform transition-transform duration-300 flex flex-col"
+            className={`fixed right-0 top-0 bottom-0 w-[400px] max-w-full bg-[#0F172A] shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-out ${showAIChat ? "translate-x-0" : "translate-x-full"}`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Chat History Sidebar - Slide in from left */}
@@ -6021,23 +6021,55 @@ ${result.analysis.risks || "N/A"}
                             </ReactMarkdown>
                           </div>
                         )}
-                        {/* Copy Button */}
-                        <button
-                          onClick={() => {
-                            navigator.clipboard.writeText(message.content);
-                            setCopiedMessage(index);
-                            setTimeout(() => setCopiedMessage(null), 2000);
-                          }}
-                          className={`absolute top-2 right-2 p-1.5 rounded-lg transition-all opacity-0 group-hover:opacity-100 ${
-                            copiedMessage === index
-                              ? "bg-green-500/20 text-green-400"
-                              : "bg-white/10 text-white/60 hover:text-white hover:bg-white/20"
-                          }`}
-                          title={copiedMessage === index ? "Copied!" : "Copy"}
+                        {/* Message Actions - Below bubble */}
+                        <div
+                          className={`flex items-center gap-1 mt-1 ${message.role === "user" ? "justify-end" : "justify-start"}`}
                         >
-                          {copiedMessage === index ? (
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(message.content);
+                              setCopiedMessage(index);
+                              setTimeout(() => setCopiedMessage(null), 2000);
+                            }}
+                            className={`p-1 rounded transition-all ${copiedMessage === index ? "text-green-400" : "text-white/40 hover:text-white hover:bg-white/10"}`}
+                            title={copiedMessage === index ? "Copied!" : "Copy"}
+                          >
+                            {copiedMessage === index ? (
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            ) : (
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                />
+                              </svg>
+                            )}
+                          </button>
+                          <button
+                            className="p-1 rounded text-white/40 hover:text-white hover:bg-white/10 transition-all"
+                            title="More"
+                          >
                             <svg
-                              className="w-4 h-4"
+                              className="w-3.5 h-3.5"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -6046,25 +6078,11 @@ ${result.analysis.risks || "N/A"}
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 strokeWidth={2}
-                                d="M5 13l4 4L19 7"
+                                d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
                               />
                             </svg>
-                          ) : (
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                              />
-                            </svg>
-                          )}
-                        </button>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))
@@ -6086,281 +6104,44 @@ ${result.analysis.risks || "N/A"}
                 )}
               </div>
 
-              {/* Quick Actions */}
-              <div className="border-t border-slate-700 px-6 py-3 bg-[#0F172A]">
-                <p className="text-xs text-white/50 mb-2">Quick actions:</p>
-                <div className="flex flex-wrap gap-2">
-                  {attachedRequest ? (
-                    <>
-                      <button
-                        onClick={() =>
-                          setAiInput("Summarize this request for me")
-                        }
-                        className="text-xs px-3 py-1.5 bg-[#374151] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 text-white/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                          />
-                        </svg>
-                        Summarize
-                      </button>
-                      <button
-                        onClick={() =>
-                          setAiInput(
-                            "Suggest a response to the user for this request",
-                          )
-                        }
-                        className="text-xs px-3 py-1.5 bg-[#374151] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 text-white/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                          />
-                        </svg>
-                        Suggest Response
-                      </button>
-                      <button
-                        onClick={() =>
-                          setAiInput(
-                            "What are the potential risks for this request?",
-                          )
-                        }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 text-white/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                          />
-                        </svg>
-                        Risks
-                      </button>
-                      <button
-                        onClick={() =>
-                          setAiInput("Suggest actions to take for this request")
-                        }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 text-white/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        Actions
-                      </button>
-                      <button
-                        onClick={() =>
-                          setAiInput(
-                            "What priority level should this request be?",
-                          )
-                        }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 text-white/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                          />
-                        </svg>
-                        Priority
-                      </button>
-                      <button
-                        onClick={() =>
-                          setAiInput(
-                            "Estimate the cost for this maintenance request",
-                          )
-                        }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 text-white/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        Cost Estimate
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        onClick={() =>
-                          setAiInput("Show me today's maintenance requests")
-                        }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 text-white/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-                          />
-                        </svg>
-                        Today's Requests
-                      </button>
-                      <button
-                        onClick={() =>
-                          setAiInput("What are the pending requests?")
-                        }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 text-white/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                        Pending
-                      </button>
-                      <button
-                        onClick={() =>
-                          setAiInput("Give me an overview of maintenance stats")
-                        }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 text-white/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                          />
-                        </svg>
-                        Stats Overview
-                      </button>
-                      <button
-                        onClick={() =>
-                          setAiInput(
-                            "What are the most common maintenance issues?",
-                          )
-                        }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 text-white/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                          />
-                        </svg>
-                        Common Issues
-                      </button>
-                      <button
-                        onClick={() =>
-                          setAiInput("Generate a weekly maintenance report")
-                        }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 text-white/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"
-                          />
-                        </svg>
-                        Weekly Report
-                      </button>
-                      <button
-                        onClick={() =>
-                          setAiInput("Suggest preventive maintenance tasks")
-                        }
-                        className="text-xs px-3 py-1.5 bg-[#30364F] border border-white/10 rounded-lg hover:bg-[#4b5563] hover:border-white/20 transition-all text-white/90 hover:text-white flex items-center gap-1.5"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 text-white/70"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
-                          />
-                        </svg>
-                        Preventive Tasks
-                      </button>
-                    </>
-                  )}
+              {/* Conversation Suggestions */}
+              {aiMessages.length === 0 && !aiLoading && (
+                <div className="px-4 pb-3 bg-[#0F172A]">
+                  <p className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">
+                    Suggestions
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => setAiInput("What's on your mind?")}
+                      className="text-xs px-3 py-2 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                    >
+                      What's on your mind?
+                    </button>
+                    <button
+                      onClick={() =>
+                        setAiInput("Help me analyze maintenance requests")
+                      }
+                      className="text-xs px-3 py-2 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                    >
+                      Analyze requests
+                    </button>
+                    <button
+                      onClick={() =>
+                        setAiInput("Show me recent maintenance trends")
+                      }
+                      className="text-xs px-3 py-2 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                    >
+                      Recent trends
+                    </button>
+                    <button
+                      onClick={() => setAiInput("What can you help me with?")}
+                      className="text-xs px-3 py-2 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                    >
+                      Capabilities
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Input */}
               <div className="border-t border-slate-700/50 p-4 bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A]">
