@@ -1431,6 +1431,12 @@ ${result.analysis.risks || "N/A"}
           </td>
 
           <td className="px-6 py-4">
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              {request.nature}
+            </span>
+          </td>
+
+          <td className="px-6 py-4">
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium text-gray-900">
                 {request.profiles?.full_name || "Unknown"}
@@ -3958,6 +3964,10 @@ ${result.analysis.risks || "N/A"}
                         </th>
 
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                          Nature of Request
+                        </th>
+
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                           Requester
                         </th>
 
@@ -5408,16 +5418,22 @@ ${result.analysis.risks || "N/A"}
         </div>
       </>
 
-      {/* AI Chat Modal */}
+      {/* AI Chat Modal - Glassmorphism */}
       {showAIChat && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300">
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-50 transition-all duration-300">
           <div
             ref={aiChatRef}
-            className="bg-[#30364F] rounded-xl shadow-2xl w-full max-w-2xl h-[80vh] flex transform scale-100 overflow-hidden"
+            className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl w-full max-w-2xl h-[80vh] flex transform scale-100 overflow-hidden"
+            style={{
+              background:
+                "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.05) 100%)",
+              boxShadow:
+                "0 8px 32px rgba(0,0,0,0.3), inset 0 0 0 1px rgba(255,255,255,0.1)",
+            }}
           >
-            {/* Chat History Sidebar - overlay style */}
+            {/* Chat History Sidebar - Glassmorphism */}
             <div
-              className={`absolute left-0 top-0 bottom-0 z-10 ${showChatHistory ? "w-64" : "w-0"} transition-all duration-300 bg-[#252B42] border-r border-white/10 overflow-hidden`}
+              className={`absolute left-0 top-0 bottom-0 z-10 ${showChatHistory ? "w-64" : "w-0"} transition-all duration-300 bg-white/5 border-r border-white/10 overflow-hidden backdrop-blur-lg`}
             >
               <div className="w-64 p-4 flex flex-col h-full">
                 <div className="flex items-center justify-between mb-4">
@@ -5502,8 +5518,8 @@ ${result.analysis.risks || "N/A"}
 
             {/* Main Chat Area */}
             <div className="flex-1 flex flex-col">
-              {/* Header */}
-              <div className="bg-[#252B42] text-white px-6 py-4 flex justify-between items-center">
+              {/* Header - Glassmorphism */}
+              <div className="bg-white/5 backdrop-blur-md border-b border-white/10 text-white px-6 py-4 flex justify-between items-center">
                 <div className="flex items-center gap-3">
                   {!showChatHistory && (
                     <button
@@ -5573,9 +5589,9 @@ ${result.analysis.risks || "N/A"}
                 </div>
               </div>
 
-              {/* Attached Request */}
+              {/* Attached Request - Glassmorphism */}
               {attachedRequest && (
-                <div className="bg-[#252B42] border-b border-white/10 px-6 py-3">
+                <div className="bg-white/5 border-b border-white/10 px-6 py-3 backdrop-blur-sm">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <svg
@@ -5620,8 +5636,8 @@ ${result.analysis.risks || "N/A"}
                 </div>
               )}
 
-              {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-[50vh] bg-[#374151] custom-scrollbar">
+              {/* Messages - Glassmorphism */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-[50vh] bg-gradient-to-b from-transparent to-black/20 custom-scrollbar">
                 {aiMessages.length === 0 ? (
                   <div className="text-center text-white/50 py-8">
                     <p className="text-lg font-medium mb-2 text-white/70">
@@ -5648,10 +5664,10 @@ ${result.analysis.risks || "N/A"}
                       className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                     >
                       <div
-                        className={`max-w-[85%] px-4 py-3 rounded-xl ${
+                        className={`max-w-[85%] px-4 py-3 rounded-xl backdrop-blur-sm ${
                           message.role === "user"
-                            ? "bg-[#64748b] text-white"
-                            : "bg-[#252B42] text-white/90 border border-white/10"
+                            ? "bg-gradient-to-br from-[#64748b] to-[#475569] text-white shadow-lg"
+                            : "bg-white/10 text-white/90 border border-white/10 shadow-lg"
                         }`}
                       >
                         {/* Display attached images */}
@@ -5742,7 +5758,7 @@ ${result.analysis.risks || "N/A"}
                 )}
                 {aiLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-[#252B42] text-white px-4 py-2 rounded-lg border border-white/10">
+                    <div className="bg-white/10 backdrop-blur-sm text-white px-4 py-2 rounded-lg border border-white/10 shadow-lg">
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-[#94A3B8] rounded-full animate-bounce"></div>
                         <div
@@ -5759,8 +5775,8 @@ ${result.analysis.risks || "N/A"}
                 )}
               </div>
 
-              {/* Quick Actions */}
-              <div className="border-t border-white/10 px-6 py-3 bg-[#252B42]">
+              {/* Quick Actions - Glassmorphism */}
+              <div className="border-t border-white/10 px-6 py-3 bg-white/5 backdrop-blur-md">
                 <p className="text-xs text-white/50 mb-2">Quick actions:</p>
                 <div className="flex flex-wrap gap-2">
                   {attachedRequest ? (
@@ -6035,8 +6051,8 @@ ${result.analysis.risks || "N/A"}
                 </div>
               </div>
 
-              {/* Input */}
-              <div className="border-t border-white/10 p-4 bg-[#252B42]">
+              {/* Input - Glassmorphism */}
+              <div className="border-t border-white/10 p-4 bg-white/5 backdrop-blur-md">
                 {/* Attached Files Preview */}
                 {aiAttachments.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-3">
@@ -6108,7 +6124,7 @@ ${result.analysis.risks || "N/A"}
                       e.key === "Enter" && !aiLoading && handleAiChat()
                     }
                     placeholder="Ask me about maintenance..."
-                    className="flex-1 px-4 py-2 bg-[#30364F] border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#94A3B8] text-white placeholder-white/40"
+                    className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/30 focus:bg-white/15 text-white placeholder-white/40 backdrop-blur-sm transition-all"
                     disabled={aiLoading}
                   />
                   <button
@@ -6117,7 +6133,7 @@ ${result.analysis.risks || "N/A"}
                       aiLoading ||
                       (!aiInput.trim() && aiAttachments.length === 0)
                     }
-                    className="px-4 py-2 bg-[#94A3B8] text-[#30364F] rounded-lg hover:bg-[#64748b] disabled:opacity-50 font-medium"
+                    className="px-4 py-2 bg-gradient-to-r from-[#427A43] to-[#2d5a30] text-white rounded-lg hover:from-[#4a8a4e] hover:to-[#366a38] disabled:opacity-50 font-medium shadow-lg backdrop-blur-sm transition-all"
                   >
                     {aiLoading ? (
                       <div className="w-4 h-4 border-2 border-[#30364F] border-t-transparent rounded-full animate-spin"></div>
