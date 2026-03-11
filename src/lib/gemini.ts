@@ -7,15 +7,23 @@ if (!apiKey) {
 }
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : null;
 
-// Get the generative model - use gemini-2.5-flash to match AI Studio quota
-const model = genAI?.getGenerativeModel({ model: "gemini-2.5-flash" });
+// Default model
+const DEFAULT_MODEL = "gemini-2.5-flash";
+
+// Helper to get model instance
+function getModel(modelName?: string) {
+  const modelId = modelName || DEFAULT_MODEL;
+  return genAI?.getGenerativeModel({ model: modelId });
+}
 
 // Helper function to analyze maintenance requests
 export async function analyzeMaintenanceRequest(
   description: string,
   nature: string,
   location: string,
+  modelName?: string,
 ) {
+  const model = getModel(modelName);
   if (!model) {
     throw new Error("Gemini API not initialized - check GOOGLE_GEMINI_API_KEY");
   }
@@ -57,7 +65,9 @@ export async function getAdminAssistance(
   query: string,
   context?: any,
   attachments?: { type: string; data: string; name: string }[],
+  modelName?: string,
 ) {
+  const model = getModel(modelName);
   if (!model) {
     throw new Error("Gemini API not initialized - check GOOGLE_GEMINI_API_KEY");
   }
@@ -123,7 +133,11 @@ Keep responses concise and relevant to facility management.`;
 }
 
 // Helper function to generate smart responses
-export async function generateResponseSuggestion(request: any) {
+export async function generateResponseSuggestion(
+  request: any,
+  modelName?: string,
+) {
+  const model = getModel(modelName);
   if (!model) {
     throw new Error("Gemini API not initialized - check GOOGLE_GEMINI_API_KEY");
   }

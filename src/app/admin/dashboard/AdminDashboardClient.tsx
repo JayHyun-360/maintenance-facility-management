@@ -180,6 +180,12 @@ export default function AdminDashboardClient({
   >(null);
   const [showChatHistory, setShowChatHistory] = useState(false);
   const [aiLoadingMessages, setAiLoadingMessages] = useState(false);
+  const [showModelSelector, setShowModelSelector] = useState(false);
+  const [selectedModel, setSelectedModel] = useState("gemini-2.5-flash");
+  const [aiSearchQuery, setAiSearchQuery] = useState("");
+  const [showSearch, setShowSearch] = useState(false);
+  const [copiedMessage, setCopiedMessage] = useState<number | null>(null);
+  const [showExportMenu, setShowExportMenu] = useState(false);
 
   // Load conversations when chat opens
   useEffect(() => {
@@ -1200,6 +1206,7 @@ export default function AdminDashboardClient({
       const formData = new FormData();
       formData.append("query", userMessage);
       formData.append("context", JSON.stringify(context));
+      formData.append("model", selectedModel);
       aiAttachments.forEach((file) => {
         formData.append("attachments", file);
       });
@@ -5503,12 +5510,12 @@ ${result.analysis.risks || "N/A"}
             {/* Main Chat Area */}
             <div className="flex-1 flex flex-col">
               {/* Header */}
-              <div className="bg-[#0F172A] border-b border-slate-700 text-white px-6 py-4 flex justify-between items-center">
-                <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-r from-[#1E293B] via-[#0F172A] to-[#1E293B] border-b border-slate-700/50 text-white px-6 py-4 flex justify-between items-center">
+                <div className="flex items-center gap-4">
                   {!showChatHistory && (
                     <button
                       onClick={() => setShowChatHistory(true)}
-                      className="text-white/60 hover:text-white"
+                      className="text-white/60 hover:text-white transition-colors"
                     >
                       <svg
                         className="w-5 h-5"
@@ -5525,39 +5532,241 @@ ${result.analysis.risks || "N/A"}
                       </svg>
                     </button>
                   )}
-                  <svg
-                    className="w-6 h-6 text-[#94A3B8]"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-                    />
-                  </svg>
-                  <h3 className="font-bold text-lg">AI Assistant</h3>
-                  <span className="text-xs bg-[#427A43]/30 text-[#94A3B8] px-2 py-1 rounded-full">
-                    Gemini 2.5
-                  </span>
+                  {/* Custom AI Avatar with Glow */}
+                  <div className="relative">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#8B5CF6] via-[#6366F1] to-[#4F46E5] flex items-center justify-center shadow-lg shadow-purple-500/20">
+                      <svg
+                        className="w-5 h-5 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-[#0F172A]"></div>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                      AI Assistant
+                    </h3>
+                    <p className="text-xs text-white/40">Powered by Gemini</p>
+                  </div>
+                  {/* Model Selector */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowModelSelector(!showModelSelector)}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-[#30364F]/80 border border-white/10 rounded-lg hover:bg-[#374151] transition-all text-sm"
+                    >
+                      <span className="text-white/80">{selectedModel}</span>
+                      <svg
+                        className={`w-4 h-4 text-white/50 transition-transform ${showModelSelector ? "rotate-180" : ""}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </button>
+                    {showModelSelector && (
+                      <div className="absolute top-full mt-2 left-0 w-64 bg-[#1E293B] border border-slate-700 rounded-xl shadow-xl z-20 overflow-hidden">
+                        {[
+                          {
+                            id: "gemini-2.5-flash",
+                            name: "Gemini 2.5 Flash",
+                            desc: "Fast & efficient",
+                          },
+                          {
+                            id: "gemini-2.0-flash",
+                            name: "Gemini 2.0 Flash",
+                            desc: "Balanced performance",
+                          },
+                          {
+                            id: "gemini-1.5-pro",
+                            name: "Gemini 1.5 Pro",
+                            desc: "Advanced reasoning",
+                          },
+                        ].map((model) => (
+                          <button
+                            key={model.id}
+                            onClick={() => {
+                              setSelectedModel(model.id);
+                              setShowModelSelector(false);
+                            }}
+                            className={`w-full text-left px-4 py-3 hover:bg-white/5 transition-colors flex items-center justify-between ${
+                              selectedModel === model.id
+                                ? "bg-purple-500/10 border-l-2 border-purple-500"
+                                : ""
+                            }`}
+                          >
+                            <div>
+                              <p className="text-sm font-medium text-white">
+                                {model.name}
+                              </p>
+                              <p className="text-xs text-white/40">
+                                {model.desc}
+                              </p>
+                            </div>
+                            {selectedModel === model.id && (
+                              <svg
+                                className="w-4 h-4 text-purple-400"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center gap-2">
+                  {/* Search Button */}
+                  <button
+                    onClick={() => setShowSearch(!showSearch)}
+                    className={`p-2 rounded-lg transition-all ${showSearch ? "bg-purple-500/20 text-purple-300" : "text-white/60 hover:text-white hover:bg-white/10"}`}
+                    title="Search messages"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                  </button>
+                  {/* Export Button */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setShowExportMenu(!showExportMenu)}
+                      className="p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-lg transition-all"
+                      title="Export conversation"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                        />
+                      </svg>
+                    </button>
+                    {showExportMenu && (
+                      <div className="absolute top-full mt-2 right-0 w-48 bg-[#1E293B] border border-slate-700 rounded-xl shadow-xl z-20 overflow-hidden">
+                        <button
+                          onClick={() => {
+                            const content = aiMessages
+                              .map(
+                                (m) =>
+                                  `${m.role === "user" ? "You" : "AI"}: ${m.content}`,
+                              )
+                              .join("\n\n");
+                            const blob = new Blob([content], {
+                              type: "text/plain",
+                            });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = `conversation-${new Date().toISOString().split("T")[0]}.txt`;
+                            a.click();
+                            setShowExportMenu(false);
+                          }}
+                          className="w-full text-left px-4 py-2.5 hover:bg-white/5 transition-colors text-sm text-white/80 flex items-center gap-2"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                          </svg>
+                          Export as Text
+                        </button>
+                        <button
+                          onClick={() => {
+                            const content = aiMessages
+                              .map(
+                                (m) =>
+                                  `**${m.role === "user" ? "You" : "AI"}**: ${m.content}`,
+                              )
+                              .join("\n\n");
+                            const blob = new Blob([content], {
+                              type: "text/markdown",
+                            });
+                            const url = URL.createObjectURL(blob);
+                            const a = document.createElement("a");
+                            a.href = url;
+                            a.download = `conversation-${new Date().toISOString().split("T")[0]}.md`;
+                            a.click();
+                            setShowExportMenu(false);
+                          }}
+                          className="w-full text-left px-4 py-2.5 hover:bg-white/5 transition-colors text-sm text-white/80 flex items-center gap-2"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                            />
+                          </svg>
+                          Export as Markdown
+                        </button>
+                      </div>
+                    )}
+                  </div>
                   <a
                     href="https://gemini.google.com/app"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-white/50 hover:text-[#94A3B8] underline mr-2"
+                    className="text-xs text-white/50 hover:text-purple-300 underline mr-2 transition-colors"
                   >
                     Open Gemini Web
                   </a>
                   <button
                     onClick={() => setShowAIChat(false)}
-                    className="text-white/60 hover:text-white"
+                    className="text-white/60 hover:text-white p-1.5 hover:bg-white/10 rounded-lg transition-all"
                   >
                     <svg
-                      className="w-6 h-6"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -5572,6 +5781,54 @@ ${result.analysis.risks || "N/A"}
                   </button>
                 </div>
               </div>
+
+              {/* Search Bar */}
+              {showSearch && (
+                <div className="bg-[#0F172A] border-b border-slate-700 px-6 py-3">
+                  <div className="relative">
+                    <svg
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                    <input
+                      type="text"
+                      value={aiSearchQuery}
+                      onChange={(e) => setAiSearchQuery(e.target.value)}
+                      placeholder="Search messages..."
+                      className="w-full pl-10 pr-4 py-2 bg-[#1E293B] border border-slate-700 rounded-lg text-white placeholder-white/40 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                    />
+                    {aiSearchQuery && (
+                      <button
+                        onClick={() => setAiSearchQuery("")}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Attached Request */}
               {attachedRequest && (
@@ -5624,34 +5881,56 @@ ${result.analysis.risks || "N/A"}
               <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-[50vh] bg-[#1E293B] custom-scrollbar">
                 {aiMessages.length === 0 ? (
                   <div className="text-center text-white/50 py-8">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#8B5CF6] via-[#6366F1] to-[#4F46E5] flex items-center justify-center shadow-lg shadow-purple-500/30">
+                      <svg
+                        className="w-8 h-8 text-white"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                        />
+                      </svg>
+                    </div>
                     <p className="text-lg font-medium mb-2 text-white/70">
-                      Hello! I'm your AI assistant
+                      Hello! I'm your AI Assistant
                     </p>
-                    <p className="text-sm">
-                      Ask me anything about maintenance management or upload
-                      images for analysis.
+                    <p className="text-sm text-white/50 max-w-sm mx-auto">
+                      Ask me anything about maintenance management, analyze
+                      requests, or upload images for analysis.
                     </p>
                   </div>
                 ) : aiLoadingMessages ? (
                   <div className="flex-1 flex items-center justify-center">
                     <div className="flex flex-col items-center gap-3">
-                      <div className="w-5 h-5 border-2 border-[#94A3B8] border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
                       <p className="text-white/60 text-sm">
                         Loading messages...
                       </p>
                     </div>
                   </div>
                 ) : (
-                  aiMessages.map((message, index) => (
+                  (aiSearchQuery
+                    ? aiMessages.filter((m) =>
+                        m.content
+                          .toLowerCase()
+                          .includes(aiSearchQuery.toLowerCase()),
+                      )
+                    : aiMessages
+                  ).map((message, index) => (
                     <div
                       key={index}
-                      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} group animate-fade-in`}
                     >
                       <div
-                        className={`max-w-[85%] px-4 py-3 rounded-xl ${
+                        className={`max-w-[85%] px-4 py-3 rounded-2xl relative ${
                           message.role === "user"
-                            ? "bg-[#475569] text-white"
-                            : "bg-[#334155] text-white/90 border border-slate-600"
+                            ? "bg-gradient-to-br from-[#475569] to-[#3d4f63] text-white"
+                            : "bg-gradient-to-br from-[#334155] to-[#2d3b4d] text-white/90 border border-slate-600/50"
                         }`}
                       >
                         {/* Display attached images */}
@@ -5669,7 +5948,7 @@ ${result.analysis.risks || "N/A"}
                             </div>
                           )}
                         {message.role === "user" ? (
-                          <p className="text-sm whitespace-pre-wrap">
+                          <p className="text-sm whitespace-pre-wrap pr-8">
                             {message.content}
                           </p>
                         ) : (
@@ -5678,7 +5957,7 @@ ${result.analysis.risks || "N/A"}
                               components={{
                                 h1: ({ node, ...props }) => (
                                   <h1
-                                    className="text-lg font-bold mb-1 text-[#94A3B8]"
+                                    className="text-lg font-bold mb-1 text-purple-300"
                                     {...props}
                                   />
                                 ),
@@ -5720,13 +5999,13 @@ ${result.analysis.risks || "N/A"}
                                 ),
                                 strong: ({ node, ...props }) => (
                                   <strong
-                                    className="font-semibold text-[#94A3B8]"
+                                    className="font-semibold text-purple-300"
                                     {...props}
                                   />
                                 ),
                                 code: ({ node, ...props }) => (
                                   <code
-                                    className="bg-white/10 px-1 rounded text-xs text-[#94A3B8]"
+                                    className="bg-white/10 px-1.5 py-0.5 rounded text-xs text-purple-300 font-mono"
                                     {...props}
                                   />
                                 ),
@@ -5736,24 +6015,66 @@ ${result.analysis.risks || "N/A"}
                             </ReactMarkdown>
                           </div>
                         )}
+                        {/* Copy Button */}
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(message.content);
+                            setCopiedMessage(index);
+                            setTimeout(() => setCopiedMessage(null), 2000);
+                          }}
+                          className={`absolute top-2 right-2 p-1.5 rounded-lg transition-all opacity-0 group-hover:opacity-100 ${
+                            copiedMessage === index
+                              ? "bg-green-500/20 text-green-400"
+                              : "bg-white/10 text-white/60 hover:text-white hover:bg-white/20"
+                          }`}
+                          title={copiedMessage === index ? "Copied!" : "Copy"}
+                        >
+                          {copiedMessage === index ? (
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M5 13l4 4L19 7"
+                              />
+                            </svg>
+                          ) : (
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                              />
+                            </svg>
+                          )}
+                        </button>
                       </div>
                     </div>
                   ))
                 )}
                 {aiLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-[#334155] text-white px-4 py-2 rounded-lg border border-slate-600">
-                      <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 bg-[#94A3B8] rounded-full animate-bounce"></div>
-                        <div
-                          className="w-2 h-2 bg-[#94A3B8] rounded-full animate-bounce"
-                          style={{ animationDelay: "0.1s" }}
-                        ></div>
-                        <div
-                          className="w-2 h-2 bg-[#94A3B8] rounded-full animate-bounce"
-                          style={{ animationDelay: "0.2s" }}
-                        ></div>
-                      </div>
+                    <div className="bg-gradient-to-br from-[#334155] to-[#2d3b4d] text-white px-4 py-3 rounded-2xl border border-slate-600/50 flex items-center gap-1">
+                      <span className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"></span>
+                      <span
+                        className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"
+                        style={{ animationDelay: "0.15s" }}
+                      ></span>
+                      <span
+                        className="w-2 h-2 bg-purple-400 rounded-full animate-pulse"
+                        style={{ animationDelay: "0.3s" }}
+                      ></span>
                     </div>
                   </div>
                 )}
@@ -6036,15 +6357,28 @@ ${result.analysis.risks || "N/A"}
               </div>
 
               {/* Input */}
-              <div className="border-t border-slate-700 p-4 bg-[#0F172A]">
+              <div className="border-t border-slate-700/50 p-4 bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A]">
                 {/* Attached Files Preview */}
                 {aiAttachments.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-3">
                     {aiAttachments.map((file, index) => (
                       <div
                         key={index}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-[#30364F] rounded-lg text-sm text-white border border-white/10"
+                        className="flex items-center gap-2 px-3 py-1.5 bg-[#30364F]/80 rounded-lg text-sm text-white border border-white/10"
                       >
+                        <svg
+                          className="w-4 h-4 text-purple-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
                         <span className="max-w-[150px] truncate">
                           {file.name}
                         </span>
@@ -6054,7 +6388,7 @@ ${result.analysis.risks || "N/A"}
                               prev.filter((_, i) => i !== index),
                             )
                           }
-                          className="text-white/50 hover:text-red-400"
+                          className="text-white/50 hover:text-red-400 transition-colors"
                         >
                           <svg
                             className="w-4 h-4"
@@ -6074,8 +6408,8 @@ ${result.analysis.risks || "N/A"}
                     ))}
                   </div>
                 )}
-                <div className="flex gap-2">
-                  <label className="p-2 text-white/50 hover:text-[#94A3B8] cursor-pointer rounded-lg hover:bg-white/10 transition-colors">
+                <div className="flex gap-3 items-end">
+                  <label className="p-3 text-white/50 hover:text-purple-400 cursor-pointer rounded-xl hover:bg-white/10 transition-all">
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -6100,41 +6434,66 @@ ${result.analysis.risks || "N/A"}
                       }}
                     />
                   </label>
-                  <input
-                    type="text"
-                    value={aiInput}
-                    onChange={(e) => setAiInput(e.target.value)}
-                    onKeyPress={(e) =>
-                      e.key === "Enter" && !aiLoading && handleAiChat()
-                    }
-                    placeholder="Ask me about maintenance..."
-                    className="flex-1 px-4 py-2 bg-[#334155] border border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#64748b] text-white placeholder-white/40"
-                    disabled={aiLoading}
-                  />
+                  <div className="flex-1 relative">
+                    <textarea
+                      value={aiInput}
+                      onChange={(e) => setAiInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          if (
+                            !aiLoading &&
+                            (aiInput.trim() || aiAttachments.length > 0)
+                          ) {
+                            handleAiChat();
+                          }
+                        }
+                      }}
+                      placeholder="Ask me about maintenance..."
+                      rows={1}
+                      className="w-full px-4 py-3 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 text-white placeholder-white/40 resize-none min-h-[48px] max-h-[120px]"
+                      disabled={aiLoading}
+                      style={{
+                        height: "auto",
+                      }}
+                      onInput={(e) => {
+                        const target = e.target as HTMLTextAreaElement;
+                        target.style.height = "auto";
+                        target.style.height =
+                          Math.min(target.scrollHeight, 120) + "px";
+                      }}
+                    />
+                    <div className="absolute bottom-2 right-2 text-xs text-white/30">
+                      {aiInput.length}/2000
+                    </div>
+                  </div>
                   <button
                     onClick={handleAiChat}
                     disabled={
                       aiLoading ||
                       (!aiInput.trim() && aiAttachments.length === 0)
                     }
-                    className="px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] disabled:opacity-50 font-medium"
+                    className="px-4 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-500 hover:to-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-all shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 flex items-center gap-2"
                   >
                     {aiLoading ? (
-                      <div className="w-4 h-4 border-2 border-[#30364F] border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                     ) : (
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                        />
-                      </svg>
+                      <>
+                        <span>Send</span>
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                          />
+                        </svg>
+                      </>
                     )}
                   </button>
                 </div>

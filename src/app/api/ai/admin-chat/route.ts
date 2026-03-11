@@ -8,12 +8,14 @@ export async function POST(request: NextRequest) {
     let query: string;
     let context: any;
     let attachments: { type: string; data: string; name: string }[] = [];
+    let modelName: string | undefined;
 
     if (contentType.includes("multipart/form-data")) {
       const formData = await request.formData();
       query = formData.get("query") as string;
       const contextStr = formData.get("context") as string;
       context = contextStr ? JSON.parse(contextStr) : undefined;
+      modelName = formData.get("model") as string | undefined;
 
       const files = formData.getAll("attachments") as File[];
       for (const file of files) {
@@ -29,6 +31,7 @@ export async function POST(request: NextRequest) {
       const body = await request.json();
       query = body.query;
       context = body.context;
+      modelName = body.model;
     }
 
     if (!query) {
@@ -38,7 +41,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await getAdminAssistance(query, context, attachments);
+    const response = await getAdminAssistance(
+      query,
+      context,
+      attachments,
+      modelName,
+    );
 
     return NextResponse.json({ success: true, response });
   } catch (error: any) {
