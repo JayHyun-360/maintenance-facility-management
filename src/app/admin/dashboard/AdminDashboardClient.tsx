@@ -5432,16 +5432,16 @@ ${result.analysis.risks || "N/A"}
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Chat History Sidebar - Slide in from left */}
+            {/* Chat History Sidebar Overlay */}
             {showChatHistory && (
               <div
-                className="absolute inset-0 z-30 bg-black/20 transition-opacity duration-300"
-                style={{ animation: "fadeIn 300ms ease-out" }}
+                className="absolute inset-0 z-30"
+                style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
                 onClick={() => setShowChatHistory(false)}
               />
             )}
             <div
-              className={`absolute left-0 top-0 bottom-0 z-40 ${showChatHistory ? "w-72" : "w-0"} transition-all duration-300 ease-out`}
+              className={`absolute left-0 top-0 bottom-0 z-40 transition-all duration-300 ease-out ${showChatHistory ? "w-72" : "w-0 overflow-hidden"}`}
               style={{ transition: "width 300ms cubic-bezier(0.4, 0, 0.2, 1)" }}
             >
               <div className="w-72 p-4 flex flex-col h-full bg-[#0F172A] border-r border-slate-700/50">
@@ -5558,7 +5558,27 @@ ${result.analysis.risks || "N/A"}
               {/* Header */}
               <div className="bg-gradient-to-r from-[#1E293B] to-[#0F172A] border-b border-slate-700/50 text-white px-4 py-3 flex justify-between items-center flex-shrink-0">
                 <div className="flex items-center gap-3">
-                  {!showChatHistory && (
+                  {showChatHistory ? (
+                    <button
+                      onClick={() => setShowChatHistory(false)}
+                      className="text-white/60 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
+                      title="Close History"
+                    >
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  ) : (
                     <button
                       onClick={() => setShowChatHistory(true)}
                       className="text-white/60 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
