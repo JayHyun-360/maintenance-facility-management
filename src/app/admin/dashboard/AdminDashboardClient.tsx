@@ -5629,82 +5629,6 @@ ${result.analysis.risks || "N/A"}
                       Powered by Gemini
                     </p>
                   </div>
-                  {/* Compact Model Selector */}
-                  <div className="relative">
-                    <button
-                      onClick={() => setShowModelSelector(!showModelSelector)}
-                      className="flex items-center gap-1.5 px-2 py-1 bg-[#1E293B]/80 border border-white/10 rounded-md hover:bg-[#334155] transition-all text-xs"
-                    >
-                      <span className="text-white/70">
-                        {selectedModel.replace("gemini-", "")}
-                      </span>
-                      <svg
-                        className={`w-3 h-3 text-white/50 transition-transform ${showModelSelector ? "rotate-180" : ""}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </button>
-                    {showModelSelector && (
-                      <div className="absolute top-full mt-1 left-0 w-48 bg-[#1E293B] border border-slate-700 rounded-lg shadow-xl z-30 overflow-hidden">
-                        {[
-                          {
-                            id: "gemini-2.5-flash",
-                            name: "Gemini 2.5 Flash",
-                            desc: "Fast & efficient",
-                          },
-                          {
-                            id: "gemini-2.0-flash",
-                            name: "Gemini 2.0 Flash",
-                            desc: "Balanced",
-                          },
-                          {
-                            id: "gemini-1.5-pro",
-                            name: "Gemini 1.5 Pro",
-                            desc: "Advanced",
-                          },
-                        ].map((model) => (
-                          <button
-                            key={model.id}
-                            onClick={() => {
-                              setSelectedModel(model.id);
-                              setShowModelSelector(false);
-                            }}
-                            className={`w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center justify-between ${selectedModel === model.id ? "bg-purple-500/10 border-l-2 border-purple-500" : ""}`}
-                          >
-                            <div>
-                              <p className="text-xs font-medium text-white">
-                                {model.name}
-                              </p>
-                              <p className="text-[10px] text-white/40">
-                                {model.desc}
-                              </p>
-                            </div>
-                            {selectedModel === model.id && (
-                              <svg
-                                className="w-3 h-3 text-purple-400"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                              >
-                                <path
-                                  fillRule="evenodd"
-                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                  clipRule="evenodd"
-                                />
-                              </svg>
-                            )}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
                 </div>
                 <div className="flex items-center gap-1">
                   {/* Search Button */}
@@ -6215,10 +6139,7 @@ ${result.analysis.risks || "N/A"}
 
               {/* Conversation Suggestions - Above Input */}
               {aiMessages.length === 0 && !aiLoading && (
-                <div className="px-4 pt-3 pb-2 bg-[#0F172A] border-b border-slate-700/30">
-                  <p className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">
-                    Suggestions
-                  </p>
+                <div className="px-4 pt-6 pb-4 bg-[#0F172A] border-b border-slate-700/30">
                   <div className="flex flex-wrap gap-2">
                     <button
                       onClick={() => setAiInput("What's on your mind?")}
@@ -6253,7 +6174,7 @@ ${result.analysis.risks || "N/A"}
               )}
 
               {/* Input */}
-              <div className="border-t border-slate-700/50 p-3 bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A]">
+              <div className="border-t border-slate-700/50 p-4 bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A]">
                 {/* Attached Files Preview */}
                 {aiAttachments.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
@@ -6354,6 +6275,85 @@ ${result.analysis.risks || "N/A"}
                           />
                         </svg>
                       </button>
+                      {/* Model Selector in sub-toolbar */}
+                      <div className="relative">
+                        <button
+                          onClick={() =>
+                            setShowModelSelector(!showModelSelector)
+                          }
+                          className="flex items-center gap-1 px-2 py-1 text-white/50 hover:text-purple-400 hover:bg-white/5 rounded-md transition-all text-xs"
+                          title="Select model"
+                        >
+                          <span className="text-[10px]">
+                            {selectedModel.replace("gemini-", "")}
+                          </span>
+                          <svg
+                            className={`w-3 h-3 transition-transform ${showModelSelector ? "rotate-180" : ""}`}
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 9l-7 7-7-7"
+                            />
+                          </svg>
+                        </button>
+                        {showModelSelector && (
+                          <div className="absolute bottom-full mb-1 left-0 w-40 bg-[#1E293B] border border-slate-700 rounded-lg shadow-xl z-30 overflow-hidden">
+                            {[
+                              {
+                                id: "gemini-2.5-flash",
+                                name: "2.5 Flash",
+                                desc: "Fast",
+                              },
+                              {
+                                id: "gemini-2.0-flash",
+                                name: "2.0 Flash",
+                                desc: "Balanced",
+                              },
+                              {
+                                id: "gemini-1.5-pro",
+                                name: "1.5 Pro",
+                                desc: "Advanced",
+                              },
+                            ].map((model) => (
+                              <button
+                                key={model.id}
+                                onClick={() => {
+                                  setSelectedModel(model.id);
+                                  setShowModelSelector(false);
+                                }}
+                                className={`w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center justify-between ${selectedModel === model.id ? "bg-purple-500/10" : ""}`}
+                              >
+                                <div>
+                                  <p className="text-xs text-white">
+                                    {model.name}
+                                  </p>
+                                  <p className="text-[9px] text-white/40">
+                                    {model.desc}
+                                  </p>
+                                </div>
+                                {selectedModel === model.id && (
+                                  <svg
+                                    className="w-3 h-3 text-purple-400"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fillRule="evenodd"
+                                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                      clipRule="evenodd"
+                                    />
+                                  </svg>
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <div className="text-[10px] text-white/30">
                       {aiInput.length}/2000
