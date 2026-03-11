@@ -5884,7 +5884,7 @@ ${result.analysis.risks || "N/A"}
               )}
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-[50vh] bg-[#1E293B] custom-scrollbar">
+              <div className="flex-1 overflow-y-auto p-6 space-y-4 max-h-[50vh] bg-[#0a0f1a] custom-scrollbar">
                 {aiMessages.length === 0 ? (
                   <div className="text-center text-white/50 py-8">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#8B5CF6] via-[#6366F1] to-[#4F46E5] flex items-center justify-center shadow-lg shadow-purple-500/30">
@@ -6196,31 +6196,6 @@ ${result.analysis.risks || "N/A"}
                   </div>
                 )}
                 <div className="flex gap-3 items-end">
-                  <label className="p-3 text-white/50 hover:text-purple-400 cursor-pointer rounded-xl hover:bg-white/10 transition-all">
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
-                      />
-                    </svg>
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*,.pdf,.doc,.docx,.txt"
-                      className="hidden"
-                      onChange={(e) => {
-                        const files = Array.from(e.target.files || []);
-                        setAiAttachments((prev) => [...prev, ...files]);
-                      }}
-                    />
-                  </label>
                   <div className="flex-1 relative">
                     <textarea
                       value={aiInput}
@@ -6238,10 +6213,11 @@ ${result.analysis.risks || "N/A"}
                       }}
                       placeholder="Ask me about maintenance..."
                       rows={1}
-                      className="w-full px-4 py-3 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 text-white placeholder-white/40 resize-none min-h-[48px] max-h-[120px]"
+                      className="w-full px-4 py-3 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 text-white placeholder-white/40 resize-none min-h-[48px] max-h-[120px] text-sm"
                       disabled={aiLoading}
                       style={{
                         height: "auto",
+                        overflow: "hidden",
                       }}
                       onInput={(e) => {
                         const target = e.target as HTMLTextAreaElement;
@@ -6254,33 +6230,55 @@ ${result.analysis.risks || "N/A"}
                       {aiInput.length}/2000
                     </div>
                   </div>
+                  <label className="p-3 text-white/50 hover:text-purple-400 cursor-pointer rounded-xl hover:bg-white/10 transition-all">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/*,.pdf,.doc,.docx,.txt"
+                      className="hidden"
+                      onChange={(e) => {
+                        const files = Array.from(e.target.files || []);
+                        setAiAttachments((prev) => [...prev, ...files]);
+                      }}
+                    />
+                  </label>
                   <button
                     onClick={handleAiChat}
                     disabled={
                       aiLoading ||
                       (!aiInput.trim() && aiAttachments.length === 0)
                     }
-                    className="px-4 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-500 hover:to-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-all shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 flex items-center gap-2"
+                    className="p-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-500 hover:to-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-all shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 flex items-center justify-center"
                   >
                     {aiLoading ? (
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                     ) : (
-                      <>
-                        <span>Send</span>
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                          />
-                        </svg>
-                      </>
+                      <svg
+                        className="w-5 h-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                        />
+                      </svg>
                     )}
                   </button>
                 </div>
