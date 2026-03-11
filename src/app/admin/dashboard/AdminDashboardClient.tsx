@@ -5444,7 +5444,7 @@ ${result.analysis.risks || "N/A"}
               className={`absolute left-0 top-0 bottom-0 z-40 ${showChatHistory ? "w-72" : "w-0"} transition-all duration-300 ease-out`}
               style={{ transition: "width 300ms cubic-bezier(0.4, 0, 0.2, 1)" }}
             >
-              <div className="w-72 p-4 flex flex-col h-full">
+              <div className="w-72 p-4 flex flex-col h-full bg-[#0F172A] border-r border-slate-700/50">
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="text-white font-semibold">Chat History</h4>
                   <button
@@ -6109,6 +6109,45 @@ ${result.analysis.risks || "N/A"}
                 )}
               </div>
 
+              {/* Conversation Suggestions - Above Input */}
+              {aiMessages.length === 0 && !aiLoading && (
+                <div className="px-4 pt-3 pb-2 bg-[#0F172A] border-b border-slate-700/30">
+                  <p className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">
+                    Suggestions
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => setAiInput("What's on your mind?")}
+                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                    >
+                      What's on your mind?
+                    </button>
+                    <button
+                      onClick={() =>
+                        setAiInput("Help me analyze maintenance requests")
+                      }
+                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                    >
+                      Analyze requests
+                    </button>
+                    <button
+                      onClick={() =>
+                        setAiInput("Show me recent maintenance trends")
+                      }
+                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                    >
+                      Recent trends
+                    </button>
+                    <button
+                      onClick={() => setAiInput("What can you help me with?")}
+                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
+                    >
+                      Capabilities
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Input */}
               <div className="border-t border-slate-700/50 p-3 bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A]">
                 {/* Attached Files Preview */}
@@ -6269,45 +6308,6 @@ ${result.analysis.risks || "N/A"}
                   </div>
                 </div>
               </div>
-
-              {/* Conversation Suggestions - Below Input */}
-              {aiMessages.length === 0 && !aiLoading && (
-                <div className="px-4 pb-3 bg-[#0F172A] border-t border-slate-700/30">
-                  <p className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">
-                    Suggestions
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    <button
-                      onClick={() => setAiInput("What's on your mind?")}
-                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
-                    >
-                      What's on your mind?
-                    </button>
-                    <button
-                      onClick={() =>
-                        setAiInput("Help me analyze maintenance requests")
-                      }
-                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
-                    >
-                      Analyze requests
-                    </button>
-                    <button
-                      onClick={() =>
-                        setAiInput("Show me recent maintenance trends")
-                      }
-                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
-                    >
-                      Recent trends
-                    </button>
-                    <button
-                      onClick={() => setAiInput("What can you help me with?")}
-                      className="text-xs px-3 py-1.5 bg-[#1E293B]/60 border border-white/10 rounded-full hover:bg-[#334155] hover:border-white/20 transition-all text-white/70 hover:text-white"
-                    >
-                      Capabilities
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </>
