@@ -5444,8 +5444,8 @@ ${result.analysis.risks || "N/A"}
               />
             )}
             <div
-              className={`absolute left-0 top-0 bottom-0 z-40 transition-all duration-300 ease-out ${showChatHistory ? "w-72" : "w-0 overflow-hidden"}`}
-              style={{ transition: "width 300ms cubic-bezier(0.4, 0, 0.2, 1)" }}
+              className={`absolute left-0 top-0 bottom-0 z-40 transition-transform duration-300 ease-out ${showChatHistory ? "translate-x-0" : "-translate-x-full"}`}
+              style={{ width: "288px" }}
             >
               <div className="w-72 p-4 flex flex-col h-full bg-[#0F172A] border-r border-slate-700/50">
                 <div className="flex items-center justify-between mb-4">
@@ -5907,7 +5907,7 @@ ${result.analysis.risks || "N/A"}
                   ).map((message, index) => (
                     <div
                       key={index}
-                      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} group animate-fade-in`}
+                      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} group animate-fade-in flex-col items-end`}
                     >
                       <div
                         className={`max-w-[85%] px-3 py-2 rounded-xl relative ${
@@ -5998,53 +5998,21 @@ ${result.analysis.risks || "N/A"}
                             </ReactMarkdown>
                           </div>
                         )}
-                        {/* Message Actions - Below bubble */}
-                        <div
-                          className={`flex items-center gap-1 mt-1 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                      </div>
+                      {/* Message Actions - Below bubble, outside */}
+                      <div
+                        className={`flex items-center gap-1 mt-1 mr-1 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                      >
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(message.content);
+                            setCopiedMessage(index);
+                            setTimeout(() => setCopiedMessage(null), 2000);
+                          }}
+                          className={`p-1 rounded transition-all ${copiedMessage === index ? "text-green-400" : "text-white/40 hover:text-white hover:bg-white/10"}`}
+                          title={copiedMessage === index ? "Copied!" : "Copy"}
                         >
-                          <button
-                            onClick={() => {
-                              navigator.clipboard.writeText(message.content);
-                              setCopiedMessage(index);
-                              setTimeout(() => setCopiedMessage(null), 2000);
-                            }}
-                            className={`p-1 rounded transition-all ${copiedMessage === index ? "text-green-400" : "text-white/40 hover:text-white hover:bg-white/10"}`}
-                            title={copiedMessage === index ? "Copied!" : "Copy"}
-                          >
-                            {copiedMessage === index ? (
-                              <svg
-                                className="w-3.5 h-3.5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
-                            ) : (
-                              <svg
-                                className="w-3.5 h-3.5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                                />
-                              </svg>
-                            )}
-                          </button>
-                          <button
-                            className="p-1 rounded text-white/40 hover:text-white hover:bg-white/10 transition-all"
-                            title="More"
-                          >
+                          {copiedMessage === index ? (
                             <svg
                               className="w-3.5 h-3.5"
                               fill="none"
@@ -6055,83 +6023,110 @@ ${result.analysis.risks || "N/A"}
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 strokeWidth={2}
-                                d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                                d="M5 13l4 4L19 7"
                               />
                             </svg>
-                          </button>
-                        </div>
-                        {/* Quick Actions for AI responses */}
-                        {message.role === "assistant" &&
-                          index === aiMessages.length - 1 && (
-                            <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-white/5">
-                              {quickActions.length > 0 ? (
-                                quickActions.map((action, actionIndex) => (
-                                  <button
-                                    key={actionIndex}
-                                    onClick={() => {
-                                      if (action.action === "view_pending") {
-                                        setShowAIChat(false);
-                                      } else if (action.action === "view_all") {
-                                        setShowAIChat(false);
-                                      } else if (
-                                        action.action === "new_request"
-                                      ) {
-                                        setShowAIChat(false);
-                                      } else {
-                                        setAiInput(action.label);
-                                      }
-                                    }}
-                                    className="text-[11px] px-2.5 py-1 bg-purple-500/10 border border-purple-500/20 rounded-md text-purple-300 hover:bg-purple-500/20 hover:border-purple-500/40 transition-all"
-                                  >
-                                    {action.label}
-                                  </button>
-                                ))
-                              ) : (
-                                <>
-                                  <button
-                                    onClick={() =>
-                                      setAiInput("Show me pending requests")
-                                    }
-                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
-                                  >
-                                    View Pending Queue
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      setAiInput("Summarize this analysis")
-                                    }
-                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
-                                  >
-                                    Summarize
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      setAiInput("Give me more details")
-                                    }
-                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
-                                  >
-                                    More Details
-                                  </button>
-                                </>
-                              )}
-                            </div>
+                          ) : (
+                            <svg
+                              className="w-3.5 h-3.5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                              />
+                            </svg>
                           )}
+                        </button>
+                        <button
+                          className="p-1 rounded text-white/40 hover:text-white hover:bg-white/10 transition-all"
+                          title="More"
+                        >
+                          <svg
+                            className="w-3.5 h-3.5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"
+                            />
+                          </svg>
+                        </button>
                       </div>
+                      {/* Quick Actions for AI responses */}
+                      {message.role === "assistant" &&
+                        index === aiMessages.length - 1 && (
+                          <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-white/5">
+                            {quickActions.length > 0 ? (
+                              quickActions.map((action, actionIndex) => (
+                                <button
+                                  key={actionIndex}
+                                  onClick={() => {
+                                    if (action.action === "view_pending") {
+                                      setShowAIChat(false);
+                                    } else if (action.action === "view_all") {
+                                      setShowAIChat(false);
+                                    } else if (
+                                      action.action === "new_request"
+                                    ) {
+                                      setShowAIChat(false);
+                                    } else {
+                                      setAiInput(action.label);
+                                    }
+                                  }}
+                                  className="text-[11px] px-2.5 py-1 bg-purple-500/10 border border-purple-500/20 rounded-md text-purple-300 hover:bg-purple-500/20 hover:border-purple-500/40 transition-all"
+                                >
+                                  {action.label}
+                                </button>
+                              ))
+                            ) : (
+                              <>
+                                <button
+                                  onClick={() =>
+                                    setAiInput("Show me pending requests")
+                                  }
+                                  className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
+                                >
+                                  View Pending Queue
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    setAiInput("Summarize this analysis")
+                                  }
+                                  className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
+                                >
+                                  Summarize
+                                </button>
+                                <button
+                                  onClick={() =>
+                                    setAiInput("Give me more details")
+                                  }
+                                  className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
+                                >
+                                  More Details
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        )}
                     </div>
                   ))
                 )}
                 {aiLoading && (
                   <div className="flex justify-start">
-                    <div className="bg-gradient-to-br from-[#334155] to-[#2d3b4d] text-white px-3 py-2 rounded-xl border border-slate-600/50 flex items-center justify-center gap-1 min-w-[60px]">
-                      <span className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full animate-pulse"></span>
-                      <span
-                        className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full animate-pulse"
-                        style={{ animationDelay: "0.15s" }}
-                      ></span>
-                      <span
-                        className="w-1.5 h-1.5 bg-[#8B5CF6] rounded-full animate-pulse"
-                        style={{ animationDelay: "0.3s" }}
-                      ></span>
+                    <div className="w-48 h-1 rounded-full bg-gradient-to-r from-transparent via-purple-500 to-transparent overflow-hidden relative">
+                      <div
+                        className="absolute inset-0 bg-gradient-to-r from-purple-600 via-purple-400 to-purple-600 animate-[shimmer_1.5s_infinite]"
+                        style={{ backgroundSize: "200% 100%" }}
+                      ></div>
                     </div>
                   </div>
                 )}
