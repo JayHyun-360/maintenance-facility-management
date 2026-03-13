@@ -6209,7 +6209,7 @@ ${result.analysis.risks || "N/A"}
                                       setAiStatusText("Generating response...");
                                       try {
                                         const response = await fetch(
-                                          "/api/ai/chat",
+                                          "/api/ai/admin-chat",
                                           {
                                             method: "POST",
                                             headers: {
@@ -6217,9 +6217,13 @@ ${result.analysis.risks || "N/A"}
                                                 "application/json",
                                             },
                                             body: JSON.stringify({
-                                              message: editingMessageText,
-                                              conversationId:
-                                                currentConversationId,
+                                              query: editingMessageText,
+                                              context: currentConversationId
+                                                ? {
+                                                    conversationId:
+                                                      currentConversationId,
+                                                  }
+                                                : undefined,
                                               model: selectedModel,
                                             }),
                                           },
@@ -6430,7 +6434,7 @@ ${result.analysis.risks || "N/A"}
                                       );
                                       try {
                                         const response = await fetch(
-                                          "/api/ai/chat",
+                                          "/api/ai/admin-chat",
                                           {
                                             method: "POST",
                                             headers: {
@@ -6438,9 +6442,13 @@ ${result.analysis.risks || "N/A"}
                                                 "application/json",
                                             },
                                             body: JSON.stringify({
-                                              message: lastUserMsg.content,
-                                              conversationId:
-                                                currentConversationId,
+                                              query: lastUserMsg.content,
+                                              context: currentConversationId
+                                                ? {
+                                                    conversationId:
+                                                      currentConversationId,
+                                                  }
+                                                : undefined,
                                               model: selectedModel,
                                             }),
                                           },
