@@ -5428,12 +5428,12 @@ ${result.analysis.risks || "N/A"}
             {showChatHistory && (
               <>
                 <div
-                  className="absolute inset-0 z-30"
+                  className={`absolute inset-0 z-30 transition-opacity duration-300 ${showChatHistory ? "opacity-100" : "opacity-0 pointer-events-none"}`}
                   style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
                   onClick={() => setShowChatHistory(false)}
                 />
                 <div
-                  className={`absolute left-0 top-0 bottom-0 z-40 transition-transform duration-300 ease-out overflow-hidden ${showChatHistory ? "translate-x-0" : "-translate-x-full"}`}
+                  className={`absolute left-0 top-0 bottom-0 z-40 transition-all duration-300 ease-out overflow-hidden ${showChatHistory ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"}`}
                   style={{ width: "288px" }}
                   onClick={(e) => e.stopPropagation()}
                 >
@@ -5900,7 +5900,7 @@ ${result.analysis.risks || "N/A"}
                   ).map((message, index) => (
                     <div
                       key={index}
-                      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} group animate-fade-in flex-col items-end`}
+                      className={`flex ${message.role === "user" ? "justify-end" : "justify-start"} group animate-fade-in`}
                     >
                       <div
                         className={`max-w-[85%] px-3 py-2 rounded-xl relative ${
