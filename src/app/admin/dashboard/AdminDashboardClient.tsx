@@ -1384,8 +1384,9 @@ export default function AdminDashboardClient({
     setIsListening(true);
     setListeningText("Listening...");
 
+    let finalTranscript = "";
+
     recognition.onresult = (event: any) => {
-      let finalTranscript = "";
       let interimTranscript = "";
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -1420,7 +1421,10 @@ export default function AdminDashboardClient({
 
     recognition.onend = () => {
       setIsListening(false);
-      if (!listeningText) {
+      // Auto-send if we have transcribed text
+      if (finalTranscript) {
+        handleAiChat();
+      } else {
         setListeningText("");
       }
     };
@@ -6115,7 +6119,46 @@ ${result.analysis.risks || "N/A"}
 
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4 space-y-5 bg-[#080d18] custom-scrollbar">
-                {aiMessages.length === 0 ? (
+                {/* Live Voice Transcription Display */}
+                {isListening && (
+                  <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
+                    <div className="relative mb-6">
+                      <div className="absolute inset-0 rounded-full bg-red-500 blur-xl opacity-50 animate-pulse" />
+                      <div className="relative w-16 h-16 rounded-full bg-red-600 flex items-center justify-center shadow-lg shadow-red-500/30">
+                        <svg
+                          className="w-8 h-8 text-white animate-pulse"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <h2 className="text-lg font-bold text-white mb-1">
+                      Listening...
+                    </h2>
+                    <p className="text-sm text-white/50 max-w-[260px] mb-4 leading-relaxed">
+                      Speak now. Your words will appear here in real-time.
+                    </p>
+                    {listeningText && (
+                      <div className="w-full max-w-[300px] p-4 bg-white/5 border border-white/10 rounded-xl">
+                        <p className="text-white text-sm leading-relaxed animate-pulse">
+                          "{listeningText}"
+                        </p>
+                      </div>
+                    )}
+                    <p className="text-[11px] text-white/30 mt-4">
+                      Click the microphone again to stop
+                    </p>
+                  </div>
+                )}
+                {aiMessages.length === 0 && !isListening ? (
                   <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
                     {/* Animated orb */}
                     <div className="relative mb-6">
