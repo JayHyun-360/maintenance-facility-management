@@ -69,6 +69,55 @@ export default function UserDashboardClient({
 
   const [expandedPhotos, setExpandedPhotos] = useState<Set<string>>(new Set());
 
+  // Profile edit state
+  const [formData, setFormData] = useState({
+    full_name: profile?.full_name || "",
+    visual_role: profile?.visual_role || "",
+    theme_preference: (profile?.theme_preference || "light") as
+      | "light"
+      | "dark"
+      | "system",
+  });
+
+  const [saving, setSaving] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleSave = async () => {
+    setSaving(true);
+    setSuccessMessage("");
+    try {
+      const { updateProfile } = await import("@/app/profile-settings/actions");
+      const result = await updateProfile({
+        full_name: formData.full_name,
+        visual_role: formData.visual_role,
+        theme_preference: formData.theme_preference,
+      });
+
+      if (!result.success) {
+        alert(`Error: ${result.error}`);
+        return;
+      }
+
+      setSuccessMessage("Profile updated successfully!");
+
+      // Refresh the JWT session
+      const supabase = createClient()!;
+      await supabase.auth.refreshSession();
+
+      // Refresh the page
+      router.refresh();
+
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      console.error("Save error:", error);
+      alert(
+        `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const profileViewerRef = useRef<HTMLDivElement>(null);
 
   const notificationsRef = useRef<HTMLDivElement>(null);
@@ -1524,7 +1573,7 @@ export default function UserDashboardClient({
             {/* Profile Content */}
 
             <div className="p-6 space-y-6">
-              {/* Profile Information */}
+              {/* Profile Information - Editable */}
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
                 <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <svg
@@ -1561,10 +1610,14 @@ export default function UserDashboardClient({
                       </svg>
                       Full Name
                     </label>
-
-                    <p className="text-gray-900 font-medium">
-                      {profile?.full_name}
-                    </p>
+                    <input
+                      type="text"
+                      value={formData.full_name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, full_name: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900"
+                    />
                   </div>
 
                   <div>
@@ -1584,10 +1637,21 @@ export default function UserDashboardClient({
                       </svg>
                       Visual Role
                     </label>
-
-                    <p className="text-gray-900 font-medium">
-                      {profile?.visual_role || "Not Set"}
-                    </p>
+                    <select
+                      value={formData.visual_role}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          visual_role: e.target.value,
+                        })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900 bg-white"
+                    >
+                      <option value="">Select a role</option>
+                      <option value="Teacher">Teacher</option>
+                      <option value="Staff">Staff</option>
+                      <option value="Student">Student</option>
+                    </select>
                   </div>
 
                   <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
@@ -1697,10 +1761,23 @@ export default function UserDashboardClient({
                       </svg>
                       Theme Preference
                     </label>
-
-                    <p className="text-gray-900 font-medium capitalize">
-                      {profile?.theme_preference}
-                    </p>
+                    <select
+                      value={formData.theme_preference}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          theme_preference: e.target.value as
+                            | "light"
+                            | "dark"
+                            | "system",
+                        })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900 bg-white"
+                    >
+                      <option value="light">Light</option>
+                      <option value="dark">Dark</option>
+                      <option value="system">System</option>
+                    </select>
                   </div>
 
                   <div className="pt-3 border-t border-gray-100 text-sm text-gray-500">
@@ -1711,6 +1788,22 @@ export default function UserDashboardClient({
                   </div>
                 </div>
               </div>
+
+              {/* Save Button */}
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="w-full px-4 py-3 bg-[#427A43] text-white font-semibold rounded-lg hover:bg-[#366337] disabled:bg-gray-400 transition-colors"
+              >
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
+
+              {/* Success Message */}
+              {successMessage && (
+                <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm text-center">
+                  {successMessage}
+                </div>
+              )}
 
               {/* Mode Switching */}
               {!isAdmin && profile?.database_role === "admin" && (

@@ -488,6 +488,55 @@ export default function AdminDashboardClient({
     status: "Pending",
   });
 
+  // Profile edit state
+  const [formData, setFormData] = useState({
+    full_name: initialProfile?.full_name || "",
+    visual_role: initialProfile?.visual_role || "",
+    theme_preference: (initialProfile?.theme_preference || "light") as
+      | "light"
+      | "dark"
+      | "system",
+  });
+
+  const [saving, setSaving] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const handleSave = async () => {
+    setSaving(true);
+    setSuccessMessage("");
+    try {
+      const { updateProfile } = await import("@/app/profile-settings/actions");
+      const result = await updateProfile({
+        full_name: formData.full_name,
+        visual_role: formData.visual_role,
+        theme_preference: formData.theme_preference,
+      });
+
+      if (!result.success) {
+        alert(`Error: ${result.error}`);
+        return;
+      }
+
+      setSuccessMessage("Profile updated successfully!");
+
+      // Refresh the JWT session
+      const supabase = createClient()!;
+      await supabase.auth.refreshSession();
+
+      // Refresh the page
+      router.refresh();
+
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      console.error("Save error:", error);
+      alert(
+        `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const profileViewerRef = useRef<HTMLDivElement>(null);
 
   const notificationsRef = useRef<HTMLDivElement>(null);
@@ -4727,7 +4776,7 @@ ${result.analysis.risks || "N/A"}
             </div>
 
             <div className="p-6 space-y-6">
-              {/* Profile Information Card */}
+              {/* Profile Information Card - Editable */}
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
                 <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <svg
@@ -4751,20 +4800,35 @@ ${result.analysis.risks || "N/A"}
                     <label className="block text-sm font-medium text-gray-500 mb-1">
                       Full Name
                     </label>
-
-                    <p className="text-gray-900 font-medium">
-                      {profile?.full_name}
-                    </p>
+                    <input
+                      type="text"
+                      value={formData.full_name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, full_name: e.target.value })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900"
+                    />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-500 mb-1">
                       Visual Role
                     </label>
-
-                    <p className="text-gray-900 font-medium">
-                      {profile?.visual_role || "Not Set"}
-                    </p>
+                    <select
+                      value={formData.visual_role}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          visual_role: e.target.value,
+                        })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900 bg-white"
+                    >
+                      <option value="">Select a role</option>
+                      <option value="Teacher">Teacher</option>
+                      <option value="Staff">Staff</option>
+                      <option value="Student">Student</option>
+                    </select>
                   </div>
 
                   <div className="bg-gradient-to-r from-[#427A43]/10 to-[#427A43]/5 rounded-lg p-3">
@@ -4783,10 +4847,23 @@ ${result.analysis.risks || "N/A"}
                     <label className="block text-sm font-medium text-gray-500 mb-1">
                       Theme Preference
                     </label>
-
-                    <p className="text-gray-900 font-medium capitalize">
-                      {profile?.theme_preference}
-                    </p>
+                    <select
+                      value={formData.theme_preference}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          theme_preference: e.target.value as
+                            | "light"
+                            | "dark"
+                            | "system",
+                        })
+                      }
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900 bg-white"
+                    >
+                      <option value="light">Light</option>
+                      <option value="dark">Dark</option>
+                      <option value="system">System</option>
+                    </select>
                   </div>
 
                   <div className="pt-3 border-t border-gray-100 text-sm text-gray-500">
@@ -4802,53 +4879,21 @@ ${result.analysis.risks || "N/A"}
                 </div>
               </div>
 
-              {/* Quick Actions */}
-              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
-                <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <svg
-                    className="w-5 h-5 text-blue-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
-                  Quick Actions
-                </h3>
+              {/* Save Button */}
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="w-full px-4 py-3 bg-[#427A43] text-white font-semibold rounded-lg hover:bg-[#366337] disabled:bg-gray-400 transition-colors"
+              >
+                {saving ? "Saving..." : "Save Changes"}
+              </button>
 
-                <div className="space-y-3">
-                  <button
-                    onClick={() => router.push("/profile-settings")}
-                    className="w-full flex items-center gap-3 px-4 py-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-300 text-blue-700"
-                  >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    <span className="font-medium">View Profile Settings</span>
-                  </button>
+              {/* Success Message */}
+              {successMessage && (
+                <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm text-center">
+                  {successMessage}
                 </div>
-              </div>
+              )}
 
               <button
                 onClick={handleSignOut}
