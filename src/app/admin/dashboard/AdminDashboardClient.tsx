@@ -2404,11 +2404,10 @@ ${result.analysis.risks || "N/A"}
                 )}
               </button>
 
-              {/* AI Chat Robot Icon */}
-
+              {/* AI Chat Bot Icon */}
               <button
                 onClick={() => setShowAIChat(!showAIChat)}
-                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                className="text-white hover:text-purple-300 transition-colors"
                 title="AI Assistant"
               >
                 <Bot className="w-5 h-5" />
@@ -5599,26 +5598,8 @@ ${result.analysis.risks || "N/A"}
                       </svg>
                     </button>
                   )}
-                  {/* AI Avatar with animated ring */}
-                  <div className="relative">
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 blur-sm opacity-60 animate-pulse" />
-                    <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
-                      <svg
-                        className="w-5 h-5 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-                        />
-                      </svg>
-                    </div>
-                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[#0d1117] shadow shadow-emerald-400/50" />
-                  </div>
+                  {/* AI Avatar */}
+                  <Bot className="w-5 h-5 text-white" />
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-sm text-white leading-none">
