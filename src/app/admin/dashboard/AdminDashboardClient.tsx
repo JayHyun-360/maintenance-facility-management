@@ -5871,10 +5871,8 @@ ${result.analysis.risks || "N/A"}
                   <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
                     {/* Animated orb */}
                     <div className="relative mb-6">
-                      <div className="absolute inset-0 w-20 h-20 rounded-2xl bg-purple-500 blur-xl opacity-50 animate-pulse" />
-                      <div className="relative w-20 h-20 rounded-2xl bg-purple-600 flex items-center justify-center shadow-2xl shadow-purple-500/40">
-                        <Bot className="w-9 h-9 text-white" />
-                      </div>
+                      <div className="absolute inset-0 rounded-full bg-purple-500 blur-xl opacity-50 animate-pulse" />
+                      <Bot className="relative w-16 h-16 text-purple-400 drop-shadow-lg" />
                     </div>
                     <h2 className="text-lg font-bold text-white mb-1">
                       Hi, I'm your AI Assistant
@@ -5966,10 +5964,8 @@ ${result.analysis.risks || "N/A"}
                       {message.role === "assistant" ? (
                         <div className="flex-shrink-0 mt-1">
                           <div className="relative">
-                            <div className="absolute inset-0 rounded-md bg-purple-500 blur-sm opacity-60 animate-pulse" />
-                            <div className="relative w-6 h-6 rounded-md bg-purple-600 flex items-center justify-center shadow shadow-purple-500/30">
-                              <Bot className="w-3.5 h-3.5 text-white" />
-                            </div>
+                            <div className="absolute inset-0 rounded-full bg-purple-500 blur-sm opacity-60 animate-pulse" />
+                            <Bot className="relative w-5 h-5 text-purple-400 drop-shadow-lg" />
                           </div>
                         </div>
                       ) : (
