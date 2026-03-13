@@ -6173,18 +6173,16 @@ ${result.analysis.risks || "N/A"}
                           {message.role === "user" ? (
                             editingMessageId === index ? (
                               <div className="relative">
-                                <input
-                                  type="text"
+                                <textarea
                                   value={editingMessageText}
                                   onChange={(e) =>
                                     setEditingMessageText(e.target.value)
                                   }
-                                  onKeyDown={(e) => {
-                                    if (e.key === "Enter" && !e.shiftKey) {
-                                      e.preventDefault();
-                                    }
-                                  }}
-                                  className="w-full bg-transparent border-none text-sm text-white resize-none focus:outline-none"
+                                  className="w-full bg-[#2D3A52] text-sm text-white resize-none focus:outline-none rounded-2xl px-3.5 py-2.5"
+                                  rows={Math.max(
+                                    1,
+                                    editingMessageText.split("\n").length,
+                                  )}
                                   autoFocus
                                 />
                                 <div className="flex gap-2 mt-2">
