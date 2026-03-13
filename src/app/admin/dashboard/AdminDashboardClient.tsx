@@ -202,6 +202,18 @@ export default function AdminDashboardClient({
     null,
   );
 
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => {
+      setMessageOptionsMenu(null);
+      setShowModelSelector(false);
+    };
+    if (messageOptionsMenu !== null || showModelSelector) {
+      document.addEventListener("click", handleClickOutside);
+      return () => document.removeEventListener("click", handleClickOutside);
+    }
+  }, [messageOptionsMenu, showModelSelector]);
+
   // Load conversations when chat opens
   useEffect(() => {
     if (showAIChat) {
@@ -6166,7 +6178,7 @@ ${result.analysis.risks || "N/A"}
                                   onChange={(e) =>
                                     setEditingMessageText(e.target.value)
                                   }
-                                  className="w-full bg-white/10 border border-green-500/50 rounded-lg px-3 py-2 text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                                  className="w-full bg-[#2D3A52] border border-slate-600/40 rounded-2xl px-3.5 py-2.5 text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-green-500/50"
                                   rows={3}
                                   autoFocus
                                 />
@@ -6389,7 +6401,10 @@ ${result.analysis.risks || "N/A"}
                           </button>
                           {/* Message Options Dropdown */}
                           {messageOptionsMenu === index && (
-                            <div className="absolute right-0 top-8 bg-[#1E293B] border border-slate-600 rounded-lg shadow-xl z-50 py-1 min-w-[140px]">
+                            <div
+                              className="absolute right-0 top-6 bg-[#1E293B] border border-slate-600 rounded-lg shadow-xl z-50 py-0.5 min-w-[100px]"
+                              onClick={(e) => e.stopPropagation()}
+                            >
                               {message.role === "assistant" ? (
                                 <button
                                   onClick={async (e) => {
@@ -6453,7 +6468,7 @@ ${result.analysis.risks || "N/A"}
                                       }
                                     }
                                   }}
-                                  className="w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-white/10 flex items-center gap-2"
+                                  className="w-full text-left px-2 py-1.5 text-xs text-white/80 hover:bg-white/10 flex items-center gap-1.5"
                                 >
                                   <svg
                                     className="w-4 h-4"
@@ -6479,10 +6494,10 @@ ${result.analysis.risks || "N/A"}
                                       setEditingMessageId(index);
                                       setEditingMessageText(message.content);
                                     }}
-                                    className="w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-white/10 flex items-center gap-2"
+                                    className="w-full text-left px-2 py-1.5 text-xs text-white/80 hover:bg-white/10 flex items-center gap-1.5"
                                   >
                                     <svg
-                                      className="w-4 h-4"
+                                      className="w-3 h-3"
                                       fill="none"
                                       stroke="currentColor"
                                       viewBox="0 0 24 24"
@@ -6509,10 +6524,10 @@ ${result.analysis.risks || "N/A"}
                                         ),
                                       );
                                     }}
-                                    className="w-full text-left px-3 py-2 text-sm text-red-400 hover:bg-white/10 flex items-center gap-2"
+                                    className="w-full text-left px-2 py-1.5 text-xs text-red-400 hover:bg-white/10 flex items-center gap-1.5"
                                   >
                                     <svg
-                                      className="w-4 h-4"
+                                      className="w-3 h-3"
                                       fill="none"
                                       stroke="currentColor"
                                       viewBox="0 0 24 24"
@@ -6637,7 +6652,7 @@ ${result.analysis.risks || "N/A"}
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
-                        <span className="text-green-300 text-sm whitespace-nowrap">
+                        <span className="text-green-300/60 text-xs whitespace-nowrap">
                           {aiStatusText || "Generating response..."}
                         </span>
                       </div>
