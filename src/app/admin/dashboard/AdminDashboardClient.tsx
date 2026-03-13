@@ -532,6 +532,31 @@ export default function AdminDashboardClient({
   const [saving, setSaving] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Avatar upload state
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+
+  // Password change state
+  const [showPasswordSection, setShowPasswordSection] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
+
+  // Validation state
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
+
+  // Track original form data for unsaved changes detection
+  const [originalFormData, setOriginalFormData] = useState({
+    full_name: initialProfile?.full_name || "",
+    visual_role: initialProfile?.visual_role || "",
+    theme_preference: initialProfile?.theme_preference || "light",
+  });
+
   const handleSave = async () => {
     setSaving(true);
     setSuccessMessage("");
@@ -567,6 +592,142 @@ export default function AdminDashboardClient({
       setSaving(false);
     }
   };
+
+  // Avatar upload handler
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !initialProfile) return;
+
+    if (!file.type.startsWith("image/")) {
+      setValidationErrors({
+        ...validationErrors,
+        avatar: "Please select an image file",
+      });
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      setValidationErrors({
+        ...validationErrors,
+        avatar: "Image must be less than 2MB",
+      });
+      return;
+    }
+
+    setUploadingAvatar(true);
+    setValidationErrors({ ...validationErrors, avatar: "" });
+
+    try {
+      const fileName = `${initialProfile.id}/avatar/${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("avatars").getPublicUrl(fileName);
+
+      await (supabase.from("profiles") as any)
+        .update({ avatar_url: publicUrl })
+        .eq("id", initialProfile.id);
+
+      setInitialProfile({ ...initialProfile, avatar_url: publicUrl });
+      setAvatarPreview(null);
+      router.refresh();
+    } catch (error) {
+      console.error("Avatar upload error:", error);
+      setValidationErrors({
+        ...validationErrors,
+        avatar: "Failed to upload avatar",
+      });
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  // Password change handler
+  const handlePasswordChange = async () => {
+    setPasswordError("");
+    setPasswordSuccess("");
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPasswordError("All fields are required");
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setPasswordError("New password must be at least 6 characters");
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("New passwords do not match");
+      return;
+    }
+
+    setChangingPassword(true);
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) throw error;
+
+      setPasswordSuccess("Password changed successfully!");
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+      setTimeout(() => {
+        setShowPasswordSection(false);
+        setPasswordSuccess("");
+      }, 2000);
+    } catch (error: any) {
+      setPasswordError(error.message || "Failed to change password");
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
+  // Data export handler
+  const handleExportData = async () => {
+    if (!initialProfile) return;
+
+    const exportData = {
+      profile: {
+        full_name: initialProfile.full_name,
+        visual_role: initialProfile.visual_role,
+        created_at: initialProfile.created_at,
+      },
+      exported_at: new Date().toISOString(),
+    };
+
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `my-data-${new Date().toISOString().split("T")[0]}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // Validate form fields
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+    if (!formData.full_name.trim()) {
+      errors.full_name = "Full name is required";
+    }
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  // Check for unsaved changes
+  const hasUnsavedChanges =
+    JSON.stringify(formData) !== JSON.stringify(originalFormData);
 
   const profileViewerRef = useRef<HTMLDivElement>(null);
 
@@ -614,6 +775,19 @@ export default function AdminDashboardClient({
 
     return () => clearInterval(interval);
   }, []);
+
+  // Unsaved changes warning
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [hasUnsavedChanges]);
 
   const fetchNotifications = async () => {
     console.log("Fetching notifications for admin:", userId);
@@ -4854,7 +5028,7 @@ ${result.analysis.risks || "N/A"}
         />
 
         <div
-          className={`fixed top-0 left-0 h-full w-96 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showProfileSidebar ? "translate-x-0" : "-translate-x-full"}`}
+          className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showProfileSidebar ? "translate-x-0" : "-translate-x-full"}`}
         >
           <div className="h-full overflow-y-auto">
             <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
@@ -4905,6 +5079,72 @@ ${result.analysis.risks || "N/A"}
                 </h3>
 
                 <div className="space-y-4">
+                  {/* Avatar Upload */}
+                  <div className="flex flex-col items-center py-4">
+                    <div className="relative">
+                      <div className="w-24 h-24 rounded-full bg-gray-200 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center">
+                        {initialProfile?.avatar_url || userAvatar ? (
+                          <img
+                            src={
+                              avatarPreview ||
+                              initialProfile?.avatar_url ||
+                              userAvatar ||
+                              ""
+                            }
+                            alt="Profile"
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-3xl font-bold text-gray-400">
+                            {initialProfile?.full_name
+                              ?.charAt(0)
+                              .toUpperCase() || "A"}
+                          </span>
+                        )}
+                      </div>
+                      <label
+                        htmlFor="avatar-upload"
+                        className="absolute bottom-0 right-0 bg-[#427A43] text-white p-2 rounded-full cursor-pointer hover:bg-[#366337] transition-colors shadow-md"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                        <input
+                          id="avatar-upload"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleAvatarUpload}
+                          disabled={uploadingAvatar}
+                        />
+                      </label>
+                    </div>
+                    {uploadingAvatar && (
+                      <p className="text-sm text-gray-500 mt-2">Uploading...</p>
+                    )}
+                    {validationErrors.avatar && (
+                      <p className="text-sm text-red-500 mt-2">
+                        {validationErrors.avatar}
+                      </p>
+                    )}
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-500 mb-1">
                       Full Name
@@ -5004,26 +5244,133 @@ ${result.analysis.risks || "N/A"}
                 </div>
               )}
 
-              <button
-                onClick={handleSignOut}
-                className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-red-50 hover:bg-red-100 rounded-lg transition-all duration-300 transform hover:scale-[1.02] text-red-600"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+              {/* Password Change Section */}
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                <button
+                  onClick={() => setShowPasswordSection(!showPasswordSection)}
+                  className="w-full flex items-center justify-between text-left"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                  />
-                </svg>
+                  <h3 className="font-header text-sm font-semibold text-gray-900 flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4 text-gray-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"
+                      />
+                    </svg>
+                    Change Password
+                  </h3>
+                  <svg
+                    className={`w-5 h-5 text-gray-500 transition-transform ${showPasswordSection ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
 
-                <span className="font-medium">Sign Out</span>
-              </button>
+                {showPasswordSection && (
+                  <div className="mt-4 space-y-3">
+                    <input
+                      type="password"
+                      placeholder="Current password"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
+                    />
+                    <input
+                      type="password"
+                      placeholder="New password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
+                    />
+                    <input
+                      type="password"
+                      placeholder="Confirm new password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
+                    />
+                    {passwordError && (
+                      <p className="text-sm text-red-500">{passwordError}</p>
+                    )}
+                    {passwordSuccess && (
+                      <p className="text-sm text-green-600">
+                        {passwordSuccess}
+                      </p>
+                    )}
+                    <button
+                      onClick={handlePasswordChange}
+                      disabled={changingPassword}
+                      className="w-full px-4 py-2 bg-[#427A43] text-white text-sm font-medium rounded-lg hover:bg-[#366337] disabled:bg-gray-400 transition-colors"
+                    >
+                      {changingPassword ? "Changing..." : "Update Password"}
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Data Export Section */}
+              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                <h3 className="font-header text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                  <svg
+                    className="w-4 h-4 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                    />
+                  </svg>
+                  Your Data
+                </h3>
+                <p className="text-xs text-gray-500 mb-3">
+                  Download a copy of your admin profile data.
+                </p>
+                <button
+                  onClick={handleExportData}
+                  className="w-full px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                    />
+                  </svg>
+                  Export Data
+                </button>
+              </div>
+
+              {/* Unsaved Changes Warning */}
+              {hasUnsavedChanges && (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm text-center">
+                  You have unsaved changes
+                </div>
+              )}
             </div>
           </div>
         </div>
