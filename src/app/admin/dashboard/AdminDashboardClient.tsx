@@ -2404,10 +2404,11 @@ ${result.analysis.risks || "N/A"}
                 )}
               </button>
 
-              {/* AI Chat Bot Icon */}
+              {/* AI Chat Robot Icon */}
+
               <button
                 onClick={() => setShowAIChat(!showAIChat)}
-                className="text-white hover:text-purple-300 transition-colors"
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                 title="AI Assistant"
               >
                 <Bot className="w-5 h-5" />
@@ -5598,8 +5599,14 @@ ${result.analysis.risks || "N/A"}
                       </svg>
                     </button>
                   )}
-                  {/* AI Avatar */}
-                  <Bot className="w-5 h-5 text-white" />
+                  {/* AI Avatar with animated ring */}
+                  <div className="relative">
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 blur-sm opacity-60 animate-pulse" />
+                    <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
+                      <Bot className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[#0d1117] shadow shadow-emerald-400/50" />
+                  </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-sm text-white leading-none">
