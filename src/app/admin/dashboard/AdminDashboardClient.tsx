@@ -4727,14 +4727,28 @@ ${result.analysis.risks || "N/A"}
             </div>
 
             <div className="p-6 space-y-6">
+              {/* Profile Information Card */}
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
-                <h3 className="font-header text-lg font-semibold text-gray-900 mb-4">
+                <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <svg
+                    className="w-5 h-5 text-[#427A43]"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                    />
+                  </svg>
                   Your Profile
                 </h3>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                    <label className="block text-sm font-medium text-gray-500 mb-1">
                       Full Name
                     </label>
 
@@ -4744,7 +4758,7 @@ ${result.analysis.risks || "N/A"}
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                    <label className="block text-sm font-medium text-gray-500 mb-1">
                       Visual Role
                     </label>
 
@@ -4753,18 +4767,20 @@ ${result.analysis.risks || "N/A"}
                     </p>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                  <div className="bg-gradient-to-r from-[#427A43]/10 to-[#427A43]/5 rounded-lg p-3">
+                    <label className="block text-sm font-medium text-gray-500 mb-1">
                       Access Mode
                     </label>
 
-                    <span className="px-3 py-1 bg-[#427A43] text-white text-sm font-medium rounded-full">
-                      Administrator
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1 bg-[#427A43] text-white text-sm font-medium rounded-full">
+                        Administrator
+                      </span>
+                    </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-600 mb-1">
+                    <label className="block text-sm font-medium text-gray-500 mb-1">
                       Theme Preference
                     </label>
 
@@ -4773,7 +4789,7 @@ ${result.analysis.risks || "N/A"}
                     </p>
                   </div>
 
-                  <div className="text-sm text-gray-500">
+                  <div className="pt-3 border-t border-gray-100 text-sm text-gray-500">
                     <p>
                       Account created:{" "}
                       {profile?.created_at ? (
@@ -4786,37 +4802,52 @@ ${result.analysis.risks || "N/A"}
                 </div>
               </div>
 
-              {/* Access Mode Management */}
-
-              <div className="bg-white rounded-xl p-6 border-2 border-amber-200 shadow-sm transition-all duration-300 hover:shadow-md">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  ⚙️ Access Mode Management
+              {/* Quick Actions */}
+              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
+                <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <svg
+                    className="w-5 h-5 text-blue-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
+                  </svg>
+                  Quick Actions
                 </h3>
 
-                <p className="text-sm text-gray-600 mb-4">
-                  As an administrator, you can switch between admin and user
-                  modes to test different user experiences.
-                </p>
-
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
-                  <p className="text-xs text-amber-800">
-                    <strong>Note:</strong> Switching modes will update your
-                    profile and maintain your user data. You can switch back at
-                    any time.
-                  </p>
+                <div className="space-y-3">
+                  <button
+                    onClick={() => router.push("/profile-settings")}
+                    className="w-full flex items-center gap-3 px-4 py-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-all duration-300 text-blue-700"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                    <span className="font-medium">View Profile Settings</span>
+                  </button>
                 </div>
-
-                <button
-                  onClick={() => router.push("/profile-settings")}
-                  className="w-full px-4 py-2.5 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition-all duration-300"
-                >
-                  Switch to User Mode
-                </button>
-
-                <p className="text-xs text-gray-500 text-center mt-3">
-                  When in user mode, you can experience the interface as regular
-                  users do
-                </p>
               </div>
 
               <button

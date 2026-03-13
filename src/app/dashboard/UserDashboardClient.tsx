@@ -1525,11 +1525,10 @@ export default function UserDashboardClient({
 
             <div className="p-6 space-y-6">
               {/* Profile Information */}
-
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
                 <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <svg
-                    className="w-5 h-5 text-purple-600"
+                    className="w-5 h-5 text-[#427A43]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -1546,7 +1545,7 @@ export default function UserDashboardClient({
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <label className="block text-sm font-medium text-gray-500 mb-1 flex items-center gap-2">
                       <svg
                         className="w-4 h-4 text-gray-400"
                         fill="none"
@@ -1569,7 +1568,7 @@ export default function UserDashboardClient({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <label className="block text-sm font-medium text-gray-500 mb-1 flex items-center gap-2">
                       <svg
                         className="w-4 h-4 text-gray-400"
                         fill="none"
@@ -1591,7 +1590,7 @@ export default function UserDashboardClient({
                     </p>
                   </div>
 
-                  <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
+                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
                     <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                       <svg
                         className="w-4 h-4 text-blue-600"
@@ -1614,7 +1613,6 @@ export default function UserDashboardClient({
                         <p className="text-lg font-bold text-blue-900">
                           {isAdmin ? "Administrator" : "Regular User"}
                         </p>
-
                         <p className="text-sm text-blue-700">
                           {isAdmin
                             ? "You have full access to admin dashboard"
@@ -1634,7 +1632,7 @@ export default function UserDashboardClient({
 
                   {!isAdmin && profile?.educational_level && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                      <label className="block text-sm font-medium text-gray-500 mb-1 flex items-center gap-2">
                         <svg
                           className="w-4 h-4 text-gray-400"
                           fill="none"
@@ -1659,7 +1657,7 @@ export default function UserDashboardClient({
 
                   {!isAdmin && profile?.department && (
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                      <label className="block text-sm font-medium text-gray-500 mb-1 flex items-center gap-2">
                         <svg
                           className="w-4 h-4 text-gray-400"
                           fill="none"
@@ -1683,7 +1681,7 @@ export default function UserDashboardClient({
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
+                    <label className="block text-sm font-medium text-gray-500 mb-1 flex items-center gap-2">
                       <svg
                         className="w-4 h-4 text-gray-400"
                         fill="none"
@@ -1705,7 +1703,7 @@ export default function UserDashboardClient({
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-gray-200 text-sm text-gray-500">
+                  <div className="pt-3 border-t border-gray-100 text-sm text-gray-500">
                     Account created:{" "}
                     {profile?.created_at
                       ? new Date(profile.created_at).toLocaleDateString()
@@ -1715,48 +1713,6 @@ export default function UserDashboardClient({
               </div>
 
               {/* Mode Switching */}
-
-              {isAdmin && (
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
-                  <h3 className="font-header text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                    <svg
-                      className="w-5 h-5 text-amber-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                      />
-
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                    </svg>
-                    Access Mode Management
-                  </h3>
-
-                  <p className="text-gray-600 text-sm mb-4">
-                    As an administrator, you can switch between admin and user
-                    modes to test different user experiences.
-                  </p>
-
-                  <button
-                    onClick={handleAdminModeSwitch}
-                    disabled={loading}
-                    className="w-full px-4 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 disabled:bg-gray-400 transition-colors"
-                  >
-                    {loading ? "Switching..." : "Switch to User Mode"}
-                  </button>
-                </div>
-              )}
-
               {!isAdmin && profile?.database_role === "admin" && (
                 <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
                   <h3 className="font-header text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">

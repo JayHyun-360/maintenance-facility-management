@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { switchAdminMode } from "./actions";
+import { switchAdminMode, updateProfile } from "./actions";
 import { createClient } from "@/lib/supabase/client";
 import type { Profile } from "@/types/database";
 
@@ -11,14 +11,64 @@ interface ProfileSettingsClientProps {
   isAdmin: boolean;
 }
 
+const VISUAL_ROLES = ["Teacher", "Staff", "Student"];
+const THEME_PREFERENCES = ["light", "dark", "system"];
+
 export default function ProfileSettingsClient({
   profile,
   isAdmin,
 }: ProfileSettingsClientProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmType, setConfirmType] = useState<"admin" | "user" | null>(null);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Editable form state
+  const [formData, setFormData] = useState({
+    full_name: profile.full_name || "",
+    visual_role: profile.visual_role || "",
+    theme_preference: (profile.theme_preference || "light") as
+      | "light"
+      | "dark"
+      | "system",
+  });
+
+  const handleSave = async () => {
+    setSaving(true);
+    setSuccessMessage("");
+    try {
+      const result = await updateProfile({
+        full_name: formData.full_name,
+        visual_role: formData.visual_role,
+        theme_preference: formData.theme_preference,
+      });
+
+      if (!result.success) {
+        alert(`Error: ${result.error}`);
+        return;
+      }
+
+      setSuccessMessage("Profile updated successfully!");
+
+      // Refresh the JWT session to reflect changes
+      const supabase = createClient()!;
+      await supabase.auth.refreshSession();
+
+      // Refresh the page to get updated data
+      router.refresh();
+
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (error) {
+      console.error("Save error:", error);
+      alert(
+        `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleModeSwitch = async (enableAdmin: boolean) => {
     setLoading(true);
@@ -98,6 +148,13 @@ export default function ProfileSettingsClient({
       </div>
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Success Message */}
+        {successMessage && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-center">
+            {successMessage}
+          </div>
+        )}
+
         {/* Profile Information Card */}
         <div className="bg-white rounded-xl shadow-sm p-8 mb-8">
           <h2 className="font-header text-2xl font-bold text-gray-900 mb-6">
@@ -110,20 +167,38 @@ export default function ProfileSettingsClient({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Full Name
               </label>
-              <p className="text-lg text-gray-900">{profile.full_name}</p>
+              <input
+                type="text"
+                value={formData.full_name}
+                onChange={(e) =>
+                  setFormData({ ...formData, full_name: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-lg text-gray-900"
+              />
             </div>
 
-            {/* Email (from auth) */}
+            {/* Visual Role */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Visual Role
               </label>
-              <p className="text-lg text-gray-900">
-                {profile.visual_role || "Not Set"}
-              </p>
+              <select
+                value={formData.visual_role}
+                onChange={(e) =>
+                  setFormData({ ...formData, visual_role: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-lg text-gray-900 bg-white"
+              >
+                <option value="">Select a role</option>
+                {VISUAL_ROLES.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
             </div>
 
-            {/* Database Role - CURRENT MODE */}
+            {/* Database Role - CURRENT MODE (Read-only) */}
             <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Current Access Mode
@@ -149,7 +224,7 @@ export default function ProfileSettingsClient({
               </div>
             </div>
 
-            {/* Educational Level */}
+            {/* Educational Level (Read-only) */}
             {!isAdmin && profile.educational_level && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -161,7 +236,7 @@ export default function ProfileSettingsClient({
               </div>
             )}
 
-            {/* Department */}
+            {/* Department (Read-only) */}
             {!isAdmin && profile.department && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -176,9 +251,25 @@ export default function ProfileSettingsClient({
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Theme Preference
               </label>
-              <p className="text-lg text-gray-900 capitalize">
-                {profile.theme_preference}
-              </p>
+              <select
+                value={formData.theme_preference}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    theme_preference: e.target.value as
+                      | "light"
+                      | "dark"
+                      | "system",
+                  })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-lg text-gray-900 bg-white"
+              >
+                {THEME_PREFERENCES.map((theme) => (
+                  <option key={theme} value={theme}>
+                    {theme.charAt(0).toUpperCase() + theme.slice(1)}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="text-sm text-gray-500">
@@ -190,40 +281,16 @@ export default function ProfileSettingsClient({
           </div>
         </div>
 
-        {/* Mode Switch Card */}
-        {isAdmin && (
-          <div className="bg-white rounded-xl shadow-sm p-8 border-2 border-amber-200">
-            <h3 className="font-header text-xl font-bold text-gray-900 mb-4">
-              ⚙️ Access Mode Management
-            </h3>
-            <p className="text-gray-600 mb-6">
-              As an administrator, you can switch between admin and user modes
-              to test different user experiences. This will update your access
-              level and redirect you to the appropriate dashboard.
-            </p>
+        {/* Save Button */}
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="w-full px-6 py-3 bg-[#427A43] text-white font-semibold rounded-lg hover:bg-[#366337] disabled:bg-gray-400 transition-colors mb-8"
+        >
+          {saving ? "Saving..." : "Save Changes"}
+        </button>
 
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
-              <p className="text-sm text-amber-800">
-                <strong>Note:</strong> Switching modes will update your profile
-                and maintain your user data. You can switch back at any time.
-              </p>
-            </div>
-
-            <button
-              onClick={handleSwitchToUserMode}
-              disabled={loading || !isAdmin}
-              className="w-full px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 disabled:bg-gray-400 transition-colors"
-            >
-              {loading ? "Switching..." : "Switch to User Mode"}
-            </button>
-
-            <p className="text-sm text-gray-500 text-center mt-4">
-              When in user mode, you can experience the interface as regular
-              users do
-            </p>
-          </div>
-        )}
-
+        {/* Admin Access Available */}
         {!isAdmin && profile.database_role === "admin" && (
           <div className="bg-white rounded-xl shadow-sm p-8 border-2 border-blue-200">
             <h3 className="font-header text-xl font-bold text-gray-900 mb-4">
