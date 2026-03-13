@@ -196,6 +196,11 @@ export default function AdminDashboardClient({
     string | null
   >(null);
   const [aiStatusText, setAiStatusText] = useState("");
+  const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
+  const [editingMessageText, setEditingMessageText] = useState("");
+  const [messageOptionsMenu, setMessageOptionsMenu] = useState<number | null>(
+    null,
+  );
 
   // Load conversations when chat opens
   useEffect(() => {
@@ -6154,9 +6159,106 @@ ${result.analysis.risks || "N/A"}
                               </div>
                             )}
                           {message.role === "user" ? (
-                            <p className="text-sm whitespace-pre-wrap pr-8 text-white">
-                              {message.content}
-                            </p>
+                            editingMessageId === index ? (
+                              <div className="pr-8">
+                                <textarea
+                                  value={editingMessageText}
+                                  onChange={(e) =>
+                                    setEditingMessageText(e.target.value)
+                                  }
+                                  className="w-full bg-white/10 border border-green-500/50 rounded-lg px-3 py-2 text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-green-500/50"
+                                  rows={3}
+                                  autoFocus
+                                />
+                                <div className="flex gap-2 mt-2">
+                                  <button
+                                    onClick={async () => {
+                                      // Update the message content
+                                      const updatedMessages = [...aiMessages];
+                                      updatedMessages[index] = {
+                                        ...message,
+                                        content: editingMessageText,
+                                      };
+                                      // Remove all messages after this user message (including assistant responses)
+                                      const newMessages = updatedMessages.slice(
+                                        0,
+                                        index + 1,
+                                      );
+                                      setAiMessages(newMessages);
+                                      setEditingMessageId(null);
+                                      setEditingMessageText("");
+                                      // Resend to AI
+                                      setAiLoading(true);
+                                      setAiStatusText("Generating response...");
+                                      try {
+                                        const response = await fetch(
+                                          "/api/ai/chat",
+                                          {
+                                            method: "POST",
+                                            headers: {
+                                              "Content-Type":
+                                                "application/json",
+                                            },
+                                            body: JSON.stringify({
+                                              message: editingMessageText,
+                                              conversationId:
+                                                currentConversationId,
+                                              model: selectedModel,
+                                            }),
+                                          },
+                                        );
+                                        const result = await response.json();
+                                        if (result.success) {
+                                          setAiMessages((prev) => [
+                                            ...prev,
+                                            {
+                                              role: "assistant",
+                                              content: result.response,
+                                            },
+                                          ]);
+                                          if (currentConversationId) {
+                                            await saveMessage(
+                                              currentConversationId,
+                                              "user",
+                                              editingMessageText,
+                                            );
+                                            await saveMessage(
+                                              currentConversationId,
+                                              "assistant",
+                                              result.response,
+                                            );
+                                          }
+                                        }
+                                      } catch (error) {
+                                        console.error(
+                                          "Edit resend error:",
+                                          error,
+                                        );
+                                      } finally {
+                                        setAiLoading(false);
+                                        setAiStatusText("");
+                                      }
+                                    }}
+                                    className="px-3 py-1 bg-green-600 text-white text-xs rounded-md hover:bg-green-500 transition-colors"
+                                  >
+                                    Save & Resend
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      setEditingMessageId(null);
+                                      setEditingMessageText("");
+                                    }}
+                                    className="px-3 py-1 bg-white/10 text-white/70 text-xs rounded-md hover:bg-white/20 transition-colors"
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                              </div>
+                            ) : (
+                              <p className="text-sm whitespace-pre-wrap pr-8 text-white">
+                                {message.content}
+                              </p>
+                            )
                           ) : (
                             <div className="text-sm prose prose-sm max-w-none prose-invert prose-headings:font-semibold prose-strong:font-bold prose-ul:list-disc prose-ol:list-decimal prose-li:ml-2">
                               <ReactMarkdown
@@ -6266,6 +6368,12 @@ ${result.analysis.risks || "N/A"}
                             )}
                           </button>
                           <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setMessageOptionsMenu(
+                                messageOptionsMenu === index ? null : index,
+                              );
+                            }}
                             className="p-1 rounded text-white/40 hover:text-white hover:bg-white/10 transition-all"
                             title="More options"
                           >
@@ -6279,6 +6387,149 @@ ${result.analysis.risks || "N/A"}
                               <circle cx="12" cy="19" r="1.5" />
                             </svg>
                           </button>
+                          {/* Message Options Dropdown */}
+                          {messageOptionsMenu === index && (
+                            <div className="absolute right-0 top-8 bg-[#1E293B] border border-slate-600 rounded-lg shadow-xl z-50 py-1 min-w-[140px]">
+                              {message.role === "assistant" ? (
+                                <button
+                                  onClick={async (e) => {
+                                    e.stopPropagation();
+                                    setMessageOptionsMenu(null);
+                                    // Find the last user message to regenerate response
+                                    const lastUserMsg = [...aiMessages]
+                                      .reverse()
+                                      .find((m) => m.role === "user");
+                                    if (lastUserMsg) {
+                                      setAiLoading(true);
+                                      setAiStatusText(
+                                        "Regenerating response...",
+                                      );
+                                      // Remove the current assistant message
+                                      setAiMessages((prev) =>
+                                        prev.filter((_, i) => i !== index),
+                                      );
+                                      try {
+                                        const response = await fetch(
+                                          "/api/ai/chat",
+                                          {
+                                            method: "POST",
+                                            headers: {
+                                              "Content-Type":
+                                                "application/json",
+                                            },
+                                            body: JSON.stringify({
+                                              message: lastUserMsg.content,
+                                              conversationId:
+                                                currentConversationId,
+                                              model: selectedModel,
+                                            }),
+                                          },
+                                        );
+                                        const result = await response.json();
+                                        if (result.success) {
+                                          setAiMessages((prev) => [
+                                            ...prev,
+                                            {
+                                              role: "assistant",
+                                              content: result.response,
+                                            },
+                                          ]);
+                                          if (currentConversationId) {
+                                            await saveMessage(
+                                              currentConversationId,
+                                              "assistant",
+                                              result.response,
+                                            );
+                                          }
+                                        }
+                                      } catch (error) {
+                                        console.error(
+                                          "Regenerate error:",
+                                          error,
+                                        );
+                                      } finally {
+                                        setAiLoading(false);
+                                        setAiStatusText("");
+                                      }
+                                    }
+                                  }}
+                                  className="w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-white/10 flex items-center gap-2"
+                                >
+                                  <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                    />
+                                  </svg>
+                                  Regenerate
+                                </button>
+                              ) : (
+                                <>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setMessageOptionsMenu(null);
+                                      setEditingMessageId(index);
+                                      setEditingMessageText(message.content);
+                                    }}
+                                    className="w-full text-left px-3 py-2 text-sm text-white/80 hover:bg-white/10 flex items-center gap-2"
+                                  >
+                                    <svg
+                                      className="w-4 h-4"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                                      />
+                                    </svg>
+                                    Edit
+                                  </button>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setMessageOptionsMenu(null);
+                                      // Delete this user message and any assistant responses after it
+                                      const msgIndex = index;
+                                      setAiMessages((prev) =>
+                                        prev.filter(
+                                          (_, i) =>
+                                            i <= msgIndex && i !== msgIndex,
+                                        ),
+                                      );
+                                    }}
+                                    className="w-full text-left px-3 py-2 text-sm text-red-400 hover:bg-white/10 flex items-center gap-2"
+                                  >
+                                    <svg
+                                      className="w-4 h-4"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                      />
+                                    </svg>
+                                    Delete
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          )}
                         </div>
                         {/* Quick Actions for last AI response */}
                         {message.role === "assistant" &&
