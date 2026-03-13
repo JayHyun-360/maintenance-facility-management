@@ -5476,7 +5476,7 @@ ${result.analysis.risks || "N/A"}
                           setCurrentConversationId(null);
                           loadConversations();
                         }}
-                        className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-white/80 hover:bg-purple-500/20 hover:text-purple-300 mb-3 flex items-center gap-2 border border-dashed border-white/20 hover:border-purple-500/50 transition-all"
+                        className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-white/80 hover:bg-green-500/20 hover:text-green-300 mb-3 flex items-center gap-2 border border-dashed border-white/20 hover:border-green-500/50 transition-all"
                       >
                         <svg
                           className="w-4 h-4"
@@ -5504,7 +5504,7 @@ ${result.analysis.risks || "N/A"}
                               key={conv.id}
                               className={`w-full text-left px-3 py-2.5 rounded-lg text-sm truncate flex items-center justify-between group cursor-pointer transition-all ${
                                 currentConversationId === conv.id
-                                  ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                                  ? "bg-green-500/20 text-green-300 border border-green-500/30"
                                   : "text-white/70 hover:bg-white/5 border border-transparent"
                               }`}
                             >
@@ -5614,15 +5614,15 @@ ${result.analysis.risks || "N/A"}
                   )}
                   {/* AI Bot Icon with glow */}
                   <div className="relative">
-                    <div className="absolute inset-0 rounded-full bg-purple-500 blur-md opacity-60 animate-pulse" />
-                    <Bot className="relative w-5 h-5 text-purple-400 drop-shadow-lg" />
+                    <div className="absolute inset-0 rounded-full bg-green-500 blur-md opacity-60 animate-pulse" />
+                    <Bot className="relative w-5 h-5 text-green-400 drop-shadow-lg" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-sm text-white leading-none">
                         AI Assistant
                       </h3>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 font-medium">
+                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-300 font-medium">
                         {selectedModel
                           .replace("gemini-", "")
                           .replace("-flash", "F")
@@ -5635,7 +5635,7 @@ ${result.analysis.risks || "N/A"}
                   {/* Search Button */}
                   <button
                     onClick={() => setShowSearch(!showSearch)}
-                    className={`p-1.5 rounded-md transition-all ${showSearch ? "bg-purple-500/20 text-purple-300" : "text-white/60 hover:text-white hover:bg-white/10"}`}
+                    className={`p-1.5 rounded-md transition-all ${showSearch ? "bg-green-500/20 text-green-300" : "text-white/60 hover:text-white hover:bg-white/10"}`}
                     title="Search"
                   >
                     <svg
@@ -5788,7 +5788,7 @@ ${result.analysis.risks || "N/A"}
                       value={aiSearchQuery}
                       onChange={(e) => setAiSearchQuery(e.target.value)}
                       placeholder="Search messages..."
-                      className="w-full pl-8 pr-8 py-1.5 bg-[#1E293B] border border-slate-700 rounded-md text-white placeholder-white/40 text-xs focus:outline-none focus:ring-1 focus:ring-purple-500/50"
+                      className="w-full pl-8 pr-8 py-1.5 bg-[#1E293B] border border-slate-700 rounded-md text-white placeholder-white/40 text-xs focus:outline-none focus:ring-1 focus:ring-green-500/50"
                     />
                     {aiSearchQuery && (
                       <button
@@ -5867,8 +5867,8 @@ ${result.analysis.risks || "N/A"}
                   <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
                     {/* Animated orb */}
                     <div className="relative mb-6">
-                      <div className="absolute inset-0 rounded-full bg-purple-500 blur-xl opacity-50 animate-pulse" />
-                      <Bot className="relative w-16 h-16 text-purple-400 drop-shadow-lg" />
+                      <div className="absolute inset-0 rounded-full bg-green-500 blur-xl opacity-50 animate-pulse" />
+                      <Bot className="relative w-16 h-16 text-green-400 drop-shadow-lg" />
                     </div>
                     <h2 className="text-lg font-bold text-white mb-1">
                       Hi, I'm your AI Assistant
@@ -5884,25 +5884,25 @@ ${result.analysis.risks || "N/A"}
                           icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
                           label: "Analyze trends",
                           color:
-                            "from-purple-500/20 to-indigo-500/10 border-purple-500/20",
+                            "from-green-500/20 to-emerald-500/10 border-green-500/20",
                         },
                         {
                           icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2",
                           label: "Review requests",
                           color:
-                            "from-purple-500/20 to-indigo-500/10 border-purple-500/20",
+                            "from-green-500/20 to-emerald-500/10 border-green-500/20",
                         },
                         {
                           icon: "M13 10V3L4 14h7v7l9-11h-7z",
                           label: "Prioritize tasks",
                           color:
-                            "from-purple-500/20 to-indigo-500/10 border-purple-500/20",
+                            "from-green-500/20 to-emerald-500/10 border-green-500/20",
                         },
                         {
                           icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
                           label: "Analyze photos",
                           color:
-                            "from-purple-500/20 to-indigo-500/10 border-purple-500/20",
+                            "from-green-500/20 to-emerald-500/10 border-green-500/20",
                         },
                       ].map((cap, i) => (
                         <div
@@ -5937,7 +5937,7 @@ ${result.analysis.risks || "N/A"}
                 ) : aiLoadingMessages ? (
                   <div className="flex-1 flex items-center justify-center">
                     <div className="flex flex-col items-center gap-3">
-                      <div className="w-5 h-5 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                      <div className="w-5 h-5 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
                       <p className="text-white/60 text-sm">
                         Loading messages...
                       </p>
@@ -5960,8 +5960,8 @@ ${result.analysis.risks || "N/A"}
                       {message.role === "assistant" && (
                         <div className="flex-shrink-0 mt-1">
                           <div className="relative">
-                            <div className="absolute inset-0 rounded-full bg-purple-500 blur-sm opacity-60 animate-pulse" />
-                            <Bot className="relative w-5 h-5 text-purple-400 drop-shadow-lg" />
+                            <div className="absolute inset-0 rounded-full bg-green-500 blur-sm opacity-60 animate-pulse" />
+                            <Bot className="relative w-5 h-5 text-green-400 drop-shadow-lg" />
                           </div>
                         </div>
                       )}
@@ -5998,7 +5998,7 @@ ${result.analysis.risks || "N/A"}
                                 components={{
                                   h1: ({ node, ...props }) => (
                                     <h1
-                                      className="text-base font-bold mb-0.5 text-purple-300"
+                                      className="text-base font-bold mb-0.5 text-green-300"
                                       {...props}
                                     />
                                   ),
@@ -6040,13 +6040,13 @@ ${result.analysis.risks || "N/A"}
                                   ),
                                   strong: ({ node, ...props }) => (
                                     <strong
-                                      className="font-semibold text-purple-300"
+                                      className="font-semibold text-green-300"
                                       {...props}
                                     />
                                   ),
                                   code: ({ node, ...props }) => (
                                     <code
-                                      className="bg-white/10 px-1.5 py-0.5 rounded text-xs text-purple-300 font-mono"
+                                      className="bg-white/10 px-1.5 py-0.5 rounded text-xs text-green-300 font-mono"
                                       {...props}
                                     />
                                   ),
@@ -6137,7 +6137,7 @@ ${result.analysis.risks || "N/A"}
                                           setAiInput(action.label);
                                         }
                                       }}
-                                      className="text-[11px] px-2.5 py-1 bg-purple-500/10 border border-purple-500/20 rounded-l-md text-purple-300 hover:bg-purple-500/20 hover:border-purple-500/40 transition-all"
+                                      className="text-[11px] px-2.5 py-1 bg-green-500/10 border border-green-500/20 rounded-l-md text-green-300 hover:bg-green-500/20 hover:border-green-500/40 transition-all"
                                     >
                                       {action.label}
                                     </button>
@@ -6149,7 +6149,7 @@ ${result.analysis.risks || "N/A"}
                                           ),
                                         );
                                       }}
-                                      className="text-[10px] px-1 py-1 bg-purple-500/10 border border-purple-500/20 border-l-0 rounded-r-md text-purple-400 hover:bg-purple-500/30 hover:text-purple-200 transition-all"
+                                      className="text-[10px] px-1 py-1 bg-green-500/10 border border-green-500/20 border-l-0 rounded-r-md text-green-400 hover:bg-green-500/30 hover:text-green-200 transition-all"
                                     >
                                       ×
                                     </button>
@@ -6194,8 +6194,8 @@ ${result.analysis.risks || "N/A"}
                   <div className="flex gap-2.5 animate-fade-in">
                     <div className="flex-shrink-0 mt-1">
                       <div className="relative">
-                        <div className="absolute inset-0 rounded-md bg-purple-500 blur-sm opacity-60 animate-pulse" />
-                        <div className="relative w-6 h-6 rounded-md bg-purple-600 flex items-center justify-center shadow shadow-purple-500/30">
+                        <div className="absolute inset-0 rounded-md bg-green-500 blur-sm opacity-60 animate-pulse" />
+                        <div className="relative w-6 h-6 rounded-md bg-green-600 flex items-center justify-center shadow shadow-green-500/30">
                           <Bot className="w-3.5 h-3.5 text-white" />
                         </div>
                       </div>
@@ -6203,15 +6203,15 @@ ${result.analysis.risks || "N/A"}
                     <div className="bg-transparent rounded-2xl rounded-tl-sm px-4 py-3">
                       <div className="flex items-center gap-1.5">
                         <div
-                          className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                          className="w-2 h-2 bg-green-400 rounded-full animate-bounce"
                           style={{ animationDelay: "0ms" }}
                         />
                         <div
-                          className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                          className="w-2 h-2 bg-green-400 rounded-full animate-bounce"
                           style={{ animationDelay: "150ms" }}
                         />
                         <div
-                          className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                          className="w-2 h-2 bg-green-400 rounded-full animate-bounce"
                           style={{ animationDelay: "300ms" }}
                         />
                       </div>
@@ -6255,9 +6255,9 @@ ${result.analysis.risks || "N/A"}
                       <button
                         key={i}
                         onClick={() => setAiInput(chip.prompt)}
-                        className="flex items-center gap-2 px-3 py-2 bg-white/[0.03] border border-white/8 rounded-xl hover:bg-purple-600/10 hover:border-purple-500/30 hover:text-purple-300 transition-all text-white/60 text-left group"
+                        className="flex items-center gap-2 px-3 py-2 bg-white/[0.03] border border-white/8 rounded-xl hover:bg-green-600/10 hover:border-green-500/30 hover:text-green-300 transition-all text-white/60 text-left group"
                       >
-                        <div className="w-5 h-5 rounded-md bg-white/5 group-hover:bg-purple-500/20 flex items-center justify-center flex-shrink-0 transition-all">
+                        <div className="w-5 h-5 rounded-md bg-white/5 group-hover:bg-green-500/20 flex items-center justify-center flex-shrink-0 transition-all">
                           <svg
                             className="w-3 h-3"
                             fill="none"
@@ -6298,7 +6298,7 @@ ${result.analysis.risks || "N/A"}
                         className="flex items-center gap-2 px-3 py-1.5 bg-[#30364F]/80 rounded-lg text-sm text-white border border-white/10"
                       >
                         <svg
-                          className="w-4 h-4 text-purple-400"
+                          className="w-4 h-4 text-green-400"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -6344,7 +6344,7 @@ ${result.analysis.risks || "N/A"}
                   <div className="flex items-center justify-between px-1">
                     <div className="flex items-center gap-1">
                       <label
-                        className="p-1.5 text-white/40 hover:text-purple-400 cursor-pointer rounded-md hover:bg-white/5 transition-all"
+                        className="p-1.5 text-white/40 hover:text-green-400 cursor-pointer rounded-md hover:bg-white/5 transition-all"
                         title="Attach file"
                       >
                         <svg
@@ -6372,7 +6372,7 @@ ${result.analysis.risks || "N/A"}
                         />
                       </label>
                       <button
-                        className="p-1.5 text-white/40 hover:text-purple-400 cursor-pointer rounded-md hover:bg-white/5 transition-all"
+                        className="p-1.5 text-white/40 hover:text-green-400 cursor-pointer rounded-md hover:bg-white/5 transition-all"
                         title="Voice input"
                       >
                         <svg
@@ -6395,7 +6395,7 @@ ${result.analysis.risks || "N/A"}
                           onClick={() =>
                             setShowModelSelector(!showModelSelector)
                           }
-                          className="flex items-center gap-1 px-2 py-1 text-white/50 hover:text-purple-400 hover:bg-white/5 rounded-md transition-all text-xs"
+                          className="flex items-center gap-1 px-2 py-1 text-white/50 hover:text-green-400 hover:bg-white/5 rounded-md transition-all text-xs"
                           title="Select model"
                         >
                           <span className="text-[10px]">
@@ -6440,7 +6440,7 @@ ${result.analysis.risks || "N/A"}
                                   setSelectedModel(model.id);
                                   setShowModelSelector(false);
                                 }}
-                                className={`w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center justify-between ${selectedModel === model.id ? "bg-purple-500/10" : ""}`}
+                                className={`w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center justify-between ${selectedModel === model.id ? "bg-green-500/10" : ""}`}
                               >
                                 <div>
                                   <p className="text-xs text-white">
@@ -6452,7 +6452,7 @@ ${result.analysis.risks || "N/A"}
                                 </div>
                                 {selectedModel === model.id && (
                                   <svg
-                                    className="w-3 h-3 text-purple-400"
+                                    className="w-3 h-3 text-green-400"
                                     fill="currentColor"
                                     viewBox="0 0 20 20"
                                   >
@@ -6493,7 +6493,7 @@ ${result.analysis.risks || "N/A"}
                         }}
                         placeholder="Ask me about maintenance..."
                         rows={1}
-                        className="w-full px-3 py-2 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50 text-white placeholder-white/40 resize-none min-h-[40px] max-h-[100px] text-sm"
+                        className="w-full px-3 py-2 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 text-white placeholder-white/40 resize-none min-h-[40px] max-h-[100px] text-sm"
                         disabled={aiLoading}
                         style={{
                           height: "auto",
@@ -6513,7 +6513,7 @@ ${result.analysis.risks || "N/A"}
                         aiLoading ||
                         (!aiInput.trim() && aiAttachments.length === 0)
                       }
-                      className="p-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl hover:from-purple-500 hover:to-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-all shadow-lg shadow-purple-500/20 hover:shadow-purple-500/40 flex items-center justify-center"
+                      className="p-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-500 hover:to-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-all shadow-lg shadow-green-500/20 hover:shadow-green-500/40 flex items-center justify-center"
                     >
                       {aiLoading ? (
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
