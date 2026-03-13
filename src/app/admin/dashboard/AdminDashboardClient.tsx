@@ -2404,15 +2404,14 @@ ${result.analysis.risks || "N/A"}
                 )}
               </button>
 
-              {/* AI Chat Robot Icon with glow */}
+              {/* AI Chat Robot Icon */}
 
               <button
                 onClick={() => setShowAIChat(!showAIChat)}
-                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 relative"
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                 title="AI Assistant"
               >
-                <div className="absolute inset-0 rounded-lg bg-purple-500 blur-sm opacity-40 animate-pulse" />
-                <Bot className="relative w-5 h-5 text-purple-300" />
+                <Bot className="w-5 h-5" />
               </button>
 
               <button
@@ -5872,24 +5871,10 @@ ${result.analysis.risks || "N/A"}
                   <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
                     {/* Animated orb */}
                     <div className="relative mb-6">
-                      <div className="absolute inset-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 blur-xl opacity-50 animate-pulse" />
-                      <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 flex items-center justify-center shadow-2xl shadow-amber-500/40">
-                        <svg
-                          className="w-9 h-9 text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-                          />
-                        </svg>
+                      <div className="absolute inset-0 w-20 h-20 rounded-2xl bg-purple-500 blur-xl opacity-50 animate-pulse" />
+                      <div className="relative w-20 h-20 rounded-2xl bg-purple-600 flex items-center justify-center shadow-2xl shadow-purple-500/40">
+                        <Bot className="w-9 h-9 text-white" />
                       </div>
-                      {/* Orbiting dot */}
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#080d18] shadow-lg shadow-emerald-400/60" />
                     </div>
                     <h2 className="text-lg font-bold text-white mb-1">
                       Hi, I'm your AI Assistant
@@ -5980,20 +5965,11 @@ ${result.analysis.risks || "N/A"}
                       {/* Avatar */}
                       {message.role === "assistant" ? (
                         <div className="flex-shrink-0 mt-1">
-                          <div className="w-6 h-6 rounded-md bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow shadow-amber-500/30">
-                            <svg
-                              className="w-3 h-3 text-white"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-                              />
-                            </svg>
+                          <div className="relative">
+                            <div className="absolute inset-0 rounded-md bg-purple-500 blur-sm opacity-60 animate-pulse" />
+                            <div className="relative w-6 h-6 rounded-md bg-purple-600 flex items-center justify-center shadow shadow-purple-500/30">
+                              <Bot className="w-3.5 h-3.5 text-white" />
+                            </div>
                           </div>
                         </div>
                       ) : (
