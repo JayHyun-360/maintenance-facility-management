@@ -18,9 +18,13 @@ export async function POST(request: NextRequest) {
       modelName = formData.get("model") as string | undefined;
 
       const files = formData.getAll("attachments") as File[];
+      console.log(`[API] Received ${files.length} file(s) from client`);
       for (const file of files) {
         const arrayBuffer = await file.arrayBuffer();
         const base64 = Buffer.from(arrayBuffer).toString("base64");
+        console.log(
+          `[API] File: ${file.name}, type: ${file.type}, size: ${file.size}, base64 length: ${base64.length}`,
+        );
         attachments.push({
           type: file.type,
           data: base64,
@@ -41,6 +45,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log(
+      `[API] Calling getAdminAssistance with ${attachments.length} attachments`,
+    );
     const response = await getAdminAssistance(
       query,
       context,

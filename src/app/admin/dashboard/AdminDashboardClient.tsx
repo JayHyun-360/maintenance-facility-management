@@ -201,6 +201,8 @@ export default function AdminDashboardClient({
   const [messageOptionsMenu, setMessageOptionsMenu] = useState<number | null>(
     null,
   );
+  const [isListening, setIsListening] = useState(false);
+  const [listeningText, setListeningText] = useState("");
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -1356,6 +1358,74 @@ export default function AdminDashboardClient({
       setAiLoading(false);
       setAiStatusText("");
     }
+  };
+
+  // Voice input handler
+  const handleVoiceInput = () => {
+    if (
+      !("webkitSpeechRecognition" in window) &&
+      !("SpeechRecognition" in window)
+    ) {
+      alert(
+        "Voice input is not supported in your browser. Please use Chrome or Edge.",
+      );
+      return;
+    }
+
+    const SpeechRecognition =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+
+    recognition.continuous = false;
+    recognition.interimResults = true;
+    recognition.lang = "en-US";
+
+    setIsListening(true);
+    setListeningText("Listening...");
+
+    recognition.onresult = (event: any) => {
+      let finalTranscript = "";
+      let interimTranscript = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript;
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+
+      if (finalTranscript) {
+        setAiInput((prev) => prev + (prev ? " " : "") + finalTranscript);
+        setListeningText("");
+      } else {
+        setListeningText(interimTranscript);
+      }
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error:", event.error);
+      setIsListening(false);
+      setListeningText("");
+      if (event.error === "not-allowed") {
+        alert(
+          "Microphone access denied. Please allow microphone access to use voice input.",
+        );
+      } else if (event.error !== "no-speech") {
+        alert(`Voice input error: ${event.error}`);
+      }
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+      if (!listeningText) {
+        setListeningText("");
+      }
+    };
+
+    recognition.start();
   };
 
   const analyzeRequestWithAI = async (request: RequestWithProfile) => {
@@ -6664,7 +6734,9 @@ ${result.analysis.risks || "N/A"}
                           ></path>
                         </svg>
                         <span className="text-green-300/60 text-xs whitespace-nowrap">
-                          {aiStatusText || "Generating response..."}
+                          {isListening
+                            ? listeningText || "Listening..."
+                            : aiStatusText || "Generating response..."}
                         </span>
                       </div>
                     </div>
@@ -6824,8 +6896,13 @@ ${result.analysis.risks || "N/A"}
                         />
                       </label>
                       <button
-                        className="p-1.5 text-white/40 hover:text-green-400 cursor-pointer rounded-md hover:bg-white/5 transition-all"
-                        title="Voice input"
+                        onClick={handleVoiceInput}
+                        className={`p-1.5 rounded-md transition-all ${
+                          isListening
+                            ? "text-red-400 bg-red-400/10 animate-pulse"
+                            : "text-white/40 hover:text-green-400 hover:bg-white/5"
+                        }`}
+                        title={isListening ? "Listening..." : "Voice input"}
                       >
                         <svg
                           className="w-4 h-4"

@@ -74,7 +74,12 @@ export async function getAdminAssistance(
   try {
     const parts: any[] = [];
 
-    // Build text prompt
+    // Check if we have image attachments
+    const imageAttachments =
+      attachments?.filter((att) => att.type.startsWith("image/")) || [];
+    const hasImages = imageAttachments.length > 0;
+
+    // Build text prompt with explicit image analysis instructions
     let promptText = `You are an AI assistant for a maintenance facility management system.
 You have access to real-time dashboard data. When users ask about reports, pending items, or statistics, reference the current visible dashboard metrics: Total Reports, Pending, In Progress, and Completed counts.
 
@@ -88,7 +93,25 @@ Completed: ${context.completedRequests || "N/A"}`
     : "Dashboard data not available"
 }
 
-User Query: "${query}"
+User Query: "${query}"`;
+
+    // If images are attached, add explicit analysis instructions
+    if (hasImages) {
+      promptText += `
+
+IMPORTANT - IMAGE ANALYSIS REQUESTED:
+You have been provided with ${imageAttachments.length} image(s) to analyze. Please:
+1. Describe what you see in the image(s) in detail
+2. Provide a thorough visual analysis
+3. Answer any specific questions the user has about the image(s)
+
+Image details:`;
+      imageAttachments.forEach((att, index) => {
+        promptText += `\n- Image ${index + 1}: ${att.name} (${att.type})`;
+      });
+    }
+
+    promptText += `
 
 ${
   context?.attachedRequest
@@ -105,21 +128,18 @@ Attached Request Details:
 }
 
 Provide helpful, actionable advice for managing maintenance requests, user communications, and system optimization.
-Keep responses concise and relevant to facility management. When discussing statistics or trends, reference the current dashboard counts provided above.`;
-
-    // Add attachment context if present
-    if (attachments && attachments.length > 0) {
-      promptText += `\n\nThe user has uploaded ${attachments.length} attachment(s) for analysis.`;
-      attachments.forEach((att, index) => {
-        promptText += `\n\nAttachment ${index + 1}: ${att.name} (${att.type})`;
-      });
-    }
+Keep responses concise and relevant to facility management. When discussing statistics or trends, reference the current dashboard counts provided above.
+When images are provided, always include a detailed visual analysis section in your response.`;
 
     parts.push({ text: promptText });
 
-    // Add attachments as inline data
+    // Add attachments as inline data - images first for better context
     if (attachments && attachments.length > 0) {
+      console.log(`[AI] Processing ${attachments.length} attachment(s)`);
       for (const att of attachments) {
+        console.log(
+          `[AI] Attachment: ${att.name}, type: ${att.type}, data length: ${att.data?.length || 0}`,
+        );
         if (att.type.startsWith("image/")) {
           parts.push({
             inlineData: {
@@ -136,6 +156,7 @@ Keep responses concise and relevant to facility management. When discussing stat
       }
     }
 
+    console.log(`[AI] Sending request with ${parts.length} parts to Gemini`);
     const result = await model.generateContent({
       contents: [{ role: "user", parts }],
     });
