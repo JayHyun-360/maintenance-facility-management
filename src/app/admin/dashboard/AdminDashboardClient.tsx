@@ -6172,14 +6172,19 @@ ${result.analysis.risks || "N/A"}
                             )}
                           {message.role === "user" ? (
                             editingMessageId === index ? (
-                              <div className="pr-8">
-                                <textarea
+                              <div className="relative">
+                                <input
+                                  type="text"
                                   value={editingMessageText}
                                   onChange={(e) =>
                                     setEditingMessageText(e.target.value)
                                   }
-                                  className="w-full bg-[#2D3A52] border border-slate-600/40 rounded-2xl px-3.5 py-2.5 text-sm text-white resize-none focus:outline-none focus:ring-2 focus:ring-green-500/50"
-                                  rows={3}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" && !e.shiftKey) {
+                                      e.preventDefault();
+                                    }
+                                  }}
+                                  className="w-full bg-transparent border-none text-sm text-white resize-none focus:outline-none"
                                   autoFocus
                                 />
                                 <div className="flex gap-2 mt-2">
@@ -6402,7 +6407,7 @@ ${result.analysis.risks || "N/A"}
                           {/* Message Options Dropdown */}
                           {messageOptionsMenu === index && (
                             <div
-                              className="absolute right-0 top-6 bg-[#1E293B] border border-slate-600 rounded-lg shadow-xl z-50 py-0.5 min-w-[100px]"
+                              className="absolute right-0 top-5 bg-[#1E293B] border border-slate-600 rounded-lg shadow-xl z-50 py-0.5 min-w-[100px]"
                               onClick={(e) => e.stopPropagation()}
                             >
                               {message.role === "assistant" ? (
