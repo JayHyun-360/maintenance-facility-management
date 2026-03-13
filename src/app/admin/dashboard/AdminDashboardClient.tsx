@@ -5432,7 +5432,7 @@ ${result.analysis.risks || "N/A"}
                 onClick={() => setShowChatHistory(false)}
               />
               <div
-                className={`absolute left-0 top-0 bottom-0 z-40 transition-transform duration-300 ease-out ${showChatHistory ? "translate-x-0" : "-translate-x-full"}`}
+                className={`absolute left-0 top-0 bottom-0 z-40 transition-transform duration-300 ease-out ${showChatHistory ? "translate-x-0" : "-translate-x-full invisible"}`}
                 style={{ width: "288px", left: 0 }}
                 onClick={(e) => e.stopPropagation()}
               >
