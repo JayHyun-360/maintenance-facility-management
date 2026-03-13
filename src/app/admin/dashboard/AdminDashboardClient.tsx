@@ -5424,128 +5424,141 @@ ${result.analysis.risks || "N/A"}
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Chat History Sidebar - Always in DOM for transitions */}
-            <>
-              <div
-                className={`absolute inset-0 z-30 transition-opacity duration-300 ${showChatHistory ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-                style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
-                onClick={() => setShowChatHistory(false)}
-              />
-              <div
-                className={`absolute left-0 top-0 bottom-0 z-40 transition-transform duration-300 ease-out ${showChatHistory ? "translate-x-0" : "-translate-x-full invisible"}`}
-                style={{ width: "288px", left: 0 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="w-72 p-4 flex flex-col h-full bg-[#0F172A] border-r border-slate-700/50 rounded-r-lg">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-white font-semibold">Chat History</h4>
-                    {/* Close button for chat history */}
-                    <button
-                      onClick={() => setShowChatHistory(false)}
-                      className="text-white/60 hover:text-white"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setAiMessages([]);
-                      setCurrentConversationId(null);
-                      loadConversations();
-                    }}
-                    className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-white/80 hover:bg-purple-500/20 hover:text-purple-300 mb-3 flex items-center gap-2 border border-dashed border-white/20 hover:border-purple-500/50 transition-all"
+            {/* Chat History Drawer */}
+            <AnimatePresence>
+              {showChatHistory && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute inset-0 z-30 bg-black/40"
+                    onClick={() => setShowChatHistory(false)}
+                  />
+                  <motion.div
+                    initial={{ x: "-100%", opacity: 0.8 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    exit={{ x: "-100%", opacity: 0.8 }}
+                    transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                    className="absolute left-0 top-0 bottom-0 z-40"
+                    style={{ width: "288px" }}
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 4v16m8-8H4"
-                      />
-                    </svg>
-                    New Chat
-                  </button>
-                  <div className="flex-1 overflow-y-auto space-y-1 custom-scrollbar">
-                    {aiConversations.length === 0 ? (
-                      <p className="text-white/40 text-sm text-center py-8">
-                        No conversations yet
-                      </p>
-                    ) : (
-                      aiConversations.map((conv) => (
-                        <div
-                          key={conv.id}
-                          className={`w-full text-left px-3 py-2.5 rounded-lg text-sm truncate flex items-center justify-between group cursor-pointer transition-all ${
-                            currentConversationId === conv.id
-                              ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
-                              : "text-white/70 hover:bg-white/5 border border-transparent"
-                          }`}
+                    <div className="w-72 p-4 flex flex-col h-full bg-[#0F172A] border-r border-slate-700/50 rounded-r-lg shadow-xl">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-white font-semibold">
+                          Chat History
+                        </h4>
+                        {/* Close button for chat history */}
+                        <button
+                          onClick={() => setShowChatHistory(false)}
+                          className="text-white/60 hover:text-white"
                         >
-                          <button
-                            onClick={() => {
-                              loadMessages(conv.id);
-                              setShowChatHistory(false);
-                            }}
-                            className="flex-1 truncate text-left flex items-center gap-2"
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
                           >
-                            <svg
-                              className="w-4 h-4 text-white/40 flex-shrink-0"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setAiMessages([]);
+                          setCurrentConversationId(null);
+                          loadConversations();
+                        }}
+                        className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-white/80 hover:bg-purple-500/20 hover:text-purple-300 mb-3 flex items-center gap-2 border border-dashed border-white/20 hover:border-purple-500/50 transition-all"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 4v16m8-8H4"
+                          />
+                        </svg>
+                        New Chat
+                      </button>
+                      <div className="flex-1 overflow-y-auto space-y-1 custom-scrollbar">
+                        {aiConversations.length === 0 ? (
+                          <p className="text-white/40 text-sm text-center py-8">
+                            No conversations yet
+                          </p>
+                        ) : (
+                          aiConversations.map((conv) => (
+                            <div
+                              key={conv.id}
+                              className={`w-full text-left px-3 py-2.5 rounded-lg text-sm truncate flex items-center justify-between group cursor-pointer transition-all ${
+                                currentConversationId === conv.id
+                                  ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
+                                  : "text-white/70 hover:bg-white/5 border border-transparent"
+                              }`}
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                              />
-                            </svg>
-                            <span className="truncate">
-                              {conv.title || "New Conversation"}
-                            </span>
-                          </button>
-                          <button
-                            onClick={(e) => deleteConversation(conv.id, e)}
-                            className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 ml-2 transition-all"
-                          >
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      ))
-                    )}
-                  </div>
-                </div>
-              </div>
-            </>
+                              <button
+                                onClick={() => {
+                                  loadMessages(conv.id);
+                                  setShowChatHistory(false);
+                                }}
+                                className="flex-1 truncate text-left flex items-center gap-2"
+                              >
+                                <svg
+                                  className="w-4 h-4 text-white/40 flex-shrink-0"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+                                  />
+                                </svg>
+                                <span className="truncate">
+                                  {conv.title || "New Conversation"}
+                                </span>
+                              </button>
+                              <button
+                                onClick={(e) => deleteConversation(conv.id, e)}
+                                className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 ml-2 transition-all"
+                              >
+                                <svg
+                                  className="w-4 h-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
 
             {/* Main Chat Area */}
             <div className="flex-1 flex flex-col h-full">
