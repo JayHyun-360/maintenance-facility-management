@@ -5888,7 +5888,7 @@ ${result.analysis.risks || "N/A"}
                           icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
                           label: "Analyze trends",
                           color:
-                            "from-blue-500/20 to-cyan-500/10 border-blue-500/20",
+                            "from-purple-500/20 to-indigo-500/10 border-purple-500/20",
                         },
                         {
                           icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2",
@@ -5900,13 +5900,13 @@ ${result.analysis.risks || "N/A"}
                           icon: "M13 10V3L4 14h7v7l9-11h-7z",
                           label: "Prioritize tasks",
                           color:
-                            "from-amber-500/20 to-orange-500/10 border-amber-500/20",
+                            "from-purple-500/20 to-indigo-500/10 border-purple-500/20",
                         },
                         {
                           icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
                           label: "Analyze photos",
                           color:
-                            "from-emerald-500/20 to-teal-500/10 border-emerald-500/20",
+                            "from-purple-500/20 to-indigo-500/10 border-purple-500/20",
                         },
                       ].map((cap, i) => (
                         <div
@@ -6155,23 +6155,39 @@ ${result.analysis.risks || "N/A"}
                             <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-white/5">
                               {quickActions.length > 0 ? (
                                 quickActions.map((action, actionIndex) => (
-                                  <button
+                                  <div
                                     key={actionIndex}
-                                    onClick={() => {
-                                      if (
-                                        action.action === "view_pending" ||
-                                        action.action === "view_all" ||
-                                        action.action === "new_request"
-                                      ) {
-                                        setShowAIChat(false);
-                                      } else {
-                                        setAiInput(action.label);
-                                      }
-                                    }}
-                                    className="text-[11px] px-2.5 py-1 bg-purple-500/10 border border-purple-500/20 rounded-md text-purple-300 hover:bg-purple-500/20 hover:border-purple-500/40 transition-all"
+                                    className="group flex items-center"
                                   >
-                                    {action.label}
-                                  </button>
+                                    <button
+                                      onClick={() => {
+                                        if (
+                                          action.action === "view_pending" ||
+                                          action.action === "view_all" ||
+                                          action.action === "new_request"
+                                        ) {
+                                          setShowAIChat(false);
+                                        } else {
+                                          setAiInput(action.label);
+                                        }
+                                      }}
+                                      className="text-[11px] px-2.5 py-1 bg-purple-500/10 border border-purple-500/20 rounded-l-md text-purple-300 hover:bg-purple-500/20 hover:border-purple-500/40 transition-all"
+                                    >
+                                      {action.label}
+                                    </button>
+                                    <button
+                                      onClick={() => {
+                                        setQuickActions(
+                                          quickActions.filter(
+                                            (_, i) => i !== actionIndex,
+                                          ),
+                                        );
+                                      }}
+                                      className="text-[10px] px-1 py-1 bg-purple-500/10 border border-purple-500/20 border-l-0 rounded-r-md text-purple-400 hover:bg-purple-500/30 hover:text-purple-200 transition-all"
+                                    >
+                                      ×
+                                    </button>
+                                  </div>
                                 ))
                               ) : (
                                 <>
