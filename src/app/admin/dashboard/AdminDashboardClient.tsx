@@ -5433,10 +5433,10 @@ ${result.analysis.risks || "N/A"}
               />
               <div
                 className={`absolute left-0 top-0 bottom-0 z-40 transition-transform duration-300 ease-out ${showChatHistory ? "translate-x-0" : "-translate-x-full"}`}
-                style={{ width: "288px" }}
+                style={{ width: "288px", left: 0 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="w-72 p-4 flex flex-col h-full bg-[#0F172A] border-r border-slate-700/50">
+                <div className="w-72 p-4 flex flex-col h-full bg-[#0F172A] border-r border-slate-700/50 rounded-r-lg">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-white font-semibold">Chat History</h4>
                     {/* Close button for chat history */}
@@ -5605,10 +5605,16 @@ ${result.analysis.risks || "N/A"}
                     <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
                       <svg
                         className="w-5 h-5 text-white"
-                        fill="currentColor"
+                        fill="none"
+                        stroke="currentColor"
                         viewBox="0 0 24 24"
                       >
-                        <path d="M12 2L2 12l10 10 10-10L12 2z" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={1.5}
+                          d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                        />
                       </svg>
                     </div>
                     <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[#0d1117] shadow shadow-emerald-400/50" />
@@ -5871,10 +5877,16 @@ ${result.analysis.risks || "N/A"}
                       <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 flex items-center justify-center shadow-2xl shadow-amber-500/40">
                         <svg
                           className="w-9 h-9 text-white"
-                          fill="currentColor"
+                          fill="none"
+                          stroke="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path d="M12 2L2 12l10 10 10-10L12 2z" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                          />
                         </svg>
                       </div>
                       {/* Orbiting dot */}
@@ -5972,10 +5984,16 @@ ${result.analysis.risks || "N/A"}
                           <div className="w-6 h-6 rounded-md bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow shadow-amber-500/30">
                             <svg
                               className="w-3 h-3 text-white"
-                              fill="currentColor"
+                              fill="none"
+                              stroke="currentColor"
                               viewBox="0 0 24 24"
                             >
-                              <path d="M12 2L2 12l10 10 10-10L12 2z" />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={1.5}
+                                d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                              />
                             </svg>
                           </div>
                         </div>
@@ -6225,10 +6243,16 @@ ${result.analysis.risks || "N/A"}
                       <div className="w-6 h-6 rounded-md bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow shadow-amber-500/30">
                         <svg
                           className="w-3 h-3 text-white"
-                          fill="currentColor"
+                          fill="none"
+                          stroke="currentColor"
                           viewBox="0 0 24 24"
                         >
-                          <path d="M12 2L2 12l10 10 10-10L12 2z" />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
+                          />
                         </svg>
                       </div>
                     </div>
