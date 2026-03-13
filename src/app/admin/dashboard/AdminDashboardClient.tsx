@@ -5432,7 +5432,7 @@ ${result.analysis.risks || "N/A"}
                 onClick={() => setShowChatHistory(false)}
               />
               <div
-                className={`absolute left-0 top-0 bottom-0 z-40 transition-all duration-300 ease-out overflow-hidden ${showChatHistory ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"}`}
+                className={`absolute left-0 top-0 bottom-0 z-40 transition-transform duration-300 ease-out ${showChatHistory ? "translate-x-0" : "-translate-x-full"}`}
                 style={{ width: "288px" }}
                 onClick={(e) => e.stopPropagation()}
               >
@@ -5550,7 +5550,13 @@ ${result.analysis.risks || "N/A"}
             {/* Main Chat Area */}
             <div className="flex-1 flex flex-col h-full">
               {/* Header */}
-              <div className="border-b border-slate-700/50 text-white px-4 py-3 flex justify-between items-center flex-shrink-0" style={{background: "linear-gradient(135deg, #1a1f35 0%, #0d1117 60%, #1a0d2e 100%)"}}>
+              <div
+                className="border-b border-slate-700/50 text-white px-4 py-3 flex justify-between items-center flex-shrink-0"
+                style={{
+                  background:
+                    "linear-gradient(135deg, #1a1f35 0%, #0d1117 60%, #1a0d2e 100%)",
+                }}
+              >
                 <div className="flex items-center gap-3">
                   {showChatHistory ? (
                     <button
@@ -5558,8 +5564,18 @@ ${result.analysis.risks || "N/A"}
                       className="text-white/60 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
                       title="Close History"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
                       </svg>
                     </button>
                   ) : (
@@ -5568,26 +5584,45 @@ ${result.analysis.risks || "N/A"}
                       className="text-white/60 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
                       title="Chat History"
                     >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M4 6h16M4 12h16M4 18h7"
+                        />
                       </svg>
                     </button>
                   )}
                   {/* AI Avatar with animated ring */}
                   <div className="relative">
-                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-purple-500 to-indigo-600 blur-sm opacity-60 animate-pulse" />
-                    <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-[#8B5CF6] via-[#6366F1] to-[#4F46E5] flex items-center justify-center shadow-lg shadow-purple-500/30">
-                      <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                    <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 blur-sm opacity-60 animate-pulse" />
+                    <div className="relative w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-500/30">
+                      <svg
+                        className="w-5 h-5 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path d="M12 2L2 12l10 10 10-10L12 2z" />
                       </svg>
                     </div>
                     <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-[#0d1117] shadow shadow-emerald-400/50" />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-sm text-white leading-none">AI Assistant</h3>
+                      <h3 className="font-semibold text-sm text-white leading-none">
+                        AI Assistant
+                      </h3>
                       <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 font-medium">
-                        {selectedModel.replace("gemini-", "").replace("-flash","F").replace("-pro","P")}
+                        {selectedModel
+                          .replace("gemini-", "")
+                          .replace("-flash", "F")
+                          .replace("-pro", "P")}
                       </span>
                     </div>
                     <p className="text-[10px] text-emerald-400/80 mt-0.5 flex items-center gap-1">
@@ -5832,38 +5867,82 @@ ${result.analysis.risks || "N/A"}
                   <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
                     {/* Animated orb */}
                     <div className="relative mb-6">
-                      <div className="absolute inset-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-indigo-600 blur-xl opacity-50 animate-pulse" />
-                      <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-[#8B5CF6] via-[#6366F1] to-[#4F46E5] flex items-center justify-center shadow-2xl shadow-purple-500/40">
-                        <svg className="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      <div className="absolute inset-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 blur-xl opacity-50 animate-pulse" />
+                      <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-400 via-orange-400 to-orange-500 flex items-center justify-center shadow-2xl shadow-amber-500/40">
+                        <svg
+                          className="w-9 h-9 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 2L2 12l10 10 10-10L12 2z" />
                         </svg>
                       </div>
                       {/* Orbiting dot */}
                       <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-[#080d18] shadow-lg shadow-emerald-400/60" />
                     </div>
-                    <h2 className="text-lg font-bold text-white mb-1">Hi, I'm your AI Assistant</h2>
+                    <h2 className="text-lg font-bold text-white mb-1">
+                      Hi, I'm your AI Assistant
+                    </h2>
                     <p className="text-sm text-white/50 max-w-[260px] mb-6 leading-relaxed">
-                      Powered by Gemini. Ask me anything about your facility's maintenance data.
+                      Powered by Gemini. Ask me anything about your facility's
+                      maintenance data.
                     </p>
                     {/* Capability cards */}
                     <div className="w-full grid grid-cols-2 gap-2 mb-3">
                       {[
-                        { icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z", label: "Analyze trends", color: "from-blue-500/20 to-cyan-500/10 border-blue-500/20" },
-                        { icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2", label: "Review requests", color: "from-purple-500/20 to-indigo-500/10 border-purple-500/20" },
-                        { icon: "M13 10V3L4 14h7v7l9-11h-7z", label: "Prioritize tasks", color: "from-amber-500/20 to-orange-500/10 border-amber-500/20" },
-                        { icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z", label: "Analyze photos", color: "from-emerald-500/20 to-teal-500/10 border-emerald-500/20" },
+                        {
+                          icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+                          label: "Analyze trends",
+                          color:
+                            "from-blue-500/20 to-cyan-500/10 border-blue-500/20",
+                        },
+                        {
+                          icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2",
+                          label: "Review requests",
+                          color:
+                            "from-purple-500/20 to-indigo-500/10 border-purple-500/20",
+                        },
+                        {
+                          icon: "M13 10V3L4 14h7v7l9-11h-7z",
+                          label: "Prioritize tasks",
+                          color:
+                            "from-amber-500/20 to-orange-500/10 border-amber-500/20",
+                        },
+                        {
+                          icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
+                          label: "Analyze photos",
+                          color:
+                            "from-emerald-500/20 to-teal-500/10 border-emerald-500/20",
+                        },
                       ].map((cap, i) => (
-                        <div key={i} className={`flex items-center gap-2 p-2.5 rounded-xl bg-gradient-to-br ${cap.color} border backdrop-blur-sm`}>
+                        <div
+                          key={i}
+                          className={`flex items-center gap-2 p-2.5 rounded-xl bg-gradient-to-br ${cap.color} border backdrop-blur-sm`}
+                        >
                           <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
-                            <svg className="w-3.5 h-3.5 text-white/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={cap.icon} />
+                            <svg
+                              className="w-3.5 h-3.5 text-white/70"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d={cap.icon}
+                              />
                             </svg>
                           </div>
-                          <span className="text-[11px] text-white/70 font-medium">{cap.label}</span>
+                          <span className="text-[11px] text-white/70 font-medium">
+                            {cap.label}
+                          </span>
                         </div>
                       ))}
                     </div>
-                    <p className="text-[11px] text-white/30">Select a suggestion below or type your question</p>
+                    <p className="text-[11px] text-white/30">
+                      Select a suggestion below or type your question
+                    </p>
                   </div>
                 ) : aiLoadingMessages ? (
                   <div className="flex-1 flex items-center justify-center">
@@ -5877,7 +5956,9 @@ ${result.analysis.risks || "N/A"}
                 ) : (
                   (aiSearchQuery
                     ? aiMessages.filter((m) =>
-                        m.content.toLowerCase().includes(aiSearchQuery.toLowerCase())
+                        m.content
+                          .toLowerCase()
+                          .includes(aiSearchQuery.toLowerCase()),
                       )
                     : aiMessages
                   ).map((message, index) => (
@@ -5888,17 +5969,31 @@ ${result.analysis.risks || "N/A"}
                       {/* Avatar */}
                       {message.role === "assistant" ? (
                         <div className="flex-shrink-0 mt-1">
-                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#8B5CF6] to-[#4F46E5] flex items-center justify-center shadow shadow-purple-500/30">
-                            <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                          <div className="w-6 h-6 rounded-md bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow shadow-amber-500/30">
+                            <svg
+                              className="w-3 h-3 text-white"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path d="M12 2L2 12l10 10 10-10L12 2z" />
                             </svg>
                           </div>
                         </div>
                       ) : (
                         <div className="flex-shrink-0 mt-1">
                           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center shadow">
-                            <svg className="w-3.5 h-3.5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            <svg
+                              className="w-3.5 h-3.5 text-white/80"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                              />
                             </svg>
                           </div>
                         </div>
@@ -5906,7 +6001,9 @@ ${result.analysis.risks || "N/A"}
 
                       <div className="flex flex-col max-w-[82%]">
                         {/* Role label + timestamp */}
-                        <div className={`flex items-center gap-2 mb-1 ${message.role === "user" ? "flex-row-reverse" : ""}`}>
+                        <div
+                          className={`flex items-center gap-2 mb-1 ${message.role === "user" ? "flex-row-reverse" : ""}`}
+                        >
                           <span className="text-[10px] font-semibold text-white/40 uppercase tracking-wide">
                             {message.role === "user" ? "You" : "AI"}
                           </span>
@@ -5915,96 +6012,100 @@ ${result.analysis.risks || "N/A"}
                           </span>
                         </div>
 
-                        <div className={`relative rounded-2xl px-3.5 py-2.5 ${
-                          message.role === "user"
-                            ? "bg-gradient-to-br from-[#2D3A52] to-[#1E293B] border border-slate-600/40 shadow-lg rounded-tr-sm"
-                            : "bg-gradient-to-br from-[#1a1f35] to-[#12172a] border border-purple-900/30 shadow-md rounded-tl-sm"
-                        }`}>
-                        {/* Display attached images */}
-                        {message.attachments &&
-                          message.attachments.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mb-3">
-                              {message.attachments.map((url, idx) => (
-                                <img
-                                  key={idx}
-                                  src={url}
-                                  alt={`Attachment ${idx + 1}`}
-                                  className="max-w-[200px] max-h-[200px] rounded-lg object-cover border border-white/20"
-                                />
-                              ))}
+                        <div
+                          className={`relative rounded-2xl px-3.5 py-2.5 ${
+                            message.role === "user"
+                              ? "bg-gradient-to-br from-[#2D3A52] to-[#1E293B] border border-slate-600/40 shadow-lg rounded-tr-sm"
+                              : "bg-transparent"
+                          }`}
+                        >
+                          {/* Display attached images */}
+                          {message.attachments &&
+                            message.attachments.length > 0 && (
+                              <div className="flex flex-wrap gap-2 mb-3">
+                                {message.attachments.map((url, idx) => (
+                                  <img
+                                    key={idx}
+                                    src={url}
+                                    alt={`Attachment ${idx + 1}`}
+                                    className="max-w-[200px] max-h-[200px] rounded-lg object-cover border border-white/20"
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          {message.role === "user" ? (
+                            <p className="text-sm whitespace-pre-wrap pr-8 text-white">
+                              {message.content}
+                            </p>
+                          ) : (
+                            <div className="text-sm prose prose-sm max-w-none prose-invert prose-headings:font-semibold prose-strong:font-bold prose-ul:list-disc prose-ol:list-decimal prose-li:ml-2">
+                              <ReactMarkdown
+                                components={{
+                                  h1: ({ node, ...props }) => (
+                                    <h1
+                                      className="text-base font-bold mb-0.5 text-purple-300"
+                                      {...props}
+                                    />
+                                  ),
+                                  h2: ({ node, ...props }) => (
+                                    <h2
+                                      className="text-sm font-semibold mb-0.5 text-white"
+                                      {...props}
+                                    />
+                                  ),
+                                  h3: ({ node, ...props }) => (
+                                    <h3
+                                      className="text-sm font-medium mb-0.5 text-white"
+                                      {...props}
+                                    />
+                                  ),
+                                  p: ({ node, ...props }) => (
+                                    <p
+                                      className="mb-0.5 last:mb-0 text-white/80 leading-snug"
+                                      {...props}
+                                    />
+                                  ),
+                                  ul: ({ node, ...props }) => (
+                                    <ul
+                                      className="list-disc ml-3 mb-0.5 text-white/80 space-y-0"
+                                      {...props}
+                                    />
+                                  ),
+                                  ol: ({ node, ...props }) => (
+                                    <ol
+                                      className="list-decimal ml-3 mb-0.5 text-white/80 space-y-0"
+                                      {...props}
+                                    />
+                                  ),
+                                  li: ({ node, ...props }) => (
+                                    <li
+                                      className="mb-0 text-white/80 leading-snug"
+                                      {...props}
+                                    />
+                                  ),
+                                  strong: ({ node, ...props }) => (
+                                    <strong
+                                      className="font-semibold text-purple-300"
+                                      {...props}
+                                    />
+                                  ),
+                                  code: ({ node, ...props }) => (
+                                    <code
+                                      className="bg-white/10 px-1.5 py-0.5 rounded text-xs text-purple-300 font-mono"
+                                      {...props}
+                                    />
+                                  ),
+                                }}
+                              >
+                                {message.content}
+                              </ReactMarkdown>
                             </div>
                           )}
-                        {message.role === "user" ? (
-                          <p className="text-sm whitespace-pre-wrap pr-8">
-                            {message.content}
-                          </p>
-                        ) : (
-                          <div className="text-sm prose prose-sm max-w-none prose-invert prose-headings:font-semibold prose-strong:font-bold prose-ul:list-disc prose-ol:list-decimal prose-li:ml-2">
-                            <ReactMarkdown
-                              components={{
-                                h1: ({ node, ...props }) => (
-                                  <h1
-                                    className="text-base font-bold mb-0.5 text-purple-300"
-                                    {...props}
-                                  />
-                                ),
-                                h2: ({ node, ...props }) => (
-                                  <h2
-                                    className="text-sm font-semibold mb-0.5 text-white"
-                                    {...props}
-                                  />
-                                ),
-                                h3: ({ node, ...props }) => (
-                                  <h3
-                                    className="text-sm font-medium mb-0.5 text-white"
-                                    {...props}
-                                  />
-                                ),
-                                p: ({ node, ...props }) => (
-                                  <p
-                                    className="mb-0.5 last:mb-0 text-white/80 leading-snug"
-                                    {...props}
-                                  />
-                                ),
-                                ul: ({ node, ...props }) => (
-                                  <ul
-                                    className="list-disc ml-3 mb-0.5 text-white/80 space-y-0"
-                                    {...props}
-                                  />
-                                ),
-                                ol: ({ node, ...props }) => (
-                                  <ol
-                                    className="list-decimal ml-3 mb-0.5 text-white/80 space-y-0"
-                                    {...props}
-                                  />
-                                ),
-                                li: ({ node, ...props }) => (
-                                  <li
-                                    className="mb-0 text-white/80 leading-snug"
-                                    {...props}
-                                  />
-                                ),
-                                strong: ({ node, ...props }) => (
-                                  <strong
-                                    className="font-semibold text-purple-300"
-                                    {...props}
-                                  />
-                                ),
-                                code: ({ node, ...props }) => (
-                                  <code
-                                    className="bg-white/10 px-1.5 py-0.5 rounded text-xs text-purple-300 font-mono"
-                                    {...props}
-                                  />
-                                ),
-                              }}
-                            >
-                              {message.content}
-                            </ReactMarkdown>
-                          </div>
-                        )}
                         </div>
                         {/* Copy button */}
-                        <div className={`flex items-center gap-1 mt-1 ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                        <div
+                          className={`flex items-center gap-1 mt-1 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                        >
                           <button
                             onClick={() => {
                               navigator.clipboard.writeText(message.content);
@@ -6015,50 +6116,104 @@ ${result.analysis.risks || "N/A"}
                             title={copiedMessage === index ? "Copied!" : "Copy"}
                           >
                             {copiedMessage === index ? (
-                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
                               </svg>
                             ) : (
-                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                />
                               </svg>
                             )}
                           </button>
+                          <button
+                            className="p-1 rounded text-white/40 hover:text-white hover:bg-white/10 transition-all"
+                            title="More options"
+                          >
+                            <svg
+                              className="w-3.5 h-3.5"
+                              fill="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle cx="12" cy="5" r="1.5" />
+                              <circle cx="12" cy="12" r="1.5" />
+                              <circle cx="12" cy="19" r="1.5" />
+                            </svg>
+                          </button>
                         </div>
                         {/* Quick Actions for last AI response */}
-                        {message.role === "assistant" && index === aiMessages.length - 1 && (
-                          <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-white/5">
-                            {quickActions.length > 0 ? (
-                              quickActions.map((action, actionIndex) => (
-                                <button
-                                  key={actionIndex}
-                                  onClick={() => {
-                                    if (action.action === "view_pending" || action.action === "view_all" || action.action === "new_request") {
-                                      setShowAIChat(false);
-                                    } else {
-                                      setAiInput(action.label);
+                        {message.role === "assistant" &&
+                          index === aiMessages.length - 1 && (
+                            <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-white/5">
+                              {quickActions.length > 0 ? (
+                                quickActions.map((action, actionIndex) => (
+                                  <button
+                                    key={actionIndex}
+                                    onClick={() => {
+                                      if (
+                                        action.action === "view_pending" ||
+                                        action.action === "view_all" ||
+                                        action.action === "new_request"
+                                      ) {
+                                        setShowAIChat(false);
+                                      } else {
+                                        setAiInput(action.label);
+                                      }
+                                    }}
+                                    className="text-[11px] px-2.5 py-1 bg-purple-500/10 border border-purple-500/20 rounded-md text-purple-300 hover:bg-purple-500/20 hover:border-purple-500/40 transition-all"
+                                  >
+                                    {action.label}
+                                  </button>
+                                ))
+                              ) : (
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      setAiInput("Show me pending requests")
                                     }
-                                  }}
-                                  className="text-[11px] px-2.5 py-1 bg-purple-500/10 border border-purple-500/20 rounded-md text-purple-300 hover:bg-purple-500/20 hover:border-purple-500/40 transition-all"
-                                >
-                                  {action.label}
-                                </button>
-                              ))
-                            ) : (
-                              <>
-                                <button onClick={() => setAiInput("Show me pending requests")} className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all">
-                                  View Pending Queue
-                                </button>
-                                <button onClick={() => setAiInput("Summarize this analysis")} className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all">
-                                  Summarize
-                                </button>
-                                <button onClick={() => setAiInput("Give me more details")} className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all">
-                                  More Details
-                                </button>
-                              </>
-                            )}
-                          </div>
-                        )}
+                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
+                                  >
+                                    View Pending Queue
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      setAiInput("Summarize this analysis")
+                                    }
+                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
+                                  >
+                                    Summarize
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      setAiInput("Give me more details")
+                                    }
+                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
+                                  >
+                                    More Details
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          )}
                       </div>
                     </div>
                   ))
@@ -6067,17 +6222,30 @@ ${result.analysis.risks || "N/A"}
                 {aiLoading && (
                   <div className="flex gap-2.5 animate-fade-in">
                     <div className="flex-shrink-0 mt-1">
-                      <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#8B5CF6] to-[#4F46E5] flex items-center justify-center shadow shadow-purple-500/30">
-                        <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                      <div className="w-6 h-6 rounded-md bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow shadow-amber-500/30">
+                        <svg
+                          className="w-3 h-3 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 2L2 12l10 10 10-10L12 2z" />
                         </svg>
                       </div>
                     </div>
-                    <div className="bg-gradient-to-br from-[#1a1f35] to-[#12172a] border border-purple-900/30 rounded-2xl rounded-tl-sm px-4 py-3 shadow-md">
+                    <div className="bg-transparent rounded-2xl rounded-tl-sm px-4 py-3">
                       <div className="flex items-center gap-1.5">
-                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay:'0ms'}} />
-                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay:'150ms'}} />
-                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay:'300ms'}} />
+                        <div
+                          className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                          style={{ animationDelay: "0ms" }}
+                        />
+                        <div
+                          className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                          style={{ animationDelay: "150ms" }}
+                        />
+                        <div
+                          className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"
+                          style={{ animationDelay: "300ms" }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -6086,14 +6254,35 @@ ${result.analysis.risks || "N/A"}
 
               {/* Suggestion Chips - Above Input */}
               {aiMessages.length === 0 && !aiLoading && (
-                <div className="px-3 pt-3 pb-3 border-t border-slate-800/60" style={{background:"#0a0e1a"}}>
-                  <p className="text-[10px] text-white/30 uppercase tracking-widest mb-2 px-1">Try asking</p>
+                <div
+                  className="px-3 pt-3 pb-3 border-t border-slate-800/60"
+                  style={{ background: "#0a0e1a" }}
+                >
+                  <p className="text-[10px] text-white/30 uppercase tracking-widest mb-2 px-1">
+                    Try asking
+                  </p>
                   <div className="grid grid-cols-2 gap-1.5">
                     {[
-                      { icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z", text: "Analyze trends", prompt: "Show me recent maintenance trends" },
-                      { icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z", text: "Pending queue", prompt: "Show me all pending requests" },
-                      { icon: "M13 10V3L4 14h7v7l9-11h-7z", text: "Top priorities", prompt: "What are the most urgent maintenance issues?" },
-                      { icon: "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z", text: "What can you do?", prompt: "What can you help me with?" },
+                      {
+                        icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+                        text: "Analyze trends",
+                        prompt: "Show me recent maintenance trends",
+                      },
+                      {
+                        icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+                        text: "Pending queue",
+                        prompt: "Show me all pending requests",
+                      },
+                      {
+                        icon: "M13 10V3L4 14h7v7l9-11h-7z",
+                        text: "Top priorities",
+                        prompt: "What are the most urgent maintenance issues?",
+                      },
+                      {
+                        icon: "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+                        text: "What can you do?",
+                        prompt: "What can you help me with?",
+                      },
                     ].map((chip, i) => (
                       <button
                         key={i}
@@ -6101,11 +6290,23 @@ ${result.analysis.risks || "N/A"}
                         className="flex items-center gap-2 px-3 py-2 bg-white/[0.03] border border-white/8 rounded-xl hover:bg-purple-600/10 hover:border-purple-500/30 hover:text-purple-300 transition-all text-white/60 text-left group"
                       >
                         <div className="w-5 h-5 rounded-md bg-white/5 group-hover:bg-purple-500/20 flex items-center justify-center flex-shrink-0 transition-all">
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={chip.icon} />
+                          <svg
+                            className="w-3 h-3"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d={chip.icon}
+                            />
                           </svg>
                         </div>
-                        <span className="text-[11px] font-medium leading-tight">{chip.text}</span>
+                        <span className="text-[11px] font-medium leading-tight">
+                          {chip.text}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -6113,7 +6314,13 @@ ${result.analysis.risks || "N/A"}
               )}
 
               {/* Input Area */}
-              <div className="border-t border-slate-800/80 p-3" style={{background:"linear-gradient(180deg, #0d1117 0%, #0a0e1a 100%)"}}>
+              <div
+                className="border-t border-slate-800/80 p-3"
+                style={{
+                  background:
+                    "linear-gradient(180deg, #0d1117 0%, #0a0e1a 100%)",
+                }}
+              >
                 {/* Attached Files Preview */}
                 {aiAttachments.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
