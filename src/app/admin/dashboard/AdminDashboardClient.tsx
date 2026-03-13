@@ -5444,7 +5444,7 @@ ${result.analysis.risks || "N/A"}
               />
             )}
             <div
-              className={`absolute left-0 top-0 bottom-0 z-40 transition-transform duration-300 ease-out ${showChatHistory ? "translate-x-0" : "-translate-x-full"}`}
+              className={`absolute left-0 top-0 bottom-0 z-40 transition-transform duration-300 ease-out overflow-hidden ${showChatHistory ? "translate-x-0" : "-translate-x-full"}`}
               style={{ width: "288px" }}
             >
               <div className="w-72 p-4 flex flex-col h-full bg-[#0F172A] border-r border-slate-700/50">
@@ -6121,8 +6121,8 @@ ${result.analysis.risks || "N/A"}
                   ))
                 )}
                 {aiLoading && (
-                  <div className="flex justify-start">
-                    <div className="w-48 h-1 rounded-full bg-gradient-to-r from-transparent via-purple-500 to-transparent overflow-hidden relative">
+                  <div className="px-4 pt-3">
+                    <div className="w-full h-1 rounded-full bg-gradient-to-r from-transparent via-purple-500 to-transparent overflow-hidden relative">
                       <div
                         className="absolute inset-0 bg-gradient-to-r from-purple-600 via-purple-400 to-purple-600 animate-[shimmer_1.5s_infinite]"
                         style={{ backgroundSize: "200% 100%" }}
@@ -6169,7 +6169,7 @@ ${result.analysis.risks || "N/A"}
               )}
 
               {/* Input */}
-              <div className="border-t border-slate-700/50 p-4 bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A]">
+              <div className="border-t border-slate-700/50 p-3 bg-gradient-to-r from-[#0F172A] via-[#1E293B] to-[#0F172A]">
                 {/* Attached Files Preview */}
                 {aiAttachments.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
