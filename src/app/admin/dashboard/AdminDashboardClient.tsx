@@ -596,7 +596,7 @@ export default function AdminDashboardClient({
   // Avatar upload handler
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !initialProfile) return;
+    if (!file || !profile) return;
 
     if (!file.type.startsWith("image/")) {
       setValidationErrors({
@@ -618,7 +618,7 @@ export default function AdminDashboardClient({
     setValidationErrors({ ...validationErrors, avatar: "" });
 
     try {
-      const fileName = `${initialProfile.id}/avatar/${Date.now()}-${file.name}`;
+      const fileName = `${profile.id}/avatar/${Date.now()}-${file.name}`;
       const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(fileName, file);
@@ -631,9 +631,9 @@ export default function AdminDashboardClient({
 
       await (supabase.from("profiles") as any)
         .update({ avatar_url: publicUrl })
-        .eq("id", initialProfile.id);
+        .eq("id", profile.id);
 
-      setInitialProfile({ ...initialProfile, avatar_url: publicUrl });
+      setProfile({ ...profile, avatar_url: publicUrl });
       setAvatarPreview(null);
       router.refresh();
     } catch (error) {
@@ -693,13 +693,13 @@ export default function AdminDashboardClient({
 
   // Data export handler
   const handleExportData = async () => {
-    if (!initialProfile) return;
+    if (!profile) return;
 
     const exportData = {
       profile: {
-        full_name: initialProfile.full_name,
-        visual_role: initialProfile.visual_role,
-        created_at: initialProfile.created_at,
+        full_name: profile.full_name,
+        visual_role: profile.visual_role,
+        created_at: profile.created_at,
       },
       exported_at: new Date().toISOString(),
     };
@@ -5083,11 +5083,11 @@ ${result.analysis.risks || "N/A"}
                   <div className="flex flex-col items-center py-4">
                     <div className="relative">
                       <div className="w-24 h-24 rounded-full bg-gray-200 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center">
-                        {initialProfile?.avatar_url || userAvatar ? (
+                        {profile?.avatar_url || userAvatar ? (
                           <img
                             src={
                               avatarPreview ||
-                              initialProfile?.avatar_url ||
+                              profile?.avatar_url ||
                               userAvatar ||
                               ""
                             }
@@ -5096,9 +5096,7 @@ ${result.analysis.risks || "N/A"}
                           />
                         ) : (
                           <span className="text-3xl font-bold text-gray-400">
-                            {initialProfile?.full_name
-                              ?.charAt(0)
-                              .toUpperCase() || "A"}
+                            {profile?.full_name?.charAt(0).toUpperCase() || "A"}
                           </span>
                         )}
                       </div>
