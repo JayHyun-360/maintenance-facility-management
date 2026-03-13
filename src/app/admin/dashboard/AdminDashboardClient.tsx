@@ -190,6 +190,10 @@ export default function AdminDashboardClient({
   const [quickActions, setQuickActions] = useState<
     { label: string; action: string }[]
   >([]);
+  const [aiLoadingConversations, setAiLoadingConversations] = useState(false);
+  const [deletingConversationId, setDeletingConversationId] = useState<
+    string | null
+  >(null);
 
   // Load conversations when chat opens
   useEffect(() => {
@@ -199,6 +203,7 @@ export default function AdminDashboardClient({
   }, [showAIChat]);
 
   const loadConversations = async () => {
+    setAiLoadingConversations(true);
     try {
       const response = await fetch(`/api/ai/conversations?userId=${userId}`);
       const result = await response.json();
@@ -207,6 +212,8 @@ export default function AdminDashboardClient({
       }
     } catch (error) {
       console.error("Failed to load conversations:", error);
+    } finally {
+      setAiLoadingConversations(false);
     }
   };
 
@@ -278,6 +285,7 @@ export default function AdminDashboardClient({
     e: React.MouseEvent,
   ) => {
     e.stopPropagation();
+    setDeletingConversationId(conversationId);
     try {
       await fetch(`/api/ai/conversations?conversationId=${conversationId}`, {
         method: "DELETE",
@@ -289,6 +297,8 @@ export default function AdminDashboardClient({
       }
     } catch (error) {
       console.error("Failed to delete conversation:", error);
+    } finally {
+      setDeletingConversationId(null);
     }
   };
 
@@ -5552,22 +5562,45 @@ ${result.analysis.risks || "N/A"}
                           setCurrentConversationId(null);
                           loadConversations();
                         }}
-                        className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-white/80 hover:bg-green-500/20 hover:text-green-300 mb-3 flex items-center gap-2 border border-dashed border-white/20 hover:border-green-500/50 transition-all"
+                        disabled={aiLoadingConversations}
+                        className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-white/80 hover:bg-green-500/20 hover:text-green-300 mb-3 flex items-center gap-2 border border-dashed border-white/20 hover:border-green-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 4v16m8-8H4"
-                          />
-                        </svg>
-                        New Chat
+                        {aiLoadingConversations ? (
+                          <svg
+                            className="w-4 h-4 animate-spin"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                        ) : (
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 4v16m8-8H4"
+                            />
+                          </svg>
+                        )}
+                        {aiLoadingConversations ? "Loading..." : "New Chat"}
                       </button>
                       <div className="flex-1 overflow-y-auto space-y-1 custom-scrollbar">
                         {aiConversations.length === 0 ? (
@@ -5610,21 +5643,44 @@ ${result.analysis.risks || "N/A"}
                               </button>
                               <button
                                 onClick={(e) => deleteConversation(conv.id, e)}
-                                className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 ml-2 transition-all"
+                                disabled={deletingConversationId === conv.id}
+                                className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 ml-2 transition-all disabled:opacity-50"
                               >
-                                <svg
-                                  className="w-4 h-4"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                                  />
-                                </svg>
+                                {deletingConversationId === conv.id ? (
+                                  <svg
+                                    className="w-4 h-4 animate-spin"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <circle
+                                      className="opacity-25"
+                                      cx="12"
+                                      cy="12"
+                                      r="10"
+                                      stroke="currentColor"
+                                      strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                      className="opacity-75"
+                                      fill="currentColor"
+                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    ></path>
+                                  </svg>
+                                ) : (
+                                  <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                    />
+                                  </svg>
+                                )}
                               </button>
                             </div>
                           ))
