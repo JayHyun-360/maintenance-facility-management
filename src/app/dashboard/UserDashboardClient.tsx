@@ -70,7 +70,7 @@ export default function UserDashboardClient({
   const [expandedPhotos, setExpandedPhotos] = useState<Set<string>>(new Set());
 
   // Profile edit state
-  const [formData, setFormData] = useState({
+  const [profileFormData, setProfileFormData] = useState({
     full_name: profile?.full_name || "",
     visual_role: profile?.visual_role || "",
     theme_preference: (profile?.theme_preference || "light") as
@@ -88,9 +88,9 @@ export default function UserDashboardClient({
     try {
       const { updateProfile } = await import("@/app/profile-settings/actions");
       const result = await updateProfile({
-        full_name: formData.full_name,
-        visual_role: formData.visual_role,
-        theme_preference: formData.theme_preference,
+        full_name: profileFormData.full_name,
+        visual_role: profileFormData.visual_role,
+        theme_preference: profileFormData.theme_preference,
       });
 
       if (!result.success) {
@@ -912,7 +912,10 @@ export default function UserDashboardClient({
                       <select
                         value={formData.nature}
                         onChange={(e) =>
-                          setFormData({ ...formData, nature: e.target.value })
+                          setFormData({
+                            ...formData,
+                            nature: e.target.value,
+                          })
                         }
                         className="w-full px-4 py-3 bg-white border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-300 hover:border-gray-300 appearance-none cursor-pointer text-gray-700 font-medium"
                         required
@@ -1612,9 +1615,12 @@ export default function UserDashboardClient({
                     </label>
                     <input
                       type="text"
-                      value={formData.full_name}
+                      value={profileFormData.full_name}
                       onChange={(e) =>
-                        setFormData({ ...formData, full_name: e.target.value })
+                        setProfileFormData({
+                          ...profileFormData,
+                          full_name: e.target.value,
+                        })
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900"
                     />
@@ -1638,10 +1644,10 @@ export default function UserDashboardClient({
                       Visual Role
                     </label>
                     <select
-                      value={formData.visual_role}
+                      value={profileFormData.visual_role}
                       onChange={(e) =>
-                        setFormData({
-                          ...formData,
+                        setProfileFormData({
+                          ...profileFormData,
                           visual_role: e.target.value,
                         })
                       }
@@ -1762,10 +1768,10 @@ export default function UserDashboardClient({
                       Theme Preference
                     </label>
                     <select
-                      value={formData.theme_preference}
+                      value={profileFormData.theme_preference}
                       onChange={(e) =>
-                        setFormData({
-                          ...formData,
+                        setProfileFormData({
+                          ...profileFormData,
                           theme_preference: e.target.value as
                             | "light"
                             | "dark"
