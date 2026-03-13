@@ -5629,10 +5629,6 @@ ${result.analysis.risks || "N/A"}
                           .replace("-pro", "P")}
                       </span>
                     </div>
-                    <p className="text-[10px] text-emerald-400/80 mt-0.5 flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block" />
-                      Online · Gemini
-                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -5960,51 +5956,21 @@ ${result.analysis.risks || "N/A"}
                       key={index}
                       className={`flex gap-2.5 group animate-fade-in ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                     >
-                      {/* Avatar */}
-                      {message.role === "assistant" ? (
+                      {/* Avatar - only show for assistant */}
+                      {message.role === "assistant" && (
                         <div className="flex-shrink-0 mt-1">
                           <div className="relative">
                             <div className="absolute inset-0 rounded-full bg-purple-500 blur-sm opacity-60 animate-pulse" />
                             <Bot className="relative w-5 h-5 text-purple-400 drop-shadow-lg" />
                           </div>
                         </div>
-                      ) : (
-                        <div className="flex-shrink-0 mt-1">
-                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center shadow">
-                            <svg
-                              className="w-3.5 h-3.5 text-white/80"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                              />
-                            </svg>
-                          </div>
-                        </div>
                       )}
 
                       <div className="flex flex-col max-w-[82%]">
-                        {/* Role label + timestamp */}
-                        <div
-                          className={`flex items-center gap-2 mb-1 ${message.role === "user" ? "flex-row-reverse" : ""}`}
-                        >
-                          <span className="text-[10px] font-semibold text-white/40 uppercase tracking-wide">
-                            {message.role === "user" ? "You" : "AI"}
-                          </span>
-                          <span className="text-[9px] text-white/20">
-                            msg {index + 1}
-                          </span>
-                        </div>
-
                         <div
                           className={`relative rounded-2xl px-3.5 py-2.5 ${
                             message.role === "user"
-                              ? "bg-gradient-to-br from-[#2D3A52] to-[#1E293B] border border-slate-600/40 shadow-lg rounded-tr-sm"
+                              ? "bg-[#2D3A52] border border-slate-600/40 shadow-lg"
                               : "bg-transparent"
                           }`}
                         >
@@ -6227,20 +6193,11 @@ ${result.analysis.risks || "N/A"}
                 {aiLoading && (
                   <div className="flex gap-2.5 animate-fade-in">
                     <div className="flex-shrink-0 mt-1">
-                      <div className="w-6 h-6 rounded-md bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow shadow-amber-500/30">
-                        <svg
-                          className="w-3 h-3 text-white"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-                          />
-                        </svg>
+                      <div className="relative">
+                        <div className="absolute inset-0 rounded-md bg-purple-500 blur-sm opacity-60 animate-pulse" />
+                        <div className="relative w-6 h-6 rounded-md bg-purple-600 flex items-center justify-center shadow shadow-purple-500/30">
+                          <Bot className="w-3.5 h-3.5 text-white" />
+                        </div>
                       </div>
                     </div>
                     <div className="bg-transparent rounded-2xl rounded-tl-sm px-4 py-3">
