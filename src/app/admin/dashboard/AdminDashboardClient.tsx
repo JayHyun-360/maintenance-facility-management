@@ -5418,7 +5418,7 @@ ${result.analysis.risks || "N/A"}
           </div>
           <div
             ref={aiChatRef}
-            className={`fixed right-0 top-0 bottom-0 w-[400px] max-w-full bg-[#0F172A] shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-out ${showAIChat ? "translate-x-0" : "translate-x-full"}`}
+            className={`fixed right-0 top-0 bottom-0 w-[400px] max-w-full bg-[#0F172A] shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-out overflow-hidden ${showAIChat ? "translate-x-0" : "translate-x-full"}`}
             style={{
               transition: "transform 300ms cubic-bezier(0.4, 0, 0.2, 1)",
             }}
@@ -5437,11 +5437,11 @@ ${result.analysis.risks || "N/A"}
                     onClick={() => setShowChatHistory(false)}
                   />
                   <motion.div
-                    initial={{ x: "-100%", opacity: 0.8 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    exit={{ x: "-100%", opacity: 0.8 }}
-                    transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                    className="absolute left-0 top-0 bottom-0 z-40"
+                    initial={{ left: "-288px", opacity: 0 }}
+                    animate={{ left: "0", opacity: 1 }}
+                    exit={{ left: "-288px", opacity: 0 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="absolute top-0 bottom-0 z-40"
                     style={{ width: "288px" }}
                     onClick={(e) => e.stopPropagation()}
                   >
