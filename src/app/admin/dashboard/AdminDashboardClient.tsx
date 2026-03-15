@@ -208,18 +208,26 @@ export default function AdminDashboardClient({
   );
   const [isListening, setIsListening] = useState(false);
   const [listeningText, setListeningText] = useState("");
+  const [openStatusDropdown, setOpenStatusDropdown] = useState<string | null>(
+    null,
+  );
 
   // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = () => {
       setMessageOptionsMenu(null);
       setShowModelSelector(false);
+      setOpenStatusDropdown(null);
     };
-    if (messageOptionsMenu !== null || showModelSelector) {
+    if (
+      messageOptionsMenu !== null ||
+      showModelSelector ||
+      openStatusDropdown !== null
+    ) {
       document.addEventListener("click", handleClickOutside);
       return () => document.removeEventListener("click", handleClickOutside);
     }
-  }, [messageOptionsMenu, showModelSelector]);
+  }, [messageOptionsMenu, showModelSelector, openStatusDropdown]);
 
   // Load conversations when chat opens
   useEffect(() => {
@@ -1955,6 +1963,7 @@ ${result.analysis.risks || "N/A"}
                     <button
                       type="button"
                       onClick={(e) => {
+                        e.stopPropagation();
                         togglePhotos(e, request.id);
                       }}
                       className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
@@ -2000,6 +2009,7 @@ ${result.analysis.risks || "N/A"}
                       <button
                         type="button"
                         onClick={(e) => {
+                          e.stopPropagation();
                           togglePhotos(e, request.id);
                         }}
                         className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
@@ -2029,38 +2039,88 @@ ${result.analysis.risks || "N/A"}
 
           <td className="px-6 py-4">
             <div className="flex items-center gap-2">
-              {/* Status Dropdown */}
+              {/* Custom Status Dropdown */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenStatusDropdown(
+                      openStatusDropdown === request.id ? null : request.id,
+                    );
+                  }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all duration-200 cursor-pointer ${
+                    request.status === "Pending"
+                      ? "bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100"
+                      : request.status === "In Progress"
+                        ? "bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
+                        : request.status === "Completed"
+                          ? "bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
+                          : "bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+                  }`}
+                >
+                  <span className="w-2 h-2 rounded-full bg-current"></span>
+                  {request.status}
+                  <svg
+                    className={`w-3 h-3 transition-transform duration-200 ${openStatusDropdown === request.id ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
 
-              <select
-                value={request.status}
-                onChange={(e) => {
-                  e.stopPropagation();
-
-                  handleStatusUpdate(
-                    request.id,
-
-                    e.target.value as RequestStatus,
-                  );
-                }}
-                onClick={(e) => e.stopPropagation()}
-                className={`text-xs px-2 py-1.5 rounded border focus:outline-none focus:ring-1 focus:ring-[#427A43] cursor-pointer ${
-                  request.status === "Pending"
-                    ? "bg-yellow-50 border-yellow-200 text-yellow-700"
-                    : request.status === "In Progress"
-                      ? "bg-blue-50 border-blue-200 text-blue-700"
-                      : request.status === "Completed"
-                        ? "bg-green-50 border-green-200 text-green-700"
-                        : "bg-red-50 border-red-200 text-red-700"
-                }`}
-              >
-                <option value="Pending">Pending</option>
-
-                <option value="In Progress">In Progress</option>
-
-                <option value="Completed">Completed</option>
-
-                <option value="Cancelled">Cancelled</option>
-              </select>
+                {/* Dropdown Menu */}
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className={`absolute left-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 transition-all duration-200 ${
+                    openStatusDropdown === request.id
+                      ? "opacity-100 visible translate-y-0"
+                      : "opacity-0 invisible -translate-y-2"
+                  }`}
+                >
+                  {(
+                    [
+                      "Pending",
+                      "In Progress",
+                      "Completed",
+                      "Cancelled",
+                    ] as const
+                  ).map((status) => (
+                    <button
+                      key={status}
+                      onClick={() => {
+                        handleStatusUpdate(request.id, status);
+                        setOpenStatusDropdown(null);
+                      }}
+                      className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors ${
+                        request.status === status
+                          ? "bg-gray-100 text-gray-900"
+                          : "text-gray-700 hover:bg-gray-50"
+                      }`}
+                    >
+                      <span
+                        className={`inline-block w-2 h-2 rounded-full mr-2 ${
+                          status === "Pending"
+                            ? "bg-yellow-500"
+                            : status === "In Progress"
+                              ? "bg-blue-500"
+                              : status === "Completed"
+                                ? "bg-green-500"
+                                : "bg-red-500"
+                        }`}
+                      ></span>
+                      {status}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               {/* Report Button */}
 
@@ -2072,7 +2132,7 @@ ${result.analysis.risks || "N/A"}
 
                   setShowReportSidebar(true);
                 }}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#427A43] text-white text-xs font-medium rounded hover:bg-[#366337] transition-colors shadow-sm hover:shadow-md"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#427A43] text-white text-xs font-medium rounded-lg hover:bg-[#366337] transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
                 title="Generate Report"
               >
                 <svg
@@ -2100,7 +2160,7 @@ ${result.analysis.risks || "N/A"}
 
                   handleDeleteRequest(request.id);
                 }}
-                className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                className="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
                 title="Delete Request"
               >
                 <svg
