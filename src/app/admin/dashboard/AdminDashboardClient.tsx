@@ -198,6 +198,8 @@ export default function AdminDashboardClient({
   const [aiStatusText, setAiStatusText] = useState("");
   const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
   const [editingMessageText, setEditingMessageText] = useState("");
+  const [userScrolledUp, setUserScrolledUp] = useState(false);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const [messageOptionsMenu, setMessageOptionsMenu] = useState<number | null>(
     null,
   );
@@ -222,6 +224,107 @@ export default function AdminDashboardClient({
       loadConversations();
     }
   }, [showAIChat]);
+
+  // Auto-scroll to bottom when new messages are added
+  useEffect(() => {
+    if (chatContainerRef.current && !userScrolledUp) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [aiMessages, aiLoading, userScrolledUp]);
+
+  // Handle scroll detection to pause auto-scroll when user scrolls up
+  const handleScroll = () => {
+    if (chatContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } =
+        chatContainerRef.current;
+      const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
+      setUserScrolledUp(!isAtBottom);
+    }
+  };
+
+  // Generate contextual suggestions based on message content
+  const generateContextualSuggestions = (
+    lastMessage: string,
+  ): { label: string; prompt: string }[] => {
+    const lowerContent = lastMessage.toLowerCase();
+    const suggestions: { label: string; prompt: string }[] = [];
+
+    // Analyze content and generate relevant suggestions
+    if (
+      lowerContent.includes("pending") ||
+      lowerContent.includes("queue") ||
+      lowerContent.includes("waiting")
+    ) {
+      suggestions.push(
+        {
+          label: "Show high priority",
+          prompt: "Show me high priority pending requests",
+        },
+        { label: "Oldest pending", prompt: "Show the oldest pending requests" },
+      );
+    }
+
+    if (
+      lowerContent.includes("trend") ||
+      lowerContent.includes("analysis") ||
+      lowerContent.includes("statistics")
+    ) {
+      suggestions.push(
+        { label: "Weekly summary", prompt: "Give me a weekly summary" },
+        { label: "By category", prompt: "Break down by category" },
+      );
+    }
+
+    if (
+      lowerContent.includes("request") ||
+      lowerContent.includes("maintenance") ||
+      lowerContent.includes("issue")
+    ) {
+      suggestions.push(
+        {
+          label: "Create new request",
+          prompt: "Help me create a new maintenance request",
+        },
+        { label: "Recent activity", prompt: "Show recent activity" },
+      );
+    }
+
+    if (
+      lowerContent.includes("priority") ||
+      lowerContent.includes("urgent") ||
+      lowerContent.includes("critical")
+    ) {
+      suggestions.push(
+        { label: "All urgent items", prompt: "List all urgent items" },
+        { label: "Assign now", prompt: "Help me assign these requests" },
+      );
+    }
+
+    if (
+      lowerContent.includes("staff") ||
+      lowerContent.includes("team") ||
+      lowerContent.includes("assign")
+    ) {
+      suggestions.push(
+        { label: "Workload status", prompt: "Show staff workload status" },
+        { label: "Available now", prompt: "Who is available right now?" },
+      );
+    }
+
+    // Default suggestions if no specific context matched
+    if (suggestions.length === 0) {
+      suggestions.push(
+        { label: "Pending queue", prompt: "Show me pending requests" },
+        { label: "Summarize", prompt: "Summarize this analysis" },
+        { label: "More details", prompt: "Give me more details" },
+      );
+    }
+
+    return suggestions.slice(0, 3); // Return max 3 suggestions
+  };
 
   const loadConversations = async () => {
     setAiLoadingConversations(true);
@@ -6384,7 +6487,11 @@ ${result.analysis.risks || "N/A"}
               )}
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 space-y-5 bg-[#080d18] custom-scrollbar">
+              <div
+                ref={chatContainerRef}
+                onScroll={handleScroll}
+                className="flex-1 overflow-y-auto p-4 space-y-5 bg-[#080d18] custom-scrollbar"
+              >
                 {/* Live Voice Transcription Display */}
                 {isListening && (
                   <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
@@ -6785,6 +6892,83 @@ ${result.analysis.risks || "N/A"}
                               <circle cx="12" cy="19" r="1.5" />
                             </svg>
                           </button>
+                          {/* Regenerate Button - Visible directly for assistant messages */}
+                          {message.role === "assistant" && (
+                            <button
+                              onClick={async (e) => {
+                                e.stopPropagation();
+                                const lastUserMsg = [...aiMessages]
+                                  .reverse()
+                                  .find((m) => m.role === "user");
+                                if (lastUserMsg) {
+                                  setAiLoading(true);
+                                  setAiStatusText("Regenerating response...");
+                                  setAiMessages((prev) =>
+                                    prev.filter((_, i) => i !== index),
+                                  );
+                                  try {
+                                    const response = await fetch(
+                                      "/api/ai/admin-chat",
+                                      {
+                                        method: "POST",
+                                        headers: {
+                                          "Content-Type": "application/json",
+                                        },
+                                        body: JSON.stringify({
+                                          query: lastUserMsg.content,
+                                          context: currentConversationId
+                                            ? {
+                                                conversationId:
+                                                  currentConversationId,
+                                              }
+                                            : undefined,
+                                          model: selectedModel,
+                                        }),
+                                      },
+                                    );
+                                    const result = await response.json();
+                                    if (result.success) {
+                                      setAiMessages((prev) => [
+                                        ...prev,
+                                        {
+                                          role: "assistant",
+                                          content: result.response,
+                                        },
+                                      ]);
+                                      if (currentConversationId) {
+                                        await saveMessage(
+                                          currentConversationId,
+                                          "assistant",
+                                          result.response,
+                                        );
+                                      }
+                                    }
+                                  } catch (error) {
+                                    console.error("Regenerate error:", error);
+                                  } finally {
+                                    setAiLoading(false);
+                                    setAiStatusText("");
+                                  }
+                                }
+                              }}
+                              className="p-1 rounded text-white/40 hover:text-green-400 hover:bg-green-500/10 transition-all"
+                              title="Regenerate response"
+                            >
+                              <svg
+                                className="w-3.5 h-3.5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                />
+                              </svg>
+                            </button>
+                          )}
                           {/* Message Options Dropdown */}
                           {messageOptionsMenu === index && (
                             <div
@@ -6936,74 +7120,21 @@ ${result.analysis.risks || "N/A"}
                             </div>
                           )}
                         </div>
-                        {/* Quick Actions for last AI response */}
+                        {/* Dynamic Contextual Suggestions for last AI response */}
                         {message.role === "assistant" &&
                           index === aiMessages.length - 1 && (
                             <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-white/5">
-                              {quickActions.length > 0 ? (
-                                quickActions.map((action, actionIndex) => (
-                                  <div
-                                    key={actionIndex}
-                                    className="group flex items-center"
-                                  >
-                                    <button
-                                      onClick={() => {
-                                        if (
-                                          action.action === "view_pending" ||
-                                          action.action === "view_all" ||
-                                          action.action === "new_request"
-                                        ) {
-                                          setShowAIChat(false);
-                                        } else {
-                                          setAiInput(action.label);
-                                        }
-                                      }}
-                                      className="text-[11px] px-2.5 py-1 bg-green-500/10 border border-green-500/20 rounded-l-md text-green-300 hover:bg-green-500/20 hover:border-green-500/40 transition-all"
-                                    >
-                                      {action.label}
-                                    </button>
-                                    <button
-                                      onClick={() => {
-                                        setQuickActions(
-                                          quickActions.filter(
-                                            (_, i) => i !== actionIndex,
-                                          ),
-                                        );
-                                      }}
-                                      className="text-[10px] px-1 py-1 bg-green-500/10 border border-green-500/20 border-l-0 rounded-r-md text-green-400 hover:bg-green-500/30 hover:text-green-200 transition-all"
-                                    >
-                                      ×
-                                    </button>
-                                  </div>
-                                ))
-                              ) : (
-                                <>
-                                  <button
-                                    onClick={() =>
-                                      setAiInput("Show me pending requests")
-                                    }
-                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
-                                  >
-                                    View Pending Queue
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      setAiInput("Summarize this analysis")
-                                    }
-                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
-                                  >
-                                    Summarize
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      setAiInput("Give me more details")
-                                    }
-                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all"
-                                  >
-                                    More Details
-                                  </button>
-                                </>
-                              )}
+                              {generateContextualSuggestions(
+                                message.content,
+                              ).map((suggestion, suggestionIndex) => (
+                                <button
+                                  key={suggestionIndex}
+                                  onClick={() => setAiInput(suggestion.prompt)}
+                                  className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-green-500/10 hover:text-green-300 hover:border-green-500/30 transition-all"
+                                >
+                                  {suggestion.label}
+                                </button>
+                              ))}
                             </div>
                           )}
                       </div>
