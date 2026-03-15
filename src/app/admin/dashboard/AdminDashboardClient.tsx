@@ -1513,19 +1513,21 @@ export default function AdminDashboardClient({
 
   const togglePhotos = (e: React.MouseEvent, requestId: string) => {
     e.preventDefault();
-
     e.stopPropagation();
+    e.nativeEvent.stopImmediatePropagation();
 
-    setExpandedPhotos((prev) => {
-      const newSet = new Set(prev);
+    requestAnimationFrame(() => {
+      setExpandedPhotos((prev) => {
+        const newSet = new Set(prev);
 
-      if (newSet.has(requestId)) {
-        newSet.delete(requestId);
-      } else {
-        newSet.add(requestId);
-      }
+        if (newSet.has(requestId)) {
+          newSet.delete(requestId);
+        } else {
+          newSet.add(requestId);
+        }
 
-      return newSet;
+        return newSet;
+      });
     });
   };
 
@@ -2039,7 +2041,7 @@ ${result.analysis.risks || "N/A"}
 
           <td className="px-6 py-4">
             <div className="flex items-center gap-2">
-              {/* Custom Status Dropdown */}
+              {/* Apple-like Status Dropdown */}
               <div className="relative">
                 <button
                   type="button"
@@ -2049,20 +2051,32 @@ ${result.analysis.risks || "N/A"}
                       openStatusDropdown === request.id ? null : request.id,
                     );
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all duration-200 cursor-pointer ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ease-out cursor-pointer backdrop-blur-sm ${
                     request.status === "Pending"
-                      ? "bg-yellow-50 border-yellow-200 text-yellow-700 hover:bg-yellow-100"
+                      ? "bg-yellow-100/80 text-yellow-800 border border-yellow-200/50"
                       : request.status === "In Progress"
-                        ? "bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
+                        ? "bg-blue-100/80 text-blue-800 border border-blue-200/50"
                         : request.status === "Completed"
-                          ? "bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
-                          : "bg-red-50 border-red-200 text-red-700 hover:bg-red-100"
+                          ? "bg-green-100/80 text-green-800 border border-green-200/50"
+                          : "bg-red-100/80 text-red-800 border border-red-200/50"
                   }`}
                 >
-                  <span className="w-2 h-2 rounded-full bg-current"></span>
-                  {request.status}
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full ${
+                      request.status === "Pending"
+                        ? "bg-yellow-500"
+                        : request.status === "In Progress"
+                          ? "bg-blue-500"
+                          : request.status === "Completed"
+                            ? "bg-green-500"
+                            : "bg-red-500"
+                    }`}
+                  ></span>
+                  <span className="whitespace-nowrap">{request.status}</span>
                   <svg
-                    className={`w-3 h-3 transition-transform duration-200 ${openStatusDropdown === request.id ? "rotate-180" : ""}`}
+                    className={`w-3 h-3 transition-transform duration-300 ease-out ${
+                      openStatusDropdown === request.id ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -2076,10 +2090,10 @@ ${result.analysis.risks || "N/A"}
                   </svg>
                 </button>
 
-                {/* Dropdown Menu */}
+                {/* Apple-style Dropdown Menu */}
                 <div
                   onClick={(e) => e.stopPropagation()}
-                  className={`absolute left-0 mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50 transition-all duration-200 ${
+                  className={`absolute left-1/2 -translate-x-1/2 mt-2 w-36 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100/50 py-1.5 z-50 transition-all duration-300 ease-out ${
                     openStatusDropdown === request.id
                       ? "opacity-100 visible translate-y-0"
                       : "opacity-0 invisible -translate-y-2"
@@ -2099,14 +2113,14 @@ ${result.analysis.risks || "N/A"}
                         handleStatusUpdate(request.id, status);
                         setOpenStatusDropdown(null);
                       }}
-                      className={`w-full text-left px-3 py-2 text-xs font-medium transition-colors ${
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-medium transition-all duration-200 ${
                         request.status === status
                           ? "bg-gray-100 text-gray-900"
-                          : "text-gray-700 hover:bg-gray-50"
+                          : "text-gray-600 hover:bg-gray-50/80"
                       }`}
                     >
                       <span
-                        className={`inline-block w-2 h-2 rounded-full mr-2 ${
+                        className={`w-1.5 h-1.5 rounded-full ${
                           status === "Pending"
                             ? "bg-yellow-500"
                             : status === "In Progress"
@@ -4446,7 +4460,7 @@ ${result.analysis.risks || "N/A"}
                   </p>
                 </div>
 
-                <div className="overflow-x-auto">
+                <div>
                   <table className="w-full">
                     <thead className="bg-gray-50">
                       <tr>
