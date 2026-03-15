@@ -2799,17 +2799,16 @@ ${result.analysis.risks || "N/A"}
   }, [selectedRequestForReport]);
 
   return (
-    <div className="min-h-screen bg-[#F5F5DC]">
+    <div className="min-h-screen bg-[#F5F5F7]">
       {/* Enhanced Header */}
 
-      <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+      <div className="sticky top-0 z-50 w-full border-b border-[#E5E5EA] bg-white/80 backdrop-blur-xl">
+        <div className="max-w-screen-xl mx-auto px-6 h-14 flex items-center justify-between">
             {/* Left Side - Logo and Title */}
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border-2 border-white/30">
+              <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1D1D1F]">
                 <svg
-                  className="w-8 h-8 text-white"
+                  className="w-5 h-5 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -2828,19 +2827,19 @@ ${result.analysis.risks || "N/A"}
                   />
                 </svg>
               </div>
-              <div>
-                <h1 className="font-header text-xl font-bold text-white">
+              <div className="flex flex-col leading-tight">
+                <h1 className="text-[15px] font-semibold text-[#1D1D1F] tracking-tight">
                   IVF Maintenance Utility
                 </h1>
-                <p className="text-white/70 text-xs">Admin Dashboard</p>
+                <p className="text-[11px] font-medium text-[#6E6E73] tracking-wide uppercase">Admin Dashboard</p>
               </div>
             </div>
 
             {/* Right Side - Profile, Settings, etc */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1">
               <button
                 onClick={handleThemeToggle}
-                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
+                className="w-9 h-9 flex items-center justify-center rounded-full text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#1D1D1F] transition-all duration-150"
                 title={`Current theme: ${profile?.theme_preference}`}
               >
                 {profile?.theme_preference === "dark" ? (
@@ -2892,7 +2891,7 @@ ${result.analysis.risks || "N/A"}
 
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                className="w-9 h-9 flex items-center justify-center rounded-full text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#1D1D1F] transition-all duration-150 relative"
                 title="Notifications"
               >
                 <svg
@@ -2920,7 +2919,7 @@ ${result.analysis.risks || "N/A"}
 
               <button
                 onClick={() => setShowAIChat(!showAIChat)}
-                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                className="w-9 h-9 flex items-center justify-center rounded-full text-[#6E6E73] hover:bg-[#F5F5F7] hover:text-[#1D1D1F] transition-all duration-150 relative"
                 title="AI Assistant"
               >
                 <Bot className="w-5 h-5" />
@@ -2928,7 +2927,7 @@ ${result.analysis.risks || "N/A"}
 
               <button
                 onClick={() => setShowProfileSidebar(true)}
-                className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
+                className="text-[13px] font-medium text-[#6E6E73] hover:text-[#1D1D1F] transition-colors duration-150 px-3 py-1.5 rounded-lg hover:bg-[#F5F5F7]"
               >
                 Settings
               </button>
@@ -2937,7 +2936,7 @@ ${result.analysis.risks || "N/A"}
               <div className="relative">
                 <button
                   onClick={() => setShowProfileViewer(!showProfileViewer)}
-                  className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
+                  className="w-8 h-8 rounded-full ring-2 ring-[#E5E5EA] ring-offset-1 cursor-pointer hover:ring-[#0071E3] transition-all duration-150 flex items-center justify-center overflow-hidden"
                   title="Click to view profile picture"
                 >
                   {userAvatar ? (
@@ -2954,12 +2953,12 @@ ${result.analysis.risks || "N/A"}
                     />
                   ) : null}
                   <span
-                    className={`text-white font-bold ${userAvatar ? "hidden" : ""}`}
+                    className={`text-[#1D1D1F] font-semibold text-sm ${userAvatar ? "hidden" : ""}`}
                   >
                     {profile?.full_name?.charAt(0).toUpperCase() || "A"}
                   </span>
                 </button>
-                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+                <div className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-[#34C759] ring-2 ring-white"></div>
 
                 {showProfileViewer && userAvatar && (
                   <div
@@ -2991,7 +2990,7 @@ ${result.analysis.risks || "N/A"}
 
               <button
                 onClick={handleSignOut}
-                className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
+                className="text-[13px] font-medium text-[#1D1D1F] bg-[#F5F5F7] hover:bg-[#E5E5EA] px-4 py-1.5 rounded-full transition-all duration-150 border border-[#E5E5EA]"
               >
                 Sign Out
               </button>
@@ -3002,8 +3001,8 @@ ${result.analysis.risks || "N/A"}
 
       {/* Tab Navigation */}
 
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-4 bg-white border-b">
-        <div className="relative flex gap-8 overflow-x-auto">
+      <div className="border-b border-[#E5E5EA] bg-white px-6">
+        <div className="max-w-screen-xl mx-auto flex items-center gap-0 -mb-px">
           {[
             {
               id: "overview",
@@ -3099,10 +3098,10 @@ ${result.analysis.risks || "N/A"}
                 tabRefs.current[tab.id] = el;
               }}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`relative flex items-center gap-2 pb-3 font-medium transition-all duration-300 whitespace-nowrap z-10 ${
+              className={`relative flex items-center gap-2 px-4 py-3.5 text-[13px] font-medium transition-all duration-150 whitespace-nowrap z-10 ${
                 activeTab === tab.id
-                  ? "text-[#427A43]"
-                  : "text-gray-500 hover:text-gray-700"
+                  ? "text-[#1D1D1F]"
+                  : "text-[#6E6E73] hover:text-[#1D1D1F]"
               }`}
             >
               {tab.icon}
@@ -3113,14 +3112,15 @@ ${result.analysis.risks || "N/A"}
 
           {/* Sliding Underline */}
 
-          <div
-            className="absolute bottom-0 left-0 h-0.5 bg-[#427A43] transition-all duration-300 ease-out tab-indicator"
-            style={{ width: "88px", transform: "translateX(0px)" }}
+          <motion.div
+            className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#1D1D1F] rounded-full"
+            layoutId="activeTab"
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
           />
         </div>
       </div>
 
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
+      <div className="max-w-screen-xl mx-auto px-6 py-8 space-y-6">
         <div className="transition-opacity duration-300 ease-in-out">
           {/* Overview Tab */}
 
@@ -3128,22 +3128,22 @@ ${result.analysis.risks || "N/A"}
             <>
               {/* Stats Cards */}
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-white rounded-2xl border border-[#E5E5EA] p-5 flex items-start justify-between hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:scale-[1.01] transition-all duration-200">
                   <div className="flex items-center">
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-600">
+                      <p className="text-[11px] font-semibold text-[#6E6E73] uppercase tracking-widest mb-1">
                         Total Requests
                       </p>
 
-                      <p className="text-2xl font-bold text-gray-900">
+                      <p className="text-[32px] font-bold text-[#1D1D1F] leading-none tracking-tight">
                         {stats.total}
                       </p>
                     </div>
 
-                    <div className="w-12 h-12 bg-[#427A43]/10 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-[#F5F5F7] flex items-center justify-center">
                       <svg
-                        className="w-6 h-6 text-[#427A43]"
+                        className="w-5 h-5 text-[#1D1D1F]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -3159,21 +3159,21 @@ ${result.analysis.risks || "N/A"}
                   </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                <div className="bg-white rounded-2xl border border-[#E5E5EA] p-5 flex items-start justify-between hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:scale-[1.01] transition-all duration-200">
                   <div className="flex items-center">
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-600">
+                      <p className="text-[11px] font-semibold text-[#6E6E73] uppercase tracking-widest mb-1">
                         Pending
                       </p>
 
-                      <p className="text-2xl font-bold text-yellow-600">
+                      <p className="text-[32px] font-bold text-[#1D1D1F] leading-none tracking-tight">
                         {stats.pending}
                       </p>
                     </div>
 
-                    <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-[#FFF5E6] flex items-center justify-center">
                       <svg
-                        className="w-6 h-6 text-yellow-600"
+                        className="w-5 h-5 text-[#FF9500]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -3189,21 +3189,21 @@ ${result.analysis.risks || "N/A"}
                   </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                <div className="bg-white rounded-2xl border border-[#E5E5EA] p-5 flex items-start justify-between hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:scale-[1.01] transition-all duration-200">
                   <div className="flex items-center">
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-600">
+                      <p className="text-[11px] font-semibold text-[#6E6E73] uppercase tracking-widest mb-1">
                         In Progress
                       </p>
 
-                      <p className="text-2xl font-bold text-blue-600">
+                      <p className="text-[32px] font-bold text-[#1D1D1F] leading-none tracking-tight">
                         {stats.inProgress}
                       </p>
                     </div>
 
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-[#E8F4FF] flex items-center justify-center">
                       <svg
-                        className="w-6 h-6 text-blue-600"
+                        className="w-5 h-5 text-[#0071E3]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -3219,21 +3219,21 @@ ${result.analysis.risks || "N/A"}
                   </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                <div className="bg-white rounded-2xl border border-[#E5E5EA] p-5 flex items-start justify-between hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] hover:scale-[1.01] transition-all duration-200">
                   <div className="flex items-center">
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-600">
+                      <p className="text-[11px] font-semibold text-[#6E6E73] uppercase tracking-widest mb-1">
                         Completed
                       </p>
 
-                      <p className="text-2xl font-bold text-green-600">
+                      <p className="text-[32px] font-bold text-[#1D1D1F] leading-none tracking-tight">
                         {stats.completed}
                       </p>
                     </div>
 
-                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-[#E8F9EF] flex items-center justify-center">
                       <svg
-                        className="w-6 h-6 text-green-600"
+                        className="w-5 h-5 text-[#34C759]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -3252,8 +3252,8 @@ ${result.analysis.risks || "N/A"}
 
               {/* Recent Requests - Last 1 Hour */}
 
-              <div className="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn">
-                <h2 className="font-header text-lg font-semibold text-gray-900 mb-4">
+              <div className="bg-white rounded-2xl border border-[#E5E5EA] p-6">
+                <h2 className="text-[15px] font-semibold text-[#1D1D1F] mb-4">
                   Recent Requests (Last 1 Hour)
                 </h2>
 
@@ -3269,21 +3269,21 @@ ${result.analysis.risks || "N/A"}
                       {recentRequests.map((request) => (
                         <div
                           key={request.id}
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                          className="flex items-center justify-between py-3 border-b border-[#F5F5F7] last:border-0"
                         >
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">
+                            <p className="text-[14px] font-medium text-[#1D1D1F] truncate">
                               {request.nature}
                             </p>
 
-                            <p className="text-xs text-gray-500">
+                            <p className="text-[12px] text-[#6E6E73]">
                               {request.profiles?.full_name || "Unknown"} •{" "}
                               {request.location}
                             </p>
                           </div>
 
                           <span
-                            className={`px-2 py-1 text-xs font-medium rounded-full ml-2 ${request.status === "Pending" ? "bg-yellow-100 text-yellow-700" : request.status === "In Progress" ? "bg-blue-100 text-blue-700" : "bg-green-100 text-green-700"}`}
+                            className={`px-2 py-1 text-[12px] font-medium rounded-full ml-2 ${request.status === "Pending" ? "bg-[#FFF5E6] text-[#FF9500]" : request.status === "In Progress" ? "bg-[#E8F4FF] text-[#0071E3]" : "bg-[#E8F9EF] text-[#34C759]"}`}
                           >
                             {request.status}
                           </span>
@@ -3291,7 +3291,7 @@ ${result.analysis.risks || "N/A"}
                       ))}
                     </div>
                   ) : (
-                    <p className="text-center text-gray-500 py-4">
+                    <p className="text-[14px] text-[#6E6E73] text-center py-10">
                       No recent requests in the last hour
                     </p>
                   );
@@ -3304,32 +3304,26 @@ ${result.analysis.risks || "N/A"}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
-                className="bg-gradient-to-br from-white via-white to-gray-50/30 rounded-2xl shadow-lg border border-gray-100/50 p-8 mb-8 backdrop-blur-sm relative overflow-hidden"
+                className="bg-white rounded-2xl border border-[#E5E5EA] p-6"
               >
-                {/* Background decoration */}
-
-                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/5 to-purple-400/5 rounded-full blur-3xl"></div>
-
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-green-400/5 to-cyan-400/5 rounded-full blur-2xl"></div>
-
                 <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center justify-between mb-6">
                     <div className="flex items-center gap-4">
                       <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         transition={{ delay: 0.2, duration: 0.3 }}
-                        className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
+                        className="p-3 bg-[#F5F5F7] rounded-xl"
                       >
-                        <BarChart3 className="w-6 h-6 text-white" />
+                        <BarChart3 className="w-6 h-6 text-[#1D1D1F]" />
                       </motion.div>
 
                       <div>
-                        <h2 className="font-bold text-xl text-gray-900 tracking-tight">
+                        <h2 className="text-[15px] font-semibold text-[#1D1D1F]">
                           Most Requests by Nature
                         </h2>
 
-                        <p className="text-sm text-gray-500 mt-1">
+                        <p className="text-[12px] text-[#6E6E73] mt-0.5">
                           Top 3 maintenance request categories
                         </p>
                       </div>
@@ -3339,21 +3333,21 @@ ${result.analysis.risks || "N/A"}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.3, duration: 0.3 }}
-                      className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100"
+                      className="flex items-center gap-1.5 text-[12px] font-medium text-[#6E6E73] bg-[#F5F5F7] px-3 py-1 rounded-full"
                     >
-                      <Activity className="w-4 h-4 text-blue-600" />
+                      <Activity className="w-4 h-4" />
 
-                      <span className="text-sm font-semibold text-gray-700">
+                      <span>
                         {stats.total}
                       </span>
 
-                      <span className="text-sm text-gray-500">
+                      <span>
                         total requests
                       </span>
                     </motion.div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
                     {[
                       {
                         name: "Plumbing",
@@ -3479,7 +3473,7 @@ ${result.analysis.risks || "N/A"}
                             whileTap={{ scale: 0.98 }}
                             className="group relative"
                           >
-                            <div className="relative bg-white rounded-2xl p-5 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+                            <div className="relative bg-white rounded-xl border border-[#E5E5EA] p-5 hover:border-[#D1D1D6] hover:shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all duration-200 overflow-hidden">
                               {/* Animated background gradient */}
 
                               <motion.div
@@ -3490,7 +3484,7 @@ ${result.analysis.risks || "N/A"}
                               {/* Top decoration line */}
 
                               <motion.div
-                                className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${nature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                                className={`absolute top-0 left-0 right-0 h-1 bg-[#0071E3] opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
                                 initial={{ scaleX: 0 }}
                                 whileHover={{ scaleX: 1 }}
                                 transition={{ duration: 0.3 }}
@@ -3501,7 +3495,7 @@ ${result.analysis.risks || "N/A"}
 
                                 <div className="flex items-center justify-between mb-4">
                                   <motion.div
-                                    className={`p-3 rounded-xl ${nature.bgLight} group-hover:scale-110 transition-transform duration-300`}
+                                    className={`p-3 rounded-xl group-hover:scale-110 transition-transform duration-300 ${nature.name === 'Cleaning' ? 'bg-[#F3EEFF]' : nature.name === 'Other' ? 'bg-[#F5F5F7]' : nature.name === 'Plumbing' ? 'bg-[#E8F4FF]' : nature.name === 'Electrical' ? 'bg-[#FFF8E1]' : nature.name === 'HVAC' ? 'bg-[#E0F9F9]' : 'bg-[#FFF3E0]'}`}
                                     whileHover={{ rotate: [0, -10, 10, 0] }}
                                     transition={{ duration: 0.5 }}
                                   >
@@ -3509,9 +3503,7 @@ ${result.analysis.risks || "N/A"}
                                       className="w-5 h-5"
                                       style={{
                                         color:
-                                          nature.gradient.match(
-                                            /#[0-9A-F]{6}/,
-                                          )?.[0] || "#000",
+                                          nature.name === 'Cleaning' ? '#7C3AED' : nature.name === 'Other' ? '#6E6E73' : nature.name === 'Plumbing' ? '#0071E3' : nature.name === 'Electrical' ? '#FF9500' : nature.name === 'HVAC' ? '#0891B2' : '#D97706',
                                       }}
                                     />
                                   </motion.div>
@@ -3530,14 +3522,14 @@ ${result.analysis.risks || "N/A"}
 
                                 <div className="space-y-3">
                                   <div>
-                                    <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-700 transition-colors">
+                                    <h3 className="text-[13px] font-semibold text-[#1D1D1F] mb-1">
                                       {nature.name}
                                     </h3>
                                   </div>
 
                                   <div className="flex items-baseline gap-2">
                                     <motion.span
-                                      className="text-2xl font-bold text-gray-900"
+                                      className="text-[26px] font-bold text-[#1D1D1F] leading-none"
                                       initial={{ opacity: 0, y: 10 }}
                                       animate={{ opacity: 1, y: 0 }}
                                       transition={{ delay: 0.3 + index * 0.1 }}
@@ -3545,16 +3537,16 @@ ${result.analysis.risks || "N/A"}
                                       {count}
                                     </motion.span>
 
-                                    <span className="text-sm text-gray-500 font-medium">
+                                    <span className="text-[12px] font-medium text-[#6E6E73] ml-2">
                                       {percentage}%
                                     </span>
                                   </div>
 
                                   {/* Progress bar */}
 
-                                  <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
+                                  <div className="mt-3 h-1 w-full bg-[#F5F5F7] rounded-full overflow-hidden">
                                     <motion.div
-                                      className={`h-full bg-gradient-to-r ${nature.color} rounded-full relative`}
+                                      className="h-full bg-[#0071E3] rounded-full transition-all duration-500"
                                       initial={{ width: 0 }}
                                       animate={{ width: `${percentage}%` }}
                                       transition={{
@@ -3564,14 +3556,12 @@ ${result.analysis.risks || "N/A"}
 
                                         ease: "easeOut",
                                       }}
-                                    >
-                                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
-                                    </motion.div>
+                                    />
                                   </div>
 
                                   {count > 0 && (
                                     <motion.p
-                                      className="text-xs text-gray-400"
+                                      className="text-[11px] text-[#6E6E73]"
                                       initial={{ opacity: 0 }}
                                       animate={{ opacity: 1 }}
                                       transition={{ delay: 0.5 + index * 0.1 }}
