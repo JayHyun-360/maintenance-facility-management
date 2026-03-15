@@ -186,6 +186,9 @@ export default function AdminDashboardClient({
   const [aiSearchQuery, setAiSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [copiedMessage, setCopiedMessage] = useState<number | null>(null);
+  const [messageFeedback, setMessageFeedback] = useState<{
+    [key: number]: "like" | "dislike" | undefined;
+  }>({});
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [quickActions, setQuickActions] = useState<
     { label: string; action: string }[]
@@ -6976,89 +6979,86 @@ ${result.analysis.risks || "N/A"}
                               onClick={(e) => e.stopPropagation()}
                             >
                               {message.role === "assistant" ? (
-                                <button
-                                  onClick={async (e) => {
-                                    e.stopPropagation();
-                                    setMessageOptionsMenu(null);
-                                    // Find the last user message to regenerate response
-                                    const lastUserMsg = [...aiMessages]
-                                      .reverse()
-                                      .find((m) => m.role === "user");
-                                    if (lastUserMsg) {
-                                      setAiLoading(true);
-                                      setAiStatusText(
-                                        "Regenerating response...",
-                                      );
-                                      // Remove the current assistant message
-                                      setAiMessages((prev) =>
-                                        prev.filter((_, i) => i !== index),
-                                      );
-                                      try {
-                                        const response = await fetch(
-                                          "/api/ai/admin-chat",
-                                          {
-                                            method: "POST",
-                                            headers: {
-                                              "Content-Type":
-                                                "application/json",
-                                            },
-                                            body: JSON.stringify({
-                                              query: lastUserMsg.content,
-                                              context: currentConversationId
-                                                ? {
-                                                    conversationId:
-                                                      currentConversationId,
-                                                  }
-                                                : undefined,
-                                              model: selectedModel,
-                                            }),
-                                          },
-                                        );
-                                        const result = await response.json();
-                                        if (result.success) {
-                                          setAiMessages((prev) => [
-                                            ...prev,
-                                            {
-                                              role: "assistant",
-                                              content: result.response,
-                                            },
-                                          ]);
-                                          if (currentConversationId) {
-                                            await saveMessage(
-                                              currentConversationId,
-                                              "assistant",
-                                              result.response,
-                                            );
-                                          }
-                                        }
-                                      } catch (error) {
-                                        console.error(
-                                          "Regenerate error:",
-                                          error,
-                                        );
-                                      } finally {
-                                        setAiLoading(false);
-                                        setAiStatusText("");
-                                      }
-                                    }
-                                  }}
-                                  className="w-full text-left px-2 py-1.5 text-xs text-white/80 hover:bg-white/10 flex items-center gap-1.5"
-                                >
-                                  <svg
-                                    className="w-4 h-4"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    viewBox="0 0 24 24"
+                                <>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setMessageOptionsMenu(null);
+                                      setMessageFeedback((prev) => ({
+                                        ...prev,
+                                        [index]:
+                                          prev[index] === "like"
+                                            ? undefined
+                                            : "like",
+                                      }));
+                                    }}
+                                    className={`w-full text-left px-2 py-1.5 text-xs hover:bg-white/10 flex items-center gap-1.5 ${
+                                      messageFeedback[index] === "like"
+                                        ? "text-green-400"
+                                        : "text-white/80"
+                                    }`}
                                   >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={2}
-                                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                                    />
-                                  </svg>
-                                  Regenerate
-                                </button>
+                                    <svg
+                                      className="w-4 h-4"
+                                      fill={
+                                        messageFeedback[index] === "like"
+                                          ? "currentColor"
+                                          : "none"
+                                      }
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
+                                      />
+                                    </svg>
+                                    {messageFeedback[index] === "like"
+                                      ? "Liked"
+                                      : "Like"}
+                                  </button>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setMessageOptionsMenu(null);
+                                      setMessageFeedback((prev) => ({
+                                        ...prev,
+                                        [index]:
+                                          prev[index] === "dislike"
+                                            ? undefined
+                                            : "dislike",
+                                      }));
+                                    }}
+                                    className={`w-full text-left px-2 py-1.5 text-xs hover:bg-white/10 flex items-center gap-1.5 ${
+                                      messageFeedback[index] === "dislike"
+                                        ? "text-red-400"
+                                        : "text-white/80"
+                                    }`}
+                                  >
+                                    <svg
+                                      className="w-4 h-4"
+                                      fill={
+                                        messageFeedback[index] === "dislike"
+                                          ? "currentColor"
+                                          : "none"
+                                      }
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"
+                                      />
+                                    </svg>
+                                    {messageFeedback[index] === "dislike"
+                                      ? "Disliked"
+                                      : "Dislike"}
+                                  </button>
+                                </>
                               ) : (
                                 <>
                                   <button
