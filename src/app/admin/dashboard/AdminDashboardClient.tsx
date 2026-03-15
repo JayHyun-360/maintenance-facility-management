@@ -2799,15 +2799,17 @@ ${result.analysis.risks || "N/A"}
   }, [selectedRequestForReport]);
 
   return (
-    <div className="min-h-screen bg-[#FEF3E2]">
-      {/* Green Header */}
-      <div className="bg-green-600 w-full">
-        <div className="max-w-screen-xl mx-auto px-6 h-16 flex items-center justify-between">
+    <div className="min-h-screen bg-[#F5F5DC]">
+      {/* Enhanced Header */}
+
+      <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
             {/* Left Side - Logo and Title */}
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 flex items-center justify-center rounded-lg bg-white">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border-2 border-white/30">
                 <svg
-                  className="w-5 h-5 text-green-600"
+                  className="w-8 h-8 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -2826,19 +2828,71 @@ ${result.analysis.risks || "N/A"}
                   />
                 </svg>
               </div>
-              <div className="flex flex-col leading-tight">
-                <h1 className="text-[16px] font-bold text-white tracking-tight">
+              <div>
+                <h1 className="font-header text-xl font-bold text-white">
                   IVF Maintenance Utility
                 </h1>
+                <p className="text-white/70 text-xs">Admin Dashboard</p>
               </div>
             </div>
 
-            {/* Right Side - Navigation Icons */}
-            <div className="flex items-center gap-4">
+            {/* Right Side - Profile, Settings, etc */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleThemeToggle}
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
+                title={`Current theme: ${profile?.theme_preference}`}
+              >
+                {profile?.theme_preference === "dark" ? (
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                    />
+                  </svg>
+                ) : profile?.theme_preference === "light" ? (
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                )}
+              </button>
+
               {/* Notifications Bell */}
+
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="w-8 h-8 flex items-center justify-center rounded-full text-white hover:bg-green-700 transition-all duration-150 relative"
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                 title="Notifications"
               >
                 <svg
@@ -2862,38 +2916,28 @@ ${result.analysis.risks || "N/A"}
                 )}
               </button>
 
-              {/* Settings */}
+              {/* AI Chat Robot Icon */}
+
+              <button
+                onClick={() => setShowAIChat(!showAIChat)}
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                title="AI Assistant"
+              >
+                <Bot className="w-5 h-5" />
+              </button>
+
               <button
                 onClick={() => setShowProfileSidebar(true)}
-                className="w-8 h-8 flex items-center justify-center rounded-full text-white hover:bg-green-700 transition-all duration-150"
-                title="Settings"
+                className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
               >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
+                Settings
               </button>
 
               {/* Profile Avatar */}
               <div className="relative">
                 <button
                   onClick={() => setShowProfileViewer(!showProfileViewer)}
-                  className="w-8 h-8 rounded-full cursor-pointer hover:ring-2 hover:ring-white transition-all duration-150 flex items-center justify-center overflow-hidden bg-white"
+                  className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
                   title="Click to view profile picture"
                 >
                   {userAvatar ? (
@@ -2910,11 +2954,12 @@ ${result.analysis.risks || "N/A"}
                     />
                   ) : null}
                   <span
-                    className={`text-green-600 font-bold text-sm ${userAvatar ? "hidden" : ""}`}
+                    className={`text-white font-bold ${userAvatar ? "hidden" : ""}`}
                   >
                     {profile?.full_name?.charAt(0).toUpperCase() || "A"}
                   </span>
                 </button>
+                <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
 
                 {showProfileViewer && userAvatar && (
                   <div
@@ -2944,10 +2989,9 @@ ${result.analysis.risks || "N/A"}
                 )}
               </div>
 
-              {/* Sign Out */}
               <button
                 onClick={handleSignOut}
-                className="text-white font-medium hover:bg-green-700 px-4 py-2 rounded-full transition-all duration-150"
+                className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
               >
                 Sign Out
               </button>
@@ -2958,8 +3002,8 @@ ${result.analysis.risks || "N/A"}
 
       {/* Tab Navigation */}
 
-      <div className="border-b border-[#E5E5EA] bg-white px-6">
-        <div className="max-w-screen-xl mx-auto flex items-center gap-0 -mb-px">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-4 bg-white border-b">
+        <div className="relative flex gap-8 overflow-x-auto">
           {[
             {
               id: "overview",
@@ -3055,10 +3099,10 @@ ${result.analysis.risks || "N/A"}
                 tabRefs.current[tab.id] = el;
               }}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`relative flex items-center gap-2 px-4 py-3.5 text-[13px] font-medium transition-all duration-150 whitespace-nowrap z-10 ${
+              className={`relative flex items-center gap-2 pb-3 font-medium transition-all duration-300 whitespace-nowrap z-10 ${
                 activeTab === tab.id
-                  ? "text-[#1D1D1F]"
-                  : "text-[#6E6E73] hover:text-[#1D1D1F]"
+                  ? "text-[#427A43]"
+                  : "text-gray-500 hover:text-gray-700"
               }`}
             >
               {tab.icon}
@@ -3069,15 +3113,14 @@ ${result.analysis.risks || "N/A"}
 
           {/* Sliding Underline */}
 
-          <motion.div
-            className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#1D1D1F] rounded-full"
-            layoutId="activeTab"
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          <div
+            className="absolute bottom-0 left-0 h-0.5 bg-[#427A43] transition-all duration-300 ease-out tab-indicator"
+            style={{ width: "88px", transform: "translateX(0px)" }}
           />
         </div>
       </div>
 
-      <div className="max-w-screen-xl mx-auto px-6 py-8 space-y-6">
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
         <div className="transition-opacity duration-300 ease-in-out">
           {/* Overview Tab */}
 
@@ -3085,108 +3128,132 @@ ${result.analysis.risks || "N/A"}
             <>
               {/* Stats Cards */}
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="bg-white rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all duration-200">
-                  <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                    <svg
-                      className="w-6 h-6 text-gray-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                  <div className="flex items-center">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-600">
+                        Total Requests
+                      </p>
+
+                      <p className="text-2xl font-bold text-gray-900">
+                        {stats.total}
+                      </p>
+                    </div>
+
+                    <div className="w-12 h-12 bg-[#427A43]/10 rounded-lg flex items-center justify-center">
+                      <svg
+                        className="w-6 h-6 text-[#427A43]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                    </div>
                   </div>
-                  <p className="text-2xl font-bold text-gray-900 mb-1">
-                    {stats.total}
-                  </p>
-                  <p className="text-sm font-medium text-gray-600">
-                    Total Requests
-                  </p>
                 </div>
 
-                <div className="bg-white rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all duration-200">
-                  <div className="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center mb-4">
-                    <svg
-                      className="w-6 h-6 text-yellow-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
+                <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                  <div className="flex items-center">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-600">
+                        Pending
+                      </p>
+
+                      <p className="text-2xl font-bold text-yellow-600">
+                        {stats.pending}
+                      </p>
+                    </div>
+
+                    <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                      <svg
+                        className="w-6 h-6 text-yellow-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
                   </div>
-                  <p className="text-2xl font-bold text-gray-900 mb-1">
-                    {stats.pending}
-                  </p>
-                  <p className="text-sm font-medium text-gray-600">
-                    Pending
-                  </p>
                 </div>
 
-                <div className="bg-white rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all duration-200">
-                  <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-                    <svg
-                      className="w-6 h-6 text-blue-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      />
-                    </svg>
+                <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                  <div className="flex items-center">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-600">
+                        In Progress
+                      </p>
+
+                      <p className="text-2xl font-bold text-blue-600">
+                        {stats.inProgress}
+                      </p>
+                    </div>
+
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <svg
+                        className="w-6 h-6 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                        />
+                      </svg>
+                    </div>
                   </div>
-                  <p className="text-2xl font-bold text-gray-900 mb-1">
-                    {stats.inProgress}
-                  </p>
-                  <p className="text-sm font-medium text-gray-600">
-                    In Progress
-                  </p>
                 </div>
 
-                <div className="bg-white rounded-lg p-6 flex flex-col items-center text-center hover:shadow-md transition-all duration-200">
-                  <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mb-4">
-                    <svg
-                      className="w-6 h-6 text-green-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
+                <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                  <div className="flex items-center">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-600">
+                        Completed
+                      </p>
+
+                      <p className="text-2xl font-bold text-green-600">
+                        {stats.completed}
+                      </p>
+                    </div>
+
+                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <svg
+                        className="w-6 h-6 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                    </div>
                   </div>
-                  <p className="text-2xl font-bold text-gray-900 mb-1">
-                    {stats.completed}
-                  </p>
-                  <p className="text-sm font-medium text-gray-600">
-                    Completed
-                  </p>
                 </div>
               </div>
 
               {/* Recent Requests - Last 1 Hour */}
 
-              <div className="bg-white rounded-lg p-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              <div className="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn">
+                <h2 className="font-header text-lg font-semibold text-gray-900 mb-4">
                   Recent Requests (Last 1 Hour)
                 </h2>
 
@@ -3202,7 +3269,7 @@ ${result.analysis.risks || "N/A"}
                       {recentRequests.map((request) => (
                         <div
                           key={request.id}
-                          className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
+                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                         >
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-medium text-gray-900 truncate">
@@ -3216,7 +3283,7 @@ ${result.analysis.risks || "N/A"}
                           </div>
 
                           <span
-                            className={`px-2 py-1 text-xs font-medium rounded-full ml-2 ${request.status === "Pending" ? "bg-yellow-100 text-yellow-800" : request.status === "In Progress" ? "bg-blue-100 text-blue-800" : "bg-green-100 text-green-800"}`}
+                            className={`px-2 py-1 text-xs font-medium rounded-full ml-2 ${request.status === "Pending" ? "bg-yellow-100 text-yellow-700" : request.status === "In Progress" ? "bg-blue-100 text-blue-700" : "bg-green-100 text-green-700"}`}
                           >
                             {request.status}
                           </span>
@@ -3224,7 +3291,7 @@ ${result.analysis.risks || "N/A"}
                       ))}
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-500 text-center py-10">
+                    <p className="text-center text-gray-500 py-4">
                       No recent requests in the last hour
                     </p>
                   );
@@ -3233,139 +3300,323 @@ ${result.analysis.risks || "N/A"}
 
               {/* Nature Breakdown - Most Requests (Top 3) */}
 
-              <div className="bg-white rounded-lg p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-900">
-                      Most Requests by Nature
-                    </h2>
-                    <p className="text-sm text-gray-600 mt-1">
-                      Top 3 maintenance request categories
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm font-medium text-gray-600 bg-gray-100 px-3 py-1 rounded-full">
-                    <Activity className="w-4 h-4" />
-                    <span>{stats.total}</span>
-                    <span>total requests</span>
-                  </div>
-                </div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="bg-gradient-to-br from-white via-white to-gray-50/30 rounded-2xl shadow-lg border border-gray-100/50 p-8 mb-8 backdrop-blur-sm relative overflow-hidden"
+              >
+                {/* Background decoration */}
 
-                <div className="space-y-3">
-                  {(() => {
-                    // Get nature counts
-                    const natureCounts = requests.reduce((acc, request) => {
-                      acc[request.nature] = (acc[request.nature] || 0) + 1;
-                      return acc;
-                    }, {} as Record<string, number>);
+                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/5 to-purple-400/5 rounded-full blur-3xl"></div>
 
-                    // Sort and get top 3
-                    const sortedNatures = Object.entries(natureCounts)
-                      .sort(([, a], [, b]) => b - a)
-                      .slice(0, 3);
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-green-400/5 to-cyan-400/5 rounded-full blur-2xl"></div>
 
-                    // Map to display data with icons
-                    const natureIcons = {
-                      "Cleaning": { icon: Sparkles, color: "text-purple-600" },
-                      "Other": { icon: MoreHorizontal, color: "text-gray-600" },
-                      "Plumbing": { icon: Wrench, color: "text-blue-600" },
-                      "Electrical": { icon: Zap, color: "text-yellow-600" },
-                      "HVAC": { icon: Wind, color: "text-cyan-600" },
-                      "Carpentry": { icon: Hammer, color: "text-amber-600" },
-                    };
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-4">
+                      <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ delay: 0.2, duration: 0.3 }}
+                        className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
+                      >
+                        <BarChart3 className="w-6 h-6 text-white" />
+                      </motion.div>
 
-                    return sortedNatures.map(([nature, count]) => {
-                      const iconData = natureIcons[nature] || { icon: MoreHorizontal, color: "text-gray-600" };
-                      const Icon = iconData.icon;
-                      
-                      return (
-                        <div key={nature} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                            <Icon className={`w-5 h-5 ${iconData.color}`} />
-                            <span className="font-medium text-gray-900">{nature}</span>
-                          </div>
-                          <span className="text-sm text-gray-600">{count} requests</span>
-                        </div>
-                      );
-                    });
-                  })()}
-                </div>
-              </div>
+                      <div>
+                        <h2 className="font-bold text-xl text-gray-900 tracking-tight">
+                          Most Requests by Nature
+                        </h2>
 
-              {/* Analytics Tab */}
+                        <p className="text-sm text-gray-500 mt-1">
+                          Top 3 maintenance request categories
+                        </p>
+                      </div>
+                    </div>
 
-              {activeTab === "analytics" && (
-                <>
-                  {/* Minimal Bento Grid */}
+                    <motion.div
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.3, duration: 0.3 }}
+                      className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100"
+                    >
+                      <Activity className="w-4 h-4 text-blue-600" />
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                    <div className="col-span-2 bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
-                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                        Total Requests
-                      </p>
-
-                      <p className="text-4xl font-bold text-gray-900 mt-1">
+                      <span className="text-sm font-semibold text-gray-700">
                         {stats.total}
-                      </p>
-                    </div>
+                      </span>
 
-                    <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
-                      <p className="text-xs font-medium text-yellow-600 uppercase tracking-wide">
-                        Pending
-                      </p>
-
-                      <p className="text-3xl font-bold text-gray-900 mt-1">
-                        {stats.pending}
-                      </p>
-                    </div>
-
-                    <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
-                      <p className="text-xs font-medium text-green-600 uppercase tracking-wide">
-                        Completed
-                      </p>
-
-                      <p className="text-3xl font-bold text-gray-900 mt-1">
-                        {stats.completed}
-                      </p>
-                    </div>
+                      <span className="text-sm text-gray-500">
+                        total requests
+                      </span>
+                    </motion.div>
                   </div>
 
-                  {/* Nature Breakdown - Requests by Nature (All) */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {[
+                      {
+                        name: "Plumbing",
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                    className="bg-gradient-to-br from-white via-white to-gray-50/30 rounded-2xl shadow-lg border border-gray-100/50 p-8 mb-8 backdrop-blur-sm relative overflow-hidden"
-                  >
-                    {/* Background decoration */}
+                        color: "from-blue-500 to-blue-600",
 
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/5 to-purple-400/5 rounded-full blur-3xl"></div>
+                        bgLight: "bg-blue-50",
 
-                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-green-400/5 to-cyan-400/5 rounded-full blur-2xl"></div>
+                        icon: Wrench,
 
-                    <div className="relative z-10">
-                      <div className="flex items-center justify-between mb-8">
-                        <div className="flex items-center gap-4">
+                        gradient:
+                          "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+                      },
+
+                      {
+                        name: "Electrical",
+
+                        color: "from-yellow-500 to-orange-500",
+
+                        bgLight: "bg-yellow-50",
+
+                        icon: Zap,
+
+                        gradient:
+                          "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
+                      },
+
+                      {
+                        name: "Carpentry",
+
+                        color: "from-amber-600 to-amber-700",
+
+                        bgLight: "bg-amber-50",
+
+                        icon: Hammer,
+
+                        gradient:
+                          "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
+                      },
+
+                      {
+                        name: "HVAC",
+
+                        color: "from-cyan-500 to-cyan-600",
+
+                        bgLight: "bg-cyan-50",
+
+                        icon: Wind,
+
+                        gradient:
+                          "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
+                      },
+
+                      {
+                        name: "Cleaning",
+
+                        color: "from-purple-500 to-purple-600",
+
+                        bgLight: "bg-purple-50",
+
+                        icon: Sparkles,
+
+                        gradient:
+                          "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
+                      },
+
+                      {
+                        name: "Other",
+
+                        color: "from-gray-500 to-gray-600",
+
+                        bgLight: "bg-gray-50",
+
+                        icon: MoreHorizontal,
+
+                        gradient:
+                          "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
+                      },
+                    ]
+
+                      .map((nature) => ({
+                        ...nature,
+
+                        count: requests.filter((r) => r.nature === nature.name)
+                          .length,
+                      }))
+
+                      .sort((a, b) => b.count - a.count)
+
+                      .slice(0, 3)
+
+                      .map((nature, index) => {
+                        const count = requests.filter(
+                          (r) => r.nature === nature.name,
+                        ).length;
+
+                        const percentage =
+                          stats.total > 0
+                            ? Math.round((count / stats.total) * 100)
+                            : 0;
+
+                        const Icon = nature.icon;
+
+                        return (
                           <motion.div
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{ delay: 0.2, duration: 0.3 }}
-                            className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
+                            key={nature.name}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{
+                              delay: 0.1 * index,
+
+                              duration: 0.4,
+
+                              ease: "easeOut",
+                            }}
+                            whileHover={{
+                              y: -4,
+
+                              scale: 1.02,
+
+                              transition: { duration: 0.2 },
+                            }}
+                            whileTap={{ scale: 0.98 }}
+                            className="group relative"
                           >
-                            <BarChart3 className="w-6 h-6 text-white" />
+                            <div className="relative bg-white rounded-2xl p-5 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+                              {/* Animated background gradient */}
+
+                              <motion.div
+                                className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
+                                style={{ background: nature.gradient }}
+                              />
+
+                              {/* Top decoration line */}
+
+                              <motion.div
+                                className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${nature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                                initial={{ scaleX: 0 }}
+                                whileHover={{ scaleX: 1 }}
+                                transition={{ duration: 0.3 }}
+                              />
+
+                              <div className="relative z-10">
+                                {/* Icon section */}
+
+                                <div className="flex items-center justify-between mb-4">
+                                  <motion.div
+                                    className={`p-3 rounded-xl ${nature.bgLight} group-hover:scale-110 transition-transform duration-300`}
+                                    whileHover={{ rotate: [0, -10, 10, 0] }}
+                                    transition={{ duration: 0.5 }}
+                                  >
+                                    <Icon
+                                      className="w-5 h-5"
+                                      style={{
+                                        color:
+                                          nature.gradient.match(
+                                            /#[0-9A-F]{6}/,
+                                          )?.[0] || "#000",
+                                      }}
+                                    />
+                                  </motion.div>
+
+                                  {count > 0 && (
+                                    <motion.div
+                                      initial={{ scale: 0 }}
+                                      animate={{ scale: 1 }}
+                                      transition={{ delay: 0.2 + index * 0.1 }}
+                                      className="w-2 h-2 bg-green-400 rounded-full"
+                                    />
+                                  )}
+                                </div>
+
+                                {/* Content */}
+
+                                <div className="space-y-3">
+                                  <div>
+                                    <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-700 transition-colors">
+                                      {nature.name}
+                                    </h3>
+                                  </div>
+
+                                  <div className="flex items-baseline gap-2">
+                                    <motion.span
+                                      className="text-2xl font-bold text-gray-900"
+                                      initial={{ opacity: 0, y: 10 }}
+                                      animate={{ opacity: 1, y: 0 }}
+                                      transition={{ delay: 0.3 + index * 0.1 }}
+                                    >
+                                      {count}
+                                    </motion.span>
+
+                                    <span className="text-sm text-gray-500 font-medium">
+                                      {percentage}%
+                                    </span>
+                                  </div>
+
+                                  {/* Progress bar */}
+
+                                  <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
+                                    <motion.div
+                                      className={`h-full bg-gradient-to-r ${nature.color} rounded-full relative`}
+                                      initial={{ width: 0 }}
+                                      animate={{ width: `${percentage}%` }}
+                                      transition={{
+                                        delay: 0.4 + index * 0.1,
+
+                                        duration: 0.8,
+
+                                        ease: "easeOut",
+                                      }}
+                                    >
+                                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
+                                    </motion.div>
+                                  </div>
+
+                                  {count > 0 && (
+                                    <motion.p
+                                      className="text-xs text-gray-400"
+                                      initial={{ opacity: 0 }}
+                                      animate={{ opacity: 1 }}
+                                      transition={{ delay: 0.5 + index * 0.1 }}
+                                    >
+                                      {count === 1 ? "request" : "requests"}
+                                    </motion.p>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Hover tooltip */}
+
+                              <AnimatePresence>
+                                <motion.div
+                                  className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-50 whitespace-nowrap"
+                                  initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                                  exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                                  transition={{ duration: 0.2 }}
+                                >
+                                  <div className="font-semibold">
+                                    {nature.name}
+                                  </div>
+
+                                  <div>
+                                    {count} requests ({percentage}% of total)
+                                  </div>
+
+                                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                                    <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />
+                                  </div>
+                                </motion.div>
+                              </AnimatePresence>
+                            </div>
                           </motion.div>
+                        );
+                      })}
+                  </div>
+                </div>
+              </motion.div>
+            </>
+          )}
 
-                          <div>
-                            <h2 className="font-bold text-xl text-gray-900 tracking-tight">
-                              Requests by Nature
-                            </h2>
+          {/* Analytics Tab */}
 
-                            <p className="text-sm text-gray-500 mt-1">
-                              Distribution of maintenance requests
-                            </p>
-                          </div>
-                        </div>
           {activeTab === "analytics" && (
             <>
               {/* Minimal Bento Grid */}
