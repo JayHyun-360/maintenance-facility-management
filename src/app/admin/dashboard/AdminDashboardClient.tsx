@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 import Sidebar from "./Sidebar";
+import RotatingText from "./RotatingText";
 
 import { jsPDF } from "jspdf";
 
@@ -3316,6 +3317,22 @@ ${result.analysis.risks || "N/A"}
                     />
                   </svg>
                 </button>
+              </div>
+
+              {/* Middle - Rotating Text */}
+              <div className="flex-1 flex justify-center">
+                <RotatingText
+                  texts={["Maintenance", "Facility", "Management", "System"]}
+                  mainClassName="px-3 py-1 bg-white/20 backdrop-blur-sm text-white overflow-hidden rounded-lg"
+                  staggerFrom={"last"}
+                  initial={{ y: "100%" }}
+                  animate={{ y: 0 }}
+                  exit={{ y: "-120%" }}
+                  staggerDuration={0.025}
+                  splitLevelClassName="overflow-hidden"
+                  transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                  rotationInterval={2000}
+                />
               </div>
 
               {/* Right Side - Theme, Notifications, AI Chat, Settings, Profile */}
