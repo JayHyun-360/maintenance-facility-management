@@ -17,7 +17,7 @@ import {
   faWrench,
   faBolt,
   faHammer,
-  faSparkles,
+  faMagic,
   faChartBar,
   faChartLine,
   faRobot,
@@ -5083,7 +5083,7 @@ ${result.analysis.risks || "N/A"}
 
                     {showDetailModal.nature === "Personnel Services" && (
                       <FontAwesomeIcon
-                        icon={faSparkles}
+                        icon={faMagic}
                         className="w-4 h-4 text-white"
                       />
                     )}
