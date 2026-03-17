@@ -3138,138 +3138,106 @@ ${result.analysis.risks || "N/A"}
   }, [selectedRequestForReport]);
 
   return (
-    <div className="min-h-screen bg-[#F5F5DC] flex">
-      {/* Vertical Sidebar */}
-      <div className="w-64 bg-[#3D6B35] shadow-xl fixed h-full z-40">
-        <div className="p-6">
-          {/* Logo and Title */}
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center border-2 border-white/70 overflow-hidden">
-              <img
-                src="/admin-logo.svg"
-                alt="Maintenance Logo"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div>
-              <h1 className="font-header text-lg font-bold text-white">
-                IVF Maintenance
-              </h1>
-              <p className="text-white/70 text-xs">Utility</p>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#F5F5DC]">
+      {/* Enhanced Header */}
 
-          {/* Navigation Items */}
-          <nav className="space-y-2">
-            {[
-              {
-                id: "overview",
-                label: "Overview",
-                icon: (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                  </svg>
-                ),
-              },
-              {
-                id: "analytics",
-                label: "Analytics",
-                icon: (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                ),
-              },
-              {
-                id: "master-queue",
-                label: "Master Queue",
-                icon: (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                  </svg>
-                ),
-              },
-              {
-                id: "announcements",
-                label: "Announcements",
-                icon: (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                  </svg>
-                ),
-              },
-            ].map((tab) => (
-              <button
-                key={tab.id}
-                ref={(el) => {
-                  tabRefs.current[tab.id] = el;
-                }}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-300 ${
-                  activeTab === tab.id
-                    ? "bg-white/20 text-white"
-                    : "text-white/70 hover:text-white hover:bg-white/10"
-                }`}
-              >
-                {tab.icon}
-                <span className="font-medium">{tab.label}</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-      </div>
+      <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            {/* Left Side - Logo and Title */}
 
-      {/* Main Content Area */}
-      <div className="flex-1 ml-64">
-        {/* Top Header */}
-        <div className="bg-white border-b px-6 py-4">
-          <div className="flex items-center justify-between">
-            {/* Search Bar */}
-            <div className="flex-1 max-w-md">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search requests, users, announcements..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3D6B35] focus:border-transparent"
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center border-2 border-white/70 overflow-hidden">
+                <img
+                  src="/admin-logo.svg"
+                  alt="Maintenance Logo"
+                  className="w-full h-full object-cover"
                 />
-                <svg className="absolute left-3 top-2.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+              </div>
+
+              <div>
+                <h1 className="font-header text-xl font-bold text-white">
+                  IVF Maintenance Utility
+                </h1>
+
+                <p className="text-white/70 text-xs">Admin Dashboard</p>
               </div>
             </div>
 
-            {/* Right Side Controls */}
+            {/* Right Side - Profile, Settings, etc */}
+
             <div className="flex items-center gap-3">
-              {/* Theme Toggle */}
               <button
                 onClick={handleThemeToggle}
-                className="p-2 rounded-lg hover:bg-gray-100 transition-all duration-300 text-gray-600"
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
                 title={`Current theme: ${profile?.theme_preference}`}
               >
                 {profile?.theme_preference === "dark" ? (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                    />
                   </svg>
                 ) : profile?.theme_preference === "light" ? (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
                   </svg>
                 ) : (
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
                   </svg>
                 )}
               </button>
 
-              {/* Notifications */}
+              {/* Notifications Bell */}
+
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2 rounded-lg hover:bg-gray-100 transition-all duration-300 text-gray-600 relative"
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                 title="Notifications"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
                 </svg>
+
                 {unreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                     {unreadCount > 9 ? "9+" : unreadCount}
@@ -3277,28 +3245,29 @@ ${result.analysis.risks || "N/A"}
                 )}
               </button>
 
-              {/* AI Assistant */}
+              {/* AI Chat Robot Icon */}
+
               <button
                 onClick={() => setShowAIChat(!showAIChat)}
-                className="p-2 rounded-lg hover:bg-gray-100 transition-all duration-300 text-gray-600 relative"
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                 title="AI Assistant"
               >
                 <Bot className="w-5 h-5" />
               </button>
 
-              {/* Settings */}
               <button
                 onClick={() => setShowProfileSidebar(true)}
-                className="px-3 py-2 hover:bg-gray-100 rounded-lg font-medium transition-all duration-300 text-sm text-gray-700"
+                className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
               >
                 Settings
               </button>
 
               {/* Profile Avatar */}
+
               <div className="relative">
                 <button
                   onClick={() => setShowProfileViewer(!showProfileViewer)}
-                  className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-200 transition-all duration-300 hover:scale-110 overflow-hidden"
+                  className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
                   title="Click to view profile picture"
                 >
                   {userAvatar ? (
@@ -3308,27 +3277,183 @@ ${result.analysis.risks || "N/A"}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
-                        e.currentTarget.nextElementSibling?.classList.remove("hidden");
+
+                        e.currentTarget.nextElementSibling?.classList.remove(
+                          "hidden",
+                        );
                       }}
                     />
                   ) : null}
-                  <span className={`text-gray-600 font-bold ${userAvatar ? "hidden" : ""}`}>
+
+                  <span
+                    className={`text-white font-bold ${userAvatar ? "hidden" : ""}`}
+                  >
                     {profile?.full_name?.charAt(0).toUpperCase() || "A"}
                   </span>
                 </button>
+
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+
+                {showProfileViewer && userAvatar && (
+                  <div
+                    className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 ${showProfileViewer ? "opacity-100" : "opacity-0"}`}
+                  >
+                    <div
+                      className={`relative transform transition-all duration-300 ${showProfileViewer ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
+                      ref={profileViewerRef}
+                    >
+                      <div className="w-72 h-72 rounded-full bg-white/20 backdrop-blur-xl shadow-2xl border-2 border-white/30 flex flex-col items-center justify-center p-8">
+                        <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-white/50 shadow-lg mb-4 bg-white">
+                          <img
+                            src={userAvatar}
+                            alt="Profile Picture"
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+
+                        <h3 className="font-header font-semibold text-white text-lg text-center">
+                          {profile?.full_name}
+                        </h3>
+
+                        <p className="text-sm text-white/80 text-center">
+                          {profile?.visual_role} - Administrator
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {/* Sign Out */}
               <button
                 onClick={handleSignOut}
-                className="px-3 py-2 hover:bg-gray-100 rounded-lg font-medium transition-all duration-300 text-sm text-gray-700"
+                className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
               >
                 Sign Out
               </button>
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Tab Navigation */}
+
+      <div className="w-full px-4 sm:px-6 lg:px-8 py-4 bg-white border-b">
+        <div className="relative flex gap-8 overflow-x-auto">
+          {[
+            {
+              id: "overview",
+
+              label: "Overview",
+
+              icon: (
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                  />
+                </svg>
+              ),
+            },
+
+            {
+              id: "analytics",
+
+              label: "Analytics",
+
+              icon: (
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                  />
+                </svg>
+              ),
+            },
+
+            {
+              id: "master-queue",
+
+              label: "Master Queue",
+
+              icon: (
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                  />
+                </svg>
+              ),
+            },
+
+            {
+              id: "announcements",
+
+              label: "Announcements",
+
+              icon: (
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                  />
+                </svg>
+              ),
+            },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              ref={(el) => {
+                tabRefs.current[tab.id] = el;
+              }}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`relative flex items-center gap-2 pb-3 font-medium transition-all duration-300 whitespace-nowrap z-10 ${
+                activeTab === tab.id
+                  ? "text-[#427A43]"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+            >
+              {tab.icon}
+
+              {tab.label}
+            </button>
+          ))}
+
+          {/* Sliding Underline */}
+
+          <div
+            className="absolute bottom-0 left-0 h-0.5 bg-[#427A43] transition-all duration-300 ease-out tab-indicator"
+            style={{ width: "88px", transform: "translateX(0px)" }}
+          />
+        </div>
+      </div>
 
       <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
         <div className="transition-opacity duration-300 ease-in-out">
