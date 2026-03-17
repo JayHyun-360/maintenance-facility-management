@@ -109,7 +109,7 @@ export default function Sidebar({
   };
 
   return (
-    <div className="w-64 min-h-screen bg-[#E8E4D9] flex flex-col fixed left-0 top-0">
+    <div className="w-64 min-h-screen bg-[#F5F5DC] flex flex-col fixed left-0 top-0 shadow-lg">
       {/* Logo and Title */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center gap-3">
