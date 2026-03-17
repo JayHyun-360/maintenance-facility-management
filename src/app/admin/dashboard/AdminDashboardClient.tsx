@@ -7194,7 +7194,10 @@ ${result.analysis.risks || "N/A"}
                             <div className="relative">
                               <div className="absolute inset-0 rounded-full bg-green-500 blur-sm opacity-60 animate-pulse" />
 
-                              <Bot className="relative w-5 h-5 text-green-400 drop-shadow-lg" />
+                              <FontAwesomeIcon
+                                icon={faRobot}
+                                className="relative w-5 h-5 text-green-400 drop-shadow-lg"
+                              />
                             </div>
                           </div>
                         )}
