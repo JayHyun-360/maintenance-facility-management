@@ -3670,10 +3670,7 @@ ${result.analysis.risks || "N/A"}
                         transition={{ delay: 0.3, duration: 0.3 }}
                         className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100"
                       >
-                        <FontAwesomeIcon
-                          icon={faChartLine}
-                          className="w-4 h-4 text-blue-600"
-                        />
+                        <Activity className="w-4 h-4 text-blue-600" />
 
                         <span className="text-sm font-semibold text-gray-700">
                           {stats.total}
@@ -4035,10 +4032,7 @@ ${result.analysis.risks || "N/A"}
                         transition={{ delay: 0.3, duration: 0.3 }}
                         className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100"
                       >
-                        <FontAwesomeIcon
-                          icon={faChartLine}
-                          className="w-4 h-4 text-blue-600"
-                        />
+                        <Activity className="w-4 h-4 text-blue-600" />
 
                         <span className="text-sm font-semibold text-gray-700">
                           {stats.total}
@@ -4605,10 +4599,7 @@ ${result.analysis.risks || "N/A"}
                         className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
                         title="Clear filters"
                       >
-                        <FontAwesomeIcon
-                          icon={faTrashAlt}
-                          className="w-5 h-5"
-                        />
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </div>
 
@@ -5056,31 +5047,19 @@ ${result.analysis.risks || "N/A"}
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                     {showDetailModal.nature === "Plumbing" && (
-                      <FontAwesomeIcon
-                        icon={faWrench}
-                        className="w-4 h-4 text-white"
-                      />
+                      <Wrench className="w-4 h-4 text-white" />
                     )}
 
                     {showDetailModal.nature === "Electrical" && (
-                      <FontAwesomeIcon
-                        icon={faBolt}
-                        className="w-4 h-4 text-white"
-                      />
+                      <Zap className="w-4 h-4 text-white" />
                     )}
 
                     {showDetailModal.nature === "Carpentry" && (
-                      <FontAwesomeIcon
-                        icon={faHammer}
-                        className="w-4 h-4 text-white"
-                      />
+                      <Hammer className="w-4 h-4 text-white" />
                     )}
 
                     {showDetailModal.nature === "Personnel Services" && (
-                      <FontAwesomeIcon
-                        icon={faMagic}
-                        className="w-4 h-4 text-white"
-                      />
+                      <Sparkles className="w-4 h-4 text-white" />
                     )}
 
                     {![
@@ -5089,10 +5068,7 @@ ${result.analysis.risks || "N/A"}
                       "Carpentry",
                       "Personnel Services",
                     ].includes(showDetailModal.nature) && (
-                      <FontAwesomeIcon
-                        icon={faChartLine}
-                        className="w-4 h-4 text-white"
-                      />
+                      <Activity className="w-4 h-4 text-white" />
                     )}
                   </div>
 
@@ -6706,10 +6682,7 @@ ${result.analysis.risks || "N/A"}
                     <div className="relative">
                       <div className="absolute inset-0 rounded-full bg-green-500 blur-md opacity-60 animate-pulse" />
 
-                      <FontAwesomeIcon
-                        icon={faRobot}
-                        className="relative w-5 h-5 text-green-400 drop-shadow-lg"
-                      />
+                      <Bot className="relative w-5 h-5 text-green-400 drop-shadow-lg" />
                     </div>
 
                     <div>
@@ -7067,10 +7040,7 @@ ${result.analysis.risks || "N/A"}
                       <div className="relative mb-6">
                         <div className="absolute inset-0 rounded-full bg-green-500 blur-xl opacity-50 animate-pulse" />
 
-                        <FontAwesomeIcon
-                          icon={faRobot}
-                          className="relative w-16 h-16 text-green-400 drop-shadow-lg"
-                        />
+                        <Bot className="relative w-16 h-16 text-green-400 drop-shadow-lg" />
                       </div>
 
                       <h2 className="text-lg font-bold text-white mb-1">
@@ -7185,15 +7155,25 @@ ${result.analysis.risks || "N/A"}
                             <div className="relative">
                               <div className="absolute inset-0 rounded-full bg-green-500 blur-sm opacity-60 animate-pulse" />
 
-                              <FontAwesomeIcon
-                                icon={faRobot}
-                                className="relative w-5 h-5 text-green-400 drop-shadow-lg"
-                              />
+                              <svg
+                                className="w-5 h-5 text-green-400 drop-shadow-lg"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M13 10V3L4 14h7v7l9-11h-7z"
+                                />
+                              </svg>
                             </div>
                           </div>
                         )}
 
                         <div className="flex flex-col max-w-[82%]">
+                          {/* Display attached images */}
                           <div
                             className={`relative rounded-2xl px-3.5 py-2.5 ${
                               message.role === "user"
@@ -7711,10 +7691,7 @@ ${result.analysis.risks || "N/A"}
                           <div className="absolute inset-0 rounded-md bg-green-500 blur-sm opacity-60 animate-pulse" />
 
                           <div className="relative w-6 h-6 rounded-md bg-green-600 flex items-center justify-center shadow shadow-green-500/30">
-                            <FontAwesomeIcon
-                              icon={faRobot}
-                              className="w-3.5 h-3.5 text-white"
-                            />
+                            <Bot className="w-3.5 h-3.5 text-white" />
                           </div>
                         </div>
                       </div>
