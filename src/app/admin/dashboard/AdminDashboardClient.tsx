@@ -2268,7 +2268,7 @@ ${result.analysis.risks || "N/A"}
 
                       setShowDetailModal(request);
                     }}
-                    className="flex-shrink-0 p-1 text-gray-400 hover:text-[#5D9C59] hover:bg-gray-100 rounded transition-colors"
+                    className="flex-shrink-0 p-1 text-gray-400 hover:text-emerald-500 hover:bg-gray-100 rounded transition-colors"
                     title="See more information"
                   >
                     <svg
@@ -2487,7 +2487,7 @@ ${result.analysis.risks || "N/A"}
 
                   setShowReportSidebar(true);
                 }}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#5D9C59] text-white text-xs font-medium rounded-lg hover:bg-[#4a7c4a] transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-emerald-500 text-white text-xs font-medium rounded-lg hover:bg-emerald-600 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
                 title="Generate Report"
               >
                 <svg
@@ -3152,7 +3152,7 @@ ${result.analysis.risks || "N/A"}
       {/* Main wrapper with header and content */}
       <div className="flex-1 ml-64">
         {/* Header - Full width at top */}
-        <div className="bg-[#5D9C59] shadow-lg border-b transition-all duration-300">
+        <div className="bg-emerald-500 shadow-lg border-b transition-all duration-300">
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-end items-center h-20">
               {/* Right Side - Profile, Settings, etc */}
@@ -3340,9 +3340,9 @@ ${result.analysis.risks || "N/A"}
                         </p>
                       </div>
 
-                      <div className="w-12 h-12 bg-[#5D9C59]/10 rounded-lg flex items-center justify-center">
+                      <div className="w-12 h-12 bg-emerald-500/10 rounded-lg flex items-center justify-center">
                         <svg
-                          className="w-6 h-6 text-[#5D9C59]"
+                          className="w-6 h-6 text-emerald-500"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -4420,7 +4420,7 @@ ${result.analysis.risks || "N/A"}
                       placeholder="Search by nature, location, or description..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                     />
                   </div>
 
@@ -4431,7 +4431,7 @@ ${result.analysis.risks || "N/A"}
                       filters.status.length > 0 ||
                       filters.nature.length > 0 ||
                       filters.urgency.length > 0
-                        ? "bg-[#5D9C59] text-white border-[#5D9C59]"
+                        ? "bg-emerald-500 text-white border-emerald-500"
                         : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"
                     }`}
                     title="Filter"
@@ -4463,7 +4463,7 @@ ${result.analysis.risks || "N/A"}
                             type="checkbox"
                             checked={selectAll}
                             onChange={(e) => setSelectAll(e.target.checked)}
-                            className="w-4 h-4 text-[#5D9C59] rounded border-gray-300 focus:ring-[#5D9C59]"
+                            className="w-4 h-4 text-emerald-500 rounded border-gray-300 focus:ring-emerald-500"
                           />
 
                           <span className="text-sm font-medium text-gray-700">
@@ -4545,7 +4545,7 @@ ${result.analysis.risks || "N/A"}
                                     });
                                   }
                                 }}
-                                className="w-4 h-4 text-[#5D9C59] rounded border-gray-300 focus:ring-[#5D9C59]"
+                                className="w-4 h-4 text-emerald-500 rounded border-gray-300 focus:ring-emerald-500"
                               />
 
                               <span className="text-sm text-gray-700">
@@ -4607,7 +4607,7 @@ ${result.analysis.risks || "N/A"}
                                     });
                                   }
                                 }}
-                                className="w-4 h-4 text-[#5D9C59] rounded border-gray-300 focus:ring-[#5D9C59]"
+                                className="w-4 h-4 text-emerald-500 rounded border-gray-300 focus:ring-emerald-500"
                               />
 
                               <span className="text-sm text-gray-700">
@@ -4659,7 +4659,7 @@ ${result.analysis.risks || "N/A"}
                                     });
                                   }
                                 }}
-                                className="w-4 h-4 text-[#5D9C59] rounded border-gray-300 focus:ring-[#5D9C59]"
+                                className="w-4 h-4 text-emerald-500 rounded border-gray-300 focus:ring-emerald-500"
                               />
 
                               <span className="text-sm text-gray-700">
@@ -4741,7 +4741,7 @@ ${result.analysis.risks || "N/A"}
 
                 <button
                   onClick={() => setShowBroadcastModal(true)}
-                  className="px-4 py-2 bg-[#5D9C59] text-white rounded-lg hover:bg-[#4a7c4a] transition-colors flex items-center gap-2 text-sm font-medium"
+                  className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors flex items-center gap-2 text-sm font-medium"
                 >
                   <svg
                     className="w-4 h-4"
@@ -4782,7 +4782,7 @@ ${result.analysis.risks || "N/A"}
 
               <div className="bg-gray-50 rounded-xl p-8 text-center">
                 <svg
-                  className="w-16 h-16 mx-auto mb-4 text-[#5D9C59]"
+                  className="w-16 h-16 mx-auto mb-4 text-emerald-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -4852,7 +4852,7 @@ ${result.analysis.risks || "N/A"}
         {editingRequest && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              <div className="bg-[#5D9C59] p-6 rounded-t-xl">
+              <div className="bg-emerald-500 p-6 rounded-t-xl">
                 <div className="flex justify-between items-center">
                   <h2 className="font-header text-xl font-bold text-white">
                     Change Status
@@ -4937,7 +4937,7 @@ ${result.analysis.risks || "N/A"}
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100 relative z-10 flex flex-col">
               {/* Header */}
 
-              <div className="bg-gradient-to-r from-[#5D9C59] to-[#2d5a2e] p-4">
+              <div className="bg-gradient-to-r from-emerald-600 to-emerald-800 p-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                     {showDetailModal.nature === "Plumbing" && (
@@ -5037,9 +5037,9 @@ ${result.analysis.risks || "N/A"}
 
                   <div className="bg-gray-50 rounded-lg p-3">
                     <div className="flex items-center gap-2 mb-1">
-                      <div className="p-1 bg-[#5D9C59]/10 rounded">
+                      <div className="p-1 bg-emerald-500/10 rounded">
                         <svg
-                          className="w-3 h-3 text-[#5D9C59]"
+                          className="w-3 h-3 text-emerald-500"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5074,9 +5074,9 @@ ${result.analysis.risks || "N/A"}
 
                   <div className="bg-gray-50 rounded-lg p-3">
                     <div className="flex items-center gap-2 mb-1">
-                      <div className="p-1 bg-[#5D9C59]/10 rounded">
+                      <div className="p-1 bg-emerald-500/10 rounded">
                         <svg
-                          className="w-3 h-3 text-[#5D9C59]"
+                          className="w-3 h-3 text-emerald-500"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5127,9 +5127,9 @@ ${result.analysis.risks || "N/A"}
 
                   <div className="bg-gray-50 rounded-lg p-3">
                     <div className="flex items-center gap-2 mb-1">
-                      <div className="p-1 bg-[#5D9C59]/10 rounded">
+                      <div className="p-1 bg-emerald-500/10 rounded">
                         <svg
-                          className="w-3 h-3 text-[#5D9C59]"
+                          className="w-3 h-3 text-emerald-500"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5166,9 +5166,9 @@ ${result.analysis.risks || "N/A"}
 
                 <div className="bg-gray-50 rounded-lg p-3">
                   <div className="flex items-center gap-2 mb-2">
-                    <div className="p-1 bg-[#5D9C59]/10 rounded">
+                    <div className="p-1 bg-emerald-500/10 rounded">
                       <svg
-                        className="w-3 h-3 text-[#5D9C59]"
+                        className="w-3 h-3 text-emerald-500"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -5198,9 +5198,9 @@ ${result.analysis.risks || "N/A"}
                   showDetailModal.photos.length > 0 && (
                     <div className="bg-gray-50 rounded-lg p-3">
                       <div className="flex items-center gap-2 mb-3">
-                        <div className="p-1 bg-[#5D9C59]/10 rounded">
+                        <div className="p-1 bg-emerald-500/10 rounded">
                           <svg
-                            className="w-3 h-3 text-[#5D9C59]"
+                            className="w-3 h-3 text-emerald-500"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -5265,7 +5265,7 @@ ${result.analysis.risks || "N/A"}
 
                     setShowDetailModal(null);
                   }}
-                  className="w-full px-3 py-2 bg-[#5D9C59] text-white rounded-lg hover:bg-[#4a7c4a] transition-colors font-medium text-sm flex items-center justify-center gap-1.5"
+                  className="w-full px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium text-sm flex items-center justify-center gap-1.5"
                 >
                   <svg
                     className="w-3 h-3"
@@ -5296,7 +5296,7 @@ ${result.analysis.risks || "N/A"}
           }`}
         >
           <div className="h-full overflow-y-auto">
-            <div className="bg-[#5D9C59] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+            <div className="bg-emerald-500 shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
               <div className="flex justify-center items-center">
                 <h2 className="font-header text-xl font-bold text-white">
                   Notifications
@@ -5440,7 +5440,7 @@ ${result.analysis.risks || "N/A"}
             className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showProfileSidebar ? "translate-x-0" : "-translate-x-full"}`}
           >
             <div className="h-full overflow-y-auto">
-              <div className="bg-[#5D9C59] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+              <div className="bg-emerald-500 shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
                 <div className="flex justify-between items-center">
                   <h2 className="font-header text-xl font-bold text-white">
                     Profile Settings
@@ -5473,7 +5473,7 @@ ${result.analysis.risks || "N/A"}
                 <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
                   <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                     <svg
-                      className="w-5 h-5 text-[#5D9C59]"
+                      className="w-5 h-5 text-emerald-500"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -5515,7 +5515,7 @@ ${result.analysis.risks || "N/A"}
 
                         <label
                           htmlFor="avatar-upload"
-                          className="absolute bottom-0 right-0 bg-[#5D9C59] text-white p-2 rounded-full cursor-pointer hover:bg-[#4a7c4a] transition-colors shadow-md"
+                          className="absolute bottom-0 right-0 bg-emerald-500 text-white p-2 rounded-full cursor-pointer hover:bg-emerald-600 transition-colors shadow-md"
                         >
                           <svg
                             className="w-4 h-4"
@@ -5576,7 +5576,7 @@ ${result.analysis.risks || "N/A"}
                             full_name: e.target.value,
                           })
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm text-gray-900"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm text-gray-900"
                       />
                     </div>
 
@@ -5594,7 +5594,7 @@ ${result.analysis.risks || "N/A"}
                             visual_role: e.target.value,
                           })
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm text-gray-900 bg-white"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm text-gray-900 bg-white"
                       >
                         <option value="">Select a role</option>
 
@@ -5606,13 +5606,13 @@ ${result.analysis.risks || "N/A"}
                       </select>
                     </div>
 
-                    <div className="bg-gradient-to-r from-[#5D9C59]/10 to-[#5D9C59]/5 rounded-lg p-3">
+                    <div className="bg-gradient-to-r from-emerald-500/10 to-emerald-500/5 rounded-lg p-3">
                       <label className="block text-sm font-medium text-gray-500 mb-1">
                         Access Mode
                       </label>
 
                       <div className="flex items-center gap-2">
-                        <span className="px-3 py-1 bg-[#5D9C59] text-white text-sm font-medium rounded-full">
+                        <span className="px-3 py-1 bg-emerald-500 text-white text-sm font-medium rounded-full">
                           Administrator
                         </span>
                       </div>
@@ -5635,7 +5635,7 @@ ${result.analysis.risks || "N/A"}
                               | "system",
                           })
                         }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm text-gray-900 bg-white"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm text-gray-900 bg-white"
                       >
                         <option value="light">Light</option>
 
@@ -5663,7 +5663,7 @@ ${result.analysis.risks || "N/A"}
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full px-4 py-3 bg-[#5D9C59] text-white font-semibold rounded-lg hover:bg-[#4a7c4a] disabled:bg-gray-400 transition-colors"
+                  className="w-full px-4 py-3 bg-emerald-500 text-white font-semibold rounded-lg hover:bg-emerald-600 disabled:bg-gray-400 transition-colors"
                 >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
@@ -5745,7 +5745,7 @@ ${result.analysis.risks || "N/A"}
             className={`fixed top-0 right-0 h-full w-[600px] bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showReportSidebar ? "translate-x-0" : "translate-x-full"}`}
           >
             <div className="h-full overflow-y-auto">
-              <div className="bg-[#5D9C59] shadow-lg border-b p-6 sticky top-0 z-10">
+              <div className="bg-emerald-500 shadow-lg border-b p-6 sticky top-0 z-10">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="font-header text-xl font-bold text-white">
@@ -5822,7 +5822,7 @@ ${result.analysis.risks || "N/A"}
                                 },
                               }))
                             }
-                            className="w-4 h-4 text-[#5D9C59] border-gray-300 rounded focus:ring-[#5D9C59]"
+                            className="w-4 h-4 text-emerald-500 border-gray-300 rounded focus:ring-emerald-500"
                           />
 
                           <span className="text-sm text-gray-700">
@@ -5860,7 +5860,7 @@ ${result.analysis.risks || "N/A"}
                                     urgency: e.target.value,
                                   }))
                                 }
-                                className="w-4 h-4 text-[#5D9C59] border-gray-300 focus:ring-[#5D9C59]"
+                                className="w-4 h-4 text-emerald-500 border-gray-300 focus:ring-emerald-500"
                               />
 
                               <span className="text-sm text-gray-700">
@@ -5887,7 +5887,7 @@ ${result.analysis.risks || "N/A"}
                                 date: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
                           />
                         </div>
 
@@ -5906,7 +5906,7 @@ ${result.analysis.risks || "N/A"}
                                 time: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
                           />
                         </div>
                       </div>
@@ -5936,7 +5936,7 @@ ${result.analysis.risks || "N/A"}
                               location: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
                           placeholder="Enter location"
                         />
                       </div>
@@ -5956,7 +5956,7 @@ ${result.analysis.risks || "N/A"}
                             }))
                           }
                           rows={3}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
                           placeholder="Describe the problem"
                         />
                       </div>
@@ -5976,7 +5976,7 @@ ${result.analysis.risks || "N/A"}
                             }))
                           }
                           rows={3}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
                           placeholder="Action to be taken"
                         />
                       </div>
@@ -5996,7 +5996,7 @@ ${result.analysis.risks || "N/A"}
                             }))
                           }
                           rows={2}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
                           placeholder="Reasons for this request"
                         />
                       </div>
@@ -6026,7 +6026,7 @@ ${result.analysis.risks || "N/A"}
                               requestingDepartment: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm mb-2"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm mb-2"
                           placeholder="Department name"
                         />
 
@@ -6040,7 +6040,7 @@ ${result.analysis.risks || "N/A"}
                               nameOfEmployee: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm mb-2"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm mb-2"
                           placeholder="Name of Employee"
                         />
 
@@ -6054,7 +6054,7 @@ ${result.analysis.risks || "N/A"}
                               departmentHead: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
                           placeholder="Department Head"
                         />
                       </div>
@@ -6075,7 +6075,7 @@ ${result.analysis.risks || "N/A"}
                               vpAASD: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
                           placeholder="VP - AASD"
                         />
                       </div>
@@ -6095,7 +6095,7 @@ ${result.analysis.risks || "N/A"}
                               gmsHead: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm"
                           placeholder="GMS Head"
                         />
                       </div>
@@ -6126,7 +6126,7 @@ ${result.analysis.risks || "N/A"}
                                 dateTimeReceived: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm bg-gray-100"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm bg-gray-100"
                             readOnly
                           />
                         </div>
@@ -6146,7 +6146,7 @@ ${result.analysis.risks || "N/A"}
                                 performedBy: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm bg-gray-100"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm bg-gray-100"
                             readOnly
                             placeholder="Technician name"
                           />
@@ -6169,7 +6169,7 @@ ${result.analysis.risks || "N/A"}
                                 dateTimeCompleted: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm bg-gray-100"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm bg-gray-100"
                             readOnly
                           />
                         </div>
@@ -6189,7 +6189,7 @@ ${result.analysis.risks || "N/A"}
                                 acknowledgeBy: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm bg-gray-100"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent text-sm bg-gray-100"
                             readOnly
                             placeholder="Acknowledged by"
                           />
@@ -6246,7 +6246,7 @@ ${result.analysis.risks || "N/A"}
                                     workEvaluation: e.target.value,
                                   }))
                                 }
-                                className="w-4 h-4 text-[#5D9C59] border-gray-300 focus:ring-[#5D9C59] mt-0.5"
+                                className="w-4 h-4 text-emerald-500 border-gray-300 focus:ring-emerald-500 mt-0.5"
                                 disabled
                               />
 
@@ -6278,7 +6278,7 @@ ${result.analysis.risks || "N/A"}
 
                     <button
                       onClick={generatePDFReport}
-                      className="flex-1 px-4 py-2.5 bg-[#5D9C59] text-white font-medium rounded-lg hover:bg-[#4a7c4a] transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 px-4 py-2.5 bg-emerald-500 text-white font-medium rounded-lg hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2"
                     >
                       <svg
                         className="w-4 h-4"
@@ -8070,7 +8070,7 @@ ${result.analysis.risks || "N/A"}
                     value={broadcastTitle}
                     onChange={(e) => setBroadcastTitle(e.target.value)}
                     placeholder="Enter announcement title..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
                   />
                 </div>
 
@@ -8079,7 +8079,7 @@ ${result.analysis.risks || "N/A"}
                   onChange={(e) => setBroadcastMessage(e.target.value)}
                   placeholder="Type your broadcast message here..."
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
                 />
 
                 <div className="flex justify-end gap-3 mt-4">
@@ -8093,7 +8093,7 @@ ${result.analysis.risks || "N/A"}
                   <button
                     onClick={sendBroadcastMessage}
                     disabled={!broadcastMessage.trim()}
-                    className="px-4 py-2 bg-[#5D9C59] text-white rounded-lg hover:bg-[#4a7c4a] transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Send to All ({users.length} users)
                   </button>
@@ -8394,7 +8394,7 @@ ${result.analysis.risks || "N/A"}
                         className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
                       />
                     ) : (
-                      <div className="w-20 h-20 rounded-full bg-[#5D9C59] flex items-center justify-center text-white text-2xl font-semibold">
+                      <div className="w-20 h-20 rounded-full bg-emerald-500 flex items-center justify-center text-white text-2xl font-semibold">
                         {selectedUser.full_name.charAt(0).toUpperCase()}
                       </div>
                     )}
@@ -8514,7 +8514,7 @@ ${result.analysis.risks || "N/A"}
 
                       fetchUserMessages(selectedUser.id);
                     }}
-                    className="flex-1 px-4 py-2 bg-[#5D9C59] text-white rounded-lg hover:bg-[#4a7c4a] transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors text-sm font-medium flex items-center justify-center gap-2"
                   >
                     <svg
                       className="w-4 h-4"

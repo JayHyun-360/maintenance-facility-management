@@ -109,7 +109,7 @@ export default function Sidebar({
   };
 
   return (
-    <div className="w-64 min-h-screen bg-[#2D3A3F] flex flex-col fixed left-0 top-0">
+    <div className="w-64 min-h-screen bg-slate-800 flex flex-col fixed left-0 top-0">
       {/* Logo and Title */}
       <div className="p-6 border-b border-white/10">
         <div className="flex items-center gap-3">
@@ -141,7 +141,7 @@ export default function Sidebar({
                 onClick={() => onTabChange(item.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                   activeTab === item.id
-                    ? "bg-[#5D9C59] text-white"
+                    ? "bg-emerald-500 text-white"
                     : "text-white/70 hover:bg-white/10 hover:text-white"
                 }`}
               >
