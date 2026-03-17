@@ -5291,7 +5291,7 @@ ${result.analysis.risks || "N/A"}
 
         <div
           ref={notificationsRef}
-          className={`fixed top-0 right-0 h-full w-56 bg-white shadow-2xl z-40 transform transition-transform duration-500 ease-out ${
+          className={`fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-40 transform transition-transform duration-500 ease-out ${
             showNotifications ? "translate-x-0" : "translate-x-full"
           }`}
         >
