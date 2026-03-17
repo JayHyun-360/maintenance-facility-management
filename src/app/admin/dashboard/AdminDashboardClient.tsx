@@ -9097,42 +9097,18 @@ ${result.analysis.risks || "N/A"}
           onClick={() => setShowIntroductionModal(false)}
         />
         <div
-          className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-12 z-50 transition-all duration-300 max-w-4xl w-full mx-4 ${
+          className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-16 z-50 transition-all duration-300 max-w-6xl w-full mx-4 ${
             showIntroductionModal
               ? "scale-100 opacity-100"
               : "scale-95 opacity-0"
           }`}
         >
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-bold text-gray-800">Welcome!</h2>
-            <button
-              onClick={() => setShowIntroductionModal(false)}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <svg
-                className="w-8 h-8"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-
-          <div className="text-center mb-8">
-            <p className="text-green-600 font-bold text-4xl mb-6 bg-green-50 px-6 py-3 rounded-full inline-block">
-              Excellent
-            </p>
-            <div className="bg-green-600 rounded-2xl p-8 inline-block">
+          <div className="text-center">
+            <p className="text-green-400 font-bold text-6xl mb-10">Excellent</p>
+            <div className="bg-green-500 rounded-3xl p-12 inline-block">
               <RotatingText
                 texts={["Maintenance", "Facility", "Management", "System"]}
-                mainClassName="text-white font-bold text-5xl"
+                mainClassName="text-white font-bold text-7xl"
                 staggerFrom="last"
                 initial={{ y: "100%", opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
