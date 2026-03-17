@@ -31,6 +31,26 @@
 }
 
 @layer utilities {
+  /* Vertical Sidebar Layout for Admin Dashboard */
+  .admin-sidebar-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .admin-vertical-sidebar {
+    width: 256px;
+    background-color: #3d6b35;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    position: fixed;
+    height: 100vh;
+    z-index: 40;
+  }
+
+  .admin-main-content {
+    flex: 1;
+    margin-left: 256px;
+  }
+
   .font-header {
     font-family:
       -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
