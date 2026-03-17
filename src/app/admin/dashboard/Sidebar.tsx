@@ -143,7 +143,7 @@ export default function Sidebar({
                 onClick={() => onTabChange(item.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                   activeTab === item.id
-                    ? "bg-white text-green-700 shadow-md border border-green-200"
+                    ? "bg-green-500 text-white shadow-md"
                     : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                 }`}
               >
