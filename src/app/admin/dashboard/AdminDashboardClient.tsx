@@ -3320,7 +3320,10 @@ ${result.analysis.risks || "N/A"}
               </div>
 
               {/* Middle - Rotating Text */}
-              <div className="flex-1 flex justify-center">
+              <div className="flex-1 flex justify-center items-center gap-2">
+                <span className="text-white font-medium text-sm">
+                  Excellent
+                </span>
                 <RotatingText
                   texts={["Maintenance", "Facility", "Management", "System"]}
                   mainClassName="px-3 py-1 bg-white/20 backdrop-blur-sm text-white overflow-hidden rounded-lg inline-block"
