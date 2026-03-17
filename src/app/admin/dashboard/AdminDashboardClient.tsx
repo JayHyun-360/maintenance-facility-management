@@ -562,9 +562,9 @@ export default function AdminDashboardClient({
     }
   }, [activeTab]);
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [tableSearchQuery, setTableSearchQuery] = useState("");
 
-  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+  const debouncedSearchQuery = useDebounce(tableSearchQuery, 300);
 
   const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
 
@@ -4550,8 +4550,8 @@ ${result.analysis.risks || "N/A"}
                     <input
                       type="text"
                       placeholder="Search by nature, location, or description..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
+                      value={tableSearchQuery}
+                      onChange={(e) => setTableSearchQuery(e.target.value)}
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
                   </div>
