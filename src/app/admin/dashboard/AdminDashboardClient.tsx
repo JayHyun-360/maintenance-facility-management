@@ -9097,7 +9097,7 @@ ${result.analysis.risks || "N/A"}
           onClick={() => setShowIntroductionModal(false)}
         />
         <div
-          className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-16 z-50 transition-all duration-300 max-w-6xl w-full mx-4 ${
+          className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-20 z-50 transition-all duration-300 max-w-7xl w-full mx-4 ${
             showIntroductionModal
               ? "scale-100 opacity-100"
               : "scale-95 opacity-0"
@@ -9105,10 +9105,10 @@ ${result.analysis.risks || "N/A"}
         >
           <div className="text-center">
             <p className="text-green-400 font-bold text-6xl mb-10">Excellent</p>
-            <div className="bg-green-500 rounded-3xl p-12 inline-block">
+            <div className="bg-green-500 rounded-3xl px-16 py-12 inline-block">
               <RotatingText
-                texts={["Maintenance", "Facility", "Management", "System"]}
-                mainClassName="text-white font-bold text-7xl"
+                texts={["Management", "Service", "Support", "System"]}
+                mainClassName="text-white font-bold text-7xl whitespace-nowrap"
                 staggerFrom="last"
                 initial={{ y: "100%", opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
