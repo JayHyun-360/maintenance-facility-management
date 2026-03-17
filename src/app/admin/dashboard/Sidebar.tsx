@@ -115,8 +115,8 @@ export default function Sidebar({
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 relative flex-shrink-0">
             <Image
-              src="/admin-logo.svg"
-              alt="Admin Logo"
+              src="/morning-daylight.svg"
+              alt="Morning Daylight"
               width={48}
               height={48}
               className="w-full h-full"
