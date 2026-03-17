@@ -125,10 +125,13 @@ export default function AdminDashboardClient({
   const supabase = createClient();
 
   // State management
-  const [requests, setRequests] = useState<RequestWithProfile[]>(initialRequests);
+  const [requests, setRequests] =
+    useState<RequestWithProfile[]>(initialRequests);
   const [stats, setStats] = useState(initialStats);
   const [profile, setProfile] = useState<Profile | null>(initialProfile);
-  const [activeTab, setActiveTab] = useState<"overview" | "analytics" | "master-queue" | "announcements">("overview");
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "analytics" | "master-queue" | "announcements"
+  >("overview");
   const [showNotifications, setShowNotifications] = useState(false);
   const [showAIChat, setShowAIChat] = useState(false);
   const [showProfileSidebar, setShowProfileSidebar] = useState(false);
@@ -149,13 +152,14 @@ export default function AdminDashboardClient({
     return dateRange.map((date) => {
       const dateStr = format(date, "MMM dd");
       const dayRequests = requests.filter(
-        (r) => new Date(r.created_at).toDateString() === date.toDateString()
+        (r) => new Date(r.created_at).toDateString() === date.toDateString(),
       );
 
       return {
         date: dateStr,
         Pending: dayRequests.filter((r) => r.status === "Pending").length,
-        "In Progress": dayRequests.filter((r) => r.status === "In Progress").length,
+        "In Progress": dayRequests.filter((r) => r.status === "In Progress")
+          .length,
         Completed: dayRequests.filter((r) => r.status === "Completed").length,
       };
     });
@@ -165,12 +169,16 @@ export default function AdminDashboardClient({
   const handleThemeToggle = async () => {
     if (!profile) return;
 
-    const newTheme = profile.theme_preference === "light" ? "dark" : 
-                     profile.theme_preference === "dark" ? "system" : "light";
+    const newTheme =
+      profile.theme_preference === "light"
+        ? "dark"
+        : profile.theme_preference === "dark"
+          ? "system"
+          : "light";
 
     const { error } = await supabase
       .from("profiles")
-      .update({ theme_preference: newTheme })
+      .update({ theme_preference: newTheme } as any)
       .eq("id", profile.id);
 
     if (!error) {
@@ -483,7 +491,9 @@ export default function AdminDashboardClient({
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
-                        e.currentTarget.nextElementSibling?.classList.remove("hidden");
+                        e.currentTarget.nextElementSibling?.classList.remove(
+                          "hidden",
+                        );
                       }}
                     />
                   ) : null}
@@ -686,52 +696,65 @@ export default function AdminDashboardClient({
                             color: "from-blue-500 to-blue-600",
                             bgLight: "bg-blue-50",
                             icon: Wrench,
-                            gradient: "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+                            gradient:
+                              "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
                           },
                           {
                             name: "Electrical",
                             color: "from-yellow-500 to-orange-500",
                             bgLight: "bg-yellow-50",
                             icon: Zap,
-                            gradient: "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
+                            gradient:
+                              "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
                           },
                           {
                             name: "Carpentry",
                             color: "from-amber-600 to-amber-700",
                             bgLight: "bg-amber-50",
                             icon: Hammer,
-                            gradient: "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
+                            gradient:
+                              "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
                           },
                           {
                             name: "HVAC",
                             color: "from-cyan-500 to-cyan-600",
                             bgLight: "bg-cyan-50",
                             icon: Wind,
-                            gradient: "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
+                            gradient:
+                              "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
                           },
                           {
                             name: "Cleaning",
                             color: "from-purple-500 to-purple-600",
                             bgLight: "bg-purple-50",
                             icon: Sparkles,
-                            gradient: "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
+                            gradient:
+                              "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
                           },
                           {
                             name: "Other",
                             color: "from-gray-500 to-gray-600",
                             bgLight: "bg-gray-50",
                             icon: MoreHorizontal,
-                            gradient: "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
+                            gradient:
+                              "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
                           },
                         ]
                           .map((nature) => ({
                             ...nature,
-                            count: requests.filter((r) => r.nature === nature.name).length,
+                            count: requests.filter(
+                              (r) => r.nature === nature.name,
+                            ).length,
                           }))
                           .sort((a, b) => b.count - a.count)
                           .map((nature, index) => {
-                            const count = requests.filter((r) => r.nature === nature.name).length;
-                            const percentage = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
+                            const count = requests.filter(
+                              (r) => r.nature === nature.name,
+                            ).length;
+                            const percentage =
+                              stats.total > 0
+                                ? Math.round((count / stats.total) * 100)
+                                : 0;
                             const Icon = nature.icon;
 
                             return (
@@ -778,7 +801,10 @@ export default function AdminDashboardClient({
                                         <Icon
                                           className="w-5 h-5"
                                           style={{
-                                            color: nature.gradient.match(/#[0-9A-F]{6}/)?.[0] || "#000",
+                                            color:
+                                              nature.gradient.match(
+                                                /#[0-9A-F]{6}/,
+                                              )?.[0] || "#000",
                                           }}
                                         />
                                       </motion.div>
@@ -787,7 +813,9 @@ export default function AdminDashboardClient({
                                         className="text-right"
                                         initial={{ opacity: 0, x: 10 }}
                                         animate={{ opacity: 1, x: 0 }}
-                                        transition={{ delay: 0.2 + index * 0.1 }}
+                                        transition={{
+                                          delay: 0.2 + index * 0.1,
+                                        }}
                                       >
                                         <p className="text-2xl font-bold text-gray-900">
                                           {count}
@@ -854,12 +882,34 @@ export default function AdminDashboardClient({
                     <ResponsiveContainer width="100%" height={200}>
                       <LineChart data={generateStatusTrendData()}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                        <XAxis dataKey="date" tick={{ fontSize: 12 }} stroke="#888" />
+                        <XAxis
+                          dataKey="date"
+                          tick={{ fontSize: 12 }}
+                          stroke="#888"
+                        />
                         <YAxis tick={{ fontSize: 12 }} stroke="#888" />
                         <Tooltip />
-                        <Line type="monotone" dataKey="Pending" stroke="#eab308" strokeWidth={2} dot={{ fill: "#eab308", r: 4 }} />
-                        <Line type="monotone" dataKey="In Progress" stroke="#3b82f6" strokeWidth={2} dot={{ fill: "#3b82f6", r: 4 }} />
-                        <Line type="monotone" dataKey="Completed" stroke="#22c55e" strokeWidth={2} dot={{ fill: "#22c55e", r: 4 }} />
+                        <Line
+                          type="monotone"
+                          dataKey="Pending"
+                          stroke="#eab308"
+                          strokeWidth={2}
+                          dot={{ fill: "#eab308", r: 4 }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="In Progress"
+                          stroke="#3b82f6"
+                          strokeWidth={2}
+                          dot={{ fill: "#3b82f6", r: 4 }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="Completed"
+                          stroke="#22c55e"
+                          strokeWidth={2}
+                          dot={{ fill: "#22c55e", r: 4 }}
+                        />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -878,10 +928,22 @@ export default function AdminDashboardClient({
                       <PieChart>
                         <Pie
                           data={[
-                            { name: "Pending", value: stats.pending, color: "#eab308" },
-                            { name: "In Progress", value: stats.inProgress, color: "#3b82f6" },
-                            { name: "Completed", value: stats.completed, color: "#22c55e" },
-                          ].filter(item => item.value > 0)}
+                            {
+                              name: "Pending",
+                              value: stats.pending,
+                              color: "#eab308",
+                            },
+                            {
+                              name: "In Progress",
+                              value: stats.inProgress,
+                              color: "#3b82f6",
+                            },
+                            {
+                              name: "Completed",
+                              value: stats.completed,
+                              color: "#22c55e",
+                            },
+                          ].filter((item) => item.value > 0)}
                           cx="50%"
                           cy="50%"
                           innerRadius={60}
@@ -889,7 +951,11 @@ export default function AdminDashboardClient({
                           paddingAngle={5}
                           dataKey="value"
                         >
-                          {[{ name: "Pending", color: "#eab308" }, { name: "In Progress", color: "#3b82f6" }, { name: "Completed", color: "#22c55e" }].map((entry, index) => (
+                          {[
+                            { name: "Pending", color: "#eab308" },
+                            { name: "In Progress", color: "#3b82f6" },
+                            { name: "Completed", color: "#22c55e" },
+                          ].map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
                           ))}
                         </Pie>
@@ -898,21 +964,60 @@ export default function AdminDashboardClient({
                     </ResponsiveContainer>
                     <div className="mt-4 space-y-2">
                       {[
-                        { name: "Pending", value: stats.pending, color: "bg-yellow-500", percentage: stats.total > 0 ? Math.round((stats.pending / stats.total) * 100) : 0 },
-                        { name: "In Progress", value: stats.inProgress, color: "bg-blue-500", percentage: stats.total > 0 ? Math.round((stats.inProgress / stats.total) * 100) : 0 },
-                        { name: "Completed", value: stats.completed, color: "bg-green-500", percentage: stats.total > 0 ? Math.round((stats.completed / stats.total) * 100) : 0 },
-                      ].filter(item => item.value > 0).map((item) => (
-                        <div key={item.name} className="flex items-center justify-between text-sm">
-                          <div className="flex items-center gap-2">
-                            <div className={`w-3 h-3 ${item.color} rounded-full`}></div>
-                            <span className="text-gray-600">{item.name}</span>
+                        {
+                          name: "Pending",
+                          value: stats.pending,
+                          color: "bg-yellow-500",
+                          percentage:
+                            stats.total > 0
+                              ? Math.round((stats.pending / stats.total) * 100)
+                              : 0,
+                        },
+                        {
+                          name: "In Progress",
+                          value: stats.inProgress,
+                          color: "bg-blue-500",
+                          percentage:
+                            stats.total > 0
+                              ? Math.round(
+                                  (stats.inProgress / stats.total) * 100,
+                                )
+                              : 0,
+                        },
+                        {
+                          name: "Completed",
+                          value: stats.completed,
+                          color: "bg-green-500",
+                          percentage:
+                            stats.total > 0
+                              ? Math.round(
+                                  (stats.completed / stats.total) * 100,
+                                )
+                              : 0,
+                        },
+                      ]
+                        .filter((item) => item.value > 0)
+                        .map((item) => (
+                          <div
+                            key={item.name}
+                            className="flex items-center justify-between text-sm"
+                          >
+                            <div className="flex items-center gap-2">
+                              <div
+                                className={`w-3 h-3 ${item.color} rounded-full`}
+                              ></div>
+                              <span className="text-gray-600">{item.name}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-medium text-gray-900">
+                                {item.value}
+                              </span>
+                              <span className="text-gray-500">
+                                ({item.percentage}%)
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium text-gray-900">{item.value}</span>
-                            <span className="text-gray-500">({item.percentage}%)</span>
-                          </div>
-                        </div>
-                      ))}
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -923,8 +1028,12 @@ export default function AdminDashboardClient({
             {activeTab === "analytics" && (
               <div className="space-y-6">
                 <div className="bg-white rounded-lg p-6 border border-gray-100">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Analytics Dashboard</h2>
-                  <p className="text-gray-600">Detailed analytics and reporting features coming soon.</p>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    Analytics Dashboard
+                  </h2>
+                  <p className="text-gray-600">
+                    Detailed analytics and reporting features coming soon.
+                  </p>
                 </div>
               </div>
             )}
@@ -933,8 +1042,12 @@ export default function AdminDashboardClient({
             {activeTab === "master-queue" && (
               <div className="space-y-6">
                 <div className="bg-white rounded-lg p-6 border border-gray-100">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Master Queue</h2>
-                  <p className="text-gray-600">Comprehensive queue management features coming soon.</p>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    Master Queue
+                  </h2>
+                  <p className="text-gray-600">
+                    Comprehensive queue management features coming soon.
+                  </p>
                 </div>
               </div>
             )}
@@ -943,8 +1056,12 @@ export default function AdminDashboardClient({
             {activeTab === "announcements" && (
               <div className="space-y-6">
                 <div className="bg-white rounded-lg p-6 border border-gray-100">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Announcements</h2>
-                  <p className="text-gray-600">Announcement management features coming soon.</p>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    Announcements
+                  </h2>
+                  <p className="text-gray-600">
+                    Announcement management features coming soon.
+                  </p>
                 </div>
               </div>
             )}
@@ -957,14 +1074,21 @@ export default function AdminDashboardClient({
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-hidden">
             <div className="p-6 border-b">
-              <h3 className="text-lg font-semibold text-gray-900">Notifications</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Notifications
+              </h3>
             </div>
             <div className="p-6 overflow-y-auto max-h-[60vh]">
               {notifications.length > 0 ? (
                 <div className="space-y-4">
                   {notifications.map((notification) => (
-                    <div key={notification.id} className="p-4 bg-gray-50 rounded-lg">
-                      <p className="text-sm text-gray-900">{notification.message}</p>
+                    <div
+                      key={notification.id}
+                      className="p-4 bg-gray-50 rounded-lg"
+                    >
+                      <p className="text-sm text-gray-900">
+                        {notification.message}
+                      </p>
                       <p className="text-xs text-gray-500 mt-1">
                         {new Date(notification.created_at).toLocaleString()}
                       </p>
@@ -972,7 +1096,9 @@ export default function AdminDashboardClient({
                   ))}
                 </div>
               ) : (
-                <p className="text-center text-gray-500 py-8">No notifications</p>
+                <p className="text-center text-gray-500 py-8">
+                  No notifications
+                </p>
               )}
             </div>
             <div className="p-6 border-t">
@@ -992,10 +1118,14 @@ export default function AdminDashboardClient({
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden">
             <div className="p-6 border-b">
-              <h3 className="text-lg font-semibold text-gray-900">AI Assistant</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                AI Assistant
+              </h3>
             </div>
             <div className="p-6">
-              <p className="text-gray-600">AI chat functionality coming soon...</p>
+              <p className="text-gray-600">
+                AI chat functionality coming soon...
+              </p>
             </div>
             <div className="p-6 border-t">
               <button
@@ -1014,10 +1144,14 @@ export default function AdminDashboardClient({
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-md max-h-[80vh] overflow-hidden">
             <div className="p-6 border-b">
-              <h3 className="text-lg font-semibold text-gray-900">Profile Settings</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                Profile Settings
+              </h3>
             </div>
             <div className="p-6">
-              <p className="text-gray-600">Profile settings functionality coming soon...</p>
+              <p className="text-gray-600">
+                Profile settings functionality coming soon...
+              </p>
             </div>
             <div className="p-6 border-t">
               <button
