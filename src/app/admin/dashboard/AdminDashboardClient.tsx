@@ -18,6 +18,7 @@ import {
   faBolt,
   faHammer,
   faMagic,
+  faWind,
   faChartBar,
   faChartLine,
   faRobot,
@@ -3696,7 +3697,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-blue-50",
 
-                          icon: Wrench,
+                          icon: faWrench,
 
                           gradient:
                             "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
@@ -3709,7 +3710,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-yellow-50",
 
-                          icon: Zap,
+                          icon: faBolt,
 
                           gradient:
                             "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
@@ -3722,7 +3723,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-amber-50",
 
-                          icon: Hammer,
+                          icon: faHammer,
 
                           gradient:
                             "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
@@ -3735,7 +3736,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-cyan-50",
 
-                          icon: Wind,
+                          icon: faWind,
 
                           gradient:
                             "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
@@ -3748,7 +3749,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-purple-50",
 
-                          icon: Sparkles,
+                          icon: faMagic,
 
                           gradient:
                             "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
@@ -4064,7 +4065,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-blue-50",
 
-                          icon: Wrench,
+                          icon: faWrench,
 
                           gradient:
                             "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
@@ -4077,7 +4078,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-yellow-50",
 
-                          icon: Zap,
+                          icon: faBolt,
 
                           gradient:
                             "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
@@ -4090,7 +4091,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-amber-50",
 
-                          icon: Hammer,
+                          icon: faHammer,
 
                           gradient:
                             "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
@@ -4103,7 +4104,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-cyan-50",
 
-                          icon: Wind,
+                          icon: faWind,
 
                           gradient:
                             "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
@@ -4116,7 +4117,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-purple-50",
 
-                          icon: Sparkles,
+                          icon: faMagic,
 
                           gradient:
                             "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
