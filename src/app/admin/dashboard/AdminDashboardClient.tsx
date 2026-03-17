@@ -3842,7 +3842,8 @@ ${result.analysis.risks || "N/A"}
                                       whileHover={{ rotate: [0, -10, 10, 0] }}
                                       transition={{ duration: 0.5 }}
                                     >
-                                      <Icon
+                                      <FontAwesomeIcon
+                                        icon={IconComponent}
                                         className="w-5 h-5"
                                         style={{
                                           color:
