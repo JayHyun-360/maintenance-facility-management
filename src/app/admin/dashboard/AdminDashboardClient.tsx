@@ -164,6 +164,7 @@ export default function AdminDashboardClient({
   const [showProfileViewer, setShowProfileViewer] = useState(false);
 
   const [showProfileSidebar, setShowProfileSidebar] = useState(false);
+  const [showIntroductionModal, setShowIntroductionModal] = useState(false);
 
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -3317,27 +3318,31 @@ ${result.analysis.risks || "N/A"}
                     />
                   </svg>
                 </button>
+
+                {/* Introduction Button */}
+                <button
+                  onClick={() => setShowIntroductionModal(true)}
+                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
+                  title="Cool Introduction"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
+                  </svg>
+                </button>
               </div>
 
-              {/* Middle - Rotating Text */}
-              <div className="flex-1 flex justify-center items-center gap-2">
-                <span className="text-white font-medium text-sm">
-                  Excellent
-                </span>
-                <RotatingText
-                  texts={["Maintenance", "Facility", "Management", "System"]}
-                  mainClassName="px-3 py-1 bg-white/20 backdrop-blur-sm text-white overflow-hidden rounded-lg inline-block"
-                  staggerFrom="last"
-                  initial={{ y: "100%", opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: "-120%", opacity: 0 }}
-                  staggerDuration={0.03}
-                  splitLevelClassName="inline-block"
-                  elementLevelClassName="inline-block"
-                  transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                  rotationInterval={2000}
-                />
-              </div>
+              {/* Middle - Empty for now */}
+              <div className="flex-1"></div>
 
               {/* Right Side - Theme, Notifications, AI Chat, Settings, Profile */}
               <div className="flex items-center gap-3">
@@ -9080,6 +9085,79 @@ ${result.analysis.risks || "N/A"}
           </div>
         )}
       </div>
+
+      {/* Introduction Modal */}
+      <>
+        <div
+          className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-300 ${
+            showIntroductionModal
+              ? "opacity-100"
+              : "opacity-0 pointer-events-none"
+          }`}
+          onClick={() => setShowIntroductionModal(false)}
+        />
+        <div
+          className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-8 z-50 transition-all duration-300 max-w-md w-full ${
+            showIntroductionModal
+              ? "scale-100 opacity-100"
+              : "scale-95 opacity-0"
+          }`}
+        >
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">Welcome!</h2>
+            <button
+              onClick={() => setShowIntroductionModal(false)}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+
+          <div className="text-center mb-6">
+            <p className="text-green-600 font-medium text-lg mb-4">Excellent</p>
+            <div className="bg-green-600 rounded-lg p-4 inline-block">
+              <RotatingText
+                texts={["Maintenance", "Facility", "Management", "System"]}
+                mainClassName="text-white font-medium text-xl"
+                staggerFrom="last"
+                initial={{ y: "100%", opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: "-120%", opacity: 0 }}
+                staggerDuration={0.03}
+                splitLevelClassName="inline-block"
+                elementLevelClassName="inline-block"
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                rotationInterval={2000}
+              />
+            </div>
+          </div>
+
+          <div className="text-center">
+            <p className="text-gray-600 text-sm mb-6">
+              Experience our comprehensive maintenance management solution with
+              cutting-edge features and seamless workflow integration.
+            </p>
+            <button
+              onClick={() => setShowIntroductionModal(false)}
+              className="px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors duration-200"
+            >
+              Get Started
+            </button>
+          </div>
+        </div>
+      </>
     </div>
   );
 }
