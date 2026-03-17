@@ -3178,307 +3178,308 @@ ${result.analysis.risks || "N/A"}
         <div className="bg-green-600 shadow-lg border-b transition-all duration-300">
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
-              {/* Left Side - Search Bar */}
-              <div className="relative">
+              {/* Left Side - Search Bar + Help Button */}
+              <div className="flex items-center gap-4">
                 <div className="relative">
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={(e) => {
-                      setSearchQuery(e.target.value);
-                      setShowSearchResults(e.target.value.length > 0);
-                    }}
-                    onFocus={() => setShowSearchResults(searchQuery.length > 0)}
-                    onBlur={() =>
-                      setTimeout(() => setShowSearchResults(false), 200)
-                    }
-                    placeholder="Search requests, users, locations..."
-                    className="w-80 px-4 py-2.5 pl-10 bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 transition-all duration-300"
-                  />
-                  <svg
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                  {searchQuery && (
-                    <button
-                      onClick={() => {
-                        setSearchQuery("");
-                        setShowSearchResults(false);
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setShowSearchResults(e.target.value.length > 0);
                       }}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+                      onFocus={() =>
+                        setShowSearchResults(searchQuery.length > 0)
+                      }
+                      onBlur={() =>
+                        setTimeout(() => setShowSearchResults(false), 200)
+                      }
+                      placeholder="Search requests, users, locations..."
+                      className="w-80 px-4 py-2.5 pl-10 bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 transition-all duration-300"
+                    />
+                    <svg
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      />
+                    </svg>
+                    {searchQuery && (
+                      <button
+                        onClick={() => {
+                          setSearchQuery("");
+                          setShowSearchResults(false);
+                        }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  )}
-                </div>
-                {/* Search Results Dropdown */}
-                {showSearchResults && (
-                  <div className="absolute top-full mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto">
-                    {searchQuery.length > 0 && (
-                      <div className="p-2 border-b border-gray-100">
-                        <p className="text-xs text-gray-500 px-2">
-                          Searching across all requests, users, and locations
-                        </p>
-                      </div>
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
                     )}
-                    {getFilteredRequests().length > 0 ? (
-                      getFilteredRequests()
-                        .slice(0, 10)
-                        .map((req) => (
-                          <button
-                            key={req.id}
-                            onClick={() => {
-                              setShowDetailModal(req);
-                              setSearchQuery("");
-                              setShowSearchResults(false);
-                            }}
-                            className="w-full text-left px-4 py-3 hover:bg-green-50 border-b border-gray-100 last:border-0 transition-colors"
-                          >
-                            <div className="flex items-center justify-between">
-                              <span className="font-medium text-gray-900 truncate">
-                                {req.profiles?.full_name || "Unknown User"}
-                              </span>
-                              <span
-                                className={`px-2 py-0.5 text-xs rounded-full ${
-                                  req.status === "Pending"
-                                    ? "bg-yellow-100 text-yellow-800"
-                                    : req.status === "In Progress"
-                                      ? "bg-blue-100 text-blue-800"
-                                      : req.status === "Completed"
-                                        ? "bg-green-100 text-green-800"
-                                        : "bg-gray-100 text-gray-800"
-                                }`}
-                              >
-                                {req.status}
-                              </span>
-                            </div>
-                            <p className="text-sm text-gray-600 truncate mt-1">
-                              {req.location} - {req.description}
-                            </p>
-                            <p className="text-xs text-gray-400 mt-1">
-                              {new Date(req.created_at).toLocaleDateString()}
-                            </p>
-                          </button>
-                        ))
-                    ) : searchQuery.length > 0 ? (
-                      <div className="p-4 text-center text-gray-500">
-                        No results found for "{searchQuery}"
-                      </div>
-                    ) : null}
                   </div>
-                )}
-              </div>
-
-              {/* Help/Tutorial Button */}
-              <button
-                onClick={() => {
-                  setShowTutorial(true);
-                  setTutorialStep(0);
-                }}
-                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
-                title="Help & Tutorial"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </button>
-            </div>
-
-            {/* Right Side - Profile, Settings, etc */}
-            <div className="flex items-center gap-3">
-              <button
-                onClick={handleThemeToggle}
-                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
-                title={`Current theme: ${profile?.theme_preference}`}
-              >
-                {profile?.theme_preference === "dark" ? (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                    />
-                  </svg>
-                ) : profile?.theme_preference === "light" ? (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                    />
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
-                )}
-              </button>
-
-              {/* Notifications Bell */}
-
-              <button
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
-                title="Notifications"
-              >
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                  />
-                </svg>
-
-                {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {unreadCount > 9 ? "9+" : unreadCount}
-                  </span>
-                )}
-              </button>
-
-              {/* AI Chat Robot Icon */}
-
-              <button
-                onClick={() => setShowAIChat(!showAIChat)}
-                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
-                title="AI Assistant"
-              >
-                <Bot className="w-5 h-5" />
-              </button>
-
-              <button
-                onClick={() => setShowProfileSidebar(true)}
-                className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
-              >
-                Settings
-              </button>
-
-              {/* Profile Avatar */}
-
-              <div className="relative">
-                <button
-                  onClick={() => setShowProfileViewer(!showProfileViewer)}
-                  className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
-                  title="Click to view profile picture"
-                >
-                  {userAvatar ? (
-                    <img
-                      src={userAvatar}
-                      alt="Profile"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.currentTarget.style.display = "none";
-                        e.currentTarget.nextElementSibling?.classList.remove(
-                          "hidden",
-                        );
-                      }}
-                    />
-                  ) : null}
-
-                  <span
-                    className={`text-lg font-bold text-white ${
-                      userAvatar ? "hidden" : ""
-                    }`}
-                  >
-                    {profile?.full_name?.charAt(0).toUpperCase() || "?"}
-                  </span>
-
-                  <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
-
-                  {showProfileViewer && userAvatar && (
-                    <div
-                      className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 ${
-                        showProfileViewer ? "opacity-100" : "opacity-0"
-                      }`}
-                    >
-                      <div
-                        className={`relative transform transition-all duration-300 ${
-                          showProfileViewer
-                            ? "scale-100 opacity-100"
-                            : "scale-95 opacity-0"
-                        }`}
-                        ref={profileViewerRef}
-                      >
-                        <div className="w-72 h-72 rounded-full bg-white/20 backdrop-blur-xl shadow-2xl border-2 border-white/30 flex flex-col items-center justify-center p-8">
-                          <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-white/50 shadow-lg mb-4 bg-white">
-                            <img
-                              src={userAvatar}
-                              alt="Profile Picture"
-                              className="w-full h-full object-contain"
-                            />
-                          </div>
-
-                          <h3 className="font-header font-semibold text-white text-lg text-center">
-                            {profile?.full_name}
-                          </h3>
-
-                          <p className="text-sm text-white/80 text-center">
-                            {profile?.visual_role} - Administrator
+                  {/* Search Results Dropdown */}
+                  {showSearchResults && (
+                    <div className="absolute top-full mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto">
+                      {searchQuery.length > 0 && (
+                        <div className="p-2 border-b border-gray-100">
+                          <p className="text-xs text-gray-500 px-2">
+                            Searching across all requests, users, and locations
                           </p>
                         </div>
-                      </div>
+                      )}
+                      {getFilteredRequests().length > 0 ? (
+                        getFilteredRequests()
+                          .slice(0, 10)
+                          .map((req) => (
+                            <button
+                              key={req.id}
+                              onClick={() => {
+                                setShowDetailModal(req);
+                                setSearchQuery("");
+                                setShowSearchResults(false);
+                              }}
+                              className="w-full text-left px-4 py-3 hover:bg-green-50 border-b border-gray-100 last:border-0 transition-colors"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="font-medium text-gray-900 truncate">
+                                  {req.profiles?.full_name || "Unknown User"}
+                                </span>
+                                <span
+                                  className={`px-2 py-0.5 text-xs rounded-full ${
+                                    req.status === "Pending"
+                                      ? "bg-yellow-100 text-yellow-800"
+                                      : req.status === "In Progress"
+                                        ? "bg-blue-100 text-blue-800"
+                                        : req.status === "Completed"
+                                          ? "bg-green-100 text-green-800"
+                                          : "bg-gray-100 text-gray-800"
+                                  }`}
+                                >
+                                  {req.status}
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-600 truncate mt-1">
+                                {req.location} - {req.description}
+                              </p>
+                              <p className="text-xs text-gray-400 mt-1">
+                                {new Date(req.created_at).toLocaleDateString()}
+                              </p>
+                            </button>
+                          ))
+                      ) : searchQuery.length > 0 ? (
+                        <div className="p-4 text-center text-gray-500">
+                          No results found for "{searchQuery}"
+                        </div>
+                      ) : null}
                     </div>
                   )}
+                </div>
+
+                {/* Help/Tutorial Button */}
+                <button
+                  onClick={() => {
+                    setShowTutorial(true);
+                    setTutorialStep(0);
+                  }}
+                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
+                  title="Help & Tutorial"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
                 </button>
+              </div>
+
+              {/* Right Side - Theme, Notifications, AI Chat, Settings, Profile */}
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleThemeToggle}
+                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
+                  title={`Current theme: ${profile?.theme_preference}`}
+                >
+                  {profile?.theme_preference === "dark" ? (
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                      />
+                    </svg>
+                  ) : profile?.theme_preference === "light" ? (
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                    </svg>
+                  )}
+                </button>
+
+                {/* Notifications Bell */}
+                <button
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                  title="Notifications"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                    />
+                  </svg>
+
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {/* AI Chat Robot Icon */}
+                <button
+                  onClick={() => setShowAIChat(!showAIChat)}
+                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                  title="AI Assistant"
+                >
+                  <Bot className="w-5 h-5" />
+                </button>
+
+                <button
+                  onClick={() => setShowProfileSidebar(true)}
+                  className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
+                >
+                  Settings
+                </button>
+
+                {/* Profile Avatar */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowProfileViewer(!showProfileViewer)}
+                    className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
+                    title="Click to view profile picture"
+                  >
+                    {userAvatar ? (
+                      <img
+                        src={userAvatar}
+                        alt="Profile"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          e.currentTarget.nextElementSibling?.classList.remove(
+                            "hidden",
+                          );
+                        }}
+                      />
+                    ) : null}
+
+                    <span
+                      className={`text-lg font-bold text-white ${
+                        userAvatar ? "hidden" : ""
+                      }`}
+                    >
+                      {profile?.full_name?.charAt(0).toUpperCase() || "?"}
+                    </span>
+
+                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+
+                    {showProfileViewer && userAvatar && (
+                      <div
+                        className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 ${
+                          showProfileViewer ? "opacity-100" : "opacity-0"
+                        }`}
+                      >
+                        <div
+                          className={`relative transform transition-all duration-300 ${
+                            showProfileViewer
+                              ? "scale-100 opacity-100"
+                              : "scale-95 opacity-0"
+                          }`}
+                          ref={profileViewerRef}
+                        >
+                          <div className="w-72 h-72 rounded-full bg-white/20 backdrop-blur-xl shadow-2xl border-2 border-white/30 flex flex-col items-center justify-center p-8">
+                            <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-white/50 shadow-lg mb-4 bg-white">
+                              <img
+                                src={userAvatar}
+                                alt="Profile Picture"
+                                className="w-full h-full object-contain"
+                              />
+                            </div>
+
+                            <h3 className="font-header font-semibold text-white text-lg text-center">
+                              {profile?.full_name}
+                            </h3>
+
+                            <p className="text-sm text-white/80 text-center">
+                              {profile?.visual_role} - Administrator
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
