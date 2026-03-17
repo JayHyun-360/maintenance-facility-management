@@ -9097,28 +9097,30 @@ ${result.analysis.risks || "N/A"}
           onClick={() => setShowIntroductionModal(false)}
         />
         <div
-          className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-20 z-50 transition-all duration-300 max-w-7xl w-full mx-4 ${
+          className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-3xl shadow-2xl p-12 z-50 transition-all duration-300 max-w-4xl w-full mx-4 ${
             showIntroductionModal
               ? "scale-100 opacity-100"
               : "scale-95 opacity-0"
           }`}
         >
           <div className="text-center">
-            <p className="text-green-400 font-bold text-6xl mb-10">Excellent</p>
-            <div className="bg-green-500 rounded-3xl px-16 py-12 inline-block">
-              <RotatingText
-                texts={["Management", "Service", "Support", "System"]}
-                mainClassName="text-white font-bold text-7xl whitespace-nowrap"
-                staggerFrom="last"
-                initial={{ y: "100%", opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: "-120%", opacity: 0 }}
-                staggerDuration={0.03}
-                splitLevelClassName="inline-block"
-                elementLevelClassName="inline-block"
-                transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                rotationInterval={2000}
-              />
+            <div className="inline-flex items-center gap-4">
+              <p className="text-green-400 font-bold text-6xl">Excellent</p>
+              <div className="bg-green-500 rounded-3xl px-10 py-6 inline-block">
+                <RotatingText
+                  texts={["Management", "Service", "Support", "System"]}
+                  mainClassName="text-white font-bold text-6xl whitespace-nowrap"
+                  staggerFrom="last"
+                  initial={{ y: "100%", opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: "-120%", opacity: 0 }}
+                  staggerDuration={0.03}
+                  splitLevelClassName="inline-block"
+                  elementLevelClassName="inline-block"
+                  transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                  rotationInterval={2000}
+                />
+              </div>
             </div>
           </div>
         </div>
