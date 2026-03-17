@@ -3323,14 +3323,15 @@ ${result.analysis.risks || "N/A"}
               <div className="flex-1 flex justify-center">
                 <RotatingText
                   texts={["Maintenance", "Facility", "Management", "System"]}
-                  mainClassName="px-3 py-1 bg-white/20 backdrop-blur-sm text-white overflow-hidden rounded-lg"
-                  staggerFrom={"last"}
-                  initial={{ y: "100%" }}
-                  animate={{ y: 0 }}
-                  exit={{ y: "-120%" }}
-                  staggerDuration={0.025}
-                  splitLevelClassName="overflow-hidden"
-                  transition={{ type: "spring", damping: 30, stiffness: 400 }}
+                  mainClassName="px-3 py-1 bg-white/20 backdrop-blur-sm text-white overflow-hidden rounded-lg inline-block"
+                  staggerFrom="last"
+                  initial={{ y: "100%", opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: "-120%", opacity: 0 }}
+                  staggerDuration={0.03}
+                  splitLevelClassName="inline-block"
+                  elementLevelClassName="inline-block"
+                  transition={{ type: "spring", damping: 25, stiffness: 300 }}
                   rotationInterval={2000}
                 />
               </div>
