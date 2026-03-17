@@ -3258,11 +3258,11 @@ ${result.analysis.risks || "N/A"}
                               </span>
                               <span
                                 className={`px-2 py-0.5 text-xs rounded-full ${
-                                  req.status === "pending"
+                                  req.status === "Pending"
                                     ? "bg-yellow-100 text-yellow-800"
-                                    : req.status === "in_progress"
+                                    : req.status === "In Progress"
                                       ? "bg-blue-100 text-blue-800"
-                                      : req.status === "completed"
+                                      : req.status === "Completed"
                                         ? "bg-green-100 text-green-800"
                                         : "bg-gray-100 text-gray-800"
                                 }`}
