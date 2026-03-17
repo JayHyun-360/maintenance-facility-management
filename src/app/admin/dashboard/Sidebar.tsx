@@ -109,7 +109,7 @@ export default function Sidebar({
   };
 
   return (
-    <div className="w-64 min-h-screen bg-white border-r border-green-200 flex flex-col fixed left-0 top-0 shadow-sm">
+    <div className="w-64 min-h-screen bg-gray-50 border-r border-green-200 flex flex-col fixed left-0 top-0 shadow-sm">
       {/* Logo and Title */}
       <div className="p-6 border-b border-green-100">
         <div className="flex items-center gap-3">
@@ -143,8 +143,8 @@ export default function Sidebar({
                 onClick={() => onTabChange(item.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                   activeTab === item.id
-                    ? "bg-green-500 text-white shadow-md"
-                    : "text-green-700 hover:bg-green-50 hover:text-green-800"
+                    ? "bg-white text-green-700 shadow-md border border-green-200"
+                    : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                 }`}
               >
                 {item.icon}
@@ -159,7 +159,7 @@ export default function Sidebar({
       <div className="p-4 border-t border-green-100">
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg transition-all duration-200 font-medium"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white hover:bg-green-50 text-green-700 rounded-lg transition-all duration-200 font-medium border border-green-200 shadow-sm hover:shadow-md"
         >
           <svg
             className="w-5 h-5"

@@ -3152,7 +3152,7 @@ ${result.analysis.risks || "N/A"}
       {/* Main wrapper with header and content */}
       <div className="flex-1 ml-64">
         {/* Header - Full width at top */}
-        <div className="bg-green-500 shadow-lg border-b transition-all duration-300">
+        <div className="bg-green-600 shadow-lg border-b transition-all duration-300">
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-end items-center h-20">
               {/* Right Side - Profile, Settings, etc */}
@@ -5296,7 +5296,7 @@ ${result.analysis.risks || "N/A"}
           }`}
         >
           <div className="h-full overflow-y-auto">
-            <div className="bg-green-500 shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+            <div className="bg-green-600 shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
               <div className="flex justify-center items-center">
                 <h2 className="font-header text-xl font-bold text-white">
                   Notifications
@@ -5440,7 +5440,7 @@ ${result.analysis.risks || "N/A"}
             className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showProfileSidebar ? "translate-x-0" : "-translate-x-full"}`}
           >
             <div className="h-full overflow-y-auto">
-              <div className="bg-green-500 shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+              <div className="bg-green-600 shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
                 <div className="flex justify-between items-center">
                   <h2 className="font-header text-xl font-bold text-white">
                     Profile Settings
@@ -5745,7 +5745,7 @@ ${result.analysis.risks || "N/A"}
             className={`fixed top-0 right-0 h-full w-[600px] bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showReportSidebar ? "translate-x-0" : "translate-x-full"}`}
           >
             <div className="h-full overflow-y-auto">
-              <div className="bg-green-500 shadow-lg border-b p-6 sticky top-0 z-10">
+              <div className="bg-green-600 shadow-lg border-b p-6 sticky top-0 z-10">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="font-header text-xl font-bold text-white">
