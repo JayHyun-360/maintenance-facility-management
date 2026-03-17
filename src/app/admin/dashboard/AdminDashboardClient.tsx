@@ -73,11 +73,14 @@ const useDebounce = <T,>(value: T, delay: number): T => {
 };
 
 // Safe date formatting component that only renders on client
+
 function SafeDate({
   date,
+
   options,
 }: {
   date: string | Date | undefined;
+
   options?: Intl.DateTimeFormatOptions;
 }) {
   const [mounted, setMounted] = useState(false);
@@ -91,6 +94,7 @@ function SafeDate({
   }
 
   const dateObj = date ? new Date(date) : null;
+
   if (!dateObj || isNaN(dateObj.getTime())) {
     return <span>N/A</span>;
   }
@@ -163,73 +167,110 @@ export default function AdminDashboardClient({
   const [showAIChat, setShowAIChat] = useState(false);
 
   // AI Chat State
+
   const [aiMessages, setAiMessages] = useState<
     Array<{
       role: "user" | "assistant";
+
       content: string;
+
       attachments?: string[];
     }>
   >([]);
+
   const [aiInput, setAiInput] = useState("");
+
   const [aiLoading, setAiLoading] = useState(false);
+
   const [attachedRequest, setAttachedRequest] =
     useState<RequestWithProfile | null>(null);
+
   const [aiAttachments, setAiAttachments] = useState<File[]>([]);
+
   const [aiConversations, setAiConversations] = useState<any[]>([]);
+
   const [currentConversationId, setCurrentConversationId] = useState<
     string | null
   >(null);
+
   const [showChatHistory, setShowChatHistory] = useState(false);
+
   const [aiLoadingMessages, setAiLoadingMessages] = useState(false);
+
   const [showModelSelector, setShowModelSelector] = useState(false);
+
   const [selectedModel, setSelectedModel] = useState("gemini-2.5-flash");
+
   const [aiSearchQuery, setAiSearchQuery] = useState("");
+
   const [showSearch, setShowSearch] = useState(false);
+
   const [copiedMessage, setCopiedMessage] = useState<number | null>(null);
+
   const [messageFeedback, setMessageFeedback] = useState<{
     [key: number]: "like" | "dislike" | undefined;
   }>({});
+
   const [showExportMenu, setShowExportMenu] = useState(false);
+
   const [quickActions, setQuickActions] = useState<
     { label: string; action: string }[]
   >([]);
+
   const [aiLoadingConversations, setAiLoadingConversations] = useState(false);
+
   const [newChatLoading, setNewChatLoading] = useState(false);
+
   const [deletingConversationId, setDeletingConversationId] = useState<
     string | null
   >(null);
+
   const [aiStatusText, setAiStatusText] = useState("");
+
   const [editingMessageId, setEditingMessageId] = useState<number | null>(null);
+
   const [editingMessageText, setEditingMessageText] = useState("");
+
   const [userScrolledUp, setUserScrolledUp] = useState(false);
+
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
   const [messageOptionsMenu, setMessageOptionsMenu] = useState<number | null>(
     null,
   );
+
   const [isListening, setIsListening] = useState(false);
+
   const [listeningText, setListeningText] = useState("");
+
   const [openStatusDropdown, setOpenStatusDropdown] = useState<string | null>(
     null,
   );
 
   // Close dropdowns when clicking outside
+
   useEffect(() => {
     const handleClickOutside = () => {
       setMessageOptionsMenu(null);
+
       setShowModelSelector(false);
+
       setOpenStatusDropdown(null);
     };
+
     if (
       messageOptionsMenu !== null ||
       showModelSelector ||
       openStatusDropdown !== null
     ) {
       document.addEventListener("click", handleClickOutside);
+
       return () => document.removeEventListener("click", handleClickOutside);
     }
   }, [messageOptionsMenu, showModelSelector, openStatusDropdown]);
 
   // Load conversations when chat opens
+
   useEffect(() => {
     if (showAIChat) {
       loadConversations();
@@ -237,33 +278,41 @@ export default function AdminDashboardClient({
   }, [showAIChat]);
 
   // Auto-scroll to bottom when new messages are added
+
   useEffect(() => {
     if (chatContainerRef.current && !userScrolledUp) {
       chatContainerRef.current.scrollTo({
         top: chatContainerRef.current.scrollHeight,
+
         behavior: "smooth",
       });
     }
   }, [aiMessages, aiLoading, userScrolledUp]);
 
   // Handle scroll detection to pause auto-scroll when user scrolls up
+
   const handleScroll = () => {
     if (chatContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } =
         chatContainerRef.current;
+
       const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
+
       setUserScrolledUp(!isAtBottom);
     }
   };
 
   // Generate contextual suggestions based on message content
+
   const generateContextualSuggestions = (
     lastMessage: string,
   ): { label: string; prompt: string }[] => {
     const lowerContent = lastMessage.toLowerCase();
+
     const suggestions: { label: string; prompt: string }[] = [];
 
     // Analyze content and generate relevant suggestions
+
     if (
       lowerContent.includes("pending") ||
       lowerContent.includes("queue") ||
@@ -272,8 +321,10 @@ export default function AdminDashboardClient({
       suggestions.push(
         {
           label: "Show high priority",
+
           prompt: "Show me high priority pending requests",
         },
+
         { label: "Oldest pending", prompt: "Show the oldest pending requests" },
       );
     }
@@ -285,6 +336,7 @@ export default function AdminDashboardClient({
     ) {
       suggestions.push(
         { label: "Weekly summary", prompt: "Give me a weekly summary" },
+
         { label: "By category", prompt: "Break down by category" },
       );
     }
@@ -297,8 +349,10 @@ export default function AdminDashboardClient({
       suggestions.push(
         {
           label: "Create new request",
+
           prompt: "Help me create a new maintenance request",
         },
+
         { label: "Recent activity", prompt: "Show recent activity" },
       );
     }
@@ -310,6 +364,7 @@ export default function AdminDashboardClient({
     ) {
       suggestions.push(
         { label: "All urgent items", prompt: "List all urgent items" },
+
         { label: "Assign now", prompt: "Help me assign these requests" },
       );
     }
@@ -321,15 +376,19 @@ export default function AdminDashboardClient({
     ) {
       suggestions.push(
         { label: "Workload status", prompt: "Show staff workload status" },
+
         { label: "Available now", prompt: "Who is available right now?" },
       );
     }
 
     // Default suggestions if no specific context matched
+
     if (suggestions.length === 0) {
       suggestions.push(
         { label: "Pending queue", prompt: "Show me pending requests" },
+
         { label: "Summarize", prompt: "Summarize this analysis" },
+
         { label: "More details", prompt: "Give me more details" },
       );
     }
@@ -339,9 +398,12 @@ export default function AdminDashboardClient({
 
   const loadConversations = async () => {
     setAiLoadingConversations(true);
+
     try {
       const response = await fetch(`/api/ai/conversations?userId=${userId}`);
+
       const result = await response.json();
+
       if (result.success) {
         setAiConversations(result.conversations || []);
       }
@@ -354,18 +416,25 @@ export default function AdminDashboardClient({
 
   const loadMessages = async (conversationId: string) => {
     setAiLoadingMessages(true);
+
     try {
       const response = await fetch(
         `/api/ai/messages?conversationId=${conversationId}`,
       );
+
       const result = await response.json();
+
       if (result.success && result.messages) {
         const formattedMessages = result.messages.map((msg: any) => ({
           role: msg.role as "user" | "assistant",
+
           content: msg.content,
+
           attachments: msg.attachments || [],
         }));
+
         setAiMessages(formattedMessages);
+
         setCurrentConversationId(conversationId);
       }
     } catch (error) {
@@ -377,14 +446,19 @@ export default function AdminDashboardClient({
 
   const saveMessage = async (
     conversationId: string,
+
     role: "user" | "assistant",
+
     content: string,
+
     attachments?: string[],
   ) => {
     try {
       await fetch("/api/ai/messages", {
         method: "POST",
+
         headers: { "Content-Type": "application/json" },
+
         body: JSON.stringify({ conversationId, role, content, attachments }),
       });
     } catch (error) {
@@ -396,38 +470,52 @@ export default function AdminDashboardClient({
     try {
       const response = await fetch("/api/ai/conversations", {
         method: "POST",
+
         headers: { "Content-Type": "application/json" },
+
         body: JSON.stringify({
           userId: userId,
+
           title:
             firstMessage.slice(0, 50) + (firstMessage.length > 50 ? "..." : ""),
         }),
       });
+
       const result = await response.json();
+
       if (result.success) {
         setCurrentConversationId(result.conversation.id);
+
         await loadConversations();
+
         return result.conversation.id;
       }
     } catch (error) {
       console.error("Failed to create conversation:", error);
     }
+
     return null;
   };
 
   const deleteConversation = async (
     conversationId: string,
+
     e: React.MouseEvent,
   ) => {
     e.stopPropagation();
+
     setDeletingConversationId(conversationId);
+
     try {
       await fetch(`/api/ai/conversations?conversationId=${conversationId}`, {
         method: "DELETE",
       });
+
       await loadConversations();
+
       if (currentConversationId === conversationId) {
         setCurrentConversationId(null);
+
         setAiMessages([]);
       }
     } catch (error) {
@@ -634,9 +722,12 @@ export default function AdminDashboardClient({
   });
 
   // Profile edit state
+
   const [formData, setFormData] = useState({
     full_name: initialProfile?.full_name || "",
+
     visual_role: initialProfile?.visual_role || "",
+
     theme_preference: (initialProfile?.theme_preference || "light") as
       | "light"
       | "dark"
@@ -644,61 +735,85 @@ export default function AdminDashboardClient({
   });
 
   const [saving, setSaving] = useState(false);
+
   const [successMessage, setSuccessMessage] = useState("");
 
   // Avatar upload state
+
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
   // Password change state
+
   const [showPasswordSection, setShowPasswordSection] = useState(false);
+
   const [currentPassword, setCurrentPassword] = useState("");
+
   const [newPassword, setNewPassword] = useState("");
+
   const [confirmPassword, setConfirmPassword] = useState("");
+
   const [passwordError, setPasswordError] = useState("");
+
   const [passwordSuccess, setPasswordSuccess] = useState("");
+
   const [changingPassword, setChangingPassword] = useState(false);
 
   // Validation state
+
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
 
   // Track original form data for unsaved changes detection
+
   const [originalFormData, setOriginalFormData] = useState({
     full_name: initialProfile?.full_name || "",
+
     visual_role: initialProfile?.visual_role || "",
+
     theme_preference: initialProfile?.theme_preference || "light",
   });
 
   const handleSave = async () => {
     setSaving(true);
+
     setSuccessMessage("");
+
     try {
       const { updateProfile } = await import("@/app/profile-settings/actions");
+
       const result = await updateProfile({
         full_name: formData.full_name,
+
         visual_role: formData.visual_role,
+
         theme_preference: formData.theme_preference,
       });
 
       if (!result.success) {
         alert(`Error: ${result.error}`);
+
         return;
       }
 
       setSuccessMessage("Profile updated successfully!");
 
       // Refresh the JWT session
+
       const supabase = createClient()!;
+
       await supabase.auth.refreshSession();
 
       // Refresh the page
+
       router.refresh();
 
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (error) {
       console.error("Save error:", error);
+
       alert(
         `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
@@ -708,33 +823,43 @@ export default function AdminDashboardClient({
   };
 
   // Avatar upload handler
+
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+
     if (!file || !profile) return;
 
     if (!file.type.startsWith("image/")) {
       setValidationErrors({
         ...validationErrors,
+
         avatar: "Please select an image file",
       });
+
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
       setValidationErrors({
         ...validationErrors,
+
         avatar: "Image must be less than 2MB",
       });
+
       return;
     }
 
     setUploadingAvatar(true);
+
     setValidationErrors({ ...validationErrors, avatar: "" });
 
     try {
       const fileName = `${profile.id}/avatar/${Date.now()}-${file.name}`;
+
       const { error: uploadError } = await supabase.storage
+
         .from("avatars")
+
         .upload(fileName, file);
 
       if (uploadError) throw uploadError;
@@ -744,16 +869,22 @@ export default function AdminDashboardClient({
       } = supabase.storage.from("avatars").getPublicUrl(fileName);
 
       await (supabase.from("profiles") as any)
+
         .update({ avatar_url: publicUrl })
+
         .eq("id", profile.id);
 
       setProfile({ ...profile, avatar_url: publicUrl });
+
       setAvatarPreview(null);
+
       router.refresh();
     } catch (error) {
       console.error("Avatar upload error:", error);
+
       setValidationErrors({
         ...validationErrors,
+
         avatar: "Failed to upload avatar",
       });
     } finally {
@@ -762,22 +893,27 @@ export default function AdminDashboardClient({
   };
 
   // Password change handler
+
   const handlePasswordChange = async () => {
     setPasswordError("");
+
     setPasswordSuccess("");
 
     if (!currentPassword || !newPassword || !confirmPassword) {
       setPasswordError("All fields are required");
+
       return;
     }
 
     if (newPassword.length < 6) {
       setPasswordError("New password must be at least 6 characters");
+
       return;
     }
 
     if (newPassword !== confirmPassword) {
       setPasswordError("New passwords do not match");
+
       return;
     }
 
@@ -791,11 +927,16 @@ export default function AdminDashboardClient({
       if (error) throw error;
 
       setPasswordSuccess("Password changed successfully!");
+
       setCurrentPassword("");
+
       setNewPassword("");
+
       setConfirmPassword("");
+
       setTimeout(() => {
         setShowPasswordSection(false);
+
         setPasswordSuccess("");
       }, 2000);
     } catch (error: any) {
@@ -806,40 +947,55 @@ export default function AdminDashboardClient({
   };
 
   // Data export handler
+
   const handleExportData = async () => {
     if (!profile) return;
 
     const exportData = {
       profile: {
         full_name: profile.full_name,
+
         visual_role: profile.visual_role,
+
         created_at: profile.created_at,
       },
+
       exported_at: new Date().toISOString(),
     };
 
     const blob = new Blob([JSON.stringify(exportData, null, 2)], {
       type: "application/json",
     });
+
     const url = URL.createObjectURL(blob);
+
     const a = document.createElement("a");
+
     a.href = url;
+
     a.download = `my-data-${new Date().toISOString().split("T")[0]}.json`;
+
     a.click();
+
     URL.revokeObjectURL(url);
   };
 
   // Validate form fields
+
   const validateForm = () => {
     const errors: Record<string, string> = {};
+
     if (!formData.full_name.trim()) {
       errors.full_name = "Full name is required";
     }
+
     setValidationErrors(errors);
+
     return Object.keys(errors).length === 0;
   };
 
   // Check for unsaved changes
+
   const hasUnsavedChanges =
     JSON.stringify(formData) !== JSON.stringify(originalFormData);
 
@@ -891,15 +1047,18 @@ export default function AdminDashboardClient({
   }, []);
 
   // Unsaved changes warning
+
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (hasUnsavedChanges) {
         e.preventDefault();
+
         e.returnValue = "";
       }
     };
 
     window.addEventListener("beforeunload", handleBeforeUnload);
+
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [hasUnsavedChanges]);
 
@@ -1002,15 +1161,19 @@ export default function AdminDashboardClient({
     const notification = notifications.find((n) => n.id === notificationId);
 
     // If notification has a link_url with request ID, show the request details
+
     if (notification?.link_url && notification.link_url.includes("request=")) {
       const requestId = notification.link_url.split("request=")[1];
+
       const request = requests.find((r) => r.id === requestId);
+
       if (request) {
         setShowDetailModal(request);
       }
     }
 
     // Update local state
+
     setNotifications((prev) =>
       prev.map((notif) =>
         notif.id === notificationId ? { ...notif, is_read: true } : notif,
@@ -1020,8 +1183,11 @@ export default function AdminDashboardClient({
     setUnreadCount((prev) => Math.max(0, prev - 1));
 
     // Persist to database
+
     await (supabase.from("notifications") as any)
+
       .update({ is_read: true })
+
       .eq("id", notificationId);
   };
 
@@ -1065,11 +1231,15 @@ export default function AdminDashboardClient({
 
   const deleteNotification = async (notificationId: string) => {
     // Delete from database
+
     await (supabase.from("notifications") as any)
+
       .delete()
+
       .eq("id", notificationId);
 
     // Update local state
+
     setNotifications((prev) =>
       prev.filter((notif) => notif.id !== notificationId),
     );
@@ -1081,13 +1251,19 @@ export default function AdminDashboardClient({
 
   const deleteAllReadNotifications = async () => {
     // Delete from database
+
     await (supabase.from("notifications") as any)
+
       .delete()
+
       .eq("user_id", userId)
+
       .eq("target_role", "admin")
+
       .eq("is_read", true);
 
     // Update local state
+
     setNotifications((prev) => prev.filter((notif) => !notif.is_read));
   };
 
@@ -1102,9 +1278,11 @@ export default function AdminDashboardClient({
   }, []);
 
   // Open detail modal when request ID is provided via URL (from notification click)
+
   useEffect(() => {
     if (initialRequestId && requests.length > 0) {
       const request = requests.find((r) => r.id === initialRequestId);
+
       if (request) {
         setShowDetailModal(request);
       }
@@ -1112,6 +1290,7 @@ export default function AdminDashboardClient({
   }, [initialRequestId, requests]);
 
   // Fetch users on mount for warning/notice modal
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -1124,23 +1303,43 @@ export default function AdminDashboardClient({
       .select(
         `
 
+
+
         *,
+
+
 
         profiles (
 
+
+
           id,
+
+
 
           full_name,
 
+
+
           visual_role,
+
+
 
           educational_level,
 
+
+
           database_role,
+
+
 
           is_anonymous
 
+
+
         )
+
+
 
       `,
       )
@@ -1174,38 +1373,53 @@ export default function AdminDashboardClient({
     if (!user) return;
 
     // Get the current request to find the requester
+
     const { data: currentRequest } = await (
       supabase.from("maintenance_requests") as any
     )
+
       .select("requester_id, nature, status")
+
       .eq("id", requestId)
+
       .single();
 
     const { error: updateError } = await (
       supabase.from("maintenance_requests") as any
     )
+
       .update({ status: newStatus })
+
       .eq("id", requestId);
 
     if (updateError) {
       alert("Error updating request status");
+
       return;
     }
 
     // Create notification for the user
+
     if (currentRequest?.requester_id) {
       const statusMessages: Record<string, string> = {
         Pending: "Your request is now pending review",
+
         "In Progress": "Your request is being worked on",
+
         Completed: "Your request has been completed",
+
         Cancelled: "Your request has been cancelled",
       };
 
       await (supabase as any).rpc("create_user_notification", {
         p_user_id: currentRequest.requester_id,
+
         p_title: `Request Status Updated: ${newStatus}`,
+
         p_message: `Your maintenance request "${currentRequest.nature}" status has been updated to: ${newStatus}. ${statusMessages[newStatus] || ""}`,
+
         p_link_url: "/dashboard",
+
         p_target_role: "user",
       });
     }
@@ -1214,7 +1428,9 @@ export default function AdminDashboardClient({
       supabase.from("audit_logs") as any
     ).insert({
       request_id: requestId,
+
       actor_id: userId,
+
       action: `Status changed to ${newStatus}`,
     });
 
@@ -1357,43 +1573,61 @@ export default function AdminDashboardClient({
     }
 
     // Create a single announcement record (not one per user)
+
     const announcementTitle = broadcastTitle.trim() || "Announcement";
 
     const { data: announcementData, error: insertError } = await (
       supabase.from("announcements") as any
     )
+
       .insert({
         title: announcementTitle,
+
         message: broadcastMessage.trim(),
+
         created_by: userId,
+
         recipient_count: allUsers.length,
       })
+
       .select();
 
     if (insertError) {
       console.error("Error creating announcement:", insertError);
+
       alert("Error sending announcement");
+
       return;
     }
 
     // Use RPC function to create notifications for all users (bypasses RLS issues)
+
     const { data: notifResult, error: notifError } = await (
       supabase as any
     ).rpc("create_broadcast_notifications", {
       p_title: announcementTitle,
+
       p_message: broadcastMessage.trim(),
+
       p_link_url: "/dashboard",
+
       p_target_role: "user",
     });
 
     if (notifError) {
       console.error("Error creating notifications via RPC:", notifError);
+
       // Fallback: try direct insert
+
       const notifications = allUsers.map((user: { id: string }) => ({
         user_id: user.id,
+
         title: announcementTitle,
+
         message: broadcastMessage.trim(),
+
         link_url: "/dashboard",
+
         target_role: "user",
       }));
 
@@ -1513,7 +1747,9 @@ export default function AdminDashboardClient({
 
   const togglePhotos = (e: React.MouseEvent, requestId: string) => {
     e.preventDefault();
+
     e.stopPropagation();
+
     e.nativeEvent.stopImmediatePropagation();
 
     requestAnimationFrame(() => {
@@ -1532,29 +1768,40 @@ export default function AdminDashboardClient({
   };
 
   // AI Chat Functions
+
   const handleAiChat = async () => {
     if (!aiInput.trim() && aiAttachments.length === 0) return;
 
     const userMessage = aiInput.trim() || "Analyze the attached files";
+
     setAiInput("");
+
     setAiLoading(true);
+
     setAiStatusText("Generating response...");
 
     // Create object URLs for image previews
+
     const attachmentUrls = aiAttachments
+
       .filter((f) => f.type.startsWith("image/"))
+
       .map((f) => URL.createObjectURL(f));
 
     const attachmentNames = aiAttachments.map((f) => f.name);
+
     setAiMessages((prev) => [
       ...prev,
+
       {
         role: "user",
+
         content:
           userMessage +
           (attachmentNames.length > 0
             ? ` (${attachmentNames.join(", ")})`
             : ""),
+
         attachments: attachmentUrls,
       },
     ]);
@@ -1562,95 +1809,129 @@ export default function AdminDashboardClient({
     try {
       const context = {
         totalRequests: stats.total,
+
         pendingRequests: stats.pending,
+
         activeRequests: stats.inProgress,
+
         completedRequests: stats.completed,
+
         attachedRequest: attachedRequest
           ? {
               id: attachedRequest.id,
+
               nature: attachedRequest.nature,
+
               description: attachedRequest.description,
+
               location: attachedRequest.location,
+
               status: attachedRequest.status,
+
               createdAt: attachedRequest.created_at,
             }
           : null,
       };
 
       // Use FormData for file uploads
+
       const formData = new FormData();
+
       formData.append("query", userMessage);
+
       formData.append("context", JSON.stringify(context));
+
       formData.append("model", selectedModel);
+
       aiAttachments.forEach((file) => {
         formData.append("attachments", file);
       });
 
       const response = await fetch("/api/ai/admin-chat", {
         method: "POST",
+
         body: formData,
       });
 
       const result = await response.json();
 
       // Clear attachments after sending
+
       setAiAttachments([]);
 
       // Create conversation if none exists and save messages
+
       let convId = currentConversationId;
+
       if (!convId) {
         convId = (await createNewConversation(userMessage)) || undefined;
       }
 
       // Save user message
+
       if (convId) {
         await saveMessage(convId, "user", userMessage, attachmentUrls);
       }
 
       if (result.success) {
         const assistantMessage = result.response;
+
         setAiMessages((prev) => [
           ...prev,
+
           { role: "assistant", content: assistantMessage },
         ]);
+
         // Save assistant message
+
         if (convId) {
           await saveMessage(convId, "assistant", assistantMessage);
         }
       } else {
         const errorMessage = "Sorry, I encountered an error. Please try again.";
+
         setAiMessages((prev) => [
           ...prev,
+
           {
             role: "assistant",
+
             content: errorMessage,
           },
         ]);
+
         if (convId) {
           await saveMessage(convId, "assistant", errorMessage);
         }
       }
     } catch (error) {
       console.error("AI Chat error:", error);
+
       const errorMsg =
         "Sorry, I'm having trouble connecting. Please try again later.";
+
       setAiMessages((prev) => [
         ...prev,
+
         {
           role: "assistant",
+
           content: errorMsg,
         },
       ]);
+
       if (currentConversationId) {
         await saveMessage(currentConversationId, "assistant", errorMsg);
       }
     } finally {
       setAiLoading(false);
+
       setAiStatusText("");
     }
   };
 
   // Voice input handler
+
   const handleVoiceInput = () => {
     if (
       !("webkitSpeechRecognition" in window) &&
@@ -1659,19 +1940,24 @@ export default function AdminDashboardClient({
       alert(
         "Voice input is not supported in your browser. Please use Chrome or Edge.",
       );
+
       return;
     }
 
     const SpeechRecognition =
       (window as any).SpeechRecognition ||
       (window as any).webkitSpeechRecognition;
+
     const recognition = new SpeechRecognition();
 
     recognition.continuous = false;
+
     recognition.interimResults = true;
+
     recognition.lang = "en-US";
 
     setIsListening(true);
+
     setListeningText("Listening...");
 
     let finalTranscript = "";
@@ -1681,6 +1967,7 @@ export default function AdminDashboardClient({
 
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const transcript = event.results[i][0].transcript;
+
         if (event.results[i].isFinal) {
           finalTranscript += transcript;
         } else {
@@ -1690,6 +1977,7 @@ export default function AdminDashboardClient({
 
       if (finalTranscript) {
         setAiInput((prev) => prev + (prev ? " " : "") + finalTranscript);
+
         setListeningText("");
       } else {
         setListeningText(interimTranscript);
@@ -1698,8 +1986,11 @@ export default function AdminDashboardClient({
 
     recognition.onerror = (event: any) => {
       console.error("Speech recognition error:", event.error);
+
       setIsListening(false);
+
       setListeningText("");
+
       if (event.error === "not-allowed") {
         alert(
           "Microphone access denied. Please allow microphone access to use voice input.",
@@ -1711,7 +2002,9 @@ export default function AdminDashboardClient({
 
     recognition.onend = () => {
       setIsListening(false);
+
       // Auto-send if we have transcribed text
+
       if (finalTranscript) {
         handleAiChat();
       } else {
@@ -1724,12 +2017,17 @@ export default function AdminDashboardClient({
 
   const analyzeRequestWithAI = async (request: RequestWithProfile) => {
     setShowAIChat(true);
+
     setAttachedRequest(request);
+
     setAiStatusText("Analyzing request...");
+
     setAiMessages((prev) => [
       ...prev,
+
       {
         role: "assistant",
+
         content: `I'm analyzing Request #${request.id}. Please wait...`,
       },
     ]);
@@ -1737,10 +2035,14 @@ export default function AdminDashboardClient({
     try {
       const response = await fetch("/api/ai/analyze-request", {
         method: "POST",
+
         headers: { "Content-Type": "application/json" },
+
         body: JSON.stringify({
           description: request.description,
+
           nature: request.nature,
+
           location: request.location,
         }),
       });
@@ -1749,41 +2051,64 @@ export default function AdminDashboardClient({
 
       if (result.success) {
         setAiStatusText("Analyzing...");
+
         const analysisText = `**AI Analysis for Request #${request.id}**
 
+
+
 **Urgency:** ${result.analysis.urgency || "N/A"}
+
 **Complexity:** ${result.analysis.complexity || "N/A"}
 
+
+
 **Suggested Actions:**
+
 ${result.analysis.actions || "N/A"}
 
+
+
 **Potential Risks:**
+
 ${result.analysis.risks || "N/A"}
 
+
+
 ---
+
+
 
 *You can ask me to summarize this request, suggest a response, or help with anything else!*`;
 
         setAiMessages((prev) => {
           const newMessages = [...prev];
+
           newMessages[newMessages.length - 1] = {
             role: "assistant",
+
             content: analysisText,
           };
+
           return newMessages;
         });
+
         setAiStatusText("");
       }
     } catch (error) {
       console.error("AI Analysis error:", error);
+
       setAiMessages((prev) => {
         const newMessages = [...prev];
+
         newMessages[newMessages.length - 1] = {
           role: "assistant",
+
           content: "Sorry, I failed to analyze this request. Please try again.",
         };
+
         return newMessages;
       });
+
       setAiStatusText("");
     }
   };
@@ -1868,6 +2193,7 @@ ${result.analysis.risks || "N/A"}
             <button
               onClick={(e) => {
                 e.stopPropagation();
+
                 analyzeRequestWithAI(request);
               }}
               className="mt-2 inline-flex items-center gap-1 px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded hover:bg-purple-200"
@@ -1894,6 +2220,7 @@ ${result.analysis.risks || "N/A"}
               <span className="text-sm font-medium text-gray-900">
                 {request.profiles?.full_name || "Unknown"}
               </span>
+
               {request.profiles?.is_anonymous && (
                 <span
                   className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs"
@@ -1966,6 +2293,7 @@ ${result.analysis.risks || "N/A"}
                       type="button"
                       onClick={(e) => {
                         e.stopPropagation();
+
                         togglePhotos(e, request.id);
                       }}
                       className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
@@ -2012,6 +2340,7 @@ ${result.analysis.risks || "N/A"}
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
+
                           togglePhotos(e, request.id);
                         }}
                         className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
@@ -2042,11 +2371,13 @@ ${result.analysis.risks || "N/A"}
           <td className="px-6 py-4">
             <div className="flex items-center gap-2">
               {/* Apple-like Status Dropdown */}
+
               <div className="relative">
                 <button
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
+
                     setOpenStatusDropdown(
                       openStatusDropdown === request.id ? null : request.id,
                     );
@@ -2072,7 +2403,9 @@ ${result.analysis.risks || "N/A"}
                             : "bg-red-500"
                     }`}
                   ></span>
+
                   <span className="whitespace-nowrap">{request.status}</span>
+
                   <svg
                     className={`w-3 h-3 transition-transform duration-300 ease-out ${
                       openStatusDropdown === request.id ? "rotate-180" : ""
@@ -2091,6 +2424,7 @@ ${result.analysis.risks || "N/A"}
                 </button>
 
                 {/* Apple-style Dropdown Menu */}
+
                 <div
                   onClick={(e) => e.stopPropagation()}
                   className={`absolute left-1/2 -translate-x-1/2 mt-2 w-36 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-100/50 py-1.5 z-50 transition-all duration-300 ease-out ${
@@ -2102,8 +2436,11 @@ ${result.analysis.risks || "N/A"}
                   {(
                     [
                       "Pending",
+
                       "In Progress",
+
                       "Completed",
+
                       "Cancelled",
                     ] as const
                   ).map((status) => (
@@ -2111,6 +2448,7 @@ ${result.analysis.risks || "N/A"}
                       key={status}
                       onClick={() => {
                         handleStatusUpdate(request.id, status);
+
                         setOpenStatusDropdown(null);
                       }}
                       className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-medium transition-all duration-200 ${
@@ -2130,6 +2468,7 @@ ${result.analysis.risks || "N/A"}
                                 : "bg-red-500"
                         }`}
                       ></span>
+
                       {status}
                     </button>
                   ))}
@@ -2806,23 +3145,42 @@ ${result.analysis.risks || "N/A"}
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Left Side - Logo and Title */}
+
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border-2 border-white/30 overflow-hidden">
-                <img
-                  src="/admin-logo.svg"
-                  alt="Maintenance Logo"
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border-2 border-white/30">
+                <svg
+                  className="w-8 h-8 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
+                  />
+
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
               </div>
+
               <div>
                 <h1 className="font-header text-xl font-bold text-white">
                   IVF Maintenance Utility
                 </h1>
+
                 <p className="text-white/70 text-xs">Admin Dashboard</p>
               </div>
             </div>
 
             {/* Right Side - Profile, Settings, etc */}
+
             <div className="flex items-center gap-3">
               <button
                 onClick={handleThemeToggle}
@@ -2920,6 +3278,7 @@ ${result.analysis.risks || "N/A"}
               </button>
 
               {/* Profile Avatar */}
+
               <div className="relative">
                 <button
                   onClick={() => setShowProfileViewer(!showProfileViewer)}
@@ -2933,18 +3292,21 @@ ${result.analysis.risks || "N/A"}
                       className="w-full h-full object-cover"
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
+
                         e.currentTarget.nextElementSibling?.classList.remove(
                           "hidden",
                         );
                       }}
                     />
                   ) : null}
+
                   <span
                     className={`text-white font-bold ${userAvatar ? "hidden" : ""}`}
                   >
                     {profile?.full_name?.charAt(0).toUpperCase() || "A"}
                   </span>
                 </button>
+
                 <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
 
                 {showProfileViewer && userAvatar && (
@@ -2963,9 +3325,11 @@ ${result.analysis.risks || "N/A"}
                             className="w-full h-full object-contain"
                           />
                         </div>
+
                         <h3 className="font-header font-semibold text-white text-lg text-center">
                           {profile?.full_name}
                         </h3>
+
                         <p className="text-sm text-white/80 text-center">
                           {profile?.visual_role} - Administrator
                         </p>
@@ -4518,6 +4882,7 @@ ${result.analysis.risks || "N/A"}
                 </svg>
                 Send Announcement
               </button>
+
               <button
                 onClick={() => setShowWarningModal(true)}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 text-sm font-medium"
@@ -5226,6 +5591,7 @@ ${result.analysis.risks || "N/A"}
 
             <div className="p-6 space-y-6">
               {/* Profile Information Card - Editable */}
+
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
                 <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <svg
@@ -5246,6 +5612,7 @@ ${result.analysis.risks || "N/A"}
 
                 <div className="space-y-4">
                   {/* Avatar Upload */}
+
                   <div className="flex flex-col items-center py-4">
                     <div className="relative">
                       <div className="w-24 h-24 rounded-full bg-gray-200 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center">
@@ -5266,6 +5633,7 @@ ${result.analysis.risks || "N/A"}
                           </span>
                         )}
                       </div>
+
                       <label
                         htmlFor="avatar-upload"
                         className="absolute bottom-0 right-0 bg-[#427A43] text-white p-2 rounded-full cursor-pointer hover:bg-[#366337] transition-colors shadow-md"
@@ -5282,6 +5650,7 @@ ${result.analysis.risks || "N/A"}
                             strokeWidth={2}
                             d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
                           />
+
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -5289,6 +5658,7 @@ ${result.analysis.risks || "N/A"}
                             d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
                           />
                         </svg>
+
                         <input
                           id="avatar-upload"
                           type="file"
@@ -5299,9 +5669,11 @@ ${result.analysis.risks || "N/A"}
                         />
                       </label>
                     </div>
+
                     {uploadingAvatar && (
                       <p className="text-sm text-gray-500 mt-2">Uploading...</p>
                     )}
+
                     {validationErrors.avatar && (
                       <p className="text-sm text-red-500 mt-2">
                         {validationErrors.avatar}
@@ -5313,6 +5685,7 @@ ${result.analysis.risks || "N/A"}
                     <label className="block text-sm font-medium text-gray-500 mb-1">
                       Full Name
                     </label>
+
                     <input
                       type="text"
                       value={formData.full_name}
@@ -5327,19 +5700,24 @@ ${result.analysis.risks || "N/A"}
                     <label className="block text-sm font-medium text-gray-500 mb-1">
                       Visual Role
                     </label>
+
                     <select
                       value={formData.visual_role}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
+
                           visual_role: e.target.value,
                         })
                       }
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900 bg-white"
                     >
                       <option value="">Select a role</option>
+
                       <option value="Teacher">Teacher</option>
+
                       <option value="Staff">Staff</option>
+
                       <option value="Student">Student</option>
                     </select>
                   </div>
@@ -5360,11 +5738,13 @@ ${result.analysis.risks || "N/A"}
                     <label className="block text-sm font-medium text-gray-500 mb-1">
                       Theme Preference
                     </label>
+
                     <select
                       value={formData.theme_preference}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
+
                           theme_preference: e.target.value as
                             | "light"
                             | "dark"
@@ -5374,7 +5754,9 @@ ${result.analysis.risks || "N/A"}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900 bg-white"
                     >
                       <option value="light">Light</option>
+
                       <option value="dark">Dark</option>
+
                       <option value="system">System</option>
                     </select>
                   </div>
@@ -5393,6 +5775,7 @@ ${result.analysis.risks || "N/A"}
               </div>
 
               {/* Save Button */}
+
               <button
                 onClick={handleSave}
                 disabled={saving}
@@ -5402,6 +5785,7 @@ ${result.analysis.risks || "N/A"}
               </button>
 
               {/* Success Message */}
+
               {successMessage && (
                 <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm text-center">
                   {successMessage}
@@ -5409,6 +5793,7 @@ ${result.analysis.risks || "N/A"}
               )}
 
               {/* Data Export Section */}
+
               <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
                 <h3 className="font-header text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
                   <svg
@@ -5426,9 +5811,11 @@ ${result.analysis.risks || "N/A"}
                   </svg>
                   Your Data
                 </h3>
+
                 <p className="text-xs text-gray-500 mb-3">
                   Download a copy of your admin profile data.
                 </p>
+
                 <button
                   onClick={handleExportData}
                   className="w-full px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
@@ -5451,6 +5838,7 @@ ${result.analysis.risks || "N/A"}
               </div>
 
               {/* Unsaved Changes Warning */}
+
               {hasUnsavedChanges && (
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm text-center">
                   You have unsaved changes
@@ -6025,6 +6413,7 @@ ${result.analysis.risks || "N/A"}
       </>
 
       {/* AI Chat Drawer */}
+
       {showAIChat && (
         <>
           <div
@@ -6033,6 +6422,7 @@ ${result.analysis.risks || "N/A"}
           >
             <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
           </div>
+
           <div
             ref={aiChatRef}
             className={`fixed right-0 top-0 bottom-0 w-[400px] max-w-full bg-[#0F172A] shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-out overflow-hidden ${showAIChat ? "translate-x-0" : "translate-x-full"}`}
@@ -6042,6 +6432,7 @@ ${result.analysis.risks || "N/A"}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Chat History Drawer */}
+
             <AnimatePresence>
               {showChatHistory && (
                 <>
@@ -6053,6 +6444,7 @@ ${result.analysis.risks || "N/A"}
                     className="absolute inset-0 z-30 bg-black/40"
                     onClick={() => setShowChatHistory(false)}
                   />
+
                   <motion.div
                     initial={{ left: "-288px", opacity: 0 }}
                     animate={{ left: "0", opacity: 1 }}
@@ -6067,7 +6459,9 @@ ${result.analysis.risks || "N/A"}
                         <h4 className="text-white font-semibold">
                           Chat History
                         </h4>
+
                         {/* Close button for chat history */}
+
                         <button
                           onClick={() => setShowChatHistory(false)}
                           className="text-white/60 hover:text-white"
@@ -6087,10 +6481,13 @@ ${result.analysis.risks || "N/A"}
                           </svg>
                         </button>
                       </div>
+
                       <button
                         onClick={() => {
                           setAiMessages([]);
+
                           setCurrentConversationId(null);
+
                           loadConversations();
                         }}
                         disabled={aiLoadingConversations}
@@ -6110,6 +6507,7 @@ ${result.analysis.risks || "N/A"}
                               stroke="currentColor"
                               strokeWidth="4"
                             ></circle>
+
                             <path
                               className="opacity-75"
                               fill="currentColor"
@@ -6131,8 +6529,10 @@ ${result.analysis.risks || "N/A"}
                             />
                           </svg>
                         )}
+
                         {aiLoadingConversations ? "Loading..." : "New Chat"}
                       </button>
+
                       <div className="flex-1 overflow-y-auto space-y-1 custom-scrollbar">
                         {aiConversations.length === 0 ? (
                           <p className="text-white/40 text-sm text-center py-8">
@@ -6151,6 +6551,7 @@ ${result.analysis.risks || "N/A"}
                               <button
                                 onClick={() => {
                                   loadMessages(conv.id);
+
                                   setShowChatHistory(false);
                                 }}
                                 className="flex-1 truncate text-left flex items-center gap-2"
@@ -6168,10 +6569,12 @@ ${result.analysis.risks || "N/A"}
                                     d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
                                   />
                                 </svg>
+
                                 <span className="truncate">
                                   {conv.title || "New Conversation"}
                                 </span>
                               </button>
+
                               <button
                                 onClick={(e) => deleteConversation(conv.id, e)}
                                 disabled={deletingConversationId === conv.id}
@@ -6191,6 +6594,7 @@ ${result.analysis.risks || "N/A"}
                                       stroke="currentColor"
                                       strokeWidth="4"
                                     ></circle>
+
                                     <path
                                       className="opacity-75"
                                       fill="currentColor"
@@ -6224,8 +6628,10 @@ ${result.analysis.risks || "N/A"}
             </AnimatePresence>
 
             {/* Main Chat Area */}
+
             <div className="flex-1 flex flex-col h-full">
               {/* Header */}
+
               <div
                 className="border-b border-slate-700/50 text-white px-4 py-3 flex justify-between items-center flex-shrink-0"
                 style={{
@@ -6275,27 +6681,37 @@ ${result.analysis.risks || "N/A"}
                       </svg>
                     </button>
                   )}
+
                   {/* AI Bot Icon with glow */}
+
                   <div className="relative">
                     <div className="absolute inset-0 rounded-full bg-green-500 blur-md opacity-60 animate-pulse" />
+
                     <Bot className="relative w-5 h-5 text-green-400 drop-shadow-lg" />
                   </div>
+
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-sm text-white leading-none">
                         AI Assistant
                       </h3>
+
                       <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-300 font-medium">
                         {selectedModel
+
                           .replace("gemini-", "")
+
                           .replace("-flash", "F")
+
                           .replace("-pro", "P")}
                       </span>
                     </div>
                   </div>
                 </div>
+
                 <div className="flex items-center gap-1">
                   {/* Search Button */}
+
                   <button
                     onClick={() => setShowSearch(!showSearch)}
                     className={`p-1.5 rounded-md transition-all ${showSearch ? "bg-green-500/20 text-green-300" : "text-white/60 hover:text-white hover:bg-white/10"}`}
@@ -6315,7 +6731,9 @@ ${result.analysis.risks || "N/A"}
                       />
                     </svg>
                   </button>
+
                   {/* Export Button */}
+
                   <div className="relative">
                     <button
                       onClick={() => setShowExportMenu(!showExportMenu)}
@@ -6336,6 +6754,7 @@ ${result.analysis.risks || "N/A"}
                         />
                       </svg>
                     </button>
+
                     {showExportMenu && (
                       <div className="absolute top-full mt-1 right-0 w-40 bg-[#1E293B] border border-slate-700 rounded-lg shadow-xl z-30 overflow-hidden">
                         <button
@@ -6359,6 +6778,7 @@ ${result.analysis.risks || "N/A"}
                           </svg>
                           Export as Text
                         </button>
+
                         <button
                           onClick={() => {
                             setShowExportMenu(false);
@@ -6383,14 +6803,21 @@ ${result.analysis.risks || "N/A"}
                       </div>
                     )}
                   </div>
+
                   {/* Refresh/New Chat Button */}
+
                   <button
                     onClick={async () => {
                       setNewChatLoading(true);
+
                       setAiMessages([]);
+
                       setCurrentConversationId(null);
+
                       setAttachedRequest(null);
+
                       await loadConversations();
+
                       setNewChatLoading(false);
                     }}
                     disabled={newChatLoading}
@@ -6411,6 +6838,7 @@ ${result.analysis.risks || "N/A"}
                           stroke="currentColor"
                           strokeWidth="4"
                         ></circle>
+
                         <path
                           className="opacity-75"
                           fill="currentColor"
@@ -6433,6 +6861,7 @@ ${result.analysis.risks || "N/A"}
                       </svg>
                     )}
                   </button>
+
                   <button
                     onClick={() => setShowAIChat(false)}
                     className="text-white/60 hover:text-white p-1.5 hover:bg-white/10 rounded-md transition-all ml-1"
@@ -6455,6 +6884,7 @@ ${result.analysis.risks || "N/A"}
               </div>
 
               {/* Search Bar */}
+
               {showSearch && (
                 <div className="bg-[#0F172A] border-b border-slate-700/50 px-4 py-2">
                   <div className="relative">
@@ -6471,6 +6901,7 @@ ${result.analysis.risks || "N/A"}
                         d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                       />
                     </svg>
+
                     <input
                       type="text"
                       value={aiSearchQuery}
@@ -6478,6 +6909,7 @@ ${result.analysis.risks || "N/A"}
                       placeholder="Search messages..."
                       className="w-full pl-8 pr-8 py-1.5 bg-[#1E293B] border border-slate-700 rounded-md text-white placeholder-white/40 text-xs focus:outline-none focus:ring-1 focus:ring-green-500/50"
                     />
+
                     {aiSearchQuery && (
                       <button
                         onClick={() => setAiSearchQuery("")}
@@ -6503,6 +6935,7 @@ ${result.analysis.risks || "N/A"}
               )}
 
               {/* Attached Request */}
+
               {attachedRequest && (
                 <div className="bg-[#0F172A] border-b border-slate-700 px-6 py-3">
                   <div className="flex items-center justify-between">
@@ -6520,13 +6953,16 @@ ${result.analysis.risks || "N/A"}
                           d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                         />
                       </svg>
+
                       <span className="text-sm font-medium text-white">
                         Request #{attachedRequest.id}
                       </span>
+
                       <span className="text-xs text-white/50">
                         • {attachedRequest.nature}
                       </span>
                     </div>
+
                     <button
                       onClick={() => setAttachedRequest(null)}
                       className="text-white/40 hover:text-white"
@@ -6550,16 +6986,19 @@ ${result.analysis.risks || "N/A"}
               )}
 
               {/* Messages */}
+
               <div
                 ref={chatContainerRef}
                 onScroll={handleScroll}
                 className="flex-1 overflow-y-auto p-4 space-y-5 bg-[#080d18] custom-scrollbar"
               >
                 {/* Live Voice Transcription Display */}
+
                 {isListening && (
                   <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
                     <div className="relative mb-6">
                       <div className="absolute inset-0 rounded-full bg-red-500 blur-xl opacity-50 animate-pulse" />
+
                       <div className="relative w-16 h-16 rounded-full bg-red-600 flex items-center justify-center shadow-lg shadow-red-500/30">
                         <svg
                           className="w-8 h-8 text-white animate-pulse"
@@ -6576,12 +7015,15 @@ ${result.analysis.risks || "N/A"}
                         </svg>
                       </div>
                     </div>
+
                     <h2 className="text-lg font-bold text-white mb-1">
                       Listening...
                     </h2>
+
                     <p className="text-sm text-white/50 max-w-[260px] mb-4 leading-relaxed">
                       Speak now. Your words will appear here in real-time.
                     </p>
+
                     {listeningText && (
                       <div className="w-full max-w-[300px] p-4 bg-white/5 border border-white/10 rounded-xl">
                         <p className="text-white text-sm leading-relaxed animate-pulse">
@@ -6589,49 +7031,68 @@ ${result.analysis.risks || "N/A"}
                         </p>
                       </div>
                     )}
+
                     <p className="text-[11px] text-white/30 mt-4">
                       Click the microphone again to stop
                     </p>
                   </div>
                 )}
+
                 {aiMessages.length === 0 && !isListening ? (
                   <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
                     {/* Animated orb */}
+
                     <div className="relative mb-6">
                       <div className="absolute inset-0 rounded-full bg-green-500 blur-xl opacity-50 animate-pulse" />
+
                       <Bot className="relative w-16 h-16 text-green-400 drop-shadow-lg" />
                     </div>
+
                     <h2 className="text-lg font-bold text-white mb-1">
                       Hi, I'm your AI Assistant
                     </h2>
+
                     <p className="text-sm text-white/50 max-w-[260px] mb-6 leading-relaxed">
                       Powered by Gemini. Ask me anything about your facility's
                       maintenance data.
                     </p>
+
                     {/* Capability cards */}
+
                     <div className="w-full grid grid-cols-2 gap-2 mb-3">
                       {[
                         {
                           icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+
                           label: "Analyze trends",
+
                           color:
                             "from-green-500/20 to-emerald-500/10 border-green-500/20",
                         },
+
                         {
                           icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2",
+
                           label: "Review requests",
+
                           color:
                             "from-green-500/20 to-emerald-500/10 border-green-500/20",
                         },
+
                         {
                           icon: "M13 10V3L4 14h7v7l9-11h-7z",
+
                           label: "Prioritize tasks",
+
                           color:
                             "from-green-500/20 to-emerald-500/10 border-green-500/20",
                         },
+
                         {
                           icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
+
                           label: "Analyze photos",
+
                           color:
                             "from-green-500/20 to-emerald-500/10 border-green-500/20",
                         },
@@ -6655,12 +7116,14 @@ ${result.analysis.risks || "N/A"}
                               />
                             </svg>
                           </div>
+
                           <span className="text-[11px] text-white/70 font-medium">
                             {cap.label}
                           </span>
                         </div>
                       ))}
                     </div>
+
                     <p className="text-[11px] text-white/30">
                       Select a suggestion below or type your question
                     </p>
@@ -6669,6 +7132,7 @@ ${result.analysis.risks || "N/A"}
                   <div className="flex-1 flex items-center justify-center">
                     <div className="flex flex-col items-center gap-3">
                       <div className="w-5 h-5 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+
                       <p className="text-white/60 text-sm">
                         Loading messages...
                       </p>
@@ -6678,7 +7142,9 @@ ${result.analysis.risks || "N/A"}
                   (aiSearchQuery
                     ? aiMessages.filter((m) =>
                         m.content
+
                           .toLowerCase()
+
                           .includes(aiSearchQuery.toLowerCase()),
                       )
                     : aiMessages
@@ -6688,10 +7154,12 @@ ${result.analysis.risks || "N/A"}
                       className={`flex gap-2.5 group animate-fade-in ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                     >
                       {/* Avatar - only show for assistant */}
+
                       {message.role === "assistant" && (
                         <div className="flex-shrink-0 mt-1">
                           <div className="relative">
                             <div className="absolute inset-0 rounded-full bg-green-500 blur-sm opacity-60 animate-pulse" />
+
                             <Bot className="relative w-5 h-5 text-green-400 drop-shadow-lg" />
                           </div>
                         </div>
@@ -6706,6 +7174,7 @@ ${result.analysis.risks || "N/A"}
                           }`}
                         >
                           {/* Display attached images */}
+
                           {message.attachments &&
                             message.attachments.length > 0 && (
                               <div className="flex flex-wrap gap-2 mb-3">
@@ -6719,6 +7188,7 @@ ${result.analysis.risks || "N/A"}
                                 ))}
                               </div>
                             )}
+
                           {message.role === "user" ? (
                             editingMessageId === index ? (
                               <div className="relative">
@@ -6730,69 +7200,99 @@ ${result.analysis.risks || "N/A"}
                                   className="w-full bg-[#2D3A52] text-sm text-white resize-none focus:outline-none rounded-2xl px-3.5 py-2.5"
                                   rows={Math.max(
                                     1,
+
                                     editingMessageText.split("\n").length,
                                   )}
                                   autoFocus
                                 />
+
                                 <div className="flex gap-2 mt-2">
                                   <button
                                     onClick={async () => {
                                       // Update the message content
+
                                       const updatedMessages = [...aiMessages];
+
                                       updatedMessages[index] = {
                                         ...message,
+
                                         content: editingMessageText,
                                       };
+
                                       // Remove all messages after this user message (including assistant responses)
+
                                       const newMessages = updatedMessages.slice(
                                         0,
+
                                         index + 1,
                                       );
+
                                       setAiMessages(newMessages);
+
                                       setEditingMessageId(null);
+
                                       setEditingMessageText("");
+
                                       // Resend to AI
+
                                       setAiLoading(true);
+
                                       setAiStatusText("Generating response...");
+
                                       try {
                                         const response = await fetch(
                                           "/api/ai/admin-chat",
+
                                           {
                                             method: "POST",
+
                                             headers: {
                                               "Content-Type":
                                                 "application/json",
                                             },
+
                                             body: JSON.stringify({
                                               query: editingMessageText,
+
                                               context: currentConversationId
                                                 ? {
                                                     conversationId:
                                                       currentConversationId,
                                                   }
                                                 : undefined,
+
                                               model: selectedModel,
                                             }),
                                           },
                                         );
+
                                         const result = await response.json();
+
                                         if (result.success) {
                                           setAiMessages((prev) => [
                                             ...prev,
+
                                             {
                                               role: "assistant",
+
                                               content: result.response,
                                             },
                                           ]);
+
                                           if (currentConversationId) {
                                             await saveMessage(
                                               currentConversationId,
+
                                               "user",
+
                                               editingMessageText,
                                             );
+
                                             await saveMessage(
                                               currentConversationId,
+
                                               "assistant",
+
                                               result.response,
                                             );
                                           }
@@ -6800,10 +7300,12 @@ ${result.analysis.risks || "N/A"}
                                       } catch (error) {
                                         console.error(
                                           "Edit resend error:",
+
                                           error,
                                         );
                                       } finally {
                                         setAiLoading(false);
+
                                         setAiStatusText("");
                                       }
                                     }}
@@ -6811,9 +7313,11 @@ ${result.analysis.risks || "N/A"}
                                   >
                                     Save & Resend
                                   </button>
+
                                   <button
                                     onClick={() => {
                                       setEditingMessageId(null);
+
                                       setEditingMessageText("");
                                     }}
                                     className="px-3 py-1 bg-white/10 text-white/70 text-xs rounded-md hover:bg-white/20 transition-colors"
@@ -6837,48 +7341,56 @@ ${result.analysis.risks || "N/A"}
                                       {...props}
                                     />
                                   ),
+
                                   h2: ({ node, ...props }) => (
                                     <h2
                                       className="text-sm font-semibold mb-0.5 text-white"
                                       {...props}
                                     />
                                   ),
+
                                   h3: ({ node, ...props }) => (
                                     <h3
                                       className="text-sm font-medium mb-0.5 text-white"
                                       {...props}
                                     />
                                   ),
+
                                   p: ({ node, ...props }) => (
                                     <p
                                       className="mb-0.5 last:mb-0 text-white/80 leading-snug"
                                       {...props}
                                     />
                                   ),
+
                                   ul: ({ node, ...props }) => (
                                     <ul
                                       className="list-disc ml-3 mb-0.5 text-white/80 space-y-0"
                                       {...props}
                                     />
                                   ),
+
                                   ol: ({ node, ...props }) => (
                                     <ol
                                       className="list-decimal ml-3 mb-0.5 text-white/80 space-y-0"
                                       {...props}
                                     />
                                   ),
+
                                   li: ({ node, ...props }) => (
                                     <li
                                       className="mb-0 text-white/80 leading-snug"
                                       {...props}
                                     />
                                   ),
+
                                   strong: ({ node, ...props }) => (
                                     <strong
                                       className="font-semibold text-green-300"
                                       {...props}
                                     />
                                   ),
+
                                   code: ({ node, ...props }) => (
                                     <code
                                       className="bg-white/10 px-1.5 py-0.5 rounded text-xs text-green-300 font-mono"
@@ -6892,14 +7404,18 @@ ${result.analysis.risks || "N/A"}
                             </div>
                           )}
                         </div>
+
                         {/* Copy button */}
+
                         <div
                           className={`flex items-center gap-1 mt-1 ${message.role === "user" ? "justify-end" : "justify-start"}`}
                         >
                           <button
                             onClick={() => {
                               navigator.clipboard.writeText(message.content);
+
                               setCopiedMessage(index);
+
                               setTimeout(() => setCopiedMessage(null), 2000);
                             }}
                             className={`p-1 rounded transition-all ${copiedMessage === index ? "text-green-400" : "text-white/40 hover:text-white hover:bg-white/10"}`}
@@ -6935,53 +7451,74 @@ ${result.analysis.risks || "N/A"}
                               </svg>
                             )}
                           </button>
+
                           {/* Regenerate Button - Visible directly for assistant messages */}
+
                           {message.role === "assistant" && (
                             <button
                               onClick={async (e) => {
                                 e.stopPropagation();
+
                                 const lastUserMsg = [...aiMessages]
+
                                   .reverse()
+
                                   .find((m) => m.role === "user");
+
                                 if (lastUserMsg) {
                                   setAiLoading(true);
+
                                   setAiStatusText("Regenerating response...");
+
                                   setAiMessages((prev) =>
                                     prev.filter((_, i) => i !== index),
                                   );
+
                                   try {
                                     const response = await fetch(
                                       "/api/ai/admin-chat",
+
                                       {
                                         method: "POST",
+
                                         headers: {
                                           "Content-Type": "application/json",
                                         },
+
                                         body: JSON.stringify({
                                           query: lastUserMsg.content,
+
                                           context: currentConversationId
                                             ? {
                                                 conversationId:
                                                   currentConversationId,
                                               }
                                             : undefined,
+
                                           model: selectedModel,
                                         }),
                                       },
                                     );
+
                                     const result = await response.json();
+
                                     if (result.success) {
                                       setAiMessages((prev) => [
                                         ...prev,
+
                                         {
                                           role: "assistant",
+
                                           content: result.response,
                                         },
                                       ]);
+
                                       if (currentConversationId) {
                                         await saveMessage(
                                           currentConversationId,
+
                                           "assistant",
+
                                           result.response,
                                         );
                                       }
@@ -6990,6 +7527,7 @@ ${result.analysis.risks || "N/A"}
                                     console.error("Regenerate error:", error);
                                   } finally {
                                     setAiLoading(false);
+
                                     setAiStatusText("");
                                   }
                                 }
@@ -7012,14 +7550,18 @@ ${result.analysis.risks || "N/A"}
                               </svg>
                             </button>
                           )}
+
                           {/* Like/Dislike Buttons - Visible directly for assistant messages */}
+
                           {message.role === "assistant" && (
                             <div className="flex items-center gap-0.5">
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
+
                                   setMessageFeedback((prev) => ({
                                     ...prev,
+
                                     [index]:
                                       prev[index] === "like"
                                         ? undefined
@@ -7055,11 +7597,14 @@ ${result.analysis.risks || "N/A"}
                                   />
                                 </svg>
                               </button>
+
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
+
                                   setMessageFeedback((prev) => ({
                                     ...prev,
+
                                     [index]:
                                       prev[index] === "dislike"
                                         ? undefined
@@ -7098,7 +7643,9 @@ ${result.analysis.risks || "N/A"}
                             </div>
                           )}
                         </div>
+
                         {/* Dynamic Contextual Suggestions for last AI response */}
+
                         {message.role === "assistant" &&
                           index === aiMessages.length - 1 && (
                             <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-white/5">
@@ -7119,17 +7666,21 @@ ${result.analysis.risks || "N/A"}
                     </div>
                   ))
                 )}
+
                 {/* Loading indicator */}
+
                 {aiLoading && (
                   <div className="flex gap-2.5 animate-fade-in">
                     <div className="flex-shrink-0 mt-1">
                       <div className="relative">
                         <div className="absolute inset-0 rounded-md bg-green-500 blur-sm opacity-60 animate-pulse" />
+
                         <div className="relative w-6 h-6 rounded-md bg-green-600 flex items-center justify-center shadow shadow-green-500/30">
                           <Bot className="w-3.5 h-3.5 text-white" />
                         </div>
                       </div>
                     </div>
+
                     <div className="bg-transparent rounded-2xl rounded-tl-sm px-4 py-3">
                       <div className="flex items-center gap-2">
                         <svg
@@ -7145,12 +7696,14 @@ ${result.analysis.risks || "N/A"}
                             stroke="currentColor"
                             strokeWidth="4"
                           ></circle>
+
                           <path
                             className="opacity-75"
                             fill="currentColor"
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
+
                         <span className="text-green-300/60 text-xs whitespace-nowrap">
                           {isListening
                             ? listeningText || "Listening..."
@@ -7163,6 +7716,7 @@ ${result.analysis.risks || "N/A"}
               </div>
 
               {/* Suggestion Chips - Above Input */}
+
               {aiMessages.length === 0 && !aiLoading && (
                 <div
                   className="px-3 pt-3 pb-3 border-t border-slate-800/60"
@@ -7171,26 +7725,38 @@ ${result.analysis.risks || "N/A"}
                   <p className="text-[10px] text-white/30 uppercase tracking-widest mb-2 px-1">
                     Try asking
                   </p>
+
                   <div className="grid grid-cols-2 gap-1.5">
                     {[
                       {
                         icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+
                         text: "Analyze trends",
+
                         prompt: "Show me recent maintenance trends",
                       },
+
                       {
                         icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+
                         text: "Pending queue",
+
                         prompt: "Show me all pending requests",
                       },
+
                       {
                         icon: "M13 10V3L4 14h7v7l9-11h-7z",
+
                         text: "Top priorities",
+
                         prompt: "What are the most urgent maintenance issues?",
                       },
+
                       {
                         icon: "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+
                         text: "What can you do?",
+
                         prompt: "What can you help me with?",
                       },
                     ].map((chip, i) => (
@@ -7214,6 +7780,7 @@ ${result.analysis.risks || "N/A"}
                             />
                           </svg>
                         </div>
+
                         <span className="text-[11px] font-medium leading-tight">
                           {chip.text}
                         </span>
@@ -7224,6 +7791,7 @@ ${result.analysis.risks || "N/A"}
               )}
 
               {/* Input Area */}
+
               <div
                 className="border-t border-slate-800/80 p-3"
                 style={{
@@ -7232,6 +7800,7 @@ ${result.analysis.risks || "N/A"}
                 }}
               >
                 {/* Attached Files Preview */}
+
                 {aiAttachments.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-2">
                     {aiAttachments.map((file, index) => (
@@ -7252,9 +7821,11 @@ ${result.analysis.risks || "N/A"}
                             d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                           />
                         </svg>
+
                         <span className="max-w-[150px] truncate">
                           {file.name}
                         </span>
+
                         <button
                           onClick={() =>
                             setAiAttachments((prev) =>
@@ -7281,8 +7852,10 @@ ${result.analysis.risks || "N/A"}
                     ))}
                   </div>
                 )}
+
                 <div className="space-y-2">
                   {/* Sub-toolbar with attachment and voice icons */}
+
                   <div className="flex items-center justify-between px-1">
                     <div className="flex items-center gap-1">
                       <label
@@ -7302,6 +7875,7 @@ ${result.analysis.risks || "N/A"}
                             d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
                           />
                         </svg>
+
                         <input
                           type="file"
                           multiple
@@ -7309,10 +7883,12 @@ ${result.analysis.risks || "N/A"}
                           className="hidden"
                           onChange={(e) => {
                             const files = Array.from(e.target.files || []);
+
                             setAiAttachments((prev) => [...prev, ...files]);
                           }}
                         />
                       </label>
+
                       <button
                         onClick={handleVoiceInput}
                         className={`p-1.5 rounded-md transition-all ${
@@ -7336,7 +7912,9 @@ ${result.analysis.risks || "N/A"}
                           />
                         </svg>
                       </button>
+
                       {/* Model Selector in sub-toolbar */}
+
                       <div className="relative">
                         <button
                           onClick={() =>
@@ -7348,6 +7926,7 @@ ${result.analysis.risks || "N/A"}
                           <span className="text-[10px]">
                             {selectedModel.replace("gemini-", "")}
                           </span>
+
                           <svg
                             className={`w-3 h-3 transition-transform ${showModelSelector ? "rotate-180" : ""}`}
                             fill="none"
@@ -7362,22 +7941,31 @@ ${result.analysis.risks || "N/A"}
                             />
                           </svg>
                         </button>
+
                         {showModelSelector && (
                           <div className="absolute bottom-full mb-1 left-0 w-40 bg-[#1E293B] border border-slate-700 rounded-lg shadow-xl z-30 overflow-hidden">
                             {[
                               {
                                 id: "gemini-2.5-flash",
+
                                 name: "2.5 Flash",
+
                                 desc: "Fast",
                               },
+
                               {
                                 id: "gemini-2.0-flash",
+
                                 name: "2.0 Flash",
+
                                 desc: "Balanced",
                               },
+
                               {
                                 id: "gemini-1.5-pro",
+
                                 name: "1.5 Pro",
+
                                 desc: "Advanced",
                               },
                             ].map((model) => (
@@ -7385,6 +7973,7 @@ ${result.analysis.risks || "N/A"}
                                 key={model.id}
                                 onClick={() => {
                                   setSelectedModel(model.id);
+
                                   setShowModelSelector(false);
                                 }}
                                 className={`w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center justify-between ${selectedModel === model.id ? "bg-green-500/10" : ""}`}
@@ -7393,10 +7982,12 @@ ${result.analysis.risks || "N/A"}
                                   <p className="text-xs text-white">
                                     {model.name}
                                   </p>
+
                                   <p className="text-[9px] text-white/40">
                                     {model.desc}
                                   </p>
                                 </div>
+
                                 {selectedModel === model.id && (
                                   <svg
                                     className="w-3 h-3 text-green-400"
@@ -7416,12 +8007,14 @@ ${result.analysis.risks || "N/A"}
                         )}
                       </div>
                     </div>
+
                     <div className="text-[10px] text-white/30">
                       {aiInput.length}/2000
                     </div>
                   </div>
 
                   {/* Text input and send button row */}
+
                   <div className="flex gap-2 items-end">
                     <div className="flex-1 relative">
                       <textarea
@@ -7430,6 +8023,7 @@ ${result.analysis.risks || "N/A"}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" && !e.shiftKey) {
                             e.preventDefault();
+
                             if (
                               !aiLoading &&
                               (aiInput.trim() || aiAttachments.length > 0)
@@ -7444,16 +8038,20 @@ ${result.analysis.risks || "N/A"}
                         disabled={aiLoading}
                         style={{
                           height: "auto",
+
                           overflow: "hidden",
                         }}
                         onInput={(e) => {
                           const target = e.target as HTMLTextAreaElement;
+
                           target.style.height = "auto";
+
                           target.style.height =
                             Math.min(target.scrollHeight, 100) + "px";
                         }}
                       />
                     </div>
+
                     <button
                       onClick={handleAiChat}
                       disabled={
@@ -7489,6 +8087,7 @@ ${result.analysis.risks || "N/A"}
       )}
 
       {/* Photo Modal */}
+
       {selectedPhoto && (
         <div
           className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
@@ -7605,6 +8204,7 @@ ${result.analysis.risks || "N/A"}
       )}
 
       {/* Warning Modal */}
+
       {showWarningModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
@@ -7626,11 +8226,15 @@ ${result.analysis.risks || "N/A"}
                   </svg>
                   Send Warning / Notice to User
                 </h3>
+
                 <button
                   onClick={() => {
                     setShowWarningModal(false);
+
                     setSelectedWarningUser(null);
+
                     setWarningMessage("");
+
                     setWarningType("");
                   }}
                   className="text-gray-400 hover:text-gray-600"
@@ -7654,21 +8258,27 @@ ${result.analysis.risks || "N/A"}
 
             <div className="p-6">
               {/* User Selection */}
+
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Select User
                 </label>
+
                 <select
                   value={selectedWarningUser?.id || ""}
                   onChange={(e) => {
                     const user = users.find((u) => u.id === e.target.value);
+
                     setSelectedWarningUser(user || null);
                   }}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 >
                   <option value="">Choose a user...</option>
+
                   {users
+
                     .filter((u) => u.database_role === "user")
+
                     .map((user) => (
                       <option key={user.id} value={user.id}>
                         {user.full_name} ({user.visual_role || "User"})
@@ -7678,14 +8288,17 @@ ${result.analysis.risks || "N/A"}
               </div>
 
               {/* Warning Type Selection */}
+
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Warning Type
                 </label>
+
                 <div className="grid grid-cols-2 gap-2">
                   <button
                     onClick={() => {
                       setWarningType("inappropriate_content");
+
                       setWarningMessage(
                         "Your recent maintenance request contained inappropriate content. Please ensure all submissions follow community guidelines. Repeated violations may result in account restrictions.",
                       );
@@ -7695,13 +8308,16 @@ ${result.analysis.risks || "N/A"}
                     <div className="font-medium text-gray-900">
                       Inappropriate Content
                     </div>
+
                     <div className="text-xs text-gray-500">
                       Inappropriate photos or text
                     </div>
                   </button>
+
                   <button
                     onClick={() => {
                       setWarningType("spam_abuse");
+
                       setWarningMessage(
                         "Your account has been flagged for spam or abuse. Multiple rapid submissions detected. Please refrain from submitting duplicate requests. Further abuse may lead to temporary suspension.",
                       );
@@ -7711,13 +8327,16 @@ ${result.analysis.risks || "N/A"}
                     <div className="font-medium text-gray-900">
                       Spam / Abuse
                     </div>
+
                     <div className="text-xs text-gray-500">
                       Duplicate or excessive requests
                     </div>
                   </button>
+
                   <button
                     onClick={() => {
                       setWarningType("misuse_facilities");
+
                       setWarningMessage(
                         "Your maintenance request was found to be misuse of facilities. Please only submit legitimate maintenance issues. False reports waste resources and may result in restrictions.",
                       );
@@ -7727,13 +8346,16 @@ ${result.analysis.risks || "N/A"}
                     <div className="font-medium text-gray-900">
                       Misuse of Facilities
                     </div>
+
                     <div className="text-xs text-gray-500">
                       False or invalid requests
                     </div>
                   </button>
+
                   <button
                     onClick={() => {
                       setWarningType("harassment");
+
                       setWarningMessage(
                         "Your submission contained harassing or offensive language. We maintain a zero-tolerance policy for harassment. This is a formal warning. Further violations will result in account suspension.",
                       );
@@ -7741,6 +8363,7 @@ ${result.analysis.risks || "N/A"}
                     className={`p-3 text-left text-sm rounded-lg border transition-colors ${warningType === "harassment" ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"}`}
                   >
                     <div className="font-medium text-gray-900">Harassment</div>
+
                     <div className="text-xs text-gray-500">
                       Offensive or harmful language
                     </div>
@@ -7749,10 +8372,12 @@ ${result.analysis.risks || "N/A"}
               </div>
 
               {/* Message Preview */}
+
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Message Preview
                 </label>
+
                 <textarea
                   value={warningMessage}
                   onChange={(e) => setWarningMessage(e.target.value)}
@@ -7766,35 +8391,49 @@ ${result.analysis.risks || "N/A"}
                 <button
                   onClick={() => {
                     setShowWarningModal(false);
+
                     setSelectedWarningUser(null);
+
                     setWarningMessage("");
+
                     setWarningType("");
                   }}
                   className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium"
                 >
                   Cancel
                 </button>
+
                 <button
                   onClick={async () => {
                     if (!selectedWarningUser || !warningMessage.trim()) {
                       alert("Please select a user and enter a message");
+
                       return;
                     }
+
                     const { error } = await (
                       supabase.from("admin_messages") as any
                     ).insert({
                       user_id: selectedWarningUser.id,
+
                       message: warningMessage.trim(),
+
                       from_admin: true,
                     });
+
                     if (error) {
                       console.error("Error sending warning:", error);
+
                       alert("Error sending warning");
                     } else {
                       alert(`Warning sent to ${selectedWarningUser.full_name}`);
+
                       setShowWarningModal(false);
+
                       setSelectedWarningUser(null);
+
                       setWarningMessage("");
+
                       setWarningType("");
                     }
                   }}
@@ -8063,24 +8702,31 @@ ${result.analysis.risks || "N/A"}
                   setEmergencyPopup(null);
 
                   // Extract request ID from link_url or use request_id field
+
                   let requestId = emergencyPopup.request_id;
 
                   if (!requestId && emergencyPopup.link_url) {
                     // Extract from URL like /admin/dashboard?request=xxx
+
                     const urlParams = new URL(
                       emergencyPopup.link_url,
+
                       "http://localhost",
                     );
+
                     requestId = urlParams.searchParams.get("request");
                   }
 
                   if (requestId) {
                     // Find the request and open detail modal
+
                     const request = requests.find((r) => r.id === requestId);
+
                     if (request) {
                       setShowDetailModal(request);
                     } else {
                       // Scroll to or highlight the emergency request in the list
+
                       const element = document.getElementById(
                         `request-${requestId}`,
                       );
