@@ -3149,9 +3149,9 @@ ${result.analysis.risks || "N/A"}
         userAvatar={userAvatar}
       />
 
-      {/* Main Content */}
+      {/* Main wrapper with header and content */}
       <div className="flex-1 ml-64">
-        {/* Header with Notifications, AI Chat, Settings, Profile */}
+        {/* Header - Full width at top */}
         <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300">
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-end items-center h-20">
@@ -3317,335 +3317,683 @@ ${result.analysis.risks || "N/A"}
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Main Content Area */}
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
-        <div className="transition-opacity duration-300 ease-in-out">
-          {/* Overview Tab */}
+        {/* Main Content Area */}
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
+          <div className="transition-opacity duration-300 ease-in-out">
+            {/* Overview Tab */}
 
-          {activeTab === "overview" && (
-            <>
-              {/* Stats Cards */}
+            {activeTab === "overview" && (
+              <>
+                {/* Stats Cards */}
 
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
-                  <div className="flex items-center">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-600">
-                        Total Requests
-                      </p>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                  <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                    <div className="flex items-center">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-600">
+                          Total Requests
+                        </p>
 
-                      <p className="text-2xl font-bold text-gray-900">
-                        {stats.total}
-                      </p>
-                    </div>
-
-                    <div className="w-12 h-12 bg-[#427A43]/10 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-6 h-6 text-[#427A43]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
-                  <div className="flex items-center">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-600">
-                        Pending
-                      </p>
-
-                      <p className="text-2xl font-bold text-yellow-600">
-                        {stats.pending}
-                      </p>
-                    </div>
-
-                    <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-6 h-6 text-yellow-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
-                  <div className="flex items-center">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-600">
-                        In Progress
-                      </p>
-
-                      <p className="text-2xl font-bold text-blue-600">
-                        {stats.inProgress}
-                      </p>
-                    </div>
-
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-6 h-6 text-blue-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 10V3L4 14h7v7l9-11h-7z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
-                  <div className="flex items-center">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-600">
-                        Completed
-                      </p>
-
-                      <p className="text-2xl font-bold text-green-600">
-                        {stats.completed}
-                      </p>
-                    </div>
-
-                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-6 h-6 text-green-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Recent Requests - Last 1 Hour */}
-
-              <div className="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn">
-                <h2 className="font-header text-lg font-semibold text-gray-900 mb-4">
-                  Recent Requests (Last 1 Hour)
-                </h2>
-
-                {(() => {
-                  const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-
-                  const recentRequests = requests.filter(
-                    (r) => new Date(r.created_at) >= oneHourAgo,
-                  );
-
-                  return recentRequests.length > 0 ? (
-                    <div className="space-y-3">
-                      {recentRequests.map((request) => (
-                        <div
-                          key={request.id}
-                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
-                        >
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">
-                              {request.nature}
-                            </p>
-
-                            <p className="text-xs text-gray-500">
-                              {request.profiles?.full_name || "Unknown"} •{" "}
-                              {request.location}
-                            </p>
-                          </div>
-
-                          <span
-                            className={`px-2 py-1 text-xs font-medium rounded-full ml-2 ${request.status === "Pending" ? "bg-yellow-100 text-yellow-700" : request.status === "In Progress" ? "bg-blue-100 text-blue-700" : "bg-green-100 text-green-700"}`}
-                          >
-                            {request.status}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-center text-gray-500 py-4">
-                      No recent requests in the last hour
-                    </p>
-                  );
-                })()}
-              </div>
-
-              {/* Nature Breakdown - Most Requests (Top 3) */}
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="bg-gradient-to-br from-white via-white to-gray-50/30 rounded-2xl shadow-lg border border-gray-100/50 p-8 mb-8 backdrop-blur-sm relative overflow-hidden"
-              >
-                {/* Background decoration */}
-
-                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/5 to-purple-400/5 rounded-full blur-3xl"></div>
-
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-green-400/5 to-cyan-400/5 rounded-full blur-2xl"></div>
-
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
-                      <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.2, duration: 0.3 }}
-                        className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
-                      >
-                        <BarChart3 className="w-6 h-6 text-white" />
-                      </motion.div>
-
-                      <div>
-                        <h2 className="font-bold text-xl text-gray-900 tracking-tight">
-                          Most Requests by Nature
-                        </h2>
-
-                        <p className="text-sm text-gray-500 mt-1">
-                          Top 3 maintenance request categories
+                        <p className="text-2xl font-bold text-gray-900">
+                          {stats.total}
                         </p>
                       </div>
+
+                      <div className="w-12 h-12 bg-[#427A43]/10 rounded-lg flex items-center justify-center">
+                        <svg
+                          className="w-6 h-6 text-[#427A43]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                      </div>
                     </div>
-
-                    <motion.div
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.3, duration: 0.3 }}
-                      className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100"
-                    >
-                      <Activity className="w-4 h-4 text-blue-600" />
-
-                      <span className="text-sm font-semibold text-gray-700">
-                        {stats.total}
-                      </span>
-
-                      <span className="text-sm text-gray-500">
-                        total requests
-                      </span>
-                    </motion.div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {[
-                      {
-                        name: "Plumbing",
+                  <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                    <div className="flex items-center">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-600">
+                          Pending
+                        </p>
 
-                        color: "from-blue-500 to-blue-600",
+                        <p className="text-2xl font-bold text-yellow-600">
+                          {stats.pending}
+                        </p>
+                      </div>
 
-                        bgLight: "bg-blue-50",
+                      <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <svg
+                          className="w-6 h-6 text-yellow-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
 
-                        icon: Wrench,
+                  <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                    <div className="flex items-center">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-600">
+                          In Progress
+                        </p>
 
-                        gradient:
-                          "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
-                      },
+                        <p className="text-2xl font-bold text-blue-600">
+                          {stats.inProgress}
+                        </p>
+                      </div>
 
-                      {
-                        name: "Electrical",
+                      <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg
+                          className="w-6 h-6 text-blue-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M13 10V3L4 14h7v7l9-11h-7z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
 
-                        color: "from-yellow-500 to-orange-500",
+                  <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                    <div className="flex items-center">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-600">
+                          Completed
+                        </p>
 
-                        bgLight: "bg-yellow-50",
+                        <p className="text-2xl font-bold text-green-600">
+                          {stats.completed}
+                        </p>
+                      </div>
 
-                        icon: Zap,
+                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg
+                          className="w-6 h-6 text-green-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-                        gradient:
-                          "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
-                      },
+                {/* Recent Requests - Last 1 Hour */}
 
-                      {
-                        name: "Carpentry",
+                <div className="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn">
+                  <h2 className="font-header text-lg font-semibold text-gray-900 mb-4">
+                    Recent Requests (Last 1 Hour)
+                  </h2>
 
-                        color: "from-amber-600 to-amber-700",
+                  {(() => {
+                    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
 
-                        bgLight: "bg-amber-50",
+                    const recentRequests = requests.filter(
+                      (r) => new Date(r.created_at) >= oneHourAgo,
+                    );
 
-                        icon: Hammer,
+                    return recentRequests.length > 0 ? (
+                      <div className="space-y-3">
+                        {recentRequests.map((request) => (
+                          <div
+                            key={request.id}
+                            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                          >
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-gray-900 truncate">
+                                {request.nature}
+                              </p>
 
-                        gradient:
-                          "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
-                      },
+                              <p className="text-xs text-gray-500">
+                                {request.profiles?.full_name || "Unknown"} •{" "}
+                                {request.location}
+                              </p>
+                            </div>
 
-                      {
-                        name: "HVAC",
+                            <span
+                              className={`px-2 py-1 text-xs font-medium rounded-full ml-2 ${request.status === "Pending" ? "bg-yellow-100 text-yellow-700" : request.status === "In Progress" ? "bg-blue-100 text-blue-700" : "bg-green-100 text-green-700"}`}
+                            >
+                              {request.status}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-center text-gray-500 py-4">
+                        No recent requests in the last hour
+                      </p>
+                    );
+                  })()}
+                </div>
 
-                        color: "from-cyan-500 to-cyan-600",
+                {/* Nature Breakdown - Most Requests (Top 3) */}
 
-                        bgLight: "bg-cyan-50",
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="bg-gradient-to-br from-white via-white to-gray-50/30 rounded-2xl shadow-lg border border-gray-100/50 p-8 mb-8 backdrop-blur-sm relative overflow-hidden"
+                >
+                  {/* Background decoration */}
 
-                        icon: Wind,
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/5 to-purple-400/5 rounded-full blur-3xl"></div>
 
-                        gradient:
-                          "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
-                      },
+                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-green-400/5 to-cyan-400/5 rounded-full blur-2xl"></div>
 
-                      {
-                        name: "Cleaning",
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-8">
+                      <div className="flex items-center gap-4">
+                        <motion.div
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 0.2, duration: 0.3 }}
+                          className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
+                        >
+                          <BarChart3 className="w-6 h-6 text-white" />
+                        </motion.div>
 
-                        color: "from-purple-500 to-purple-600",
+                        <div>
+                          <h2 className="font-bold text-xl text-gray-900 tracking-tight">
+                            Most Requests by Nature
+                          </h2>
 
-                        bgLight: "bg-purple-50",
+                          <p className="text-sm text-gray-500 mt-1">
+                            Top 3 maintenance request categories
+                          </p>
+                        </div>
+                      </div>
 
-                        icon: Sparkles,
+                      <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3, duration: 0.3 }}
+                        className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100"
+                      >
+                        <Activity className="w-4 h-4 text-blue-600" />
 
-                        gradient:
-                          "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
-                      },
+                        <span className="text-sm font-semibold text-gray-700">
+                          {stats.total}
+                        </span>
 
-                      {
-                        name: "Other",
+                        <span className="text-sm text-gray-500">
+                          total requests
+                        </span>
+                      </motion.div>
+                    </div>
 
-                        color: "from-gray-500 to-gray-600",
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {[
+                        {
+                          name: "Plumbing",
 
-                        bgLight: "bg-gray-50",
+                          color: "from-blue-500 to-blue-600",
 
-                        icon: MoreHorizontal,
+                          bgLight: "bg-blue-50",
 
-                        gradient:
-                          "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
-                      },
-                    ]
+                          icon: Wrench,
 
-                      .map((nature) => ({
-                        ...nature,
+                          gradient:
+                            "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+                        },
 
-                        count: requests.filter((r) => r.nature === nature.name)
-                          .length,
-                      }))
+                        {
+                          name: "Electrical",
 
-                      .sort((a, b) => b.count - a.count)
+                          color: "from-yellow-500 to-orange-500",
 
-                      .slice(0, 3)
+                          bgLight: "bg-yellow-50",
 
-                      .map((nature, index) => {
+                          icon: Zap,
+
+                          gradient:
+                            "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
+                        },
+
+                        {
+                          name: "Carpentry",
+
+                          color: "from-amber-600 to-amber-700",
+
+                          bgLight: "bg-amber-50",
+
+                          icon: Hammer,
+
+                          gradient:
+                            "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
+                        },
+
+                        {
+                          name: "HVAC",
+
+                          color: "from-cyan-500 to-cyan-600",
+
+                          bgLight: "bg-cyan-50",
+
+                          icon: Wind,
+
+                          gradient:
+                            "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
+                        },
+
+                        {
+                          name: "Cleaning",
+
+                          color: "from-purple-500 to-purple-600",
+
+                          bgLight: "bg-purple-50",
+
+                          icon: Sparkles,
+
+                          gradient:
+                            "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
+                        },
+
+                        {
+                          name: "Other",
+
+                          color: "from-gray-500 to-gray-600",
+
+                          bgLight: "bg-gray-50",
+
+                          icon: MoreHorizontal,
+
+                          gradient:
+                            "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
+                        },
+                      ]
+
+                        .map((nature) => ({
+                          ...nature,
+
+                          count: requests.filter(
+                            (r) => r.nature === nature.name,
+                          ).length,
+                        }))
+
+                        .sort((a, b) => b.count - a.count)
+
+                        .slice(0, 3)
+
+                        .map((nature, index) => {
+                          const count = requests.filter(
+                            (r) => r.nature === nature.name,
+                          ).length;
+
+                          const percentage =
+                            stats.total > 0
+                              ? Math.round((count / stats.total) * 100)
+                              : 0;
+
+                          const Icon = nature.icon;
+
+                          return (
+                            <motion.div
+                              key={nature.name}
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{
+                                delay: 0.1 * index,
+
+                                duration: 0.4,
+
+                                ease: "easeOut",
+                              }}
+                              whileHover={{
+                                y: -4,
+
+                                scale: 1.02,
+
+                                transition: { duration: 0.2 },
+                              }}
+                              whileTap={{ scale: 0.98 }}
+                              className="group relative"
+                            >
+                              <div className="relative bg-white rounded-2xl p-5 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+                                {/* Animated background gradient */}
+
+                                <motion.div
+                                  className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
+                                  style={{ background: nature.gradient }}
+                                />
+
+                                {/* Top decoration line */}
+
+                                <motion.div
+                                  className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${nature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                                  initial={{ scaleX: 0 }}
+                                  whileHover={{ scaleX: 1 }}
+                                  transition={{ duration: 0.3 }}
+                                />
+
+                                <div className="relative z-10">
+                                  {/* Icon section */}
+
+                                  <div className="flex items-center justify-between mb-4">
+                                    <motion.div
+                                      className={`p-3 rounded-xl ${nature.bgLight} group-hover:scale-110 transition-transform duration-300`}
+                                      whileHover={{ rotate: [0, -10, 10, 0] }}
+                                      transition={{ duration: 0.5 }}
+                                    >
+                                      <Icon
+                                        className="w-5 h-5"
+                                        style={{
+                                          color:
+                                            nature.gradient.match(
+                                              /#[0-9A-F]{6}/,
+                                            )?.[0] || "#000",
+                                        }}
+                                      />
+                                    </motion.div>
+
+                                    {count > 0 && (
+                                      <motion.div
+                                        initial={{ scale: 0 }}
+                                        animate={{ scale: 1 }}
+                                        transition={{
+                                          delay: 0.2 + index * 0.1,
+                                        }}
+                                        className="w-2 h-2 bg-green-400 rounded-full"
+                                      />
+                                    )}
+                                  </div>
+
+                                  {/* Content */}
+
+                                  <div className="space-y-3">
+                                    <div>
+                                      <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-700 transition-colors">
+                                        {nature.name}
+                                      </h3>
+                                    </div>
+
+                                    <div className="flex items-baseline gap-2">
+                                      <motion.span
+                                        className="text-2xl font-bold text-gray-900"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{
+                                          delay: 0.3 + index * 0.1,
+                                        }}
+                                      >
+                                        {count}
+                                      </motion.span>
+
+                                      <span className="text-sm text-gray-500 font-medium">
+                                        {percentage}%
+                                      </span>
+                                    </div>
+
+                                    {/* Progress bar */}
+
+                                    <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
+                                      <motion.div
+                                        className={`h-full bg-gradient-to-r ${nature.color} rounded-full relative`}
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${percentage}%` }}
+                                        transition={{
+                                          delay: 0.4 + index * 0.1,
+
+                                          duration: 0.8,
+
+                                          ease: "easeOut",
+                                        }}
+                                      >
+                                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
+                                      </motion.div>
+                                    </div>
+
+                                    {count > 0 && (
+                                      <motion.p
+                                        className="text-xs text-gray-400"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        transition={{
+                                          delay: 0.5 + index * 0.1,
+                                        }}
+                                      >
+                                        {count === 1 ? "request" : "requests"}
+                                      </motion.p>
+                                    )}
+                                  </div>
+                                </div>
+
+                                {/* Hover tooltip */}
+
+                                <AnimatePresence>
+                                  <motion.div
+                                    className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-50 whitespace-nowrap"
+                                    initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                    exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                                    transition={{ duration: 0.2 }}
+                                  >
+                                    <div className="font-semibold">
+                                      {nature.name}
+                                    </div>
+
+                                    <div>
+                                      {count} requests ({percentage}% of total)
+                                    </div>
+
+                                    <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
+                                      <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />
+                                    </div>
+                                  </motion.div>
+                                </AnimatePresence>
+                              </div>
+                            </motion.div>
+                          );
+                        })}
+                    </div>
+                  </div>
+                </motion.div>
+              </>
+            )}
+
+            {/* Analytics Tab */}
+
+            {activeTab === "analytics" && (
+              <>
+                {/* Minimal Bento Grid */}
+
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                  <div className="col-span-2 bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
+                    <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                      Total Requests
+                    </p>
+
+                    <p className="text-4xl font-bold text-gray-900 mt-1">
+                      {stats.total}
+                    </p>
+                  </div>
+
+                  <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
+                    <p className="text-xs font-medium text-yellow-600 uppercase tracking-wide">
+                      Pending
+                    </p>
+
+                    <p className="text-3xl font-bold text-gray-900 mt-1">
+                      {stats.pending}
+                    </p>
+                  </div>
+
+                  <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
+                    <p className="text-xs font-medium text-green-600 uppercase tracking-wide">
+                      Completed
+                    </p>
+
+                    <p className="text-3xl font-bold text-gray-900 mt-1">
+                      {stats.completed}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Nature Breakdown - Requests by Nature (All) */}
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
+                  className="bg-gradient-to-br from-white via-white to-gray-50/30 rounded-2xl shadow-lg border border-gray-100/50 p-8 mb-8 backdrop-blur-sm relative overflow-hidden"
+                >
+                  {/* Background decoration */}
+
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/5 to-purple-400/5 rounded-full blur-3xl"></div>
+
+                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-green-400/5 to-cyan-400/5 rounded-full blur-2xl"></div>
+
+                  <div className="relative z-10">
+                    <div className="flex items-center justify-between mb-8">
+                      <div className="flex items-center gap-4">
+                        <motion.div
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          transition={{ delay: 0.2, duration: 0.3 }}
+                          className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
+                        >
+                          <BarChart3 className="w-6 h-6 text-white" />
+                        </motion.div>
+
+                        <div>
+                          <h2 className="font-bold text-xl text-gray-900 tracking-tight">
+                            Requests by Nature
+                          </h2>
+
+                          <p className="text-sm text-gray-500 mt-1">
+                            Distribution of maintenance requests
+                          </p>
+                        </div>
+                      </div>
+
+                      <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3, duration: 0.3 }}
+                        className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100"
+                      >
+                        <Activity className="w-4 h-4 text-blue-600" />
+
+                        <span className="text-sm font-semibold text-gray-700">
+                          {stats.total}
+                        </span>
+
+                        <span className="text-sm text-gray-500">
+                          total requests
+                        </span>
+                      </motion.div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                      {[
+                        {
+                          name: "Plumbing",
+
+                          color: "from-blue-500 to-blue-600",
+
+                          bgLight: "bg-blue-50",
+
+                          icon: Wrench,
+
+                          gradient:
+                            "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
+                        },
+
+                        {
+                          name: "Electrical",
+
+                          color: "from-yellow-500 to-orange-500",
+
+                          bgLight: "bg-yellow-50",
+
+                          icon: Zap,
+
+                          gradient:
+                            "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
+                        },
+
+                        {
+                          name: "Carpentry",
+
+                          color: "from-amber-600 to-amber-700",
+
+                          bgLight: "bg-amber-50",
+
+                          icon: Hammer,
+
+                          gradient:
+                            "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
+                        },
+
+                        {
+                          name: "HVAC",
+
+                          color: "from-cyan-500 to-cyan-600",
+
+                          bgLight: "bg-cyan-50",
+
+                          icon: Wind,
+
+                          gradient:
+                            "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
+                        },
+
+                        {
+                          name: "Cleaning",
+
+                          color: "from-purple-500 to-purple-600",
+
+                          bgLight: "bg-purple-50",
+
+                          icon: Sparkles,
+
+                          gradient:
+                            "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
+                        },
+
+                        {
+                          name: "Other",
+
+                          color: "from-gray-500 to-gray-600",
+
+                          bgLight: "bg-gray-50",
+
+                          icon: MoreHorizontal,
+
+                          gradient:
+                            "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
+                        },
+                      ].map((nature, index) => {
                         const count = requests.filter(
                           (r) => r.nature === nature.name,
                         ).length;
@@ -3765,471 +4113,214 @@ ${result.analysis.risks || "N/A"}
                                         ease: "easeOut",
                                       }}
                                     >
-                                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse" />
+                                      <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
                                     </motion.div>
                                   </div>
-
-                                  {count > 0 && (
-                                    <motion.p
-                                      className="text-xs text-gray-400"
-                                      initial={{ opacity: 0 }}
-                                      animate={{ opacity: 1 }}
-                                      transition={{ delay: 0.5 + index * 0.1 }}
-                                    >
-                                      {count === 1 ? "request" : "requests"}
-                                    </motion.p>
-                                  )}
                                 </div>
                               </div>
-
-                              {/* Hover tooltip */}
-
-                              <AnimatePresence>
-                                <motion.div
-                                  className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-50 whitespace-nowrap"
-                                  initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                                  exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                                  transition={{ duration: 0.2 }}
-                                >
-                                  <div className="font-semibold">
-                                    {nature.name}
-                                  </div>
-
-                                  <div>
-                                    {count} requests ({percentage}% of total)
-                                  </div>
-
-                                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-                                    <div className="w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900" />
-                                  </div>
-                                </motion.div>
-                              </AnimatePresence>
                             </div>
                           </motion.div>
                         );
                       })}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            </>
-          )}
+                </motion.div>
 
-          {/* Analytics Tab */}
+                {/* Status Distribution - Interactive Line Chart */}
 
-          {activeTab === "analytics" && (
-            <>
-              {/* Minimal Bento Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <div className="bg-white rounded-lg p-6 border border-gray-100 hover:shadow-md transition-all duration-200">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-sm font-medium text-gray-600">
+                        Status Trends (30 Days)
+                      </h4>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                <div className="col-span-2 bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                    Total Requests
-                  </p>
+                      <div className="flex items-center gap-4 text-xs">
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
 
-                  <p className="text-4xl font-bold text-gray-900 mt-1">
-                    {stats.total}
-                  </p>
-                </div>
+                          <span className="text-gray-600">Pending</span>
+                        </div>
 
-                <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
-                  <p className="text-xs font-medium text-yellow-600 uppercase tracking-wide">
-                    Pending
-                  </p>
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
 
-                  <p className="text-3xl font-bold text-gray-900 mt-1">
-                    {stats.pending}
-                  </p>
-                </div>
+                          <span className="text-gray-600">In Progress</span>
+                        </div>
 
-                <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
-                  <p className="text-xs font-medium text-green-600 uppercase tracking-wide">
-                    Completed
-                  </p>
+                        <div className="flex items-center gap-1">
+                          <div className="w-3 h-3 bg-green-400 rounded-full"></div>
 
-                  <p className="text-3xl font-bold text-gray-900 mt-1">
-                    {stats.completed}
-                  </p>
-                </div>
-              </div>
-
-              {/* Nature Breakdown - Requests by Nature (All) */}
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="bg-gradient-to-br from-white via-white to-gray-50/30 rounded-2xl shadow-lg border border-gray-100/50 p-8 mb-8 backdrop-blur-sm relative overflow-hidden"
-              >
-                {/* Background decoration */}
-
-                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-blue-400/5 to-purple-400/5 rounded-full blur-3xl"></div>
-
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-green-400/5 to-cyan-400/5 rounded-full blur-2xl"></div>
-
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
-                      <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ delay: 0.2, duration: 0.3 }}
-                        className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
-                      >
-                        <BarChart3 className="w-6 h-6 text-white" />
-                      </motion.div>
-
-                      <div>
-                        <h2 className="font-bold text-xl text-gray-900 tracking-tight">
-                          Requests by Nature
-                        </h2>
-
-                        <p className="text-sm text-gray-500 mt-1">
-                          Distribution of maintenance requests
-                        </p>
+                          <span className="text-gray-600">Completed</span>
+                        </div>
                       </div>
                     </div>
 
-                    <motion.div
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: 0.3, duration: 0.3 }}
-                      className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100"
-                    >
-                      <Activity className="w-4 h-4 text-blue-600" />
+                    {mounted ? (
+                      <ResponsiveContainer width="100%" height={200}>
+                        <AreaChart data={generateStatusTrendData()}>
+                          <defs>
+                            <linearGradient
+                              id="pendingGradient"
+                              x1="0"
+                              y1="0"
+                              x2="0"
+                              y2="1"
+                            >
+                              <stop
+                                offset="5%"
+                                stopColor="#EAB308"
+                                stopOpacity={0.8}
+                              />
 
-                      <span className="text-sm font-semibold text-gray-700">
-                        {stats.total}
-                      </span>
+                              <stop
+                                offset="95%"
+                                stopColor="#EAB308"
+                                stopOpacity={0.1}
+                              />
+                            </linearGradient>
 
-                      <span className="text-sm text-gray-500">
-                        total requests
-                      </span>
-                    </motion.div>
+                            <linearGradient
+                              id="inProgressGradient"
+                              x1="0"
+                              y1="0"
+                              x2="0"
+                              y2="1"
+                            >
+                              <stop
+                                offset="5%"
+                                stopColor="#3B82F6"
+                                stopOpacity={0.8}
+                              />
+
+                              <stop
+                                offset="95%"
+                                stopColor="#3B82F6"
+                                stopOpacity={0.1}
+                              />
+                            </linearGradient>
+
+                            <linearGradient
+                              id="completedGradient"
+                              x1="0"
+                              y1="0"
+                              x2="0"
+                              y2="1"
+                            >
+                              <stop
+                                offset="5%"
+                                stopColor="#22C55E"
+                                stopOpacity={0.8}
+                              />
+
+                              <stop
+                                offset="95%"
+                                stopColor="#22C55E"
+                                stopOpacity={0.1}
+                              />
+                            </linearGradient>
+                          </defs>
+
+                          <CartesianGrid
+                            strokeDasharray="3 3"
+                            stroke="#f0f0f0"
+                          />
+
+                          <XAxis
+                            dataKey="date"
+                            tick={{ fontSize: 10 }}
+                            interval="preserveStartEnd"
+                            tickLine={false}
+                            axisLine={false}
+                          />
+
+                          <YAxis
+                            tick={{ fontSize: 10 }}
+                            tickLine={false}
+                            axisLine={false}
+                          />
+
+                          <Tooltip
+                            contentStyle={{
+                              backgroundColor: "rgba(255, 255, 255, 0.95)",
+
+                              border: "1px solid #e5e7eb",
+
+                              borderRadius: "8px",
+
+                              fontSize: "12px",
+                            }}
+                            labelStyle={{
+                              color: "#374151",
+                              fontWeight: "bold",
+                            }}
+                          />
+
+                          <Area
+                            type="monotone"
+                            dataKey="pending"
+                            stroke="#EAB308"
+                            strokeWidth={2}
+                            fill="url(#pendingGradient)"
+                          />
+
+                          <Area
+                            type="monotone"
+                            dataKey="inProgress"
+                            stroke="#3B82F6"
+                            strokeWidth={2}
+                            fill="url(#inProgressGradient)"
+                          />
+
+                          <Area
+                            type="monotone"
+                            dataKey="completed"
+                            stroke="#22C55E"
+                            strokeWidth={2}
+                            fill="url(#completedGradient)"
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="h-[200px] flex items-center justify-center text-gray-400">
+                        Loading chart...
+                      </div>
+                    )}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-                    {[
-                      {
-                        name: "Plumbing",
+                  <div className="bg-white rounded-lg p-6 border border-gray-100 hover:shadow-md transition-all duration-200">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-sm font-medium text-gray-600">
+                        Status Distribution
+                      </h4>
 
-                        color: "from-blue-500 to-blue-600",
+                      <div className="text-xs text-gray-500">
+                        Total:{" "}
+                        {stats.pending + stats.inProgress + stats.completed}
+                      </div>
+                    </div>
 
-                        bgLight: "bg-blue-50",
-
-                        icon: Wrench,
-
-                        gradient:
-                          "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
-                      },
-
-                      {
-                        name: "Electrical",
-
-                        color: "from-yellow-500 to-orange-500",
-
-                        bgLight: "bg-yellow-50",
-
-                        icon: Zap,
-
-                        gradient:
-                          "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
-                      },
-
-                      {
-                        name: "Carpentry",
-
-                        color: "from-amber-600 to-amber-700",
-
-                        bgLight: "bg-amber-50",
-
-                        icon: Hammer,
-
-                        gradient:
-                          "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
-                      },
-
-                      {
-                        name: "HVAC",
-
-                        color: "from-cyan-500 to-cyan-600",
-
-                        bgLight: "bg-cyan-50",
-
-                        icon: Wind,
-
-                        gradient:
-                          "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
-                      },
-
-                      {
-                        name: "Cleaning",
-
-                        color: "from-purple-500 to-purple-600",
-
-                        bgLight: "bg-purple-50",
-
-                        icon: Sparkles,
-
-                        gradient:
-                          "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
-                      },
-
-                      {
-                        name: "Other",
-
-                        color: "from-gray-500 to-gray-600",
-
-                        bgLight: "bg-gray-50",
-
-                        icon: MoreHorizontal,
-
-                        gradient:
-                          "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
-                      },
-                    ].map((nature, index) => {
-                      const count = requests.filter(
-                        (r) => r.nature === nature.name,
-                      ).length;
-
-                      const percentage =
-                        stats.total > 0
-                          ? Math.round((count / stats.total) * 100)
-                          : 0;
-
-                      const Icon = nature.icon;
-
-                      return (
-                        <motion.div
-                          key={nature.name}
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{
-                            delay: 0.1 * index,
-
-                            duration: 0.4,
-
-                            ease: "easeOut",
-                          }}
-                          whileHover={{
-                            y: -4,
-
-                            scale: 1.02,
-
-                            transition: { duration: 0.2 },
-                          }}
-                          whileTap={{ scale: 0.98 }}
-                          className="group relative"
+                    <ResponsiveContainer width="100%" height={220}>
+                      <PieChart>
+                        <Pie
+                          data={generateDistributionData()}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={60}
+                          outerRadius={80}
+                          paddingAngle={2}
+                          dataKey="value"
+                          animationBegin={0}
+                          animationDuration={800}
                         >
-                          <div className="relative bg-white rounded-2xl p-5 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
-                            {/* Animated background gradient */}
-
-                            <motion.div
-                              className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300"
-                              style={{ background: nature.gradient }}
+                          {generateDistributionData().map((entry, index) => (
+                            <Cell
+                              key={`cell-${index}`}
+                              fill={entry.color}
+                              className="hover:opacity-80 transition-opacity cursor-pointer"
                             />
-
-                            {/* Top decoration line */}
-
-                            <motion.div
-                              className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${nature.color} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-                              initial={{ scaleX: 0 }}
-                              whileHover={{ scaleX: 1 }}
-                              transition={{ duration: 0.3 }}
-                            />
-
-                            <div className="relative z-10">
-                              {/* Icon section */}
-
-                              <div className="flex items-center justify-between mb-4">
-                                <motion.div
-                                  className={`p-3 rounded-xl ${nature.bgLight} group-hover:scale-110 transition-transform duration-300`}
-                                  whileHover={{ rotate: [0, -10, 10, 0] }}
-                                  transition={{ duration: 0.5 }}
-                                >
-                                  <Icon
-                                    className="w-5 h-5"
-                                    style={{
-                                      color:
-                                        nature.gradient.match(
-                                          /#[0-9A-F]{6}/,
-                                        )?.[0] || "#000",
-                                    }}
-                                  />
-                                </motion.div>
-
-                                {count > 0 && (
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    transition={{ delay: 0.2 + index * 0.1 }}
-                                    className="w-2 h-2 bg-green-400 rounded-full"
-                                  />
-                                )}
-                              </div>
-
-                              {/* Content */}
-
-                              <div className="space-y-3">
-                                <div>
-                                  <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-700 transition-colors">
-                                    {nature.name}
-                                  </h3>
-                                </div>
-
-                                <div className="flex items-baseline gap-2">
-                                  <motion.span
-                                    className="text-2xl font-bold text-gray-900"
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.3 + index * 0.1 }}
-                                  >
-                                    {count}
-                                  </motion.span>
-
-                                  <span className="text-sm text-gray-500 font-medium">
-                                    {percentage}%
-                                  </span>
-                                </div>
-
-                                {/* Progress bar */}
-
-                                <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
-                                  <motion.div
-                                    className={`h-full bg-gradient-to-r ${nature.color} rounded-full relative`}
-                                    initial={{ width: 0 }}
-                                    animate={{ width: `${percentage}%` }}
-                                    transition={{
-                                      delay: 0.4 + index * 0.1,
-
-                                      duration: 0.8,
-
-                                      ease: "easeOut",
-                                    }}
-                                  >
-                                    <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                                  </motion.div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Status Distribution - Interactive Line Chart */}
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="bg-white rounded-lg p-6 border border-gray-100 hover:shadow-md transition-all duration-200">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-sm font-medium text-gray-600">
-                      Status Trends (30 Days)
-                    </h4>
-
-                    <div className="flex items-center gap-4 text-xs">
-                      <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-
-                        <span className="text-gray-600">Pending</span>
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
-
-                        <span className="text-gray-600">In Progress</span>
-                      </div>
-
-                      <div className="flex items-center gap-1">
-                        <div className="w-3 h-3 bg-green-400 rounded-full"></div>
-
-                        <span className="text-gray-600">Completed</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {mounted ? (
-                    <ResponsiveContainer width="100%" height={200}>
-                      <AreaChart data={generateStatusTrendData()}>
-                        <defs>
-                          <linearGradient
-                            id="pendingGradient"
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                          >
-                            <stop
-                              offset="5%"
-                              stopColor="#EAB308"
-                              stopOpacity={0.8}
-                            />
-
-                            <stop
-                              offset="95%"
-                              stopColor="#EAB308"
-                              stopOpacity={0.1}
-                            />
-                          </linearGradient>
-
-                          <linearGradient
-                            id="inProgressGradient"
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                          >
-                            <stop
-                              offset="5%"
-                              stopColor="#3B82F6"
-                              stopOpacity={0.8}
-                            />
-
-                            <stop
-                              offset="95%"
-                              stopColor="#3B82F6"
-                              stopOpacity={0.1}
-                            />
-                          </linearGradient>
-
-                          <linearGradient
-                            id="completedGradient"
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                          >
-                            <stop
-                              offset="5%"
-                              stopColor="#22C55E"
-                              stopOpacity={0.8}
-                            />
-
-                            <stop
-                              offset="95%"
-                              stopColor="#22C55E"
-                              stopOpacity={0.1}
-                            />
-                          </linearGradient>
-                        </defs>
-
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-
-                        <XAxis
-                          dataKey="date"
-                          tick={{ fontSize: 10 }}
-                          interval="preserveStartEnd"
-                          tickLine={false}
-                          axisLine={false}
-                        />
-
-                        <YAxis
-                          tick={{ fontSize: 10 }}
-                          tickLine={false}
-                          axisLine={false}
-                        />
+                          ))}
+                        </Pie>
 
                         <Tooltip
                           contentStyle={{
@@ -4241,905 +4332,77 @@ ${result.analysis.risks || "N/A"}
 
                             fontSize: "12px",
                           }}
-                          labelStyle={{ color: "#374151", fontWeight: "bold" }}
-                        />
+                          formatter={(
+                            value: number | undefined,
 
-                        <Area
-                          type="monotone"
-                          dataKey="pending"
-                          stroke="#EAB308"
-                          strokeWidth={2}
-                          fill="url(#pendingGradient)"
-                        />
+                            name: string | undefined,
+                          ) => {
+                            if (value === undefined || name === undefined)
+                              return ["", ""];
 
-                        <Area
-                          type="monotone"
-                          dataKey="inProgress"
-                          stroke="#3B82F6"
-                          strokeWidth={2}
-                          fill="url(#inProgressGradient)"
-                        />
+                            const total =
+                              stats.pending +
+                              stats.inProgress +
+                              stats.completed;
 
-                        <Area
-                          type="monotone"
-                          dataKey="completed"
-                          stroke="#22C55E"
-                          strokeWidth={2}
-                          fill="url(#completedGradient)"
+                            return [
+                              `${value} (${Math.round((value / total) * 100)}%)`,
+
+                              name,
+                            ];
+                          }}
                         />
-                      </AreaChart>
+                      </PieChart>
                     </ResponsiveContainer>
-                  ) : (
-                    <div className="h-[200px] flex items-center justify-center text-gray-400">
-                      Loading chart...
-                    </div>
-                  )}
-                </div>
 
-                <div className="bg-white rounded-lg p-6 border border-gray-100 hover:shadow-md transition-all duration-200">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-sm font-medium text-gray-600">
-                      Status Distribution
-                    </h4>
+                    {/* Custom Legend */}
 
-                    <div className="text-xs text-gray-500">
-                      Total:{" "}
-                      {stats.pending + stats.inProgress + stats.completed}
-                    </div>
-                  </div>
-
-                  <ResponsiveContainer width="100%" height={220}>
-                    <PieChart>
-                      <Pie
-                        data={generateDistributionData()}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
-                        paddingAngle={2}
-                        dataKey="value"
-                        animationBegin={0}
-                        animationDuration={800}
-                      >
-                        {generateDistributionData().map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={entry.color}
-                            className="hover:opacity-80 transition-opacity cursor-pointer"
-                          />
-                        ))}
-                      </Pie>
-
-                      <Tooltip
-                        contentStyle={{
-                          backgroundColor: "rgba(255, 255, 255, 0.95)",
-
-                          border: "1px solid #e5e7eb",
-
-                          borderRadius: "8px",
-
-                          fontSize: "12px",
-                        }}
-                        formatter={(
-                          value: number | undefined,
-
-                          name: string | undefined,
-                        ) => {
-                          if (value === undefined || name === undefined)
-                            return ["", ""];
-
-                          const total =
-                            stats.pending + stats.inProgress + stats.completed;
-
-                          return [
-                            `${value} (${Math.round((value / total) * 100)}%)`,
-
-                            name,
-                          ];
-                        }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-
-                  {/* Custom Legend */}
-
-                  <div className="flex justify-center gap-6 mt-4">
-                    {generateDistributionData().map((item) => (
-                      <div
-                        key={item.name}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer group"
-                      >
+                    <div className="flex justify-center gap-6 mt-4">
+                      {generateDistributionData().map((item) => (
                         <div
-                          className="w-3 h-3 rounded-full group-hover:scale-110 transition-transform"
-                          style={{ backgroundColor: item.color }}
-                        />
+                          key={item.name}
+                          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer group"
+                        >
+                          <div
+                            className="w-3 h-3 rounded-full group-hover:scale-110 transition-transform"
+                            style={{ backgroundColor: item.color }}
+                          />
 
-                        <div className="text-xs">
-                          <div className="font-medium text-gray-700">
-                            {item.name}
-                          </div>
+                          <div className="text-xs">
+                            <div className="font-medium text-gray-700">
+                              {item.name}
+                            </div>
 
-                          <div className="text-gray-500">
-                            {item.value} (
-                            {Math.round(
-                              (item.value /
-                                (stats.pending +
-                                  stats.inProgress +
-                                  stats.completed)) *
-                                100,
-                            )}
-                            %)
+                            <div className="text-gray-500">
+                              {item.value} (
+                              {Math.round(
+                                (item.value /
+                                  (stats.pending +
+                                    stats.inProgress +
+                                    stats.completed)) *
+                                  100,
+                              )}
+                              %)
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* Master Queue Tab */}
-
-          {activeTab === "master-queue" && (
-            <div className="space-y-6">
-              {/* Search Bar with Filter */}
-
-              <div className="flex gap-3">
-                <div className="relative flex-1">
-                  <svg
-                    className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-
-                  <input
-                    type="text"
-                    placeholder="Search by nature, location, or description..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
-                  />
-                </div>
-
-                <button
-                  onClick={() => setShowFilterPanel(!showFilterPanel)}
-                  className={`p-3 rounded-lg border transition-colors ${
-                    showFilterPanel ||
-                    filters.status.length > 0 ||
-                    filters.nature.length > 0 ||
-                    filters.urgency.length > 0
-                      ? "bg-[#427A43] text-white border-[#427A43]"
-                      : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"
-                  }`}
-                  title="Filter"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              {/* Filter Panel */}
-
-              {showFilterPanel && (
-                <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-md">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <label className="flex items-center gap-2 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={selectAll}
-                          onChange={(e) => setSelectAll(e.target.checked)}
-                          className="w-4 h-4 text-[#427A43] rounded border-gray-300 focus:ring-[#427A43]"
-                        />
-
-                        <span className="text-sm font-medium text-gray-700">
-                          Select all
-                        </span>
-                      </label>
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        setFilters({ status: [], nature: [], urgency: [] });
-
-                        setSelectAll(true);
-                      }}
-                      className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
-                      title="Clear filters"
-                    >
-                      <svg
-                        className="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {/* Status Filter */}
-
-                    <div>
-                      <p className="text-xs font-medium text-gray-500 uppercase mb-2">
-                        Status
-                      </p>
-
-                      <div className="space-y-1">
-                        {[
-                          "Pending",
-
-                          "In Progress",
-
-                          "Completed",
-
-                          "Cancelled",
-                        ].map((status) => (
-                          <label
-                            key={status}
-                            className="flex items-center gap-2 cursor-pointer"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={
-                                selectAll || filters.status.includes(status)
-                              }
-                              onChange={(e) => {
-                                if (selectAll) {
-                                  setSelectAll(false);
-
-                                  setFilters({ ...filters, status: [status] });
-                                } else {
-                                  const newStatus = e.target.checked
-                                    ? [...filters.status, status]
-                                    : filters.status.filter(
-                                        (s) => s !== status,
-                                      );
-
-                                  setFilters({ ...filters, status: newStatus });
-                                }
-                              }}
-                              className="w-4 h-4 text-[#427A43] rounded border-gray-300 focus:ring-[#427A43]"
-                            />
-
-                            <span className="text-sm text-gray-700">
-                              {status}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Nature Filter */}
-
-                    <div>
-                      <p className="text-xs font-medium text-gray-500 uppercase mb-2">
-                        Nature
-                      </p>
-
-                      <div className="space-y-1">
-                        {[
-                          "Plumbing",
-
-                          "Electrical",
-
-                          "Carpentry",
-
-                          "HVAC",
-
-                          "Cleaning",
-
-                          "Other",
-                        ].map((nature) => (
-                          <label
-                            key={nature}
-                            className="flex items-center gap-2 cursor-pointer"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={
-                                selectAll || filters.nature.includes(nature)
-                              }
-                              onChange={(e) => {
-                                if (selectAll) {
-                                  setSelectAll(false);
-
-                                  setFilters({ ...filters, nature: [nature] });
-                                } else {
-                                  const newNature = e.target.checked
-                                    ? [...filters.nature, nature]
-                                    : filters.nature.filter(
-                                        (n) => n !== nature,
-                                      );
-
-                                  setFilters({ ...filters, nature: newNature });
-                                }
-                              }}
-                              className="w-4 h-4 text-[#427A43] rounded border-gray-300 focus:ring-[#427A43]"
-                            />
-
-                            <span className="text-sm text-gray-700">
-                              {nature}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Urgency Filter */}
-
-                    <div>
-                      <p className="text-xs font-medium text-gray-500 uppercase mb-2">
-                        Urgency
-                      </p>
-
-                      <div className="space-y-1">
-                        {["Emergency", "Urgent", "Normal"].map((urgency) => (
-                          <label
-                            key={urgency}
-                            className="flex items-center gap-2 cursor-pointer"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={
-                                selectAll || filters.urgency.includes(urgency)
-                              }
-                              onChange={(e) => {
-                                if (selectAll) {
-                                  setSelectAll(false);
-
-                                  setFilters({
-                                    ...filters,
-
-                                    urgency: [urgency],
-                                  });
-                                } else {
-                                  const newUrgency = e.target.checked
-                                    ? [...filters.urgency, urgency]
-                                    : filters.urgency.filter(
-                                        (u) => u !== urgency,
-                                      );
-
-                                  setFilters({
-                                    ...filters,
-
-                                    urgency: newUrgency,
-                                  });
-                                }
-                              }}
-                              className="w-4 h-4 text-[#427A43] rounded border-gray-300 focus:ring-[#427A43]"
-                            />
-
-                            <span className="text-sm text-gray-700">
-                              {urgency}
-                            </span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Table */}
-
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200">
-                  <h2 className="font-header text-lg font-semibold text-gray-900">
-                    All Maintenance Requests
-                  </h2>
-
-                  <p className="text-sm text-gray-600">
-                    {requests.length} total requests
-                  </p>
-                </div>
-
-                <div>
-                  <table className="w-full">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          Request
-                        </th>
-
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          Requester
-                        </th>
-
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          Details
-                        </th>
-
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          Status
-                        </th>
-
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-
-                    <tbody className="divide-y divide-gray-200">
-                      {filteredRequests.map((request) => (
-                        <RequestRow key={request.id} request={request} />
                       ))}
-                    </tbody>
-                  </table>
-
-                  {filteredRequests.length === 0 && (
-                    <div className="text-center py-12 text-gray-500">
-                      <p>No requests found</p>
                     </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Announcements Tab - Broadcast Only */}
-
-        {activeTab === "announcements" && (
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-header text-lg font-semibold text-gray-900">
-                Announcements
-              </h2>
-
-              <button
-                onClick={() => setShowBroadcastModal(true)}
-                className="px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors flex items-center gap-2 text-sm font-medium"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
-                  />
-                </svg>
-                Send Announcement
-              </button>
-
-              <button
-                onClick={() => setShowWarningModal(true)}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 text-sm font-medium"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-                Send Warning / Notice
-              </button>
-            </div>
-
-            <div className="bg-gray-50 rounded-xl p-8 text-center">
-              <svg
-                className="w-16 h-16 mx-auto mb-4 text-[#427A43]"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
-                />
-              </svg>
-
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
-                Broadcast Announcements
-              </h3>
-
-              <p className="text-gray-500 max-w-md mx-auto">
-                Send important announcements to all users at once. Messages will
-                appear as notifications in their dashboard.
-              </p>
-            </div>
-
-            {/* Recent Broadcasts */}
-
-            <div className="mt-6">
-              <h3 className="font-medium text-gray-900 mb-4">
-                Recent Announcements
-              </h3>
-
-              <div className="space-y-3">
-                {userMessages["announcements"]?.length > 0 ? (
-                  userMessages["announcements"].slice(0, 5).map((msg) => (
-                    <div
-                      key={msg.id}
-                      className="p-4 bg-gray-50 rounded-lg border border-gray-100"
-                    >
-                      <div className="flex items-start justify-between">
-                        <p className="text-gray-900 font-medium">
-                          {msg.title || "Announcement"}
-                        </p>
-
-                        <span className="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded-full">
-                          {msg.recipient_count || 0} recipients
-                        </span>
-                      </div>
-
-                      <p className="text-gray-700 mt-2">{msg.message}</p>
-
-                      <p className="text-xs text-gray-400 mt-2">
-                        <SafeDate date={msg.created_at} />
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-400 text-sm">
-                    No announcements sent yet
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* Edit Request Modal */}
-
-      {editingRequest && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="bg-[#427A43] p-6 rounded-t-xl">
-              <div className="flex justify-between items-center">
-                <h2 className="font-header text-xl font-bold text-white">
-                  Change Status
-                </h2>
-
-                <button
-                  onClick={() => setEditingRequest(null)}
-                  className="text-white/80 hover:text-white"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Status
-                </label>
-
-                <select
-                  value={editFormData.status}
-                  onChange={(e) =>
-                    setEditFormData({ ...editFormData, status: e.target.value })
-                  }
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
-                >
-                  <option value="Pending">Pending</option>
-
-                  <option value="In Progress">In Progress</option>
-
-                  <option value="Completed">Completed</option>
-
-                  <option value="Cancelled">Cancelled</option>
-                </select>
-              </div>
-
-              <div className="flex gap-3 pt-4">
-                <button
-                  onClick={() => setEditingRequest(null)}
-                  className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  onClick={handleSaveStatus}
-                  className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-                >
-                  Update Status
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Detail Modal */}
-
-      {showDetailModal && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div
-            className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-            onClick={() => setShowDetailModal(null)}
-          />
-
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100 relative z-10 flex flex-col">
-            {/* Header */}
-
-            <div className="bg-gradient-to-r from-[#427A43] to-[#2d5a2e] p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
-                  {showDetailModal.nature === "Plumbing" && (
-                    <Wrench className="w-4 h-4 text-white" />
-                  )}
-
-                  {showDetailModal.nature === "Electrical" && (
-                    <Zap className="w-4 h-4 text-white" />
-                  )}
-
-                  {showDetailModal.nature === "Carpentry" && (
-                    <Hammer className="w-4 h-4 text-white" />
-                  )}
-
-                  {showDetailModal.nature === "Personnel Services" && (
-                    <Sparkles className="w-4 h-4 text-white" />
-                  )}
-
-                  {![
-                    "Plumbing",
-
-                    "Electrical",
-
-                    "Carpentry",
-
-                    "Personnel Services",
-                  ].includes(showDetailModal.nature) && (
-                    <Activity className="w-4 h-4 text-white" />
-                  )}
-                </div>
-
-                <div>
-                  <h2 className="font-header text-lg font-bold text-white">
-                    {showDetailModal.nature}
-                  </h2>
-
-                  <p className="text-white/80 text-xs mt-0.5">
-                    ID: {showDetailModal.id.slice(0, 8).toUpperCase()}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Content */}
-
-            <div className="p-4 space-y-4 overflow-y-auto flex-1">
-              {/* Status and Urgency Badges */}
-
-              <div className="flex flex-wrap gap-2">
-                <span
-                  className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                    showDetailModal.status === "Pending"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : showDetailModal.status === "In Progress"
-                        ? "bg-blue-100 text-blue-800"
-                        : showDetailModal.status === "Completed"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  <div
-                    className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
-                      showDetailModal.status === "Pending"
-                        ? "bg-yellow-500"
-                        : showDetailModal.status === "In Progress"
-                          ? "bg-blue-500"
-                          : showDetailModal.status === "Completed"
-                            ? "bg-green-500"
-                            : "bg-red-500"
-                    }`}
-                  />
-
-                  {showDetailModal.status}
-                </span>
-
-                <span
-                  className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                    showDetailModal.urgency === "Emergency"
-                      ? "bg-red-100 text-red-800"
-                      : showDetailModal.urgency === "Urgent"
-                        ? "bg-orange-100 text-orange-800"
-                        : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {showDetailModal.urgency === "Emergency" && "🔴 "}
-
-                  {showDetailModal.urgency === "Urgent" && "🟠 "}
-
-                  {showDetailModal.urgency}
-                </span>
-              </div>
-
-              {/* Information Cards */}
-
-              <div className="space-y-3">
-                {/* Location */}
-
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="p-1 bg-[#427A43]/10 rounded">
-                      <svg
-                        className="w-3 h-3 text-[#427A43]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                        />
-
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                      </svg>
-                    </div>
-
-                    <h3 className="text-xs font-semibold text-gray-700">
-                      Location
-                    </h3>
                   </div>
-
-                  <p className="text-gray-900 font-medium text-sm">
-                    {showDetailModal.location}
-                  </p>
                 </div>
+              </>
+            )}
 
-                {/* Requester */}
+            {/* Master Queue Tab */}
 
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="p-1 bg-[#427A43]/10 rounded">
-                      <svg
-                        className="w-3 h-3 text-[#427A43]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                        />
-                      </svg>
-                    </div>
+            {activeTab === "master-queue" && (
+              <div className="space-y-6">
+                {/* Search Bar with Filter */}
 
-                    <h3 className="text-xs font-semibold text-gray-700">
-                      Requester
-                    </h3>
-                  </div>
-
-                  <p className="text-gray-900 font-medium text-sm">
-                    {showDetailModal.profiles?.full_name || "Unknown"}
-                  </p>
-
-                  {showDetailModal.profiles?.is_anonymous && (
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs">
-                      <svg
-                        className="w-3 h-3"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                        />
-                      </svg>
-                      Guest
-                    </span>
-                  )}
-
-                  <p className="text-xs text-gray-500">
-                    {showDetailModal.profiles?.visual_role || "N/A"}
-                  </p>
-                </div>
-
-                {/* Created Date */}
-
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="p-1 bg-[#427A43]/10 rounded">
-                      <svg
-                        className="w-3 h-3 text-[#427A43]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </div>
-
-                    <h3 className="text-xs font-semibold text-gray-700">
-                      Created
-                    </h3>
-                  </div>
-
-                  <p className="text-gray-900 font-medium text-sm">
-                    <SafeDate date={showDetailModal.created_at} />
-                  </p>
-
-                  <p className="text-xs text-gray-500">
-                    {new Date(showDetailModal.created_at).toLocaleTimeString(
-                      [],
-
-                      { hour: "2-digit", minute: "2-digit" },
-                    )}
-                  </p>
-                </div>
-              </div>
-
-              {/* Description */}
-
-              <div className="bg-gray-50 rounded-lg p-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="p-1 bg-[#427A43]/10 rounded">
+                <div className="flex gap-3">
+                  <div className="relative flex-1">
                     <svg
-                      className="w-3 h-3 text-[#427A43]"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -5148,348 +4411,78 @@ ${result.analysis.risks || "N/A"}
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                       />
                     </svg>
+
+                    <input
+                      type="text"
+                      placeholder="Search by nature, location, or description..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
+                    />
                   </div>
 
-                  <h3 className="text-xs font-semibold text-gray-700">
-                    Description
-                  </h3>
-                </div>
-
-                <p className="text-gray-900 text-sm leading-relaxed whitespace-pre-wrap">
-                  {showDetailModal.description}
-                </p>
-              </div>
-
-              {/* Photos Section */}
-
-              {showDetailModal.photos && showDetailModal.photos.length > 0 && (
-                <div className="bg-gray-50 rounded-lg p-3">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="p-1 bg-[#427A43]/10 rounded">
-                      <svg
-                        className="w-3 h-3 text-[#427A43]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </div>
-
-                    <h3 className="text-xs font-semibold text-gray-700">
-                      Photos ({showDetailModal.photos.length})
-                    </h3>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    {showDetailModal.photos.map((photo, idx) => (
-                      <div
-                        key={idx}
-                        className="relative group cursor-pointer aspect-square"
-                        onClick={() => setSelectedPhoto(photo)}
-                      >
-                        <img
-                          src={photo}
-                          alt={`Photo ${idx + 1}`}
-                          className="w-full h-full object-cover rounded-lg transition-transform group-hover:scale-105"
-                        />
-
-                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                          <svg
-                            className="w-3 h-3 text-white"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
-                            />
-                          </svg>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Action Buttons - Fixed at bottom */}
-
-            <div className="p-3 border-t border-gray-200">
-              <button
-                onClick={() => {
-                  setSelectedRequestForReport(showDetailModal);
-
-                  setShowReportSidebar(true);
-
-                  setShowDetailModal(null);
-                }}
-                className="w-full px-3 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors font-medium text-sm flex items-center justify-center gap-1.5"
-              >
-                <svg
-                  className="w-3 h-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 17v1a1 1 0 001 1h4a1 1 0 001-1v-1m3-2V8a2 2 0 00-2-2H8a2 2 0 00-2 2v8m5-4h4"
-                  />
-                </svg>
-                Generate Form
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Notifications Sidebar */}
-
-      <div
-        ref={notificationsRef}
-        className={`fixed top-0 right-0 h-full w-96 bg-white shadow-2xl z-40 transform transition-transform duration-500 ease-out ${
-          showNotifications ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="h-full overflow-y-auto">
-          <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
-            <div className="flex justify-center items-center">
-              <h2 className="font-header text-xl font-bold text-white">
-                Notifications
-              </h2>
-            </div>
-          </div>
-
-          <div className="p-4">
-            <div className="flex justify-between items-center mb-4">
-              <button
-                onClick={markAllNotificationsRead}
-                className="text-sm text-green-600 hover:text-green-700"
-              >
-                Mark all as read
-              </button>
-
-              <button
-                onClick={deleteAllReadNotifications}
-                className="text-sm text-red-500 hover:text-red-600"
-              >
-                Delete all read
-              </button>
-            </div>
-
-            {notifications.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">
-                No notifications yet
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {notifications.map((notification: any) => {
-                  const isEmergency = notification.message
-
-                    .toLowerCase()
-
-                    .includes("emergency");
-
-                  return (
-                    <div
-                      key={notification.id}
-                      className={`p-4 rounded-lg border transition-all ${
-                        !notification.is_read
-                          ? isEmergency
-                            ? "bg-red-50 border-red-200"
-                            : "bg-blue-50 border-blue-200"
-                          : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-                      }`}
+                  <button
+                    onClick={() => setShowFilterPanel(!showFilterPanel)}
+                    className={`p-3 rounded-lg border transition-colors ${
+                      showFilterPanel ||
+                      filters.status.length > 0 ||
+                      filters.nature.length > 0 ||
+                      filters.urgency.length > 0
+                        ? "bg-[#427A43] text-white border-[#427A43]"
+                        : "bg-white text-gray-600 border-gray-300 hover:border-gray-400"
+                    }`}
+                    title="Filter"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      <div className="flex items-start gap-3">
-                        <div
-                          className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
-                            !notification.is_read
-                              ? isEmergency
-                                ? "bg-red-500"
-                                : "bg-blue-500"
-                              : "bg-gray-300"
-                          }`}
-                        />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                      />
+                    </svg>
+                  </button>
+                </div>
 
-                        <div
-                          className="flex-1 min-w-0 cursor-pointer"
-                          onClick={() => markNotificationRead(notification.id)}
-                        >
-                          <p className="font-medium text-sm text-gray-900">
-                            {notification.title}
+                {/* Filter Panel */}
 
-                            {isEmergency && (
-                              <span className="ml-2 px-2 py-0.5 text-xs bg-red-100 text-red-700 rounded-full font-semibold">
-                                EMERGENCY
-                              </span>
-                            )}
-                          </p>
-
-                          <p className="text-sm text-gray-600 mt-1">
-                            {notification.message}
-                          </p>
-
-                          <p className="text-xs text-gray-400 mt-2">
-                            <SafeDate date={notification.created_at} />
-                          </p>
-                        </div>
-
-                        <div className="relative">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-
-                              setOpenNotificationMenu(
-                                openNotificationMenu === notification.id
-                                  ? null
-                                  : notification.id,
-                              );
-                            }}
-                            className="p-1 hover:bg-gray-200 rounded"
-                          >
-                            <svg
-                              className="w-5 h-5 text-gray-500"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle cx="12" cy="6" r="2" />
-
-                              <circle cx="12" cy="12" r="2" />
-
-                              <circle cx="12" cy="18" r="2" />
-                            </svg>
-                          </button>
-
-                          {openNotificationMenu === notification.id && (
-                            <div className="absolute right-0 mt-1 w-32 bg-white border rounded-lg shadow-lg z-10">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-
-                                  deleteNotification(notification.id);
-                                }}
-                                className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 rounded-lg"
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Profile Settings Sidebar */}
-
-      <>
-        <div
-          className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-500 ${showProfileSidebar ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-          onClick={() => setShowProfileSidebar(false)}
-        />
-
-        <div
-          className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showProfileSidebar ? "translate-x-0" : "-translate-x-full"}`}
-        >
-          <div className="h-full overflow-y-auto">
-            <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
-              <div className="flex justify-between items-center">
-                <h2 className="font-header text-xl font-bold text-white">
-                  Profile Settings
-                </h2>
-
-                <button
-                  onClick={() => setShowProfileSidebar(false)}
-                  className="text-white/80 hover:text-white transition-all duration-300 hover:scale-110"
-                >
-                  <svg
-                    className="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6 space-y-6">
-              {/* Profile Information Card - Editable */}
-
-              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
-                <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <svg
-                    className="w-5 h-5 text-[#427A43]"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                  Your Profile
-                </h3>
-
-                <div className="space-y-4">
-                  {/* Avatar Upload */}
-
-                  <div className="flex flex-col items-center py-4">
-                    <div className="relative">
-                      <div className="w-24 h-24 rounded-full bg-gray-200 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center">
-                        {profile?.avatar_url || userAvatar ? (
-                          <img
-                            src={
-                              avatarPreview ||
-                              profile?.avatar_url ||
-                              userAvatar ||
-                              ""
-                            }
-                            alt="Profile"
-                            className="w-full h-full object-cover"
+                {showFilterPanel && (
+                  <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-md">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <label className="flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={selectAll}
+                            onChange={(e) => setSelectAll(e.target.checked)}
+                            className="w-4 h-4 text-[#427A43] rounded border-gray-300 focus:ring-[#427A43]"
                           />
-                        ) : (
-                          <span className="text-3xl font-bold text-gray-400">
-                            {profile?.full_name?.charAt(0).toUpperCase() || "A"}
+
+                          <span className="text-sm font-medium text-gray-700">
+                            Select all
                           </span>
-                        )}
+                        </label>
                       </div>
 
-                      <label
-                        htmlFor="avatar-upload"
-                        className="absolute bottom-0 right-0 bg-[#427A43] text-white p-2 rounded-full cursor-pointer hover:bg-[#366337] transition-colors shadow-md"
+                      <button
+                        onClick={() => {
+                          setFilters({ status: [], nature: [], urgency: [] });
+
+                          setSelectAll(true);
+                        }}
+                        className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                        title="Clear filters"
                       >
                         <svg
-                          className="w-4 h-4"
+                          className="w-5 h-5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -5498,177 +4491,257 @@ ${result.analysis.risks || "N/A"}
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                          />
-
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                           />
                         </svg>
-
-                        <input
-                          id="avatar-upload"
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={handleAvatarUpload}
-                          disabled={uploadingAvatar}
-                        />
-                      </label>
+                      </button>
                     </div>
 
-                    {uploadingAvatar && (
-                      <p className="text-sm text-gray-500 mt-2">Uploading...</p>
-                    )}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      {/* Status Filter */}
 
-                    {validationErrors.avatar && (
-                      <p className="text-sm text-red-500 mt-2">
-                        {validationErrors.avatar}
-                      </p>
-                    )}
-                  </div>
+                      <div>
+                        <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                          Status
+                        </p>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">
-                      Full Name
-                    </label>
+                        <div className="space-y-1">
+                          {[
+                            "Pending",
 
-                    <input
-                      type="text"
-                      value={formData.full_name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, full_name: e.target.value })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900"
-                    />
-                  </div>
+                            "In Progress",
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">
-                      Visual Role
-                    </label>
+                            "Completed",
 
-                    <select
-                      value={formData.visual_role}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
+                            "Cancelled",
+                          ].map((status) => (
+                            <label
+                              key={status}
+                              className="flex items-center gap-2 cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={
+                                  selectAll || filters.status.includes(status)
+                                }
+                                onChange={(e) => {
+                                  if (selectAll) {
+                                    setSelectAll(false);
 
-                          visual_role: e.target.value,
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900 bg-white"
-                    >
-                      <option value="">Select a role</option>
+                                    setFilters({
+                                      ...filters,
+                                      status: [status],
+                                    });
+                                  } else {
+                                    const newStatus = e.target.checked
+                                      ? [...filters.status, status]
+                                      : filters.status.filter(
+                                          (s) => s !== status,
+                                        );
 
-                      <option value="Teacher">Teacher</option>
+                                    setFilters({
+                                      ...filters,
+                                      status: newStatus,
+                                    });
+                                  }
+                                }}
+                                className="w-4 h-4 text-[#427A43] rounded border-gray-300 focus:ring-[#427A43]"
+                              />
 
-                      <option value="Staff">Staff</option>
+                              <span className="text-sm text-gray-700">
+                                {status}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
 
-                      <option value="Student">Student</option>
-                    </select>
-                  </div>
+                      {/* Nature Filter */}
 
-                  <div className="bg-gradient-to-r from-[#427A43]/10 to-[#427A43]/5 rounded-lg p-3">
-                    <label className="block text-sm font-medium text-gray-500 mb-1">
-                      Access Mode
-                    </label>
+                      <div>
+                        <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                          Nature
+                        </p>
 
-                    <div className="flex items-center gap-2">
-                      <span className="px-3 py-1 bg-[#427A43] text-white text-sm font-medium rounded-full">
-                        Administrator
-                      </span>
+                        <div className="space-y-1">
+                          {[
+                            "Plumbing",
+
+                            "Electrical",
+
+                            "Carpentry",
+
+                            "HVAC",
+
+                            "Cleaning",
+
+                            "Other",
+                          ].map((nature) => (
+                            <label
+                              key={nature}
+                              className="flex items-center gap-2 cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={
+                                  selectAll || filters.nature.includes(nature)
+                                }
+                                onChange={(e) => {
+                                  if (selectAll) {
+                                    setSelectAll(false);
+
+                                    setFilters({
+                                      ...filters,
+                                      nature: [nature],
+                                    });
+                                  } else {
+                                    const newNature = e.target.checked
+                                      ? [...filters.nature, nature]
+                                      : filters.nature.filter(
+                                          (n) => n !== nature,
+                                        );
+
+                                    setFilters({
+                                      ...filters,
+                                      nature: newNature,
+                                    });
+                                  }
+                                }}
+                                className="w-4 h-4 text-[#427A43] rounded border-gray-300 focus:ring-[#427A43]"
+                              />
+
+                              <span className="text-sm text-gray-700">
+                                {nature}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Urgency Filter */}
+
+                      <div>
+                        <p className="text-xs font-medium text-gray-500 uppercase mb-2">
+                          Urgency
+                        </p>
+
+                        <div className="space-y-1">
+                          {["Emergency", "Urgent", "Normal"].map((urgency) => (
+                            <label
+                              key={urgency}
+                              className="flex items-center gap-2 cursor-pointer"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={
+                                  selectAll || filters.urgency.includes(urgency)
+                                }
+                                onChange={(e) => {
+                                  if (selectAll) {
+                                    setSelectAll(false);
+
+                                    setFilters({
+                                      ...filters,
+
+                                      urgency: [urgency],
+                                    });
+                                  } else {
+                                    const newUrgency = e.target.checked
+                                      ? [...filters.urgency, urgency]
+                                      : filters.urgency.filter(
+                                          (u) => u !== urgency,
+                                        );
+
+                                    setFilters({
+                                      ...filters,
+
+                                      urgency: newUrgency,
+                                    });
+                                  }
+                                }}
+                                className="w-4 h-4 text-[#427A43] rounded border-gray-300 focus:ring-[#427A43]"
+                              />
+
+                              <span className="text-sm text-gray-700">
+                                {urgency}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </div>
+                )}
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">
-                      Theme Preference
-                    </label>
+                {/* Table */}
 
-                    <select
-                      value={formData.theme_preference}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
+                <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                  <div className="px-6 py-4 border-b border-gray-200">
+                    <h2 className="font-header text-lg font-semibold text-gray-900">
+                      All Maintenance Requests
+                    </h2>
 
-                          theme_preference: e.target.value as
-                            | "light"
-                            | "dark"
-                            | "system",
-                        })
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900 bg-white"
-                    >
-                      <option value="light">Light</option>
-
-                      <option value="dark">Dark</option>
-
-                      <option value="system">System</option>
-                    </select>
-                  </div>
-
-                  <div className="pt-3 border-t border-gray-100 text-sm text-gray-500">
-                    <p>
-                      Account created:{" "}
-                      {profile?.created_at ? (
-                        <SafeDate date={profile.created_at} />
-                      ) : (
-                        "N/A"
-                      )}
+                    <p className="text-sm text-gray-600">
+                      {requests.length} total requests
                     </p>
+                  </div>
+
+                  <div>
+                    <table className="w-full">
+                      <thead className="bg-gray-50">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Request
+                          </th>
+
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Requester
+                          </th>
+
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Details
+                          </th>
+
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Status
+                          </th>
+
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+
+                      <tbody className="divide-y divide-gray-200">
+                        {filteredRequests.map((request) => (
+                          <RequestRow key={request.id} request={request} />
+                        ))}
+                      </tbody>
+                    </table>
+
+                    {filteredRequests.length === 0 && (
+                      <div className="text-center py-12 text-gray-500">
+                        <p>No requests found</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
+            )}
+          </div>
 
-              {/* Save Button */}
+          {/* Announcements Tab - Broadcast Only */}
 
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="w-full px-4 py-3 bg-[#427A43] text-white font-semibold rounded-lg hover:bg-[#366337] disabled:bg-gray-400 transition-colors"
-              >
-                {saving ? "Saving..." : "Save Changes"}
-              </button>
-
-              {/* Success Message */}
-
-              {successMessage && (
-                <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm text-center">
-                  {successMessage}
-                </div>
-              )}
-
-              {/* Data Export Section */}
-
-              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                <h3 className="font-header text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                    />
-                  </svg>
-                  Your Data
-                </h3>
-
-                <p className="text-xs text-gray-500 mb-3">
-                  Download a copy of your admin profile data.
-                </p>
+          {activeTab === "announcements" && (
+            <div className="bg-white rounded-xl shadow-sm p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="font-header text-lg font-semibold text-gray-900">
+                  Announcements
+                </h2>
 
                 <button
-                  onClick={handleExportData}
-                  className="w-full px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+                  onClick={() => setShowBroadcastModal(true)}
+                  className="px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors flex items-center gap-2 text-sm font-medium"
                 >
                   <svg
                     className="w-4 h-4"
@@ -5680,55 +4753,18 @@ ${result.analysis.risks || "N/A"}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
                     />
                   </svg>
-                  Export Data
+                  Send Announcement
                 </button>
-              </div>
-
-              {/* Unsaved Changes Warning */}
-
-              {hasUnsavedChanges && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm text-center">
-                  You have unsaved changes
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </>
-
-      {/* Report Sidebar */}
-
-      <>
-        <div
-          className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${showReportSidebar ? "opacity-100" : "opacity-0 pointer-events-none"}`}
-          onClick={() => setShowReportSidebar(false)}
-        />
-
-        <div
-          className={`fixed top-0 right-0 h-full w-[600px] bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showReportSidebar ? "translate-x-0" : "translate-x-full"}`}
-        >
-          <div className="h-full overflow-y-auto">
-            <div className="bg-[#427A43] shadow-lg border-b p-6 sticky top-0 z-10">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="font-header text-xl font-bold text-white">
-                    Physical Plant/Facilities Form
-                  </h2>
-
-                  <p className="text-white/80 text-sm mt-1">
-                    Generate official De La Salle John Bosco College form
-                  </p>
-                </div>
 
                 <button
-                  onClick={() => setShowReportSidebar(false)}
-                  className="text-white/80 hover:text-white transition-all duration-300 hover:scale-110"
+                  onClick={() => setShowWarningModal(true)}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 text-sm font-medium"
                 >
                   <svg
-                    className="w-6 h-6"
+                    className="w-4 h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -5737,73 +4773,1081 @@ ${result.analysis.risks || "N/A"}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                     />
                   </svg>
+                  Send Warning / Notice
+                </button>
+              </div>
+
+              <div className="bg-gray-50 rounded-xl p-8 text-center">
+                <svg
+                  className="w-16 h-16 mx-auto mb-4 text-[#427A43]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+                  />
+                </svg>
+
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  Broadcast Announcements
+                </h3>
+
+                <p className="text-gray-500 max-w-md mx-auto">
+                  Send important announcements to all users at once. Messages
+                  will appear as notifications in their dashboard.
+                </p>
+              </div>
+
+              {/* Recent Broadcasts */}
+
+              <div className="mt-6">
+                <h3 className="font-medium text-gray-900 mb-4">
+                  Recent Announcements
+                </h3>
+
+                <div className="space-y-3">
+                  {userMessages["announcements"]?.length > 0 ? (
+                    userMessages["announcements"].slice(0, 5).map((msg) => (
+                      <div
+                        key={msg.id}
+                        className="p-4 bg-gray-50 rounded-lg border border-gray-100"
+                      >
+                        <div className="flex items-start justify-between">
+                          <p className="text-gray-900 font-medium">
+                            {msg.title || "Announcement"}
+                          </p>
+
+                          <span className="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded-full">
+                            {msg.recipient_count || 0} recipients
+                          </span>
+                        </div>
+
+                        <p className="text-gray-700 mt-2">{msg.message}</p>
+
+                        <p className="text-xs text-gray-400 mt-2">
+                          <SafeDate date={msg.created_at} />
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-400 text-sm">
+                      No announcements sent yet
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Edit Request Modal */}
+
+        {editingRequest && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+              <div className="bg-[#427A43] p-6 rounded-t-xl">
+                <div className="flex justify-between items-center">
+                  <h2 className="font-header text-xl font-bold text-white">
+                    Change Status
+                  </h2>
+
+                  <button
+                    onClick={() => setEditingRequest(null)}
+                    className="text-white/80 hover:text-white"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6 space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                  </label>
+
+                  <select
+                    value={editFormData.status}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        status: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                  >
+                    <option value="Pending">Pending</option>
+
+                    <option value="In Progress">In Progress</option>
+
+                    <option value="Completed">Completed</option>
+
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => setEditingRequest(null)}
+                    className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    onClick={handleSaveStatus}
+                    className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                  >
+                    Update Status
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Detail Modal */}
+
+        {showDetailModal && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div
+              className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+              onClick={() => setShowDetailModal(null)}
+            />
+
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100 relative z-10 flex flex-col">
+              {/* Header */}
+
+              <div className="bg-gradient-to-r from-[#427A43] to-[#2d5a2e] p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+                    {showDetailModal.nature === "Plumbing" && (
+                      <Wrench className="w-4 h-4 text-white" />
+                    )}
+
+                    {showDetailModal.nature === "Electrical" && (
+                      <Zap className="w-4 h-4 text-white" />
+                    )}
+
+                    {showDetailModal.nature === "Carpentry" && (
+                      <Hammer className="w-4 h-4 text-white" />
+                    )}
+
+                    {showDetailModal.nature === "Personnel Services" && (
+                      <Sparkles className="w-4 h-4 text-white" />
+                    )}
+
+                    {![
+                      "Plumbing",
+
+                      "Electrical",
+
+                      "Carpentry",
+
+                      "Personnel Services",
+                    ].includes(showDetailModal.nature) && (
+                      <Activity className="w-4 h-4 text-white" />
+                    )}
+                  </div>
+
+                  <div>
+                    <h2 className="font-header text-lg font-bold text-white">
+                      {showDetailModal.nature}
+                    </h2>
+
+                    <p className="text-white/80 text-xs mt-0.5">
+                      ID: {showDetailModal.id.slice(0, 8).toUpperCase()}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+
+              <div className="p-4 space-y-4 overflow-y-auto flex-1">
+                {/* Status and Urgency Badges */}
+
+                <div className="flex flex-wrap gap-2">
+                  <span
+                    className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                      showDetailModal.status === "Pending"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : showDetailModal.status === "In Progress"
+                          ? "bg-blue-100 text-blue-800"
+                          : showDetailModal.status === "Completed"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    <div
+                      className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
+                        showDetailModal.status === "Pending"
+                          ? "bg-yellow-500"
+                          : showDetailModal.status === "In Progress"
+                            ? "bg-blue-500"
+                            : showDetailModal.status === "Completed"
+                              ? "bg-green-500"
+                              : "bg-red-500"
+                      }`}
+                    />
+
+                    {showDetailModal.status}
+                  </span>
+
+                  <span
+                    className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                      showDetailModal.urgency === "Emergency"
+                        ? "bg-red-100 text-red-800"
+                        : showDetailModal.urgency === "Urgent"
+                          ? "bg-orange-100 text-orange-800"
+                          : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {showDetailModal.urgency === "Emergency" && "🔴 "}
+
+                    {showDetailModal.urgency === "Urgent" && "🟠 "}
+
+                    {showDetailModal.urgency}
+                  </span>
+                </div>
+
+                {/* Information Cards */}
+
+                <div className="space-y-3">
+                  {/* Location */}
+
+                  <div className="bg-gray-50 rounded-lg p-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="p-1 bg-[#427A43]/10 rounded">
+                        <svg
+                          className="w-3 h-3 text-[#427A43]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                          />
+
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                        </svg>
+                      </div>
+
+                      <h3 className="text-xs font-semibold text-gray-700">
+                        Location
+                      </h3>
+                    </div>
+
+                    <p className="text-gray-900 font-medium text-sm">
+                      {showDetailModal.location}
+                    </p>
+                  </div>
+
+                  {/* Requester */}
+
+                  <div className="bg-gray-50 rounded-lg p-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="p-1 bg-[#427A43]/10 rounded">
+                        <svg
+                          className="w-3 h-3 text-[#427A43]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
+                      </div>
+
+                      <h3 className="text-xs font-semibold text-gray-700">
+                        Requester
+                      </h3>
+                    </div>
+
+                    <p className="text-gray-900 font-medium text-sm">
+                      {showDetailModal.profiles?.full_name || "Unknown"}
+                    </p>
+
+                    {showDetailModal.profiles?.is_anonymous && (
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 text-xs">
+                        <svg
+                          className="w-3 h-3"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                          />
+                        </svg>
+                        Guest
+                      </span>
+                    )}
+
+                    <p className="text-xs text-gray-500">
+                      {showDetailModal.profiles?.visual_role || "N/A"}
+                    </p>
+                  </div>
+
+                  {/* Created Date */}
+
+                  <div className="bg-gray-50 rounded-lg p-3">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="p-1 bg-[#427A43]/10 rounded">
+                        <svg
+                          className="w-3 h-3 text-[#427A43]"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                      </div>
+
+                      <h3 className="text-xs font-semibold text-gray-700">
+                        Created
+                      </h3>
+                    </div>
+
+                    <p className="text-gray-900 font-medium text-sm">
+                      <SafeDate date={showDetailModal.created_at} />
+                    </p>
+
+                    <p className="text-xs text-gray-500">
+                      {new Date(showDetailModal.created_at).toLocaleTimeString(
+                        [],
+
+                        { hour: "2-digit", minute: "2-digit" },
+                      )}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Description */}
+
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="p-1 bg-[#427A43]/10 rounded">
+                      <svg
+                        className="w-3 h-3 text-[#427A43]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                    </div>
+
+                    <h3 className="text-xs font-semibold text-gray-700">
+                      Description
+                    </h3>
+                  </div>
+
+                  <p className="text-gray-900 text-sm leading-relaxed whitespace-pre-wrap">
+                    {showDetailModal.description}
+                  </p>
+                </div>
+
+                {/* Photos Section */}
+
+                {showDetailModal.photos &&
+                  showDetailModal.photos.length > 0 && (
+                    <div className="bg-gray-50 rounded-lg p-3">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="p-1 bg-[#427A43]/10 rounded">
+                          <svg
+                            className="w-3 h-3 text-[#427A43]"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                            />
+                          </svg>
+                        </div>
+
+                        <h3 className="text-xs font-semibold text-gray-700">
+                          Photos ({showDetailModal.photos.length})
+                        </h3>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        {showDetailModal.photos.map((photo, idx) => (
+                          <div
+                            key={idx}
+                            className="relative group cursor-pointer aspect-square"
+                            onClick={() => setSelectedPhoto(photo)}
+                          >
+                            <img
+                              src={photo}
+                              alt={`Photo ${idx + 1}`}
+                              className="w-full h-full object-cover rounded-lg transition-transform group-hover:scale-105"
+                            />
+
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                              <svg
+                                className="w-3 h-3 text-white"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+              </div>
+
+              {/* Action Buttons - Fixed at bottom */}
+
+              <div className="p-3 border-t border-gray-200">
+                <button
+                  onClick={() => {
+                    setSelectedRequestForReport(showDetailModal);
+
+                    setShowReportSidebar(true);
+
+                    setShowDetailModal(null);
+                  }}
+                  className="w-full px-3 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors font-medium text-sm flex items-center justify-center gap-1.5"
+                >
+                  <svg
+                    className="w-3 h-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 17v1a1 1 0 001 1h4a1 1 0 001-1v-1m3-2V8a2 2 0 00-2-2H8a2 2 0 00-2 2v8m5-4h4"
+                    />
+                  </svg>
+                  Generate Form
                 </button>
               </div>
             </div>
+          </div>
+        )}
 
-            {selectedRequestForReport && (
+        {/* Notifications Sidebar */}
+
+        <div
+          ref={notificationsRef}
+          className={`fixed top-0 right-0 h-full w-96 bg-white shadow-2xl z-40 transform transition-transform duration-500 ease-out ${
+            showNotifications ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="h-full overflow-y-auto">
+            <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+              <div className="flex justify-center items-center">
+                <h2 className="font-header text-xl font-bold text-white">
+                  Notifications
+                </h2>
+              </div>
+            </div>
+
+            <div className="p-4">
+              <div className="flex justify-between items-center mb-4">
+                <button
+                  onClick={markAllNotificationsRead}
+                  className="text-sm text-green-600 hover:text-green-700"
+                >
+                  Mark all as read
+                </button>
+
+                <button
+                  onClick={deleteAllReadNotifications}
+                  className="text-sm text-red-500 hover:text-red-600"
+                >
+                  Delete all read
+                </button>
+              </div>
+
+              {notifications.length === 0 ? (
+                <div className="p-4 text-center text-gray-500">
+                  No notifications yet
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {notifications.map((notification: any) => {
+                    const isEmergency = notification.message
+
+                      .toLowerCase()
+
+                      .includes("emergency");
+
+                    return (
+                      <div
+                        key={notification.id}
+                        className={`p-4 rounded-lg border transition-all ${
+                          !notification.is_read
+                            ? isEmergency
+                              ? "bg-red-50 border-red-200"
+                              : "bg-blue-50 border-blue-200"
+                            : "bg-gray-50 border-gray-200 hover:bg-gray-100"
+                        }`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div
+                            className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
+                              !notification.is_read
+                                ? isEmergency
+                                  ? "bg-red-500"
+                                  : "bg-blue-500"
+                                : "bg-gray-300"
+                            }`}
+                          />
+
+                          <div
+                            className="flex-1 min-w-0 cursor-pointer"
+                            onClick={() =>
+                              markNotificationRead(notification.id)
+                            }
+                          >
+                            <p className="font-medium text-sm text-gray-900">
+                              {notification.title}
+
+                              {isEmergency && (
+                                <span className="ml-2 px-2 py-0.5 text-xs bg-red-100 text-red-700 rounded-full font-semibold">
+                                  EMERGENCY
+                                </span>
+                              )}
+                            </p>
+
+                            <p className="text-sm text-gray-600 mt-1">
+                              {notification.message}
+                            </p>
+
+                            <p className="text-xs text-gray-400 mt-2">
+                              <SafeDate date={notification.created_at} />
+                            </p>
+                          </div>
+
+                          <div className="relative">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+
+                                setOpenNotificationMenu(
+                                  openNotificationMenu === notification.id
+                                    ? null
+                                    : notification.id,
+                                );
+                              }}
+                              className="p-1 hover:bg-gray-200 rounded"
+                            >
+                              <svg
+                                className="w-5 h-5 text-gray-500"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <circle cx="12" cy="6" r="2" />
+
+                                <circle cx="12" cy="12" r="2" />
+
+                                <circle cx="12" cy="18" r="2" />
+                              </svg>
+                            </button>
+
+                            {openNotificationMenu === notification.id && (
+                              <div className="absolute right-0 mt-1 w-32 bg-white border rounded-lg shadow-lg z-10">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+
+                                    deleteNotification(notification.id);
+                                  }}
+                                  className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 rounded-lg"
+                                >
+                                  Delete
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Profile Settings Sidebar */}
+
+        <>
+          <div
+            className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-500 ${showProfileSidebar ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+            onClick={() => setShowProfileSidebar(false)}
+          />
+
+          <div
+            className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showProfileSidebar ? "translate-x-0" : "-translate-x-full"}`}
+          >
+            <div className="h-full overflow-y-auto">
+              <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+                <div className="flex justify-between items-center">
+                  <h2 className="font-header text-xl font-bold text-white">
+                    Profile Settings
+                  </h2>
+
+                  <button
+                    onClick={() => setShowProfileSidebar(false)}
+                    className="text-white/80 hover:text-white transition-all duration-300 hover:scale-110"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
               <div className="p-6 space-y-6">
-                {/* Nature of Request Section */}
+                {/* Profile Information Card - Editable */}
 
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-header text-sm font-semibold text-gray-900 mb-4">
-                    NATURE OF REQUEST
+                <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm transition-all duration-300 hover:shadow-md">
+                  <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    <svg
+                      className="w-5 h-5 text-[#427A43]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                    Your Profile
                   </h3>
 
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    {[
-                      { key: "plumbing", label: "PLUMBING" },
+                  <div className="space-y-4">
+                    {/* Avatar Upload */}
 
-                      { key: "carpentry", label: "CARPENTRY" },
+                    <div className="flex flex-col items-center py-4">
+                      <div className="relative">
+                        <div className="w-24 h-24 rounded-full bg-gray-200 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center">
+                          {profile?.avatar_url || userAvatar ? (
+                            <img
+                              src={
+                                avatarPreview ||
+                                profile?.avatar_url ||
+                                userAvatar ||
+                                ""
+                              }
+                              alt="Profile"
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-3xl font-bold text-gray-400">
+                              {profile?.full_name?.charAt(0).toUpperCase() ||
+                                "A"}
+                            </span>
+                          )}
+                        </div>
 
-                      { key: "electrical", label: "ELECTRICAL" },
+                        <label
+                          htmlFor="avatar-upload"
+                          className="absolute bottom-0 right-0 bg-[#427A43] text-white p-2 rounded-full cursor-pointer hover:bg-[#366337] transition-colors shadow-md"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                            />
 
-                      { key: "personnelServices", label: "PERSONNEL SERVICES" },
-                    ].map((option) => (
-                      <label
-                        key={option.key}
-                        className="flex items-center space-x-2 cursor-pointer"
-                      >
-                        <input
-                          type="checkbox"
-                          checked={
-                            reportFormData.natureOfRequest[
-                              option.key as keyof typeof reportFormData.natureOfRequest
-                            ]
-                          }
-                          onChange={(e) =>
-                            setReportFormData((prev) => ({
-                              ...prev,
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
 
-                              natureOfRequest: {
-                                ...prev.natureOfRequest,
+                          <input
+                            id="avatar-upload"
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleAvatarUpload}
+                            disabled={uploadingAvatar}
+                          />
+                        </label>
+                      </div>
 
-                                [option.key]: e.target.checked,
-                              },
-                            }))
-                          }
-                          className="w-4 h-4 text-[#427A43] border-gray-300 rounded focus:ring-[#427A43]"
-                        />
+                      {uploadingAvatar && (
+                        <p className="text-sm text-gray-500 mt-2">
+                          Uploading...
+                        </p>
+                      )}
 
-                        <span className="text-sm text-gray-700">
-                          {option.label}
-                        </span>
+                      {validationErrors.avatar && (
+                        <p className="text-sm text-red-500 mt-2">
+                          {validationErrors.avatar}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">
+                        Full Name
                       </label>
-                    ))}
+
+                      <input
+                        type="text"
+                        value={formData.full_name}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            full_name: e.target.value,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">
+                        Visual Role
+                      </label>
+
+                      <select
+                        value={formData.visual_role}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+
+                            visual_role: e.target.value,
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900 bg-white"
+                      >
+                        <option value="">Select a role</option>
+
+                        <option value="Teacher">Teacher</option>
+
+                        <option value="Staff">Staff</option>
+
+                        <option value="Student">Student</option>
+                      </select>
+                    </div>
+
+                    <div className="bg-gradient-to-r from-[#427A43]/10 to-[#427A43]/5 rounded-lg p-3">
+                      <label className="block text-sm font-medium text-gray-500 mb-1">
+                        Access Mode
+                      </label>
+
+                      <div className="flex items-center gap-2">
+                        <span className="px-3 py-1 bg-[#427A43] text-white text-sm font-medium rounded-full">
+                          Administrator
+                        </span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">
+                        Theme Preference
+                      </label>
+
+                      <select
+                        value={formData.theme_preference}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+
+                            theme_preference: e.target.value as
+                              | "light"
+                              | "dark"
+                              | "system",
+                          })
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900 bg-white"
+                      >
+                        <option value="light">Light</option>
+
+                        <option value="dark">Dark</option>
+
+                        <option value="system">System</option>
+                      </select>
+                    </div>
+
+                    <div className="pt-3 border-t border-gray-100 text-sm text-gray-500">
+                      <p>
+                        Account created:{" "}
+                        {profile?.created_at ? (
+                          <SafeDate date={profile.created_at} />
+                        ) : (
+                          "N/A"
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Save Button */}
+
+                <button
+                  onClick={handleSave}
+                  disabled={saving}
+                  className="w-full px-4 py-3 bg-[#427A43] text-white font-semibold rounded-lg hover:bg-[#366337] disabled:bg-gray-400 transition-colors"
+                >
+                  {saving ? "Saving..." : "Save Changes"}
+                </button>
+
+                {/* Success Message */}
+
+                {successMessage && (
+                  <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm text-center">
+                    {successMessage}
+                  </div>
+                )}
+
+                {/* Data Export Section */}
+
+                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                  <h3 className="font-header text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                    <svg
+                      className="w-4 h-4 text-gray-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      />
+                    </svg>
+                    Your Data
+                  </h3>
+
+                  <p className="text-xs text-gray-500 mb-3">
+                    Download a copy of your admin profile data.
+                  </p>
+
+                  <button
+                    onClick={handleExportData}
+                    className="w-full px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                      />
+                    </svg>
+                    Export Data
+                  </button>
+                </div>
+
+                {/* Unsaved Changes Warning */}
+
+                {hasUnsavedChanges && (
+                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm text-center">
+                    You have unsaved changes
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </>
+
+        {/* Report Sidebar */}
+
+        <>
+          <div
+            className={`fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300 ${showReportSidebar ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+            onClick={() => setShowReportSidebar(false)}
+          />
+
+          <div
+            className={`fixed top-0 right-0 h-full w-[600px] bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showReportSidebar ? "translate-x-0" : "translate-x-full"}`}
+          >
+            <div className="h-full overflow-y-auto">
+              <div className="bg-[#427A43] shadow-lg border-b p-6 sticky top-0 z-10">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="font-header text-xl font-bold text-white">
+                      Physical Plant/Facilities Form
+                    </h2>
+
+                    <p className="text-white/80 text-sm mt-1">
+                      Generate official De La Salle John Bosco College form
+                    </p>
                   </div>
 
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 uppercase mb-2">
-                        URGENCY
-                      </label>
+                  <button
+                    onClick={() => setShowReportSidebar(false)}
+                    className="text-white/80 hover:text-white transition-all duration-300 hover:scale-110"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
 
-                      <div className="space-y-2">
-                        {["Very Urgent/Emergency", "Urgent", "Not Urgent"].map(
-                          (option) => (
+              {selectedRequestForReport && (
+                <div className="p-6 space-y-6">
+                  {/* Nature of Request Section */}
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h3 className="font-header text-sm font-semibold text-gray-900 mb-4">
+                      NATURE OF REQUEST
+                    </h3>
+
+                    <div className="grid grid-cols-2 gap-3 mb-4">
+                      {[
+                        { key: "plumbing", label: "PLUMBING" },
+
+                        { key: "carpentry", label: "CARPENTRY" },
+
+                        { key: "electrical", label: "ELECTRICAL" },
+
+                        {
+                          key: "personnelServices",
+                          label: "PERSONNEL SERVICES",
+                        },
+                      ].map((option) => (
+                        <label
+                          key={option.key}
+                          className="flex items-center space-x-2 cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={
+                              reportFormData.natureOfRequest[
+                                option.key as keyof typeof reportFormData.natureOfRequest
+                              ]
+                            }
+                            onChange={(e) =>
+                              setReportFormData((prev) => ({
+                                ...prev,
+
+                                natureOfRequest: {
+                                  ...prev.natureOfRequest,
+
+                                  [option.key]: e.target.checked,
+                                },
+                              }))
+                            }
+                            className="w-4 h-4 text-[#427A43] border-gray-300 rounded focus:ring-[#427A43]"
+                          />
+
+                          <span className="text-sm text-gray-700">
+                            {option.label}
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-2">
+                          URGENCY
+                        </label>
+
+                        <div className="space-y-2">
+                          {[
+                            "Very Urgent/Emergency",
+                            "Urgent",
+                            "Not Urgent",
+                          ].map((option) => (
                             <label
                               key={option}
                               className="flex items-center space-x-2 cursor-pointer"
@@ -5827,633 +5871,587 @@ ${result.analysis.risks || "N/A"}
                                 {option}
                               </span>
                             </label>
-                          ),
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                          DATE
-                        </label>
-
-                        <input
-                          type="date"
-                          value={reportFormData.date}
-                          onChange={(e) =>
-                            setReportFormData((prev) => ({
-                              ...prev,
-
-                              date: e.target.value,
-                            }))
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                        />
+                          ))}
+                        </div>
                       </div>
 
-                      <div>
-                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                          TIME
-                        </label>
-
-                        <input
-                          type="time"
-                          value={reportFormData.time}
-                          onChange={(e) =>
-                            setReportFormData((prev) => ({
-                              ...prev,
-
-                              time: e.target.value,
-                            }))
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Request Details Table */}
-
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-header text-sm font-semibold text-gray-900 mb-4">
-                    REQUEST DETAILS
-                  </h3>
-
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                        LOCATION
-                      </label>
-
-                      <input
-                        type="text"
-                        value={reportFormData.location}
-                        onChange={(e) =>
-                          setReportFormData((prev) => ({
-                            ...prev,
-
-                            location: e.target.value,
-                          }))
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                        placeholder="Enter location"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                        DESCRIPTION OF PROBLEM
-                      </label>
-
-                      <textarea
-                        value={reportFormData.descriptionOfProblem}
-                        onChange={(e) =>
-                          setReportFormData((prev) => ({
-                            ...prev,
-
-                            descriptionOfProblem: e.target.value,
-                          }))
-                        }
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                        placeholder="Describe the problem"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                        WHAT WILL BE DONE
-                      </label>
-
-                      <textarea
-                        value={reportFormData.whatWillBeDone}
-                        onChange={(e) =>
-                          setReportFormData((prev) => ({
-                            ...prev,
-
-                            whatWillBeDone: e.target.value,
-                          }))
-                        }
-                        rows={3}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                        placeholder="Action to be taken"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                        SUPPORTING REASON(S)
-                      </label>
-
-                      <textarea
-                        value={reportFormData.supportingReasons}
-                        onChange={(e) =>
-                          setReportFormData((prev) => ({
-                            ...prev,
-
-                            supportingReasons: e.target.value,
-                          }))
-                        }
-                        rows={2}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                        placeholder="Reasons for this request"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Request/Approval Section */}
-
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-header text-sm font-semibold text-gray-900 mb-4">
-                    REQUEST/APPROVAL SECTION
-                  </h3>
-
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                        REQUESTED BY: (REQUESTING DEPARTMENT)
-                      </label>
-
-                      <input
-                        type="text"
-                        value={reportFormData.requestingDepartment}
-                        onChange={(e) =>
-                          setReportFormData((prev) => ({
-                            ...prev,
-
-                            requestingDepartment: e.target.value,
-                          }))
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm mb-2"
-                        placeholder="Department name"
-                      />
-
-                      <input
-                        type="text"
-                        value={reportFormData.nameOfEmployee}
-                        onChange={(e) =>
-                          setReportFormData((prev) => ({
-                            ...prev,
-
-                            nameOfEmployee: e.target.value,
-                          }))
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm mb-2"
-                        placeholder="Name of Employee"
-                      />
-
-                      <input
-                        type="text"
-                        value={reportFormData.departmentHead}
-                        onChange={(e) =>
-                          setReportFormData((prev) => ({
-                            ...prev,
-
-                            departmentHead: e.target.value,
-                          }))
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                        placeholder="Department Head"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                        APPROVED BY: ADMINISTRATIVE AFFAIRS & SERVICES DIVISION
-                      </label>
-
-                      <input
-                        type="text"
-                        value={reportFormData.vpAASD}
-                        onChange={(e) =>
-                          setReportFormData((prev) => ({
-                            ...prev,
-
-                            vpAASD: e.target.value,
-                          }))
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                        placeholder="VP - AASD"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                        RECEIVED BY:
-                      </label>
-
-                      <input
-                        type="text"
-                        value={reportFormData.gmsHead}
-                        onChange={(e) =>
-                          setReportFormData((prev) => ({
-                            ...prev,
-
-                            gmsHead: e.target.value,
-                          }))
-                        }
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
-                        placeholder="GMS Head"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Work Evaluation Section */}
-
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-header text-sm font-semibold text-gray-900 mb-4">
-                    WORK EVALUATION
-                  </h3>
-
-                  <div className="space-y-3">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                          DATE/TIME RECEIVED
-                        </label>
-
-                        <input
-                          type="text"
-                          value={reportFormData.dateTimeReceived}
-                          onChange={(e) =>
-                            setReportFormData((prev) => ({
-                              ...prev,
-
-                              dateTimeReceived: e.target.value,
-                            }))
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm bg-gray-100"
-                          readOnly
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                          PERFORMED BY
-                        </label>
-
-                        <input
-                          type="text"
-                          value={reportFormData.performedBy}
-                          onChange={(e) =>
-                            setReportFormData((prev) => ({
-                              ...prev,
-
-                              performedBy: e.target.value,
-                            }))
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm bg-gray-100"
-                          readOnly
-                          placeholder="Technician name"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                          DATE/TIME COMPLETED
-                        </label>
-
-                        <input
-                          type="text"
-                          value={reportFormData.dateTimeCompleted}
-                          onChange={(e) =>
-                            setReportFormData((prev) => ({
-                              ...prev,
-
-                              dateTimeCompleted: e.target.value,
-                            }))
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm bg-gray-100"
-                          readOnly
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
-                          ACKNOWLEDGE BY
-                        </label>
-
-                        <input
-                          type="text"
-                          value={reportFormData.acknowledgeBy}
-                          onChange={(e) =>
-                            setReportFormData((prev) => ({
-                              ...prev,
-
-                              acknowledgeBy: e.target.value,
-                            }))
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm bg-gray-100"
-                          readOnly
-                          placeholder="Acknowledged by"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-medium text-gray-500 uppercase mb-2">
-                        WORK EVALUATION
-                      </label>
-
-                      <div className="space-y-2">
-                        {[
-                          {
-                            value: "Outstanding",
-
-                            description:
-                              "Excellent Workmanship. Completed before the date needed/required.",
-                          },
-
-                          {
-                            value: "Very Satisfactory",
-
-                            description:
-                              "Above Average Workmanship. Completed before the date needed/required.",
-                          },
-
-                          {
-                            value: "Satisfactory",
-
-                            description:
-                              "Average/Acceptable Workmanship. Completed on the date needed.",
-                          },
-
-                          {
-                            value: "Poor",
-
-                            description:
-                              "Messy/Unacceptable Workmanship. Very late.",
-                          },
-                        ].map((option) => (
-                          <label
-                            key={option.value}
-                            className="flex items-start space-x-2 opacity-75"
-                          >
-                            <input
-                              type="radio"
-                              name="workEvaluation"
-                              value={option.value}
-                              onChange={(e) =>
-                                setReportFormData((prev) => ({
-                                  ...prev,
-
-                                  workEvaluation: e.target.value,
-                                }))
-                              }
-                              className="w-4 h-4 text-[#427A43] border-gray-300 focus:ring-[#427A43] mt-0.5"
-                              disabled
-                            />
-
-                            <div>
-                              <span className="text-sm text-gray-700 font-medium">
-                                {option.value}
-                              </span>
-
-                              <p className="text-xs text-gray-500">
-                                {option.description}
-                              </p>
-                            </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                            DATE
                           </label>
-                        ))}
+
+                          <input
+                            type="date"
+                            value={reportFormData.date}
+                            onChange={(e) =>
+                              setReportFormData((prev) => ({
+                                ...prev,
+
+                                date: e.target.value,
+                              }))
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                            TIME
+                          </label>
+
+                          <input
+                            type="time"
+                            value={reportFormData.time}
+                            onChange={(e) =>
+                              setReportFormData((prev) => ({
+                                ...prev,
+
+                                time: e.target.value,
+                              }))
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Actions */}
+                  {/* Request Details Table */}
 
-                <div className="flex gap-3 pt-4">
-                  <button
-                    onClick={() => setShowReportSidebar(false)}
-                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    Cancel
-                  </button>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h3 className="font-header text-sm font-semibold text-gray-900 mb-4">
+                      REQUEST DETAILS
+                    </h3>
 
-                  <button
-                    onClick={generatePDFReport}
-                    className="flex-1 px-4 py-2.5 bg-[#427A43] text-white font-medium rounded-lg hover:bg-[#366337] transition-colors flex items-center justify-center gap-2"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          LOCATION
+                        </label>
+
+                        <input
+                          type="text"
+                          value={reportFormData.location}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+
+                              location: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          placeholder="Enter location"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          DESCRIPTION OF PROBLEM
+                        </label>
+
+                        <textarea
+                          value={reportFormData.descriptionOfProblem}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+
+                              descriptionOfProblem: e.target.value,
+                            }))
+                          }
+                          rows={3}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          placeholder="Describe the problem"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          WHAT WILL BE DONE
+                        </label>
+
+                        <textarea
+                          value={reportFormData.whatWillBeDone}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+
+                              whatWillBeDone: e.target.value,
+                            }))
+                          }
+                          rows={3}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          placeholder="Action to be taken"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          SUPPORTING REASON(S)
+                        </label>
+
+                        <textarea
+                          value={reportFormData.supportingReasons}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+
+                              supportingReasons: e.target.value,
+                            }))
+                          }
+                          rows={2}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          placeholder="Reasons for this request"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Request/Approval Section */}
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h3 className="font-header text-sm font-semibold text-gray-900 mb-4">
+                      REQUEST/APPROVAL SECTION
+                    </h3>
+
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          REQUESTED BY: (REQUESTING DEPARTMENT)
+                        </label>
+
+                        <input
+                          type="text"
+                          value={reportFormData.requestingDepartment}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+
+                              requestingDepartment: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm mb-2"
+                          placeholder="Department name"
+                        />
+
+                        <input
+                          type="text"
+                          value={reportFormData.nameOfEmployee}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+
+                              nameOfEmployee: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm mb-2"
+                          placeholder="Name of Employee"
+                        />
+
+                        <input
+                          type="text"
+                          value={reportFormData.departmentHead}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+
+                              departmentHead: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          placeholder="Department Head"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          APPROVED BY: ADMINISTRATIVE AFFAIRS & SERVICES
+                          DIVISION
+                        </label>
+
+                        <input
+                          type="text"
+                          value={reportFormData.vpAASD}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+
+                              vpAASD: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          placeholder="VP - AASD"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                          RECEIVED BY:
+                        </label>
+
+                        <input
+                          type="text"
+                          value={reportFormData.gmsHead}
+                          onChange={(e) =>
+                            setReportFormData((prev) => ({
+                              ...prev,
+
+                              gmsHead: e.target.value,
+                            }))
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm"
+                          placeholder="GMS Head"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Work Evaluation Section */}
+
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h3 className="font-header text-sm font-semibold text-gray-900 mb-4">
+                      WORK EVALUATION
+                    </h3>
+
+                    <div className="space-y-3">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                            DATE/TIME RECEIVED
+                          </label>
+
+                          <input
+                            type="text"
+                            value={reportFormData.dateTimeReceived}
+                            onChange={(e) =>
+                              setReportFormData((prev) => ({
+                                ...prev,
+
+                                dateTimeReceived: e.target.value,
+                              }))
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm bg-gray-100"
+                            readOnly
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                            PERFORMED BY
+                          </label>
+
+                          <input
+                            type="text"
+                            value={reportFormData.performedBy}
+                            onChange={(e) =>
+                              setReportFormData((prev) => ({
+                                ...prev,
+
+                                performedBy: e.target.value,
+                              }))
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm bg-gray-100"
+                            readOnly
+                            placeholder="Technician name"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                            DATE/TIME COMPLETED
+                          </label>
+
+                          <input
+                            type="text"
+                            value={reportFormData.dateTimeCompleted}
+                            onChange={(e) =>
+                              setReportFormData((prev) => ({
+                                ...prev,
+
+                                dateTimeCompleted: e.target.value,
+                              }))
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm bg-gray-100"
+                            readOnly
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-medium text-gray-500 uppercase mb-1">
+                            ACKNOWLEDGE BY
+                          </label>
+
+                          <input
+                            type="text"
+                            value={reportFormData.acknowledgeBy}
+                            onChange={(e) =>
+                              setReportFormData((prev) => ({
+                                ...prev,
+
+                                acknowledgeBy: e.target.value,
+                              }))
+                            }
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm bg-gray-100"
+                            readOnly
+                            placeholder="Acknowledged by"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-medium text-gray-500 uppercase mb-2">
+                          WORK EVALUATION
+                        </label>
+
+                        <div className="space-y-2">
+                          {[
+                            {
+                              value: "Outstanding",
+
+                              description:
+                                "Excellent Workmanship. Completed before the date needed/required.",
+                            },
+
+                            {
+                              value: "Very Satisfactory",
+
+                              description:
+                                "Above Average Workmanship. Completed before the date needed/required.",
+                            },
+
+                            {
+                              value: "Satisfactory",
+
+                              description:
+                                "Average/Acceptable Workmanship. Completed on the date needed.",
+                            },
+
+                            {
+                              value: "Poor",
+
+                              description:
+                                "Messy/Unacceptable Workmanship. Very late.",
+                            },
+                          ].map((option) => (
+                            <label
+                              key={option.value}
+                              className="flex items-start space-x-2 opacity-75"
+                            >
+                              <input
+                                type="radio"
+                                name="workEvaluation"
+                                value={option.value}
+                                onChange={(e) =>
+                                  setReportFormData((prev) => ({
+                                    ...prev,
+
+                                    workEvaluation: e.target.value,
+                                  }))
+                                }
+                                className="w-4 h-4 text-[#427A43] border-gray-300 focus:ring-[#427A43] mt-0.5"
+                                disabled
+                              />
+
+                              <div>
+                                <span className="text-sm text-gray-700 font-medium">
+                                  {option.value}
+                                </span>
+
+                                <p className="text-xs text-gray-500">
+                                  {option.description}
+                                </p>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+
+                  <div className="flex gap-3 pt-4">
+                    <button
+                      onClick={() => setShowReportSidebar(false)}
+                      className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
-                    Generate PDF Form
-                  </button>
+                      Cancel
+                    </button>
+
+                    <button
+                      onClick={generatePDFReport}
+                      className="flex-1 px-4 py-2.5 bg-[#427A43] text-white font-medium rounded-lg hover:bg-[#366337] transition-colors flex items-center justify-center gap-2"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                      Generate PDF Form
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      </>
+        </>
 
-      {/* AI Chat Drawer */}
+        {/* AI Chat Drawer */}
 
-      {showAIChat && (
-        <>
-          <div
-            className="fixed inset-0 z-50"
-            onClick={() => setShowAIChat(false)}
-          >
-            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          </div>
+        {showAIChat && (
+          <>
+            <div
+              className="fixed inset-0 z-50"
+              onClick={() => setShowAIChat(false)}
+            >
+              <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+            </div>
 
-          <div
-            ref={aiChatRef}
-            className={`fixed right-0 top-0 bottom-0 w-[400px] max-w-full bg-[#0F172A] shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-out overflow-hidden ${showAIChat ? "translate-x-0" : "translate-x-full"}`}
-            style={{
-              transition: "transform 300ms cubic-bezier(0.4, 0, 0.2, 1)",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Chat History Drawer */}
+            <div
+              ref={aiChatRef}
+              className={`fixed right-0 top-0 bottom-0 w-[400px] max-w-full bg-[#0F172A] shadow-2xl z-50 flex flex-col transition-transform duration-300 ease-out overflow-hidden ${showAIChat ? "translate-x-0" : "translate-x-full"}`}
+              style={{
+                transition: "transform 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Chat History Drawer */}
 
-            <AnimatePresence>
-              {showChatHistory && (
-                <>
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute inset-0 z-30 bg-black/40"
-                    onClick={() => setShowChatHistory(false)}
-                  />
+              <AnimatePresence>
+                {showChatHistory && (
+                  <>
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute inset-0 z-30 bg-black/40"
+                      onClick={() => setShowChatHistory(false)}
+                    />
 
-                  <motion.div
-                    initial={{ left: "-288px", opacity: 0 }}
-                    animate={{ left: "0", opacity: 1 }}
-                    exit={{ left: "-288px", opacity: 0 }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                    className="absolute top-0 bottom-0 z-40"
-                    style={{ width: "288px" }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="w-72 p-4 flex flex-col h-full bg-[#0F172A] border-r border-slate-700/50 rounded-r-lg shadow-xl">
-                      <div className="flex items-center justify-between mb-4">
-                        <h4 className="text-white font-semibold">
-                          Chat History
-                        </h4>
+                    <motion.div
+                      initial={{ left: "-288px", opacity: 0 }}
+                      animate={{ left: "0", opacity: 1 }}
+                      exit={{ left: "-288px", opacity: 0 }}
+                      transition={{ duration: 0.25, ease: "easeOut" }}
+                      className="absolute top-0 bottom-0 z-40"
+                      style={{ width: "288px" }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="w-72 p-4 flex flex-col h-full bg-[#0F172A] border-r border-slate-700/50 rounded-r-lg shadow-xl">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="text-white font-semibold">
+                            Chat History
+                          </h4>
 
-                        {/* Close button for chat history */}
+                          {/* Close button for chat history */}
+
+                          <button
+                            onClick={() => setShowChatHistory(false)}
+                            className="text-white/60 hover:text-white"
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
 
                         <button
-                          onClick={() => setShowChatHistory(false)}
-                          className="text-white/60 hover:text-white"
+                          onClick={() => {
+                            setAiMessages([]);
+
+                            setCurrentConversationId(null);
+
+                            loadConversations();
+                          }}
+                          disabled={aiLoadingConversations}
+                          className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-white/80 hover:bg-green-500/20 hover:text-green-300 mb-3 flex items-center gap-2 border border-dashed border-white/20 hover:border-green-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M6 18L18 6M6 6l12 12"
-                            />
-                          </svg>
-                        </button>
-                      </div>
-
-                      <button
-                        onClick={() => {
-                          setAiMessages([]);
-
-                          setCurrentConversationId(null);
-
-                          loadConversations();
-                        }}
-                        disabled={aiLoadingConversations}
-                        className="w-full text-left px-3 py-2.5 rounded-lg text-sm text-white/80 hover:bg-green-500/20 hover:text-green-300 mb-3 flex items-center gap-2 border border-dashed border-white/20 hover:border-green-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        {aiLoadingConversations ? (
-                          <svg
-                            className="w-4 h-4 animate-spin"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                          </svg>
-                        ) : (
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 4v16m8-8H4"
-                            />
-                          </svg>
-                        )}
-
-                        {aiLoadingConversations ? "Loading..." : "New Chat"}
-                      </button>
-
-                      <div className="flex-1 overflow-y-auto space-y-1 custom-scrollbar">
-                        {aiConversations.length === 0 ? (
-                          <p className="text-white/40 text-sm text-center py-8">
-                            No conversations yet
-                          </p>
-                        ) : (
-                          aiConversations.map((conv) => (
-                            <div
-                              key={conv.id}
-                              className={`w-full text-left px-3 py-2.5 rounded-lg text-sm truncate flex items-center justify-between group cursor-pointer transition-all ${
-                                currentConversationId === conv.id
-                                  ? "bg-green-500/20 text-green-300 border border-green-500/30"
-                                  : "text-white/70 hover:bg-white/5 border border-transparent"
-                              }`}
+                          {aiLoadingConversations ? (
+                            <svg
+                              className="w-4 h-4 animate-spin"
+                              fill="none"
+                              viewBox="0 0 24 24"
                             >
-                              <button
-                                onClick={() => {
-                                  loadMessages(conv.id);
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
 
-                                  setShowChatHistory(false);
-                                }}
-                                className="flex-1 truncate text-left flex items-center gap-2"
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                          ) : (
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M12 4v16m8-8H4"
+                              />
+                            </svg>
+                          )}
+
+                          {aiLoadingConversations ? "Loading..." : "New Chat"}
+                        </button>
+
+                        <div className="flex-1 overflow-y-auto space-y-1 custom-scrollbar">
+                          {aiConversations.length === 0 ? (
+                            <p className="text-white/40 text-sm text-center py-8">
+                              No conversations yet
+                            </p>
+                          ) : (
+                            aiConversations.map((conv) => (
+                              <div
+                                key={conv.id}
+                                className={`w-full text-left px-3 py-2.5 rounded-lg text-sm truncate flex items-center justify-between group cursor-pointer transition-all ${
+                                  currentConversationId === conv.id
+                                    ? "bg-green-500/20 text-green-300 border border-green-500/30"
+                                    : "text-white/70 hover:bg-white/5 border border-transparent"
+                                }`}
                               >
-                                <svg
-                                  className="w-4 h-4 text-white/40 flex-shrink-0"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
+                                <button
+                                  onClick={() => {
+                                    loadMessages(conv.id);
+
+                                    setShowChatHistory(false);
+                                  }}
+                                  className="flex-1 truncate text-left flex items-center gap-2"
                                 >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
-                                  />
-                                </svg>
-
-                                <span className="truncate">
-                                  {conv.title || "New Conversation"}
-                                </span>
-                              </button>
-
-                              <button
-                                onClick={(e) => deleteConversation(conv.id, e)}
-                                disabled={deletingConversationId === conv.id}
-                                className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 ml-2 transition-all disabled:opacity-50"
-                              >
-                                {deletingConversationId === conv.id ? (
                                   <svg
-                                    className="w-4 h-4 animate-spin"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                  >
-                                    <circle
-                                      className="opacity-25"
-                                      cx="12"
-                                      cy="12"
-                                      r="10"
-                                      stroke="currentColor"
-                                      strokeWidth="4"
-                                    ></circle>
-
-                                    <path
-                                      className="opacity-75"
-                                      fill="currentColor"
-                                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                    ></path>
-                                  </svg>
-                                ) : (
-                                  <svg
-                                    className="w-4 h-4"
+                                    className="w-4 h-4 text-white/40 flex-shrink-0"
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -6462,311 +6460,90 @@ ${result.analysis.risks || "N/A"}
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
                                       strokeWidth={2}
-                                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                      d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
                                     />
                                   </svg>
-                                )}
-                              </button>
-                            </div>
-                          ))
-                        )}
+
+                                  <span className="truncate">
+                                    {conv.title || "New Conversation"}
+                                  </span>
+                                </button>
+
+                                <button
+                                  onClick={(e) =>
+                                    deleteConversation(conv.id, e)
+                                  }
+                                  disabled={deletingConversationId === conv.id}
+                                  className="opacity-0 group-hover:opacity-100 text-white/40 hover:text-red-400 ml-2 transition-all disabled:opacity-50"
+                                >
+                                  {deletingConversationId === conv.id ? (
+                                    <svg
+                                      className="w-4 h-4 animate-spin"
+                                      fill="none"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                      ></circle>
+
+                                      <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                      ></path>
+                                    </svg>
+                                  ) : (
+                                    <svg
+                                      className="w-4 h-4"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                      />
+                                    </svg>
+                                  )}
+                                </button>
+                              </div>
+                            ))
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                </>
-              )}
-            </AnimatePresence>
+                    </motion.div>
+                  </>
+                )}
+              </AnimatePresence>
 
-            {/* Main Chat Area */}
+              {/* Main Chat Area */}
 
-            <div className="flex-1 flex flex-col h-full">
-              {/* Header */}
+              <div className="flex-1 flex flex-col h-full">
+                {/* Header */}
 
-              <div
-                className="border-b border-slate-700/50 text-white px-4 py-3 flex justify-between items-center flex-shrink-0"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #1a1f35 0%, #0d1117 60%, #1a0d2e 100%)",
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  {showChatHistory ? (
-                    <button
-                      onClick={() => setShowChatHistory(false)}
-                      className="text-white/60 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
-                      title="Close History"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => setShowChatHistory(true)}
-                      className="text-white/60 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
-                      title="Chat History"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 6h16M4 12h16M4 18h7"
-                        />
-                      </svg>
-                    </button>
-                  )}
-
-                  {/* AI Bot Icon with glow */}
-
-                  <div className="relative">
-                    <div className="absolute inset-0 rounded-full bg-green-500 blur-md opacity-60 animate-pulse" />
-
-                    <Bot className="relative w-5 h-5 text-green-400 drop-shadow-lg" />
-                  </div>
-
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-sm text-white leading-none">
-                        AI Assistant
-                      </h3>
-
-                      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-300 font-medium">
-                        {selectedModel
-
-                          .replace("gemini-", "")
-
-                          .replace("-flash", "F")
-
-                          .replace("-pro", "P")}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1">
-                  {/* Search Button */}
-
-                  <button
-                    onClick={() => setShowSearch(!showSearch)}
-                    className={`p-1.5 rounded-md transition-all ${showSearch ? "bg-green-500/20 text-green-300" : "text-white/60 hover:text-white hover:bg-white/10"}`}
-                    title="Search"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-                  </button>
-
-                  {/* Export Button */}
-
-                  <div className="relative">
-                    <button
-                      onClick={() => setShowExportMenu(!showExportMenu)}
-                      className="p-1.5 text-white/60 hover:text-white hover:bg-white/10 rounded-md transition-all"
-                      title="Export"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                        />
-                      </svg>
-                    </button>
-
-                    {showExportMenu && (
-                      <div className="absolute top-full mt-1 right-0 w-40 bg-[#1E293B] border border-slate-700 rounded-lg shadow-xl z-30 overflow-hidden">
-                        <button
-                          onClick={() => {
-                            setShowExportMenu(false);
-                          }}
-                          className="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors text-xs text-white/80 flex items-center gap-2"
-                        >
-                          <svg
-                            className="w-3 h-3"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                            />
-                          </svg>
-                          Export as Text
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setShowExportMenu(false);
-                          }}
-                          className="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors text-xs text-white/80 flex items-center gap-2"
-                        >
-                          <svg
-                            className="w-3 h-3"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-                            />
-                          </svg>
-                          Export as Markdown
-                        </button>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Refresh/New Chat Button */}
-
-                  <button
-                    onClick={async () => {
-                      setNewChatLoading(true);
-
-                      setAiMessages([]);
-
-                      setCurrentConversationId(null);
-
-                      setAttachedRequest(null);
-
-                      await loadConversations();
-
-                      setNewChatLoading(false);
-                    }}
-                    disabled={newChatLoading}
-                    className="p-1.5 text-white/60 hover:text-white hover:bg-white/10 rounded-md transition-all disabled:opacity-50"
-                    title="New Chat"
-                  >
-                    {newChatLoading ? (
-                      <svg
-                        className="w-4 h-4 animate-spin"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                    ) : (
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                        />
-                      </svg>
-                    )}
-                  </button>
-
-                  <button
-                    onClick={() => setShowAIChat(false)}
-                    className="text-white/60 hover:text-white p-1.5 hover:bg-white/10 rounded-md transition-all ml-1"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              {/* Search Bar */}
-
-              {showSearch && (
-                <div className="bg-[#0F172A] border-b border-slate-700/50 px-4 py-2">
-                  <div className="relative">
-                    <svg
-                      className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/40"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                      />
-                    </svg>
-
-                    <input
-                      type="text"
-                      value={aiSearchQuery}
-                      onChange={(e) => setAiSearchQuery(e.target.value)}
-                      placeholder="Search messages..."
-                      className="w-full pl-8 pr-8 py-1.5 bg-[#1E293B] border border-slate-700 rounded-md text-white placeholder-white/40 text-xs focus:outline-none focus:ring-1 focus:ring-green-500/50"
-                    />
-
-                    {aiSearchQuery && (
+                <div
+                  className="border-b border-slate-700/50 text-white px-4 py-3 flex justify-between items-center flex-shrink-0"
+                  style={{
+                    background:
+                      "linear-gradient(135deg, #1a1f35 0%, #0d1117 60%, #1a0d2e 100%)",
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    {showChatHistory ? (
                       <button
-                        onClick={() => setAiSearchQuery("")}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
+                        onClick={() => setShowChatHistory(false)}
+                        className="text-white/60 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
+                        title="Close History"
                       >
                         <svg
-                          className="w-3.5 h-3.5"
+                          className="w-4 h-4"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -6779,43 +6556,62 @@ ${result.analysis.risks || "N/A"}
                           />
                         </svg>
                       </button>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Attached Request */}
-
-              {attachedRequest && (
-                <div className="bg-[#0F172A] border-b border-slate-700 px-6 py-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4 text-[#94A3B8]"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
+                    ) : (
+                      <button
+                        onClick={() => setShowChatHistory(true)}
+                        className="text-white/60 hover:text-white transition-colors p-1 hover:bg-white/10 rounded-lg"
+                        title="Chat History"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                        />
-                      </svg>
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 6h16M4 12h16M4 18h7"
+                          />
+                        </svg>
+                      </button>
+                    )}
 
-                      <span className="text-sm font-medium text-white">
-                        Request #{attachedRequest.id}
-                      </span>
+                    {/* AI Bot Icon with glow */}
 
-                      <span className="text-xs text-white/50">
-                        • {attachedRequest.nature}
-                      </span>
+                    <div className="relative">
+                      <div className="absolute inset-0 rounded-full bg-green-500 blur-md opacity-60 animate-pulse" />
+
+                      <Bot className="relative w-5 h-5 text-green-400 drop-shadow-lg" />
                     </div>
 
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-sm text-white leading-none">
+                          AI Assistant
+                        </h3>
+
+                        <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-green-500/20 border border-green-500/30 text-green-300 font-medium">
+                          {selectedModel
+
+                            .replace("gemini-", "")
+
+                            .replace("-flash", "F")
+
+                            .replace("-pro", "P")}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-1">
+                    {/* Search Button */}
+
                     <button
-                      onClick={() => setAttachedRequest(null)}
-                      className="text-white/40 hover:text-white"
+                      onClick={() => setShowSearch(!showSearch)}
+                      className={`p-1.5 rounded-md transition-all ${showSearch ? "bg-green-500/20 text-green-300" : "text-white/60 hover:text-white hover:bg-white/10"}`}
+                      title="Search"
                     >
                       <svg
                         className="w-4 h-4"
@@ -6827,31 +6623,21 @@ ${result.analysis.risks || "N/A"}
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                         />
                       </svg>
                     </button>
-                  </div>
-                </div>
-              )}
 
-              {/* Messages */}
+                    {/* Export Button */}
 
-              <div
-                ref={chatContainerRef}
-                onScroll={handleScroll}
-                className="flex-1 overflow-y-auto p-4 space-y-5 bg-[#080d18] custom-scrollbar"
-              >
-                {/* Live Voice Transcription Display */}
-
-                {isListening && (
-                  <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
-                    <div className="relative mb-6">
-                      <div className="absolute inset-0 rounded-full bg-red-500 blur-xl opacity-50 animate-pulse" />
-
-                      <div className="relative w-16 h-16 rounded-full bg-red-600 flex items-center justify-center shadow-lg shadow-red-500/30">
+                    <div className="relative">
+                      <button
+                        onClick={() => setShowExportMenu(!showExportMenu)}
+                        className="p-1.5 text-white/60 hover:text-white hover:bg-white/10 rounded-md transition-all"
+                        title="Export"
+                      >
                         <svg
-                          className="w-8 h-8 text-white animate-pulse"
+                          className="w-4 h-4"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -6860,100 +6646,21 @@ ${result.analysis.risks || "N/A"}
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                            d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                           />
                         </svg>
-                      </div>
-                    </div>
+                      </button>
 
-                    <h2 className="text-lg font-bold text-white mb-1">
-                      Listening...
-                    </h2>
-
-                    <p className="text-sm text-white/50 max-w-[260px] mb-4 leading-relaxed">
-                      Speak now. Your words will appear here in real-time.
-                    </p>
-
-                    {listeningText && (
-                      <div className="w-full max-w-[300px] p-4 bg-white/5 border border-white/10 rounded-xl">
-                        <p className="text-white text-sm leading-relaxed animate-pulse">
-                          "{listeningText}"
-                        </p>
-                      </div>
-                    )}
-
-                    <p className="text-[11px] text-white/30 mt-4">
-                      Click the microphone again to stop
-                    </p>
-                  </div>
-                )}
-
-                {aiMessages.length === 0 && !isListening ? (
-                  <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
-                    {/* Animated orb */}
-
-                    <div className="relative mb-6">
-                      <div className="absolute inset-0 rounded-full bg-green-500 blur-xl opacity-50 animate-pulse" />
-
-                      <Bot className="relative w-16 h-16 text-green-400 drop-shadow-lg" />
-                    </div>
-
-                    <h2 className="text-lg font-bold text-white mb-1">
-                      Hi, I'm your AI Assistant
-                    </h2>
-
-                    <p className="text-sm text-white/50 max-w-[260px] mb-6 leading-relaxed">
-                      Powered by Gemini. Ask me anything about your facility's
-                      maintenance data.
-                    </p>
-
-                    {/* Capability cards */}
-
-                    <div className="w-full grid grid-cols-2 gap-2 mb-3">
-                      {[
-                        {
-                          icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
-
-                          label: "Analyze trends",
-
-                          color:
-                            "from-green-500/20 to-emerald-500/10 border-green-500/20",
-                        },
-
-                        {
-                          icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2",
-
-                          label: "Review requests",
-
-                          color:
-                            "from-green-500/20 to-emerald-500/10 border-green-500/20",
-                        },
-
-                        {
-                          icon: "M13 10V3L4 14h7v7l9-11h-7z",
-
-                          label: "Prioritize tasks",
-
-                          color:
-                            "from-green-500/20 to-emerald-500/10 border-green-500/20",
-                        },
-
-                        {
-                          icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
-
-                          label: "Analyze photos",
-
-                          color:
-                            "from-green-500/20 to-emerald-500/10 border-green-500/20",
-                        },
-                      ].map((cap, i) => (
-                        <div
-                          key={i}
-                          className={`flex items-center gap-2 p-2.5 rounded-xl bg-gradient-to-br ${cap.color} border backdrop-blur-sm`}
-                        >
-                          <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
+                      {showExportMenu && (
+                        <div className="absolute top-full mt-1 right-0 w-40 bg-[#1E293B] border border-slate-700 rounded-lg shadow-xl z-30 overflow-hidden">
+                          <button
+                            onClick={() => {
+                              setShowExportMenu(false);
+                            }}
+                            className="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors text-xs text-white/80 flex items-center gap-2"
+                          >
                             <svg
-                              className="w-3.5 h-3.5 text-white/70"
+                              className="w-3 h-3"
                               fill="none"
                               stroke="currentColor"
                               viewBox="0 0 24 24"
@@ -6962,579 +6669,60 @@ ${result.analysis.risks || "N/A"}
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
                                 strokeWidth={2}
-                                d={cap.icon}
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                               />
                             </svg>
-                          </div>
-
-                          <span className="text-[11px] text-white/70 font-medium">
-                            {cap.label}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <p className="text-[11px] text-white/30">
-                      Select a suggestion below or type your question
-                    </p>
-                  </div>
-                ) : aiLoadingMessages ? (
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="w-5 h-5 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
-
-                      <p className="text-white/60 text-sm">
-                        Loading messages...
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  (aiSearchQuery
-                    ? aiMessages.filter((m) =>
-                        m.content
-
-                          .toLowerCase()
-
-                          .includes(aiSearchQuery.toLowerCase()),
-                      )
-                    : aiMessages
-                  ).map((message, index) => (
-                    <div
-                      key={index}
-                      className={`flex gap-2.5 group animate-fade-in ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}
-                    >
-                      {/* Avatar - only show for assistant */}
-
-                      {message.role === "assistant" && (
-                        <div className="flex-shrink-0 mt-1">
-                          <div className="relative">
-                            <div className="absolute inset-0 rounded-full bg-green-500 blur-sm opacity-60 animate-pulse" />
-
-                            <Bot className="relative w-5 h-5 text-green-400 drop-shadow-lg" />
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex flex-col max-w-[82%]">
-                        <div
-                          className={`relative rounded-2xl px-3.5 py-2.5 ${
-                            message.role === "user"
-                              ? "bg-[#2D3A52] border border-slate-600/40 shadow-lg"
-                              : "bg-transparent"
-                          }`}
-                        >
-                          {/* Display attached images */}
-
-                          {message.attachments &&
-                            message.attachments.length > 0 && (
-                              <div className="flex flex-wrap gap-2 mb-3">
-                                {message.attachments.map((url, idx) => (
-                                  <img
-                                    key={idx}
-                                    src={url}
-                                    alt={`Attachment ${idx + 1}`}
-                                    className="max-w-[200px] max-h-[200px] rounded-lg object-cover border border-white/20"
-                                  />
-                                ))}
-                              </div>
-                            )}
-
-                          {message.role === "user" ? (
-                            editingMessageId === index ? (
-                              <div className="relative">
-                                <textarea
-                                  value={editingMessageText}
-                                  onChange={(e) =>
-                                    setEditingMessageText(e.target.value)
-                                  }
-                                  className="w-full bg-[#2D3A52] text-sm text-white resize-none focus:outline-none rounded-2xl px-3.5 py-2.5"
-                                  rows={Math.max(
-                                    1,
-
-                                    editingMessageText.split("\n").length,
-                                  )}
-                                  autoFocus
-                                />
-
-                                <div className="flex gap-2 mt-2">
-                                  <button
-                                    onClick={async () => {
-                                      // Update the message content
-
-                                      const updatedMessages = [...aiMessages];
-
-                                      updatedMessages[index] = {
-                                        ...message,
-
-                                        content: editingMessageText,
-                                      };
-
-                                      // Remove all messages after this user message (including assistant responses)
-
-                                      const newMessages = updatedMessages.slice(
-                                        0,
-
-                                        index + 1,
-                                      );
-
-                                      setAiMessages(newMessages);
-
-                                      setEditingMessageId(null);
-
-                                      setEditingMessageText("");
-
-                                      // Resend to AI
-
-                                      setAiLoading(true);
-
-                                      setAiStatusText("Generating response...");
-
-                                      try {
-                                        const response = await fetch(
-                                          "/api/ai/admin-chat",
-
-                                          {
-                                            method: "POST",
-
-                                            headers: {
-                                              "Content-Type":
-                                                "application/json",
-                                            },
-
-                                            body: JSON.stringify({
-                                              query: editingMessageText,
-
-                                              context: currentConversationId
-                                                ? {
-                                                    conversationId:
-                                                      currentConversationId,
-                                                  }
-                                                : undefined,
-
-                                              model: selectedModel,
-                                            }),
-                                          },
-                                        );
-
-                                        const result = await response.json();
-
-                                        if (result.success) {
-                                          setAiMessages((prev) => [
-                                            ...prev,
-
-                                            {
-                                              role: "assistant",
-
-                                              content: result.response,
-                                            },
-                                          ]);
-
-                                          if (currentConversationId) {
-                                            await saveMessage(
-                                              currentConversationId,
-
-                                              "user",
-
-                                              editingMessageText,
-                                            );
-
-                                            await saveMessage(
-                                              currentConversationId,
-
-                                              "assistant",
-
-                                              result.response,
-                                            );
-                                          }
-                                        }
-                                      } catch (error) {
-                                        console.error(
-                                          "Edit resend error:",
-
-                                          error,
-                                        );
-                                      } finally {
-                                        setAiLoading(false);
-
-                                        setAiStatusText("");
-                                      }
-                                    }}
-                                    className="px-3 py-1 bg-green-600 text-white text-xs rounded-md hover:bg-green-500 transition-colors"
-                                  >
-                                    Save & Resend
-                                  </button>
-
-                                  <button
-                                    onClick={() => {
-                                      setEditingMessageId(null);
-
-                                      setEditingMessageText("");
-                                    }}
-                                    className="px-3 py-1 bg-white/10 text-white/70 text-xs rounded-md hover:bg-white/20 transition-colors"
-                                  >
-                                    Cancel
-                                  </button>
-                                </div>
-                              </div>
-                            ) : (
-                              <p className="text-sm whitespace-pre-wrap pr-8 text-white">
-                                {message.content}
-                              </p>
-                            )
-                          ) : (
-                            <div className="text-sm prose prose-sm max-w-none prose-invert prose-headings:font-semibold prose-strong:font-bold prose-ul:list-disc prose-ol:list-decimal prose-li:ml-2">
-                              <ReactMarkdown
-                                components={{
-                                  h1: ({ node, ...props }) => (
-                                    <h1
-                                      className="text-base font-bold mb-0.5 text-green-300"
-                                      {...props}
-                                    />
-                                  ),
-
-                                  h2: ({ node, ...props }) => (
-                                    <h2
-                                      className="text-sm font-semibold mb-0.5 text-white"
-                                      {...props}
-                                    />
-                                  ),
-
-                                  h3: ({ node, ...props }) => (
-                                    <h3
-                                      className="text-sm font-medium mb-0.5 text-white"
-                                      {...props}
-                                    />
-                                  ),
-
-                                  p: ({ node, ...props }) => (
-                                    <p
-                                      className="mb-0.5 last:mb-0 text-white/80 leading-snug"
-                                      {...props}
-                                    />
-                                  ),
-
-                                  ul: ({ node, ...props }) => (
-                                    <ul
-                                      className="list-disc ml-3 mb-0.5 text-white/80 space-y-0"
-                                      {...props}
-                                    />
-                                  ),
-
-                                  ol: ({ node, ...props }) => (
-                                    <ol
-                                      className="list-decimal ml-3 mb-0.5 text-white/80 space-y-0"
-                                      {...props}
-                                    />
-                                  ),
-
-                                  li: ({ node, ...props }) => (
-                                    <li
-                                      className="mb-0 text-white/80 leading-snug"
-                                      {...props}
-                                    />
-                                  ),
-
-                                  strong: ({ node, ...props }) => (
-                                    <strong
-                                      className="font-semibold text-green-300"
-                                      {...props}
-                                    />
-                                  ),
-
-                                  code: ({ node, ...props }) => (
-                                    <code
-                                      className="bg-white/10 px-1.5 py-0.5 rounded text-xs text-green-300 font-mono"
-                                      {...props}
-                                    />
-                                  ),
-                                }}
-                              >
-                                {message.content}
-                              </ReactMarkdown>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Copy button */}
-
-                        <div
-                          className={`flex items-center gap-1 mt-1 ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                        >
-                          <button
-                            onClick={() => {
-                              navigator.clipboard.writeText(message.content);
-
-                              setCopiedMessage(index);
-
-                              setTimeout(() => setCopiedMessage(null), 2000);
-                            }}
-                            className={`p-1 rounded transition-all ${copiedMessage === index ? "text-green-400" : "text-white/40 hover:text-white hover:bg-white/10"}`}
-                            title={copiedMessage === index ? "Copied!" : "Copy"}
-                          >
-                            {copiedMessage === index ? (
-                              <svg
-                                className="w-3.5 h-3.5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M5 13l4 4L19 7"
-                                />
-                              </svg>
-                            ) : (
-                              <svg
-                                className="w-3.5 h-3.5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                                />
-                              </svg>
-                            )}
+                            Export as Text
                           </button>
 
-                          {/* Regenerate Button - Visible directly for assistant messages */}
-
-                          {message.role === "assistant" && (
-                            <button
-                              onClick={async (e) => {
-                                e.stopPropagation();
-
-                                const lastUserMsg = [...aiMessages]
-
-                                  .reverse()
-
-                                  .find((m) => m.role === "user");
-
-                                if (lastUserMsg) {
-                                  setAiLoading(true);
-
-                                  setAiStatusText("Regenerating response...");
-
-                                  setAiMessages((prev) =>
-                                    prev.filter((_, i) => i !== index),
-                                  );
-
-                                  try {
-                                    const response = await fetch(
-                                      "/api/ai/admin-chat",
-
-                                      {
-                                        method: "POST",
-
-                                        headers: {
-                                          "Content-Type": "application/json",
-                                        },
-
-                                        body: JSON.stringify({
-                                          query: lastUserMsg.content,
-
-                                          context: currentConversationId
-                                            ? {
-                                                conversationId:
-                                                  currentConversationId,
-                                              }
-                                            : undefined,
-
-                                          model: selectedModel,
-                                        }),
-                                      },
-                                    );
-
-                                    const result = await response.json();
-
-                                    if (result.success) {
-                                      setAiMessages((prev) => [
-                                        ...prev,
-
-                                        {
-                                          role: "assistant",
-
-                                          content: result.response,
-                                        },
-                                      ]);
-
-                                      if (currentConversationId) {
-                                        await saveMessage(
-                                          currentConversationId,
-
-                                          "assistant",
-
-                                          result.response,
-                                        );
-                                      }
-                                    }
-                                  } catch (error) {
-                                    console.error("Regenerate error:", error);
-                                  } finally {
-                                    setAiLoading(false);
-
-                                    setAiStatusText("");
-                                  }
-                                }
-                              }}
-                              className="p-1 rounded text-white/40 hover:text-green-400 hover:bg-green-500/10 transition-all"
-                              title="Regenerate response"
+                          <button
+                            onClick={() => {
+                              setShowExportMenu(false);
+                            }}
+                            className="w-full text-left px-3 py-2 hover:bg-white/5 transition-colors text-xs text-white/80 flex items-center gap-2"
+                          >
+                            <svg
+                              className="w-3 h-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
                             >
-                              <svg
-                                className="w-3.5 h-3.5"
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={2}
-                                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                                />
-                              </svg>
-                            </button>
-                          )}
-
-                          {/* Like/Dislike Buttons - Visible directly for assistant messages */}
-
-                          {message.role === "assistant" && (
-                            <div className="flex items-center gap-0.5">
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-
-                                  setMessageFeedback((prev) => ({
-                                    ...prev,
-
-                                    [index]:
-                                      prev[index] === "like"
-                                        ? undefined
-                                        : "like",
-                                  }));
-                                }}
-                                className={`p-1 rounded transition-all ${
-                                  messageFeedback[index] === "like"
-                                    ? "text-green-400"
-                                    : "text-white/40 hover:text-green-400 hover:bg-green-500/10"
-                                }`}
-                                title={
-                                  messageFeedback[index] === "like"
-                                    ? "Liked"
-                                    : "Like"
-                                }
-                              >
-                                <svg
-                                  className="w-3.5 h-3.5"
-                                  fill={
-                                    messageFeedback[index] === "like"
-                                      ? "currentColor"
-                                      : "none"
-                                  }
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
-                                  />
-                                </svg>
-                              </button>
-
-                              <button
-                                onClick={(e) => {
-                                  e.stopPropagation();
-
-                                  setMessageFeedback((prev) => ({
-                                    ...prev,
-
-                                    [index]:
-                                      prev[index] === "dislike"
-                                        ? undefined
-                                        : "dislike",
-                                  }));
-                                }}
-                                className={`p-1 rounded transition-all ${
-                                  messageFeedback[index] === "dislike"
-                                    ? "text-red-400"
-                                    : "text-white/40 hover:text-red-400 hover:bg-red-500/10"
-                                }`}
-                                title={
-                                  messageFeedback[index] === "dislike"
-                                    ? "Disliked"
-                                    : "Dislike"
-                                }
-                              >
-                                <svg
-                                  className="w-3.5 h-3.5"
-                                  fill={
-                                    messageFeedback[index] === "dislike"
-                                      ? "currentColor"
-                                      : "none"
-                                  }
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"
-                                  />
-                                </svg>
-                              </button>
-                            </div>
-                          )}
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                              />
+                            </svg>
+                            Export as Markdown
+                          </button>
                         </div>
-
-                        {/* Dynamic Contextual Suggestions for last AI response */}
-
-                        {message.role === "assistant" &&
-                          index === aiMessages.length - 1 && (
-                            <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-white/5">
-                              {generateContextualSuggestions(
-                                message.content,
-                              ).map((suggestion, suggestionIndex) => (
-                                <button
-                                  key={suggestionIndex}
-                                  onClick={() => setAiInput(suggestion.prompt)}
-                                  className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-green-500/10 hover:text-green-300 hover:border-green-500/30 transition-all"
-                                >
-                                  {suggestion.label}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                      </div>
-                    </div>
-                  ))
-                )}
-
-                {/* Loading indicator */}
-
-                {aiLoading && (
-                  <div className="flex gap-2.5 animate-fade-in">
-                    <div className="flex-shrink-0 mt-1">
-                      <div className="relative">
-                        <div className="absolute inset-0 rounded-md bg-green-500 blur-sm opacity-60 animate-pulse" />
-
-                        <div className="relative w-6 h-6 rounded-md bg-green-600 flex items-center justify-center shadow shadow-green-500/30">
-                          <Bot className="w-3.5 h-3.5 text-white" />
-                        </div>
-                      </div>
+                      )}
                     </div>
 
-                    <div className="bg-transparent rounded-2xl rounded-tl-sm px-4 py-3">
-                      <div className="flex items-center gap-2">
+                    {/* Refresh/New Chat Button */}
+
+                    <button
+                      onClick={async () => {
+                        setNewChatLoading(true);
+
+                        setAiMessages([]);
+
+                        setCurrentConversationId(null);
+
+                        setAttachedRequest(null);
+
+                        await loadConversations();
+
+                        setNewChatLoading(false);
+                      }}
+                      disabled={newChatLoading}
+                      className="p-1.5 text-white/60 hover:text-white hover:bg-white/10 rounded-md transition-all disabled:opacity-50"
+                      title="New Chat"
+                    >
+                      {newChatLoading ? (
                         <svg
-                          className="w-4 h-4 animate-spin text-green-400"
+                          className="w-4 h-4 animate-spin"
                           fill="none"
                           viewBox="0 0 24 24"
                         >
@@ -7553,113 +6741,9 @@ ${result.analysis.risks || "N/A"}
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                           ></path>
                         </svg>
-
-                        <span className="text-green-300/60 text-xs whitespace-nowrap">
-                          {isListening
-                            ? listeningText || "Listening..."
-                            : aiStatusText || "Generating response..."}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Suggestion Chips - Above Input */}
-
-              {aiMessages.length === 0 && !aiLoading && (
-                <div
-                  className="px-3 pt-3 pb-3 border-t border-slate-800/60"
-                  style={{ background: "#0a0e1a" }}
-                >
-                  <p className="text-[10px] text-white/30 uppercase tracking-widest mb-2 px-1">
-                    Try asking
-                  </p>
-
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {[
-                      {
-                        icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
-
-                        text: "Analyze trends",
-
-                        prompt: "Show me recent maintenance trends",
-                      },
-
-                      {
-                        icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
-
-                        text: "Pending queue",
-
-                        prompt: "Show me all pending requests",
-                      },
-
-                      {
-                        icon: "M13 10V3L4 14h7v7l9-11h-7z",
-
-                        text: "Top priorities",
-
-                        prompt: "What are the most urgent maintenance issues?",
-                      },
-
-                      {
-                        icon: "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-
-                        text: "What can you do?",
-
-                        prompt: "What can you help me with?",
-                      },
-                    ].map((chip, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setAiInput(chip.prompt)}
-                        className="flex items-center gap-2 px-3 py-2 bg-white/[0.03] border border-white/8 rounded-xl hover:bg-green-600/10 hover:border-green-500/30 hover:text-green-300 transition-all text-white/60 text-left group"
-                      >
-                        <div className="w-5 h-5 rounded-md bg-white/5 group-hover:bg-green-500/20 flex items-center justify-center flex-shrink-0 transition-all">
-                          <svg
-                            className="w-3 h-3"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d={chip.icon}
-                            />
-                          </svg>
-                        </div>
-
-                        <span className="text-[11px] font-medium leading-tight">
-                          {chip.text}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Input Area */}
-
-              <div
-                className="border-t border-slate-800/80 p-3"
-                style={{
-                  background:
-                    "linear-gradient(180deg, #0d1117 0%, #0a0e1a 100%)",
-                }}
-              >
-                {/* Attached Files Preview */}
-
-                {aiAttachments.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-2">
-                    {aiAttachments.map((file, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-[#30364F]/80 rounded-lg text-sm text-white border border-white/10"
-                      >
+                      ) : (
                         <svg
-                          className="w-4 h-4 text-green-400"
+                          className="w-4 h-4"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -7668,24 +6752,67 @@ ${result.analysis.risks || "N/A"}
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                           />
                         </svg>
+                      )}
+                    </button>
 
-                        <span className="max-w-[150px] truncate">
-                          {file.name}
-                        </span>
+                    <button
+                      onClick={() => setShowAIChat(false)}
+                      className="text-white/60 hover:text-white p-1.5 hover:bg-white/10 rounded-md transition-all ml-1"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
 
+                {/* Search Bar */}
+
+                {showSearch && (
+                  <div className="bg-[#0F172A] border-b border-slate-700/50 px-4 py-2">
+                    <div className="relative">
+                      <svg
+                        className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/40"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+
+                      <input
+                        type="text"
+                        value={aiSearchQuery}
+                        onChange={(e) => setAiSearchQuery(e.target.value)}
+                        placeholder="Search messages..."
+                        className="w-full pl-8 pr-8 py-1.5 bg-[#1E293B] border border-slate-700 rounded-md text-white placeholder-white/40 text-xs focus:outline-none focus:ring-1 focus:ring-green-500/50"
+                      />
+
+                      {aiSearchQuery && (
                         <button
-                          onClick={() =>
-                            setAiAttachments((prev) =>
-                              prev.filter((_, i) => i !== index),
-                            )
-                          }
-                          className="text-white/50 hover:text-red-400 transition-colors"
+                          onClick={() => setAiSearchQuery("")}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-white/40 hover:text-white"
                         >
                           <svg
-                            className="w-4 h-4"
+                            className="w-3.5 h-3.5"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -7698,22 +6825,19 @@ ${result.analysis.risks || "N/A"}
                             />
                           </svg>
                         </button>
-                      </div>
-                    ))}
+                      )}
+                    </div>
                   </div>
                 )}
 
-                <div className="space-y-2">
-                  {/* Sub-toolbar with attachment and voice icons */}
+                {/* Attached Request */}
 
-                  <div className="flex items-center justify-between px-1">
-                    <div className="flex items-center gap-1">
-                      <label
-                        className="p-1.5 text-white/40 hover:text-green-400 cursor-pointer rounded-md hover:bg-white/5 transition-all"
-                        title="Attach file"
-                      >
+                {attachedRequest && (
+                  <div className="bg-[#0F172A] border-b border-slate-700 px-6 py-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
                         <svg
-                          className="w-4 h-4"
+                          className="w-4 h-4 text-[#94A3B8]"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -7722,31 +6846,22 @@ ${result.analysis.risks || "N/A"}
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                           />
                         </svg>
 
-                        <input
-                          type="file"
-                          multiple
-                          accept="image/*,.pdf,.doc,.docx,.txt"
-                          className="hidden"
-                          onChange={(e) => {
-                            const files = Array.from(e.target.files || []);
+                        <span className="text-sm font-medium text-white">
+                          Request #{attachedRequest.id}
+                        </span>
 
-                            setAiAttachments((prev) => [...prev, ...files]);
-                          }}
-                        />
-                      </label>
+                        <span className="text-xs text-white/50">
+                          • {attachedRequest.nature}
+                        </span>
+                      </div>
 
                       <button
-                        onClick={handleVoiceInput}
-                        className={`p-1.5 rounded-md transition-all ${
-                          isListening
-                            ? "text-red-400 bg-red-400/10 animate-pulse"
-                            : "text-white/40 hover:text-green-400 hover:bg-white/5"
-                        }`}
-                        title={isListening ? "Listening..." : "Voice input"}
+                        onClick={() => setAttachedRequest(null)}
+                        className="text-white/40 hover:text-white"
                       >
                         <svg
                           className="w-4 h-4"
@@ -7758,27 +6873,31 @@ ${result.analysis.risks || "N/A"}
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth={2}
-                            d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                            d="M6 18L18 6M6 6l12 12"
                           />
                         </svg>
                       </button>
+                    </div>
+                  </div>
+                )}
 
-                      {/* Model Selector in sub-toolbar */}
+                {/* Messages */}
 
-                      <div className="relative">
-                        <button
-                          onClick={() =>
-                            setShowModelSelector(!showModelSelector)
-                          }
-                          className="flex items-center gap-1 px-2 py-1 text-white/50 hover:text-green-400 hover:bg-white/5 rounded-md transition-all text-xs"
-                          title="Select model"
-                        >
-                          <span className="text-[10px]">
-                            {selectedModel.replace("gemini-", "")}
-                          </span>
+                <div
+                  ref={chatContainerRef}
+                  onScroll={handleScroll}
+                  className="flex-1 overflow-y-auto p-4 space-y-5 bg-[#080d18] custom-scrollbar"
+                >
+                  {/* Live Voice Transcription Display */}
 
+                  {isListening && (
+                    <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
+                      <div className="relative mb-6">
+                        <div className="absolute inset-0 rounded-full bg-red-500 blur-xl opacity-50 animate-pulse" />
+
+                        <div className="relative w-16 h-16 rounded-full bg-red-600 flex items-center justify-center shadow-lg shadow-red-500/30">
                           <svg
-                            className={`w-3 h-3 transition-transform ${showModelSelector ? "rotate-180" : ""}`}
+                            className="w-8 h-8 text-white animate-pulse"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -7787,745 +6906,1110 @@ ${result.analysis.risks || "N/A"}
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth={2}
-                              d="M19 9l-7 7-7-7"
+                              d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                            />
+                          </svg>
+                        </div>
+                      </div>
+
+                      <h2 className="text-lg font-bold text-white mb-1">
+                        Listening...
+                      </h2>
+
+                      <p className="text-sm text-white/50 max-w-[260px] mb-4 leading-relaxed">
+                        Speak now. Your words will appear here in real-time.
+                      </p>
+
+                      {listeningText && (
+                        <div className="w-full max-w-[300px] p-4 bg-white/5 border border-white/10 rounded-xl">
+                          <p className="text-white text-sm leading-relaxed animate-pulse">
+                            "{listeningText}"
+                          </p>
+                        </div>
+                      )}
+
+                      <p className="text-[11px] text-white/30 mt-4">
+                        Click the microphone again to stop
+                      </p>
+                    </div>
+                  )}
+
+                  {aiMessages.length === 0 && !isListening ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center px-4 py-6">
+                      {/* Animated orb */}
+
+                      <div className="relative mb-6">
+                        <div className="absolute inset-0 rounded-full bg-green-500 blur-xl opacity-50 animate-pulse" />
+
+                        <Bot className="relative w-16 h-16 text-green-400 drop-shadow-lg" />
+                      </div>
+
+                      <h2 className="text-lg font-bold text-white mb-1">
+                        Hi, I'm your AI Assistant
+                      </h2>
+
+                      <p className="text-sm text-white/50 max-w-[260px] mb-6 leading-relaxed">
+                        Powered by Gemini. Ask me anything about your facility's
+                        maintenance data.
+                      </p>
+
+                      {/* Capability cards */}
+
+                      <div className="w-full grid grid-cols-2 gap-2 mb-3">
+                        {[
+                          {
+                            icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+
+                            label: "Analyze trends",
+
+                            color:
+                              "from-green-500/20 to-emerald-500/10 border-green-500/20",
+                          },
+
+                          {
+                            icon: "M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2",
+
+                            label: "Review requests",
+
+                            color:
+                              "from-green-500/20 to-emerald-500/10 border-green-500/20",
+                          },
+
+                          {
+                            icon: "M13 10V3L4 14h7v7l9-11h-7z",
+
+                            label: "Prioritize tasks",
+
+                            color:
+                              "from-green-500/20 to-emerald-500/10 border-green-500/20",
+                          },
+
+                          {
+                            icon: "M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z",
+
+                            label: "Analyze photos",
+
+                            color:
+                              "from-green-500/20 to-emerald-500/10 border-green-500/20",
+                          },
+                        ].map((cap, i) => (
+                          <div
+                            key={i}
+                            className={`flex items-center gap-2 p-2.5 rounded-xl bg-gradient-to-br ${cap.color} border backdrop-blur-sm`}
+                          >
+                            <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center flex-shrink-0">
+                              <svg
+                                className="w-3.5 h-3.5 text-white/70"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d={cap.icon}
+                                />
+                              </svg>
+                            </div>
+
+                            <span className="text-[11px] text-white/70 font-medium">
+                              {cap.label}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+
+                      <p className="text-[11px] text-white/30">
+                        Select a suggestion below or type your question
+                      </p>
+                    </div>
+                  ) : aiLoadingMessages ? (
+                    <div className="flex-1 flex items-center justify-center">
+                      <div className="flex flex-col items-center gap-3">
+                        <div className="w-5 h-5 border-2 border-green-500 border-t-transparent rounded-full animate-spin"></div>
+
+                        <p className="text-white/60 text-sm">
+                          Loading messages...
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    (aiSearchQuery
+                      ? aiMessages.filter((m) =>
+                          m.content
+
+                            .toLowerCase()
+
+                            .includes(aiSearchQuery.toLowerCase()),
+                        )
+                      : aiMessages
+                    ).map((message, index) => (
+                      <div
+                        key={index}
+                        className={`flex gap-2.5 group animate-fade-in ${message.role === "user" ? "flex-row-reverse" : "flex-row"}`}
+                      >
+                        {/* Avatar - only show for assistant */}
+
+                        {message.role === "assistant" && (
+                          <div className="flex-shrink-0 mt-1">
+                            <div className="relative">
+                              <div className="absolute inset-0 rounded-full bg-green-500 blur-sm opacity-60 animate-pulse" />
+
+                              <Bot className="relative w-5 h-5 text-green-400 drop-shadow-lg" />
+                            </div>
+                          </div>
+                        )}
+
+                        <div className="flex flex-col max-w-[82%]">
+                          <div
+                            className={`relative rounded-2xl px-3.5 py-2.5 ${
+                              message.role === "user"
+                                ? "bg-[#2D3A52] border border-slate-600/40 shadow-lg"
+                                : "bg-transparent"
+                            }`}
+                          >
+                            {/* Display attached images */}
+
+                            {message.attachments &&
+                              message.attachments.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mb-3">
+                                  {message.attachments.map((url, idx) => (
+                                    <img
+                                      key={idx}
+                                      src={url}
+                                      alt={`Attachment ${idx + 1}`}
+                                      className="max-w-[200px] max-h-[200px] rounded-lg object-cover border border-white/20"
+                                    />
+                                  ))}
+                                </div>
+                              )}
+
+                            {message.role === "user" ? (
+                              editingMessageId === index ? (
+                                <div className="relative">
+                                  <textarea
+                                    value={editingMessageText}
+                                    onChange={(e) =>
+                                      setEditingMessageText(e.target.value)
+                                    }
+                                    className="w-full bg-[#2D3A52] text-sm text-white resize-none focus:outline-none rounded-2xl px-3.5 py-2.5"
+                                    rows={Math.max(
+                                      1,
+
+                                      editingMessageText.split("\n").length,
+                                    )}
+                                    autoFocus
+                                  />
+
+                                  <div className="flex gap-2 mt-2">
+                                    <button
+                                      onClick={async () => {
+                                        // Update the message content
+
+                                        const updatedMessages = [...aiMessages];
+
+                                        updatedMessages[index] = {
+                                          ...message,
+
+                                          content: editingMessageText,
+                                        };
+
+                                        // Remove all messages after this user message (including assistant responses)
+
+                                        const newMessages =
+                                          updatedMessages.slice(
+                                            0,
+
+                                            index + 1,
+                                          );
+
+                                        setAiMessages(newMessages);
+
+                                        setEditingMessageId(null);
+
+                                        setEditingMessageText("");
+
+                                        // Resend to AI
+
+                                        setAiLoading(true);
+
+                                        setAiStatusText(
+                                          "Generating response...",
+                                        );
+
+                                        try {
+                                          const response = await fetch(
+                                            "/api/ai/admin-chat",
+
+                                            {
+                                              method: "POST",
+
+                                              headers: {
+                                                "Content-Type":
+                                                  "application/json",
+                                              },
+
+                                              body: JSON.stringify({
+                                                query: editingMessageText,
+
+                                                context: currentConversationId
+                                                  ? {
+                                                      conversationId:
+                                                        currentConversationId,
+                                                    }
+                                                  : undefined,
+
+                                                model: selectedModel,
+                                              }),
+                                            },
+                                          );
+
+                                          const result = await response.json();
+
+                                          if (result.success) {
+                                            setAiMessages((prev) => [
+                                              ...prev,
+
+                                              {
+                                                role: "assistant",
+
+                                                content: result.response,
+                                              },
+                                            ]);
+
+                                            if (currentConversationId) {
+                                              await saveMessage(
+                                                currentConversationId,
+
+                                                "user",
+
+                                                editingMessageText,
+                                              );
+
+                                              await saveMessage(
+                                                currentConversationId,
+
+                                                "assistant",
+
+                                                result.response,
+                                              );
+                                            }
+                                          }
+                                        } catch (error) {
+                                          console.error(
+                                            "Edit resend error:",
+
+                                            error,
+                                          );
+                                        } finally {
+                                          setAiLoading(false);
+
+                                          setAiStatusText("");
+                                        }
+                                      }}
+                                      className="px-3 py-1 bg-green-600 text-white text-xs rounded-md hover:bg-green-500 transition-colors"
+                                    >
+                                      Save & Resend
+                                    </button>
+
+                                    <button
+                                      onClick={() => {
+                                        setEditingMessageId(null);
+
+                                        setEditingMessageText("");
+                                      }}
+                                      className="px-3 py-1 bg-white/10 text-white/70 text-xs rounded-md hover:bg-white/20 transition-colors"
+                                    >
+                                      Cancel
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <p className="text-sm whitespace-pre-wrap pr-8 text-white">
+                                  {message.content}
+                                </p>
+                              )
+                            ) : (
+                              <div className="text-sm prose prose-sm max-w-none prose-invert prose-headings:font-semibold prose-strong:font-bold prose-ul:list-disc prose-ol:list-decimal prose-li:ml-2">
+                                <ReactMarkdown
+                                  components={{
+                                    h1: ({ node, ...props }) => (
+                                      <h1
+                                        className="text-base font-bold mb-0.5 text-green-300"
+                                        {...props}
+                                      />
+                                    ),
+
+                                    h2: ({ node, ...props }) => (
+                                      <h2
+                                        className="text-sm font-semibold mb-0.5 text-white"
+                                        {...props}
+                                      />
+                                    ),
+
+                                    h3: ({ node, ...props }) => (
+                                      <h3
+                                        className="text-sm font-medium mb-0.5 text-white"
+                                        {...props}
+                                      />
+                                    ),
+
+                                    p: ({ node, ...props }) => (
+                                      <p
+                                        className="mb-0.5 last:mb-0 text-white/80 leading-snug"
+                                        {...props}
+                                      />
+                                    ),
+
+                                    ul: ({ node, ...props }) => (
+                                      <ul
+                                        className="list-disc ml-3 mb-0.5 text-white/80 space-y-0"
+                                        {...props}
+                                      />
+                                    ),
+
+                                    ol: ({ node, ...props }) => (
+                                      <ol
+                                        className="list-decimal ml-3 mb-0.5 text-white/80 space-y-0"
+                                        {...props}
+                                      />
+                                    ),
+
+                                    li: ({ node, ...props }) => (
+                                      <li
+                                        className="mb-0 text-white/80 leading-snug"
+                                        {...props}
+                                      />
+                                    ),
+
+                                    strong: ({ node, ...props }) => (
+                                      <strong
+                                        className="font-semibold text-green-300"
+                                        {...props}
+                                      />
+                                    ),
+
+                                    code: ({ node, ...props }) => (
+                                      <code
+                                        className="bg-white/10 px-1.5 py-0.5 rounded text-xs text-green-300 font-mono"
+                                        {...props}
+                                      />
+                                    ),
+                                  }}
+                                >
+                                  {message.content}
+                                </ReactMarkdown>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Copy button */}
+
+                          <div
+                            className={`flex items-center gap-1 mt-1 ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                          >
+                            <button
+                              onClick={() => {
+                                navigator.clipboard.writeText(message.content);
+
+                                setCopiedMessage(index);
+
+                                setTimeout(() => setCopiedMessage(null), 2000);
+                              }}
+                              className={`p-1 rounded transition-all ${copiedMessage === index ? "text-green-400" : "text-white/40 hover:text-white hover:bg-white/10"}`}
+                              title={
+                                copiedMessage === index ? "Copied!" : "Copy"
+                              }
+                            >
+                              {copiedMessage === index ? (
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              ) : (
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                  />
+                                </svg>
+                              )}
+                            </button>
+
+                            {/* Regenerate Button - Visible directly for assistant messages */}
+
+                            {message.role === "assistant" && (
+                              <button
+                                onClick={async (e) => {
+                                  e.stopPropagation();
+
+                                  const lastUserMsg = [...aiMessages]
+
+                                    .reverse()
+
+                                    .find((m) => m.role === "user");
+
+                                  if (lastUserMsg) {
+                                    setAiLoading(true);
+
+                                    setAiStatusText("Regenerating response...");
+
+                                    setAiMessages((prev) =>
+                                      prev.filter((_, i) => i !== index),
+                                    );
+
+                                    try {
+                                      const response = await fetch(
+                                        "/api/ai/admin-chat",
+
+                                        {
+                                          method: "POST",
+
+                                          headers: {
+                                            "Content-Type": "application/json",
+                                          },
+
+                                          body: JSON.stringify({
+                                            query: lastUserMsg.content,
+
+                                            context: currentConversationId
+                                              ? {
+                                                  conversationId:
+                                                    currentConversationId,
+                                                }
+                                              : undefined,
+
+                                            model: selectedModel,
+                                          }),
+                                        },
+                                      );
+
+                                      const result = await response.json();
+
+                                      if (result.success) {
+                                        setAiMessages((prev) => [
+                                          ...prev,
+
+                                          {
+                                            role: "assistant",
+
+                                            content: result.response,
+                                          },
+                                        ]);
+
+                                        if (currentConversationId) {
+                                          await saveMessage(
+                                            currentConversationId,
+
+                                            "assistant",
+
+                                            result.response,
+                                          );
+                                        }
+                                      }
+                                    } catch (error) {
+                                      console.error("Regenerate error:", error);
+                                    } finally {
+                                      setAiLoading(false);
+
+                                      setAiStatusText("");
+                                    }
+                                  }
+                                }}
+                                className="p-1 rounded text-white/40 hover:text-green-400 hover:bg-green-500/10 transition-all"
+                                title="Regenerate response"
+                              >
+                                <svg
+                                  className="w-3.5 h-3.5"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                                  />
+                                </svg>
+                              </button>
+                            )}
+
+                            {/* Like/Dislike Buttons - Visible directly for assistant messages */}
+
+                            {message.role === "assistant" && (
+                              <div className="flex items-center gap-0.5">
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+
+                                    setMessageFeedback((prev) => ({
+                                      ...prev,
+
+                                      [index]:
+                                        prev[index] === "like"
+                                          ? undefined
+                                          : "like",
+                                    }));
+                                  }}
+                                  className={`p-1 rounded transition-all ${
+                                    messageFeedback[index] === "like"
+                                      ? "text-green-400"
+                                      : "text-white/40 hover:text-green-400 hover:bg-green-500/10"
+                                  }`}
+                                  title={
+                                    messageFeedback[index] === "like"
+                                      ? "Liked"
+                                      : "Like"
+                                  }
+                                >
+                                  <svg
+                                    className="w-3.5 h-3.5"
+                                    fill={
+                                      messageFeedback[index] === "like"
+                                        ? "currentColor"
+                                        : "none"
+                                    }
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
+                                    />
+                                  </svg>
+                                </button>
+
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+
+                                    setMessageFeedback((prev) => ({
+                                      ...prev,
+
+                                      [index]:
+                                        prev[index] === "dislike"
+                                          ? undefined
+                                          : "dislike",
+                                    }));
+                                  }}
+                                  className={`p-1 rounded transition-all ${
+                                    messageFeedback[index] === "dislike"
+                                      ? "text-red-400"
+                                      : "text-white/40 hover:text-red-400 hover:bg-red-500/10"
+                                  }`}
+                                  title={
+                                    messageFeedback[index] === "dislike"
+                                      ? "Disliked"
+                                      : "Dislike"
+                                  }
+                                >
+                                  <svg
+                                    className="w-3.5 h-3.5"
+                                    fill={
+                                      messageFeedback[index] === "dislike"
+                                        ? "currentColor"
+                                        : "none"
+                                    }
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Dynamic Contextual Suggestions for last AI response */}
+
+                          {message.role === "assistant" &&
+                            index === aiMessages.length - 1 && (
+                              <div className="flex flex-wrap gap-1.5 mt-2 pt-2 border-t border-white/5">
+                                {generateContextualSuggestions(
+                                  message.content,
+                                ).map((suggestion, suggestionIndex) => (
+                                  <button
+                                    key={suggestionIndex}
+                                    onClick={() =>
+                                      setAiInput(suggestion.prompt)
+                                    }
+                                    className="text-[11px] px-2.5 py-1 bg-white/5 border border-white/10 rounded-md text-white/60 hover:bg-green-500/10 hover:text-green-300 hover:border-green-500/30 transition-all"
+                                  >
+                                    {suggestion.label}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                        </div>
+                      </div>
+                    ))
+                  )}
+
+                  {/* Loading indicator */}
+
+                  {aiLoading && (
+                    <div className="flex gap-2.5 animate-fade-in">
+                      <div className="flex-shrink-0 mt-1">
+                        <div className="relative">
+                          <div className="absolute inset-0 rounded-md bg-green-500 blur-sm opacity-60 animate-pulse" />
+
+                          <div className="relative w-6 h-6 rounded-md bg-green-600 flex items-center justify-center shadow shadow-green-500/30">
+                            <Bot className="w-3.5 h-3.5 text-white" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="bg-transparent rounded-2xl rounded-tl-sm px-4 py-3">
+                        <div className="flex items-center gap-2">
+                          <svg
+                            className="w-4 h-4 animate-spin text-green-400"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+
+                          <span className="text-green-300/60 text-xs whitespace-nowrap">
+                            {isListening
+                              ? listeningText || "Listening..."
+                              : aiStatusText || "Generating response..."}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Suggestion Chips - Above Input */}
+
+                {aiMessages.length === 0 && !aiLoading && (
+                  <div
+                    className="px-3 pt-3 pb-3 border-t border-slate-800/60"
+                    style={{ background: "#0a0e1a" }}
+                  >
+                    <p className="text-[10px] text-white/30 uppercase tracking-widest mb-2 px-1">
+                      Try asking
+                    </p>
+
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {[
+                        {
+                          icon: "M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
+
+                          text: "Analyze trends",
+
+                          prompt: "Show me recent maintenance trends",
+                        },
+
+                        {
+                          icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+
+                          text: "Pending queue",
+
+                          prompt: "Show me all pending requests",
+                        },
+
+                        {
+                          icon: "M13 10V3L4 14h7v7l9-11h-7z",
+
+                          text: "Top priorities",
+
+                          prompt:
+                            "What are the most urgent maintenance issues?",
+                        },
+
+                        {
+                          icon: "M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+
+                          text: "What can you do?",
+
+                          prompt: "What can you help me with?",
+                        },
+                      ].map((chip, i) => (
+                        <button
+                          key={i}
+                          onClick={() => setAiInput(chip.prompt)}
+                          className="flex items-center gap-2 px-3 py-2 bg-white/[0.03] border border-white/8 rounded-xl hover:bg-green-600/10 hover:border-green-500/30 hover:text-green-300 transition-all text-white/60 text-left group"
+                        >
+                          <div className="w-5 h-5 rounded-md bg-white/5 group-hover:bg-green-500/20 flex items-center justify-center flex-shrink-0 transition-all">
+                            <svg
+                              className="w-3 h-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d={chip.icon}
+                              />
+                            </svg>
+                          </div>
+
+                          <span className="text-[11px] font-medium leading-tight">
+                            {chip.text}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Input Area */}
+
+                <div
+                  className="border-t border-slate-800/80 p-3"
+                  style={{
+                    background:
+                      "linear-gradient(180deg, #0d1117 0%, #0a0e1a 100%)",
+                  }}
+                >
+                  {/* Attached Files Preview */}
+
+                  {aiAttachments.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {aiAttachments.map((file, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-2 px-3 py-1.5 bg-[#30364F]/80 rounded-lg text-sm text-white border border-white/10"
+                        >
+                          <svg
+                            className="w-4 h-4 text-green-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                          </svg>
+
+                          <span className="max-w-[150px] truncate">
+                            {file.name}
+                          </span>
+
+                          <button
+                            onClick={() =>
+                              setAiAttachments((prev) =>
+                                prev.filter((_, i) => i !== index),
+                              )
+                            }
+                            className="text-white/50 hover:text-red-400 transition-colors"
+                          >
+                            <svg
+                              className="w-4 h-4"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="space-y-2">
+                    {/* Sub-toolbar with attachment and voice icons */}
+
+                    <div className="flex items-center justify-between px-1">
+                      <div className="flex items-center gap-1">
+                        <label
+                          className="p-1.5 text-white/40 hover:text-green-400 cursor-pointer rounded-md hover:bg-white/5 transition-all"
+                          title="Attach file"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"
+                            />
+                          </svg>
+
+                          <input
+                            type="file"
+                            multiple
+                            accept="image/*,.pdf,.doc,.docx,.txt"
+                            className="hidden"
+                            onChange={(e) => {
+                              const files = Array.from(e.target.files || []);
+
+                              setAiAttachments((prev) => [...prev, ...files]);
+                            }}
+                          />
+                        </label>
+
+                        <button
+                          onClick={handleVoiceInput}
+                          className={`p-1.5 rounded-md transition-all ${
+                            isListening
+                              ? "text-red-400 bg-red-400/10 animate-pulse"
+                              : "text-white/40 hover:text-green-400 hover:bg-white/5"
+                          }`}
+                          title={isListening ? "Listening..." : "Voice input"}
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
                             />
                           </svg>
                         </button>
 
-                        {showModelSelector && (
-                          <div className="absolute bottom-full mb-1 left-0 w-40 bg-[#1E293B] border border-slate-700 rounded-lg shadow-xl z-30 overflow-hidden">
-                            {[
-                              {
-                                id: "gemini-2.5-flash",
+                        {/* Model Selector in sub-toolbar */}
 
-                                name: "2.5 Flash",
+                        <div className="relative">
+                          <button
+                            onClick={() =>
+                              setShowModelSelector(!showModelSelector)
+                            }
+                            className="flex items-center gap-1 px-2 py-1 text-white/50 hover:text-green-400 hover:bg-white/5 rounded-md transition-all text-xs"
+                            title="Select model"
+                          >
+                            <span className="text-[10px]">
+                              {selectedModel.replace("gemini-", "")}
+                            </span>
 
-                                desc: "Fast",
-                              },
+                            <svg
+                              className={`w-3 h-3 transition-transform ${showModelSelector ? "rotate-180" : ""}`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 9l-7 7-7-7"
+                              />
+                            </svg>
+                          </button>
 
-                              {
-                                id: "gemini-2.0-flash",
+                          {showModelSelector && (
+                            <div className="absolute bottom-full mb-1 left-0 w-40 bg-[#1E293B] border border-slate-700 rounded-lg shadow-xl z-30 overflow-hidden">
+                              {[
+                                {
+                                  id: "gemini-2.5-flash",
 
-                                name: "2.0 Flash",
+                                  name: "2.5 Flash",
 
-                                desc: "Balanced",
-                              },
+                                  desc: "Fast",
+                                },
 
-                              {
-                                id: "gemini-1.5-pro",
+                                {
+                                  id: "gemini-2.0-flash",
 
-                                name: "1.5 Pro",
+                                  name: "2.0 Flash",
 
-                                desc: "Advanced",
-                              },
-                            ].map((model) => (
-                              <button
-                                key={model.id}
-                                onClick={() => {
-                                  setSelectedModel(model.id);
+                                  desc: "Balanced",
+                                },
 
-                                  setShowModelSelector(false);
-                                }}
-                                className={`w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center justify-between ${selectedModel === model.id ? "bg-green-500/10" : ""}`}
-                              >
-                                <div>
-                                  <p className="text-xs text-white">
-                                    {model.name}
-                                  </p>
+                                {
+                                  id: "gemini-1.5-pro",
 
-                                  <p className="text-[9px] text-white/40">
-                                    {model.desc}
-                                  </p>
-                                </div>
+                                  name: "1.5 Pro",
 
-                                {selectedModel === model.id && (
-                                  <svg
-                                    className="w-3 h-3 text-green-400"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                  >
-                                    <path
-                                      fillRule="evenodd"
-                                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                      clipRule="evenodd"
-                                    />
-                                  </svg>
-                                )}
-                              </button>
-                            ))}
-                          </div>
-                        )}
+                                  desc: "Advanced",
+                                },
+                              ].map((model) => (
+                                <button
+                                  key={model.id}
+                                  onClick={() => {
+                                    setSelectedModel(model.id);
+
+                                    setShowModelSelector(false);
+                                  }}
+                                  className={`w-full text-left px-3 py-2 hover:bg-white/5 transition-colors flex items-center justify-between ${selectedModel === model.id ? "bg-green-500/10" : ""}`}
+                                >
+                                  <div>
+                                    <p className="text-xs text-white">
+                                      {model.name}
+                                    </p>
+
+                                    <p className="text-[9px] text-white/40">
+                                      {model.desc}
+                                    </p>
+                                  </div>
+
+                                  {selectedModel === model.id && (
+                                    <svg
+                                      className="w-3 h-3 text-green-400"
+                                      fill="currentColor"
+                                      viewBox="0 0 20 20"
+                                    >
+                                      <path
+                                        fillRule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                        clipRule="evenodd"
+                                      />
+                                    </svg>
+                                  )}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="text-[10px] text-white/30">
+                        {aiInput.length}/2000
                       </div>
                     </div>
 
-                    <div className="text-[10px] text-white/30">
-                      {aiInput.length}/2000
-                    </div>
-                  </div>
+                    {/* Text input and send button row */}
 
-                  {/* Text input and send button row */}
+                    <div className="flex gap-2 items-end">
+                      <div className="flex-1 relative">
+                        <textarea
+                          value={aiInput}
+                          onChange={(e) => setAiInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" && !e.shiftKey) {
+                              e.preventDefault();
 
-                  <div className="flex gap-2 items-end">
-                    <div className="flex-1 relative">
-                      <textarea
-                        value={aiInput}
-                        onChange={(e) => setAiInput(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
-
-                            if (
-                              !aiLoading &&
-                              (aiInput.trim() || aiAttachments.length > 0)
-                            ) {
-                              handleAiChat();
+                              if (
+                                !aiLoading &&
+                                (aiInput.trim() || aiAttachments.length > 0)
+                              ) {
+                                handleAiChat();
+                              }
                             }
-                          }
-                        }}
-                        placeholder="Ask me about maintenance..."
-                        rows={1}
-                        className="w-full px-3 py-2 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 text-white placeholder-white/40 resize-none min-h-[40px] max-h-[100px] text-sm"
-                        disabled={aiLoading}
-                        style={{
-                          height: "auto",
+                          }}
+                          placeholder="Ask me about maintenance..."
+                          rows={1}
+                          className="w-full px-3 py-2 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 text-white placeholder-white/40 resize-none min-h-[40px] max-h-[100px] text-sm"
+                          disabled={aiLoading}
+                          style={{
+                            height: "auto",
 
-                          overflow: "hidden",
-                        }}
-                        onInput={(e) => {
-                          const target = e.target as HTMLTextAreaElement;
+                            overflow: "hidden",
+                          }}
+                          onInput={(e) => {
+                            const target = e.target as HTMLTextAreaElement;
 
-                          target.style.height = "auto";
+                            target.style.height = "auto";
 
-                          target.style.height =
-                            Math.min(target.scrollHeight, 100) + "px";
-                        }}
-                      />
+                            target.style.height =
+                              Math.min(target.scrollHeight, 100) + "px";
+                          }}
+                        />
+                      </div>
+
+                      <button
+                        onClick={handleAiChat}
+                        disabled={
+                          aiLoading ||
+                          (!aiInput.trim() && aiAttachments.length === 0)
+                        }
+                        className="p-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-500 hover:to-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-all shadow-lg shadow-green-500/20 hover:shadow-green-500/40 flex items-center justify-center"
+                      >
+                        {aiLoading ? (
+                          <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        ) : (
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                            />
+                          </svg>
+                        )}
+                      </button>
                     </div>
-
-                    <button
-                      onClick={handleAiChat}
-                      disabled={
-                        aiLoading ||
-                        (!aiInput.trim() && aiAttachments.length === 0)
-                      }
-                      className="p-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl hover:from-green-500 hover:to-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed font-medium transition-all shadow-lg shadow-green-500/20 hover:shadow-green-500/40 flex items-center justify-center"
-                    >
-                      {aiLoading ? (
-                        <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                      ) : (
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                          />
-                        </svg>
-                      )}
-                    </button>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
 
-      {/* Photo Modal */}
+        {/* Photo Modal */}
 
-      {selectedPhoto && (
-        <div
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-          onClick={() => setSelectedPhoto(null)}
-        >
-          <div className="relative max-w-4xl max-h-[90vh]">
-            <img
-              src={selectedPhoto}
-              alt="Full size"
-              className="max-w-full max-h-[90vh] object-contain rounded-lg"
-            />
-
-            <button
-              onClick={() => setSelectedPhoto(null)}
-              className="absolute top-4 right-4 text-white/80 hover:text-white bg-black/50 rounded-full p-2"
-            >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M6 18L18 6M6 6l12 12"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Broadcast Modal */}
-
-      {showBroadcastModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h3 className="font-header text-lg font-semibold text-gray-900">
-                  Broadcast Message to All Users
-                </h3>
-
-                <button
-                  onClick={() => setShowBroadcastModal(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-
-              <p className="text-sm text-gray-500 mt-1">
-                This message will be sent to all users and will appear in their
-                notifications.
-              </p>
-            </div>
-
-            <div className="p-6">
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Title
-                </label>
-
-                <input
-                  type="text"
-                  value={broadcastTitle}
-                  onChange={(e) => setBroadcastTitle(e.target.value)}
-                  placeholder="Enter announcement title..."
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
-                />
-              </div>
-
-              <textarea
-                value={broadcastMessage}
-                onChange={(e) => setBroadcastMessage(e.target.value)}
-                placeholder="Type your broadcast message here..."
-                rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent resize-none"
+        {selectedPhoto && (
+          <div
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+            onClick={() => setSelectedPhoto(null)}
+          >
+            <div className="relative max-w-4xl max-h-[90vh]">
+              <img
+                src={selectedPhoto}
+                alt="Full size"
+                className="max-w-full max-h-[90vh] object-contain rounded-lg"
               />
 
-              <div className="flex justify-end gap-3 mt-4">
-                <button
-                  onClick={() => setShowBroadcastModal(false)}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  onClick={sendBroadcastMessage}
-                  disabled={!broadcastMessage.trim()}
-                  className="px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Send to All ({users.length} users)
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Warning Modal */}
-
-      {showWarningModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h3 className="font-header text-lg font-semibold text-gray-900 flex items-center gap-2">
-                  <svg
-                    className="w-5 h-5 text-red-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                    />
-                  </svg>
-                  Send Warning / Notice to User
-                </h3>
-
-                <button
-                  onClick={() => {
-                    setShowWarningModal(false);
-
-                    setSelectedWarningUser(null);
-
-                    setWarningMessage("");
-
-                    setWarningType("");
-                  }}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6">
-              {/* User Selection */}
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Select User
-                </label>
-
-                <select
-                  value={selectedWarningUser?.id || ""}
-                  onChange={(e) => {
-                    const user = users.find((u) => u.id === e.target.value);
-
-                    setSelectedWarningUser(user || null);
-                  }}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                >
-                  <option value="">Choose a user...</option>
-
-                  {users
-
-                    .filter((u) => u.database_role === "user")
-
-                    .map((user) => (
-                      <option key={user.id} value={user.id}>
-                        {user.full_name} ({user.visual_role || "User"})
-                      </option>
-                    ))}
-                </select>
-              </div>
-
-              {/* Warning Type Selection */}
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Warning Type
-                </label>
-
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    onClick={() => {
-                      setWarningType("inappropriate_content");
-
-                      setWarningMessage(
-                        "Your recent maintenance request contained inappropriate content. Please ensure all submissions follow community guidelines. Repeated violations may result in account restrictions.",
-                      );
-                    }}
-                    className={`p-3 text-left text-sm rounded-lg border transition-colors ${warningType === "inappropriate_content" ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"}`}
-                  >
-                    <div className="font-medium text-gray-900">
-                      Inappropriate Content
-                    </div>
-
-                    <div className="text-xs text-gray-500">
-                      Inappropriate photos or text
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setWarningType("spam_abuse");
-
-                      setWarningMessage(
-                        "Your account has been flagged for spam or abuse. Multiple rapid submissions detected. Please refrain from submitting duplicate requests. Further abuse may lead to temporary suspension.",
-                      );
-                    }}
-                    className={`p-3 text-left text-sm rounded-lg border transition-colors ${warningType === "spam_abuse" ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"}`}
-                  >
-                    <div className="font-medium text-gray-900">
-                      Spam / Abuse
-                    </div>
-
-                    <div className="text-xs text-gray-500">
-                      Duplicate or excessive requests
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setWarningType("misuse_facilities");
-
-                      setWarningMessage(
-                        "Your maintenance request was found to be misuse of facilities. Please only submit legitimate maintenance issues. False reports waste resources and may result in restrictions.",
-                      );
-                    }}
-                    className={`p-3 text-left text-sm rounded-lg border transition-colors ${warningType === "misuse_facilities" ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"}`}
-                  >
-                    <div className="font-medium text-gray-900">
-                      Misuse of Facilities
-                    </div>
-
-                    <div className="text-xs text-gray-500">
-                      False or invalid requests
-                    </div>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      setWarningType("harassment");
-
-                      setWarningMessage(
-                        "Your submission contained harassing or offensive language. We maintain a zero-tolerance policy for harassment. This is a formal warning. Further violations will result in account suspension.",
-                      );
-                    }}
-                    className={`p-3 text-left text-sm rounded-lg border transition-colors ${warningType === "harassment" ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"}`}
-                  >
-                    <div className="font-medium text-gray-900">Harassment</div>
-
-                    <div className="text-xs text-gray-500">
-                      Offensive or harmful language
-                    </div>
-                  </button>
-                </div>
-              </div>
-
-              {/* Message Preview */}
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Message Preview
-                </label>
-
-                <textarea
-                  value={warningMessage}
-                  onChange={(e) => setWarningMessage(e.target.value)}
-                  placeholder="Select a warning type or type a custom message..."
-                  rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
-                />
-              </div>
-
-              <div className="flex justify-end gap-3 mt-4">
-                <button
-                  onClick={() => {
-                    setShowWarningModal(false);
-
-                    setSelectedWarningUser(null);
-
-                    setWarningMessage("");
-
-                    setWarningType("");
-                  }}
-                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium"
-                >
-                  Cancel
-                </button>
-
-                <button
-                  onClick={async () => {
-                    if (!selectedWarningUser || !warningMessage.trim()) {
-                      alert("Please select a user and enter a message");
-
-                      return;
-                    }
-
-                    const { error } = await (
-                      supabase.from("admin_messages") as any
-                    ).insert({
-                      user_id: selectedWarningUser.id,
-
-                      message: warningMessage.trim(),
-
-                      from_admin: true,
-                    });
-
-                    if (error) {
-                      console.error("Error sending warning:", error);
-
-                      alert("Error sending warning");
-                    } else {
-                      alert(`Warning sent to ${selectedWarningUser.full_name}`);
-
-                      setShowWarningModal(false);
-
-                      setSelectedWarningUser(null);
-
-                      setWarningMessage("");
-
-                      setWarningType("");
-                    }
-                  }}
-                  disabled={!selectedWarningUser || !warningMessage.trim()}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Send Warning / Notice
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* User Info Panel */}
-
-      {showUserInfoPanel && selectedUser && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <h3 className="font-header text-lg font-semibold text-gray-900">
-                  User Information
-                </h3>
-
-                <button
-                  onClick={() => setShowUserInfoPanel(false)}
-                  className="text-gray-400 hover:text-gray-600"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div className="p-6">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="relative">
-                  {selectedUser.avatar_url ? (
-                    <img
-                      src={selectedUser.avatar_url}
-                      alt={selectedUser.full_name}
-                      className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 rounded-full bg-[#427A43] flex items-center justify-center text-white text-2xl font-semibold">
-                      {selectedUser.full_name.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-
-                  <div
-                    className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${selectedUser.is_blocked ? "bg-red-400" : "bg-green-400"}`}
-                  ></div>
-                </div>
-
-                <div>
-                  <h4 className="text-xl font-semibold text-gray-900">
-                    {selectedUser.full_name}
-                  </h4>
-
-                  <p className="text-gray-500">
-                    {selectedUser.visual_role || "User"}
-                  </p>
-
-                  {selectedUser.is_blocked && (
-                    <span className="inline-block mt-1 text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded">
-                      Blocked
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <svg
-                      className="w-5 h-5 text-gray-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                      />
-                    </svg>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-gray-400">Department</p>
-
-                    <p className="text-sm font-medium text-gray-900">
-                      {selectedUser.department || "Not specified"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <svg
-                      className="w-5 h-5 text-gray-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                      />
-                    </svg>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-gray-400">Education Level</p>
-
-                    <p className="text-sm font-medium text-gray-900">
-                      {selectedUser.educational_level || "Not specified"}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <svg
-                      className="w-5 h-5 text-gray-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
-
-                  <div>
-                    <p className="text-xs text-gray-400">Member Since</p>
-
-                    <p className="text-sm font-medium text-gray-900">
-                      {selectedUser.created_at ? (
-                        <SafeDate date={selectedUser.created_at} />
-                      ) : (
-                        "Unknown"
-                      )}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
-                <button
-                  onClick={() => {
-                    setShowUserInfoPanel(false);
-
-                    setSelectedUser(selectedUser);
-
-                    fetchUserMessages(selectedUser.id);
-                  }}
-                  className="flex-1 px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors text-sm font-medium flex items-center justify-center gap-2"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                    />
-                  </svg>
-                  Send Message
-                </button>
-
-                <button
-                  onClick={() => {
-                    toggleBlockUser(selectedUser.id);
-
-                    setShowUserInfoPanel(false);
-                  }}
-                  className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 ${
-                    blockedUsers.includes(selectedUser.id)
-                      ? "bg-green-100 text-green-700 hover:bg-green-200"
-                      : "bg-red-100 text-red-700 hover:bg-red-200"
-                  }`}
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                    />
-                  </svg>
-
-                  {blockedUsers.includes(selectedUser.id) ? "Unblock" : "Block"}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Emergency Popup */}
-
-      {emergencyPopup && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center pt-16">
-          <div
-            className="absolute inset-0 bg-black/40"
-            onClick={() => setEmergencyPopup(null)}
-          />
-
-          <div className="relative bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-4 rounded-xl shadow-2xl border-4 border-red-500 max-w-md w-full mx-4">
-            <div className="flex items-center justify-center gap-3 mb-3">
-              <div className="animate-pulse">
+              <button
+                onClick={() => setSelectedPhoto(null)}
+                className="absolute top-4 right-4 text-white/80 hover:text-white bg-black/50 rounded-full p-2"
+              >
                 <svg
-                  className="w-8 h-8"
+                  className="w-6 h-6"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -8534,87 +8018,667 @@ ${result.analysis.risks || "N/A"}
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                    d="M6 18L18 6M6 6l12 12"
                   />
                 </svg>
-              </div>
-
-              <h3 className="font-bold text-xl">🚨 EMERGENCY</h3>
-            </div>
-
-            <div className="bg-white/10 rounded-lg p-3 mb-3">
-              <p className="text-center text-sm">{emergencyPopup.message}</p>
-            </div>
-
-            <div className="flex justify-center gap-3">
-              <button
-                onClick={() => {
-                  setEmergencyPopup(null);
-
-                  // Extract request ID from link_url or use request_id field
-
-                  let requestId = emergencyPopup.request_id;
-
-                  if (!requestId && emergencyPopup.link_url) {
-                    // Extract from URL like /admin/dashboard?request=xxx
-
-                    const urlParams = new URL(
-                      emergencyPopup.link_url,
-
-                      "http://localhost",
-                    );
-
-                    requestId = urlParams.searchParams.get("request");
-                  }
-
-                  if (requestId) {
-                    // Find the request and open detail modal
-
-                    const request = requests.find((r) => r.id === requestId);
-
-                    if (request) {
-                      setShowDetailModal(request);
-                    } else {
-                      // Scroll to or highlight the emergency request in the list
-
-                      const element = document.getElementById(
-                        `request-${requestId}`,
-                      );
-
-                      if (element) {
-                        element.scrollIntoView({
-                          behavior: "smooth",
-
-                          block: "center",
-                        });
-
-                        element.classList.add("ring-4", "ring-red-500");
-
-                        setTimeout(
-                          () =>
-                            element.classList.remove("ring-4", "ring-red-500"),
-
-                          3000,
-                        );
-                      }
-                    }
-                  }
-                }}
-                className="px-4 py-2 bg-white text-red-600 font-bold rounded-lg hover:bg-gray-100 transition-colors shadow"
-              >
-                View
-              </button>
-
-              <button
-                onClick={() => setEmergencyPopup(null)}
-                className="px-4 py-2 bg-white/20 text-white font-bold rounded-lg hover:bg-white/30 transition-colors"
-              >
-                Dismiss
               </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Broadcast Modal */}
+
+        {showBroadcastModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-header text-lg font-semibold text-gray-900">
+                    Broadcast Message to All Users
+                  </h3>
+
+                  <button
+                    onClick={() => setShowBroadcastModal(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+
+                <p className="text-sm text-gray-500 mt-1">
+                  This message will be sent to all users and will appear in
+                  their notifications.
+                </p>
+              </div>
+
+              <div className="p-6">
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Title
+                  </label>
+
+                  <input
+                    type="text"
+                    value={broadcastTitle}
+                    onChange={(e) => setBroadcastTitle(e.target.value)}
+                    placeholder="Enter announcement title..."
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent"
+                  />
+                </div>
+
+                <textarea
+                  value={broadcastMessage}
+                  onChange={(e) => setBroadcastMessage(e.target.value)}
+                  placeholder="Type your broadcast message here..."
+                  rows={4}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-[#427A43] focus:border-transparent resize-none"
+                />
+
+                <div className="flex justify-end gap-3 mt-4">
+                  <button
+                    onClick={() => setShowBroadcastModal(false)}
+                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    onClick={sendBroadcastMessage}
+                    disabled={!broadcastMessage.trim()}
+                    className="px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Send to All ({users.length} users)
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Warning Modal */}
+
+        {showWarningModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-header text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <svg
+                      className="w-5 h-5 text-red-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                    Send Warning / Notice to User
+                  </h3>
+
+                  <button
+                    onClick={() => {
+                      setShowWarningModal(false);
+
+                      setSelectedWarningUser(null);
+
+                      setWarningMessage("");
+
+                      setWarningType("");
+                    }}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6">
+                {/* User Selection */}
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Select User
+                  </label>
+
+                  <select
+                    value={selectedWarningUser?.id || ""}
+                    onChange={(e) => {
+                      const user = users.find((u) => u.id === e.target.value);
+
+                      setSelectedWarningUser(user || null);
+                    }}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent"
+                  >
+                    <option value="">Choose a user...</option>
+
+                    {users
+
+                      .filter((u) => u.database_role === "user")
+
+                      .map((user) => (
+                        <option key={user.id} value={user.id}>
+                          {user.full_name} ({user.visual_role || "User"})
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
+                {/* Warning Type Selection */}
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Warning Type
+                  </label>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={() => {
+                        setWarningType("inappropriate_content");
+
+                        setWarningMessage(
+                          "Your recent maintenance request contained inappropriate content. Please ensure all submissions follow community guidelines. Repeated violations may result in account restrictions.",
+                        );
+                      }}
+                      className={`p-3 text-left text-sm rounded-lg border transition-colors ${warningType === "inappropriate_content" ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"}`}
+                    >
+                      <div className="font-medium text-gray-900">
+                        Inappropriate Content
+                      </div>
+
+                      <div className="text-xs text-gray-500">
+                        Inappropriate photos or text
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setWarningType("spam_abuse");
+
+                        setWarningMessage(
+                          "Your account has been flagged for spam or abuse. Multiple rapid submissions detected. Please refrain from submitting duplicate requests. Further abuse may lead to temporary suspension.",
+                        );
+                      }}
+                      className={`p-3 text-left text-sm rounded-lg border transition-colors ${warningType === "spam_abuse" ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"}`}
+                    >
+                      <div className="font-medium text-gray-900">
+                        Spam / Abuse
+                      </div>
+
+                      <div className="text-xs text-gray-500">
+                        Duplicate or excessive requests
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setWarningType("misuse_facilities");
+
+                        setWarningMessage(
+                          "Your maintenance request was found to be misuse of facilities. Please only submit legitimate maintenance issues. False reports waste resources and may result in restrictions.",
+                        );
+                      }}
+                      className={`p-3 text-left text-sm rounded-lg border transition-colors ${warningType === "misuse_facilities" ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"}`}
+                    >
+                      <div className="font-medium text-gray-900">
+                        Misuse of Facilities
+                      </div>
+
+                      <div className="text-xs text-gray-500">
+                        False or invalid requests
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setWarningType("harassment");
+
+                        setWarningMessage(
+                          "Your submission contained harassing or offensive language. We maintain a zero-tolerance policy for harassment. This is a formal warning. Further violations will result in account suspension.",
+                        );
+                      }}
+                      className={`p-3 text-left text-sm rounded-lg border transition-colors ${warningType === "harassment" ? "border-red-500 bg-red-50" : "border-gray-300 hover:border-gray-400"}`}
+                    >
+                      <div className="font-medium text-gray-900">
+                        Harassment
+                      </div>
+
+                      <div className="text-xs text-gray-500">
+                        Offensive or harmful language
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Message Preview */}
+
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Message Preview
+                  </label>
+
+                  <textarea
+                    value={warningMessage}
+                    onChange={(e) => setWarningMessage(e.target.value)}
+                    placeholder="Select a warning type or type a custom message..."
+                    rows={4}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-3 mt-4">
+                  <button
+                    onClick={() => {
+                      setShowWarningModal(false);
+
+                      setSelectedWarningUser(null);
+
+                      setWarningMessage("");
+
+                      setWarningType("");
+                    }}
+                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    onClick={async () => {
+                      if (!selectedWarningUser || !warningMessage.trim()) {
+                        alert("Please select a user and enter a message");
+
+                        return;
+                      }
+
+                      const { error } = await (
+                        supabase.from("admin_messages") as any
+                      ).insert({
+                        user_id: selectedWarningUser.id,
+
+                        message: warningMessage.trim(),
+
+                        from_admin: true,
+                      });
+
+                      if (error) {
+                        console.error("Error sending warning:", error);
+
+                        alert("Error sending warning");
+                      } else {
+                        alert(
+                          `Warning sent to ${selectedWarningUser.full_name}`,
+                        );
+
+                        setShowWarningModal(false);
+
+                        setSelectedWarningUser(null);
+
+                        setWarningMessage("");
+
+                        setWarningType("");
+                      }
+                    }}
+                    disabled={!selectedWarningUser || !warningMessage.trim()}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Send Warning / Notice
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* User Info Panel */}
+
+        {showUserInfoPanel && selectedUser && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-header text-lg font-semibold text-gray-900">
+                    User Information
+                  </h3>
+
+                  <button
+                    onClick={() => setShowUserInfoPanel(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="relative">
+                    {selectedUser.avatar_url ? (
+                      <img
+                        src={selectedUser.avatar_url}
+                        alt={selectedUser.full_name}
+                        className="w-20 h-20 rounded-full object-cover border-2 border-gray-200"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-full bg-[#427A43] flex items-center justify-center text-white text-2xl font-semibold">
+                        {selectedUser.full_name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+
+                    <div
+                      className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white ${selectedUser.is_blocked ? "bg-red-400" : "bg-green-400"}`}
+                    ></div>
+                  </div>
+
+                  <div>
+                    <h4 className="text-xl font-semibold text-gray-900">
+                      {selectedUser.full_name}
+                    </h4>
+
+                    <p className="text-gray-500">
+                      {selectedUser.visual_role || "User"}
+                    </p>
+
+                    {selectedUser.is_blocked && (
+                      <span className="inline-block mt-1 text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded">
+                        Blocked
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5 text-gray-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                        />
+                      </svg>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-gray-400">Department</p>
+
+                      <p className="text-sm font-medium text-gray-900">
+                        {selectedUser.department || "Not specified"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5 text-gray-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                        />
+                      </svg>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-gray-400">Education Level</p>
+
+                      <p className="text-sm font-medium text-gray-900">
+                        {selectedUser.educational_level || "Not specified"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                      <svg
+                        className="w-5 h-5 text-gray-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
+                      </svg>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-gray-400">Member Since</p>
+
+                      <p className="text-sm font-medium text-gray-900">
+                        {selectedUser.created_at ? (
+                          <SafeDate date={selectedUser.created_at} />
+                        ) : (
+                          "Unknown"
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 mt-6 pt-4 border-t border-gray-200">
+                  <button
+                    onClick={() => {
+                      setShowUserInfoPanel(false);
+
+                      setSelectedUser(selectedUser);
+
+                      fetchUserMessages(selectedUser.id);
+                    }}
+                    className="flex-1 px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
+                    Send Message
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      toggleBlockUser(selectedUser.id);
+
+                      setShowUserInfoPanel(false);
+                    }}
+                    className={`px-4 py-2 rounded-lg transition-colors text-sm font-medium flex items-center gap-2 ${
+                      blockedUsers.includes(selectedUser.id)
+                        ? "bg-green-100 text-green-700 hover:bg-green-200"
+                        : "bg-red-100 text-red-700 hover:bg-red-200"
+                    }`}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
+                      />
+                    </svg>
+
+                    {blockedUsers.includes(selectedUser.id)
+                      ? "Unblock"
+                      : "Block"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Emergency Popup */}
+
+        {emergencyPopup && (
+          <div className="fixed inset-0 z-50 flex items-start justify-center pt-16">
+            <div
+              className="absolute inset-0 bg-black/40"
+              onClick={() => setEmergencyPopup(null)}
+            />
+
+            <div className="relative bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-4 rounded-xl shadow-2xl border-4 border-red-500 max-w-md w-full mx-4">
+              <div className="flex items-center justify-center gap-3 mb-3">
+                <div className="animate-pulse">
+                  <svg
+                    className="w-8 h-8"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                    />
+                  </svg>
+                </div>
+
+                <h3 className="font-bold text-xl">🚨 EMERGENCY</h3>
+              </div>
+
+              <div className="bg-white/10 rounded-lg p-3 mb-3">
+                <p className="text-center text-sm">{emergencyPopup.message}</p>
+              </div>
+
+              <div className="flex justify-center gap-3">
+                <button
+                  onClick={() => {
+                    setEmergencyPopup(null);
+
+                    // Extract request ID from link_url or use request_id field
+
+                    let requestId = emergencyPopup.request_id;
+
+                    if (!requestId && emergencyPopup.link_url) {
+                      // Extract from URL like /admin/dashboard?request=xxx
+
+                      const urlParams = new URL(
+                        emergencyPopup.link_url,
+
+                        "http://localhost",
+                      );
+
+                      requestId = urlParams.searchParams.get("request");
+                    }
+
+                    if (requestId) {
+                      // Find the request and open detail modal
+
+                      const request = requests.find((r) => r.id === requestId);
+
+                      if (request) {
+                        setShowDetailModal(request);
+                      } else {
+                        // Scroll to or highlight the emergency request in the list
+
+                        const element = document.getElementById(
+                          `request-${requestId}`,
+                        );
+
+                        if (element) {
+                          element.scrollIntoView({
+                            behavior: "smooth",
+
+                            block: "center",
+                          });
+
+                          element.classList.add("ring-4", "ring-red-500");
+
+                          setTimeout(
+                            () =>
+                              element.classList.remove(
+                                "ring-4",
+                                "ring-red-500",
+                              ),
+
+                            3000,
+                          );
+                        }
+                      }
+                    }
+                  }}
+                  className="px-4 py-2 bg-white text-red-600 font-bold rounded-lg hover:bg-gray-100 transition-colors shadow"
+                >
+                  View
+                </button>
+
+                <button
+                  onClick={() => setEmergencyPopup(null)}
+                  className="px-4 py-2 bg-white/20 text-white font-bold rounded-lg hover:bg-white/30 transition-colors"
+                >
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

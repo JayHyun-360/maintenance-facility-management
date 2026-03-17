@@ -154,31 +154,8 @@ export default function Sidebar({
         </ul>
       </nav>
 
-      {/* User Profile and Sign Out */}
+      {/* Sign Out */}
       <div className="p-4 border-t border-white/10">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center flex-shrink-0 overflow-hidden">
-            {userAvatar ? (
-              <img
-                src={userAvatar}
-                alt="Profile"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <span className="text-white font-bold">
-                {profile?.full_name?.charAt(0).toUpperCase() || "A"}
-              </span>
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-white text-sm font-medium truncate">
-              {profile?.full_name || "Admin"}
-            </p>
-            <p className="text-white/60 text-xs truncate">
-              {profile?.visual_role || "Administrator"}
-            </p>
-          </div>
-        </div>
         <button
           onClick={handleSignOut}
           className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white rounded-lg transition-all duration-200 font-medium"
