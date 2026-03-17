@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -113,14 +112,16 @@ export default function Sidebar({
       {/* Logo and Title */}
       <div className="p-6 border-b border-green-100">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 relative flex-shrink-0">
-            <Image
-              src="/morning-daylight.svg"
-              alt="Morning Daylight"
-              width={48}
-              height={48}
-              className="w-full h-full"
-            />
+          <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
+            <svg
+              className="w-8 h-8 text-yellow-500"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm2 11.5V16h-4v-2.5c-1.25-.7-2-2.03-2-3.5 0-2.21 1.79-4 4-4s4 1.79 4 4c0 1.47-.75 2.8-2 3.5z" />
+              <path d="M9 20h6v1c0 .55-.45 1-1 1h-4c-.55 0-1-.45-1-1v-1z" />
+              <path d="M12 6c-1.1 0-2 .9-2 2 0 .55.22 1.05.59 1.41.36.37.86.59 1.41.59.55 0 1.05-.22 1.41-.59.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2z" />
+            </svg>
           </div>
           <div className="flex-1 min-w-0">
             <h1 className="text-green-800 font-bold text-lg truncate">
