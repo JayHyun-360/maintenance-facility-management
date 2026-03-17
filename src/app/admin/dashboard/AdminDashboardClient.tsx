@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { byPrefixAndName } from "@fortawesome/pro-regular-svg-icons";
 import {
   faWrench,
   faBolt,
@@ -31,7 +30,8 @@ import {
   faTimes,
   faBuilding,
   faLightbulb,
-} from "@fortawesome/pro-regular-svg-icons";
+  faBolt as faBoltLight,
+} from "@fortawesome/free-solid-svg-icons";
 
 import Sidebar from "./Sidebar";
 import RotatingText from "./RotatingText";
@@ -3312,10 +3312,7 @@ ${result.analysis.risks || "N/A"}
                   className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
                   title="Help & Tutorial"
                 >
-                  <FontAwesomeIcon
-                    icon={byPrefixAndName.far["lightbulb"]}
-                    className="w-5 h-5"
-                  />
+                  <FontAwesomeIcon icon={faLightbulb} className="w-5 h-5" />
                 </button>
 
                 {/* Introduction Button */}

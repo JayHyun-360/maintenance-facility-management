@@ -5,13 +5,12 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faFeatherPointed,
   faThLarge,
   faChartBar,
   faList,
   faUsers,
   faSignOutAlt,
-} from "@fortawesome/pro-regular-svg-icons";
+} from "@fortawesome/free-solid-svg-icons";
 
 interface SidebarProps {
   activeTab: string;
@@ -67,7 +66,7 @@ export default function Sidebar({
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
             <FontAwesomeIcon
-              icon={faFeatherPointed}
+              icon={faThLarge}
               className="w-8 h-8 text-green-600"
             />
           </div>
