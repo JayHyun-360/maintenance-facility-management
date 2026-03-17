@@ -9090,13 +9090,17 @@ ${result.analysis.risks || "N/A"}
       <>
         <div
           className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-50 transition-opacity duration-300 ${
-            showIntroductionModal ? "opacity-100" : "opacity-0 pointer-events-none"
+            showIntroductionModal
+              ? "opacity-100"
+              : "opacity-0 pointer-events-none"
           }`}
           onClick={() => setShowIntroductionModal(false)}
         />
         <div
           className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-12 z-50 transition-all duration-300 max-w-4xl w-full mx-4 ${
-            showIntroductionModal ? "scale-100 opacity-100" : "scale-95 opacity-0"
+            showIntroductionModal
+              ? "scale-100 opacity-100"
+              : "scale-95 opacity-0"
           }`}
         >
           <div className="flex justify-between items-center mb-8">
@@ -9105,29 +9109,44 @@ ${result.analysis.risks || "N/A"}
               onClick={() => setShowIntroductionModal(false)}
               className="text-gray-400 hover:text-gray-600 transition-colors"
             >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg
+                className="w-8 h-8"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
-          
+
           <div className="text-center mb-8">
-            <p className="text-green-600 font-bold text-4xl mb-6 bg-green-50 px-6 py-3 rounded-full inline-block">Excellent</p>
+            <p className="text-green-600 font-bold text-4xl mb-6 bg-green-50 px-6 py-3 rounded-full inline-block">
+              Excellent
+            </p>
             <div className="bg-green-600 rounded-2xl p-8 inline-block">
               <RotatingText
-                texts={['Maintenance', 'Facility', 'Management', 'System']}
+                texts={["Maintenance", "Facility", "Management", "System"]}
                 mainClassName="text-white font-bold text-5xl"
                 staggerFrom="last"
-                initial={{ y: '100%', opacity: 0 }}
+                initial={{ y: "100%", opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                exit={{ y: '-120%', opacity: 0 }}
+                exit={{ y: "-120%", opacity: 0 }}
                 staggerDuration={0.03}
                 splitLevelClassName="inline-block"
                 elementLevelClassName="inline-block"
-                transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                transition={{ type: "spring", damping: 25, stiffness: 300 }}
                 rotationInterval={2000}
               />
             </div>
           </div>
         </div>
       </>
+    </div>
+  );
+}
