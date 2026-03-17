@@ -123,12 +123,11 @@ export default function Sidebar({
             />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-white font-bold text-lg truncate">
-              Admin Dashboard
-            </h1>
-            <p className="text-white/60 text-xs truncate">
-              Maintenance Facility
-            </p>
+            <h1 className="text-white font-bold text-lg truncate">Dashboard</h1>
+            <div className="text-white/60 text-xs truncate">
+              <div>Integrated Visual Feedback</div>
+              <div>& Maintenance Utility</div>
+            </div>
           </div>
         </div>
       </div>

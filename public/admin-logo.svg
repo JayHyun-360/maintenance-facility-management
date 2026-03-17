@@ -1,8 +1,8 @@
 <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
   <!-- Simple white circle frame -->
-  <circle cx="60" cy="60" r="55" fill="#427A43"/>
-  <circle cx="60" cy="60" r="52" fill="white"/>
-  <circle cx="60" cy="60" r="48" fill="#f8f9fa"/>
+  <circle cx="60" cy="60" r="55" fill="white"/>
+  <circle cx="60" cy="60" r="52" fill="#2D3A3F"/>
+  <circle cx="60" cy="60" r="48" fill="#2D3A3F"/>
   
   <!-- Cleaning icon (scaled and centered) -->
   <g transform="translate(60, 60) scale(1.8)">
