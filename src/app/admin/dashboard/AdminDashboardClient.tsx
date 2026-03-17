@@ -31,6 +31,7 @@ import {
   faTimes,
   faBuilding,
   faLightbulb,
+  faEllipsis,
   faBolt as faBoltLight,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -3762,7 +3763,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-gray-50",
 
-                          icon: MoreHorizontal,
+                          icon: faEllipsis,
 
                           gradient:
                             "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
@@ -4130,7 +4131,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-gray-50",
 
-                          icon: MoreHorizontal,
+                          icon: faEllipsis,
 
                           gradient:
                             "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
