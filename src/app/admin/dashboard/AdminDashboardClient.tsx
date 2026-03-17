@@ -12,28 +12,27 @@ import { useRouter } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/client";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faWrench,
-  faBolt,
-  faHammer,
-  faMagic,
-  faWind,
-  faChartBar,
-  faChartLine,
-  faRobot,
-  faMoon,
-  faSun,
-  faDesktop,
-  faBell,
-  faFilter,
-  faTrashAlt,
-  faTimes,
-  faBuilding,
-  faLightbulb,
-  faEllipsis,
-  faBolt as faBoltLight,
-} from "@fortawesome/free-solid-svg-icons";
+  Wrench,
+  Zap,
+  Hammer,
+  Wind,
+  Sparkles,
+  MoreHorizontal,
+  TrendingUp,
+  Activity,
+  BarChart3,
+  Bot,
+  Lightbulb,
+  Moon,
+  Sun,
+  Monitor,
+  Bell,
+  Filter,
+  Trash2,
+  Building,
+  AlertTriangle,
+} from "lucide-react";
 
 import Sidebar from "./Sidebar";
 import RotatingText from "./RotatingText";
@@ -3314,7 +3313,7 @@ ${result.analysis.risks || "N/A"}
                   className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
                   title="Help & Tutorial"
                 >
-                  <FontAwesomeIcon icon={faLightbulb} className="w-5 h-5" />
+                  <Lightbulb className="w-5 h-5" />
                 </button>
 
                 {/* Introduction Button */}
@@ -3323,7 +3322,7 @@ ${result.analysis.risks || "N/A"}
                   className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
                   title="Cool Introduction"
                 >
-                  <FontAwesomeIcon icon={faBolt} className="w-5 h-5" />
+                  <Zap className="w-5 h-5" />
                 </button>
               </div>
 
@@ -3338,11 +3337,11 @@ ${result.analysis.risks || "N/A"}
                   title={`Current theme: ${profile?.theme_preference}`}
                 >
                   {profile?.theme_preference === "dark" ? (
-                    <FontAwesomeIcon icon={faMoon} className="w-5 h-5" />
+                    <Moon className="w-5 h-5" />
                   ) : profile?.theme_preference === "light" ? (
-                    <FontAwesomeIcon icon={faSun} className="w-5 h-5" />
+                    <Sun className="w-5 h-5" />
                   ) : (
-                    <FontAwesomeIcon icon={faDesktop} className="w-5 h-5" />
+                    <Monitor className="w-5 h-5" />
                   )}
                 </button>
 
@@ -3352,7 +3351,7 @@ ${result.analysis.risks || "N/A"}
                   className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                   title="Notifications"
                 >
-                  <FontAwesomeIcon icon={faBell} className="w-5 h-5" />
+                  <Bell className="w-5 h-5" />
 
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -3367,7 +3366,7 @@ ${result.analysis.risks || "N/A"}
                   className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                   title="AI Assistant"
                 >
-                  <FontAwesomeIcon icon={faRobot} className="w-5 h-5" />
+                  <Bot className="w-5 h-5" />
                 </button>
 
                 <button
@@ -3651,10 +3650,7 @@ ${result.analysis.risks || "N/A"}
                           transition={{ delay: 0.2, duration: 0.3 }}
                           className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
                         >
-                          <FontAwesomeIcon
-                            icon={faChartBar}
-                            className="w-6 h-6 text-white"
-                          />
+                          <BarChart3 className="w-6 h-6 text-white" />
                         </motion.div>
 
                         <div>
@@ -3698,7 +3694,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-blue-50",
 
-                          icon: faWrench,
+                          icon: Wrench,
 
                           gradient:
                             "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
@@ -3711,7 +3707,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-yellow-50",
 
-                          icon: faBolt,
+                          icon: Zap,
 
                           gradient:
                             "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
@@ -3724,7 +3720,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-amber-50",
 
-                          icon: faHammer,
+                          icon: Hammer,
 
                           gradient:
                             "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
@@ -3737,7 +3733,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-cyan-50",
 
-                          icon: faWind,
+                          icon: Wind,
 
                           gradient:
                             "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
@@ -3750,7 +3746,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-purple-50",
 
-                          icon: faMagic,
+                          icon: Sparkles,
 
                           gradient:
                             "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
@@ -3763,7 +3759,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-gray-50",
 
-                          icon: faEllipsis,
+                          icon: MoreHorizontal,
 
                           gradient:
                             "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
@@ -3842,8 +3838,7 @@ ${result.analysis.risks || "N/A"}
                                       whileHover={{ rotate: [0, -10, 10, 0] }}
                                       transition={{ duration: 0.5 }}
                                     >
-                                      <FontAwesomeIcon
-                                        icon={IconComponent}
+                                      <IconComponent
                                         className="w-5 h-5"
                                         style={{
                                           color:
@@ -4020,10 +4015,7 @@ ${result.analysis.risks || "N/A"}
                           transition={{ delay: 0.2, duration: 0.3 }}
                           className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
                         >
-                          <FontAwesomeIcon
-                            icon={faChartBar}
-                            className="w-6 h-6 text-white"
-                          />
+                          <BarChart3 className="w-6 h-6 text-white" />
                         </motion.div>
 
                         <div>
@@ -4067,7 +4059,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-blue-50",
 
-                          icon: faWrench,
+                          icon: Wrench,
 
                           gradient:
                             "linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)",
@@ -4080,7 +4072,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-yellow-50",
 
-                          icon: faBolt,
+                          icon: Zap,
 
                           gradient:
                             "linear-gradient(135deg, #EAB308 0%, #F97316 100%)",
@@ -4093,7 +4085,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-amber-50",
 
-                          icon: faHammer,
+                          icon: Hammer,
 
                           gradient:
                             "linear-gradient(135deg, #D97706 0%, #B45309 100%)",
@@ -4106,7 +4098,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-cyan-50",
 
-                          icon: faWind,
+                          icon: Wind,
 
                           gradient:
                             "linear-gradient(135deg, #06B6D4 0%, #0891B2 100%)",
@@ -4119,7 +4111,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-purple-50",
 
-                          icon: faMagic,
+                          icon: Sparkles,
 
                           gradient:
                             "linear-gradient(135deg, #A855F7 0%, #9333EA 100%)",
@@ -4132,7 +4124,7 @@ ${result.analysis.risks || "N/A"}
 
                           bgLight: "bg-gray-50",
 
-                          icon: faEllipsis,
+                          icon: MoreHorizontal,
 
                           gradient:
                             "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
@@ -4197,8 +4189,7 @@ ${result.analysis.risks || "N/A"}
                                     whileHover={{ rotate: [0, -10, 10, 0] }}
                                     transition={{ duration: 0.5 }}
                                   >
-                                    <FontAwesomeIcon
-                                      icon={IconComponent}
+                                    <IconComponent
                                       className="w-5 h-5"
                                       style={{
                                         color:
@@ -4581,7 +4572,7 @@ ${result.analysis.risks || "N/A"}
                     }`}
                     title="Filter"
                   >
-                    <FontAwesomeIcon icon={faFilter} className="w-5 h-5" />
+                    <Filter className="w-5 h-5" />
                   </button>
                 </div>
 
@@ -8185,7 +8176,7 @@ ${result.analysis.risks || "N/A"}
                     onClick={() => setShowBroadcastModal(false)}
                     className="text-gray-400 hover:text-gray-600"
                   >
-                    <FontAwesomeIcon icon={faTimes} className="w-5 h-5" />
+                    <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
 
@@ -8247,19 +8238,7 @@ ${result.analysis.risks || "N/A"}
               <div className="p-6 border-b border-gray-200">
                 <div className="flex items-center justify-between">
                   <h3 className="font-header text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <svg
-                      className="w-5 h-5 text-red-600"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                      />
-                    </svg>
+                    <AlertTriangle className="w-5 h-5 text-red-600" />
                     Send Warning / Notice to User
                   </h3>
 
@@ -8275,7 +8254,7 @@ ${result.analysis.risks || "N/A"}
                     }}
                     className="text-gray-400 hover:text-gray-600"
                   >
-                    <FontAwesomeIcon icon={faTimes} className="w-5 h-5" />
+                    <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
               </div>
@@ -8491,7 +8470,7 @@ ${result.analysis.risks || "N/A"}
                     onClick={() => setShowUserInfoPanel(false)}
                     className="text-gray-400 hover:text-gray-600"
                   >
-                    <FontAwesomeIcon icon={faTimes} className="w-5 h-5" />
+                    <Trash2 className="w-5 h-5" />
                   </button>
                 </div>
               </div>
@@ -8536,10 +8515,7 @@ ${result.analysis.risks || "N/A"}
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <FontAwesomeIcon
-                        icon={faBuilding}
-                        className="w-5 h-5 text-gray-500"
-                      />
+                      <Building className="w-5 h-5 text-gray-500" />
                     </div>
 
                     <div>
