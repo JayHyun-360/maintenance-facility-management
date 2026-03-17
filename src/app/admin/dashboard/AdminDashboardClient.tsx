@@ -176,9 +176,10 @@ export default function AdminDashboardClient({
           ? "system"
           : "light";
 
-    const { error } = await supabase
+    const updates: Record<string, string> = { theme_preference: newTheme };
+    const { error } = await (supabase as any)
       .from("profiles")
-      .update({ theme_preference: newTheme } as any)
+      .update(updates)
       .eq("id", profile.id);
 
     if (!error) {
