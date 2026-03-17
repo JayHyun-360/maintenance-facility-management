@@ -12,6 +12,27 @@ import { useRouter } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/client";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { byPrefixAndName } from "@fortawesome/pro-regular-svg-icons";
+import {
+  faWrench,
+  faBolt,
+  faHammer,
+  faSparkles,
+  faChartBar,
+  faChartLine,
+  faRobot,
+  faMoon,
+  faSun,
+  faDesktop,
+  faBell,
+  faFilter,
+  faTrashAlt,
+  faTimes,
+  faBuilding,
+  faLightbulb,
+} from "@fortawesome/pro-regular-svg-icons";
+
 import Sidebar from "./Sidebar";
 import RotatingText from "./RotatingText";
 
@@ -47,19 +68,6 @@ import { format, subDays, eachDayOfInterval, startOfDay } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
 
 import ReactMarkdown from "react-markdown";
-
-import {
-  Wrench,
-  Zap,
-  Hammer,
-  Wind,
-  Sparkles,
-  MoreHorizontal,
-  TrendingUp,
-  Activity,
-  BarChart3,
-  Bot,
-} from "lucide-react";
 
 // Debounce hook for performance optimization
 
@@ -3304,19 +3312,10 @@ ${result.analysis.risks || "N/A"}
                   className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
                   title="Help & Tutorial"
                 >
-                  <svg
+                  <FontAwesomeIcon
+                    icon={byPrefixAndName.far["lightbulb"]}
                     className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+                  />
                 </button>
 
                 {/* Introduction Button */}
@@ -3325,19 +3324,7 @@ ${result.analysis.risks || "N/A"}
                   className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
                   title="Cool Introduction"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M13 10V3L4 14h7v7l9-11h-7z"
-                    />
-                  </svg>
+                  <FontAwesomeIcon icon={faBolt} className="w-5 h-5" />
                 </button>
               </div>
 
@@ -3352,47 +3339,11 @@ ${result.analysis.risks || "N/A"}
                   title={`Current theme: ${profile?.theme_preference}`}
                 >
                   {profile?.theme_preference === "dark" ? (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                      />
-                    </svg>
+                    <FontAwesomeIcon icon={faMoon} className="w-5 h-5" />
                   ) : profile?.theme_preference === "light" ? (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                      />
-                    </svg>
+                    <FontAwesomeIcon icon={faSun} className="w-5 h-5" />
                   ) : (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
+                    <FontAwesomeIcon icon={faDesktop} className="w-5 h-5" />
                   )}
                 </button>
 
@@ -3402,19 +3353,7 @@ ${result.analysis.risks || "N/A"}
                   className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                   title="Notifications"
                 >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                    />
-                  </svg>
+                  <FontAwesomeIcon icon={faBell} className="w-5 h-5" />
 
                   {unreadCount > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
@@ -3429,7 +3368,7 @@ ${result.analysis.risks || "N/A"}
                   className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                   title="AI Assistant"
                 >
-                  <Bot className="w-5 h-5" />
+                  <FontAwesomeIcon icon={faRobot} className="w-5 h-5" />
                 </button>
 
                 <button
@@ -3713,7 +3652,10 @@ ${result.analysis.risks || "N/A"}
                           transition={{ delay: 0.2, duration: 0.3 }}
                           className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
                         >
-                          <BarChart3 className="w-6 h-6 text-white" />
+                          <FontAwesomeIcon
+                            icon={faChartBar}
+                            className="w-6 h-6 text-white"
+                          />
                         </motion.div>
 
                         <div>
@@ -3733,7 +3675,10 @@ ${result.analysis.risks || "N/A"}
                         transition={{ delay: 0.3, duration: 0.3 }}
                         className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100"
                       >
-                        <Activity className="w-4 h-4 text-blue-600" />
+                        <FontAwesomeIcon
+                          icon={faChartLine}
+                          className="w-4 h-4 text-blue-600"
+                        />
 
                         <span className="text-sm font-semibold text-gray-700">
                           {stats.total}
@@ -4075,7 +4020,10 @@ ${result.analysis.risks || "N/A"}
                           transition={{ delay: 0.2, duration: 0.3 }}
                           className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg"
                         >
-                          <BarChart3 className="w-6 h-6 text-white" />
+                          <FontAwesomeIcon
+                            icon={faChartBar}
+                            className="w-6 h-6 text-white"
+                          />
                         </motion.div>
 
                         <div>
@@ -4095,7 +4043,10 @@ ${result.analysis.risks || "N/A"}
                         transition={{ delay: 0.3, duration: 0.3 }}
                         className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-purple-50 px-4 py-2 rounded-full border border-blue-100"
                       >
-                        <Activity className="w-4 h-4 text-blue-600" />
+                        <FontAwesomeIcon
+                          icon={faChartLine}
+                          className="w-4 h-4 text-blue-600"
+                        />
 
                         <span className="text-sm font-semibold text-gray-700">
                           {stats.total}
@@ -4629,19 +4580,7 @@ ${result.analysis.risks || "N/A"}
                     }`}
                     title="Filter"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
-                      />
-                    </svg>
+                    <FontAwesomeIcon icon={faFilter} className="w-5 h-5" />
                   </button>
                 </div>
 
@@ -4674,19 +4613,10 @@ ${result.analysis.risks || "N/A"}
                         className="p-1.5 text-gray-400 hover:text-red-500 transition-colors"
                         title="Clear filters"
                       >
-                        <svg
+                        <FontAwesomeIcon
+                          icon={faTrashAlt}
                           className="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
-                        </svg>
+                        />
                       </button>
                     </div>
 
@@ -5134,31 +5064,43 @@ ${result.analysis.risks || "N/A"}
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                     {showDetailModal.nature === "Plumbing" && (
-                      <Wrench className="w-4 h-4 text-white" />
+                      <FontAwesomeIcon
+                        icon={faWrench}
+                        className="w-4 h-4 text-white"
+                      />
                     )}
 
                     {showDetailModal.nature === "Electrical" && (
-                      <Zap className="w-4 h-4 text-white" />
+                      <FontAwesomeIcon
+                        icon={faBolt}
+                        className="w-4 h-4 text-white"
+                      />
                     )}
 
                     {showDetailModal.nature === "Carpentry" && (
-                      <Hammer className="w-4 h-4 text-white" />
+                      <FontAwesomeIcon
+                        icon={faHammer}
+                        className="w-4 h-4 text-white"
+                      />
                     )}
 
                     {showDetailModal.nature === "Personnel Services" && (
-                      <Sparkles className="w-4 h-4 text-white" />
+                      <FontAwesomeIcon
+                        icon={faSparkles}
+                        className="w-4 h-4 text-white"
+                      />
                     )}
 
                     {![
                       "Plumbing",
-
                       "Electrical",
-
                       "Carpentry",
-
                       "Personnel Services",
                     ].includes(showDetailModal.nature) && (
-                      <Activity className="w-4 h-4 text-white" />
+                      <FontAwesomeIcon
+                        icon={faChartLine}
+                        className="w-4 h-4 text-white"
+                      />
                     )}
                   </div>
 
@@ -6772,7 +6714,10 @@ ${result.analysis.risks || "N/A"}
                     <div className="relative">
                       <div className="absolute inset-0 rounded-full bg-green-500 blur-md opacity-60 animate-pulse" />
 
-                      <Bot className="relative w-5 h-5 text-green-400 drop-shadow-lg" />
+                      <FontAwesomeIcon
+                        icon={faRobot}
+                        className="relative w-5 h-5 text-green-400 drop-shadow-lg"
+                      />
                     </div>
 
                     <div>
@@ -7130,7 +7075,10 @@ ${result.analysis.risks || "N/A"}
                       <div className="relative mb-6">
                         <div className="absolute inset-0 rounded-full bg-green-500 blur-xl opacity-50 animate-pulse" />
 
-                        <Bot className="relative w-16 h-16 text-green-400 drop-shadow-lg" />
+                        <FontAwesomeIcon
+                          icon={faRobot}
+                          className="relative w-16 h-16 text-green-400 drop-shadow-lg"
+                        />
                       </div>
 
                       <h2 className="text-lg font-bold text-white mb-1">
@@ -7768,7 +7716,10 @@ ${result.analysis.risks || "N/A"}
                           <div className="absolute inset-0 rounded-md bg-green-500 blur-sm opacity-60 animate-pulse" />
 
                           <div className="relative w-6 h-6 rounded-md bg-green-600 flex items-center justify-center shadow shadow-green-500/30">
-                            <Bot className="w-3.5 h-3.5 text-white" />
+                            <FontAwesomeIcon
+                              icon={faRobot}
+                              className="w-3.5 h-3.5 text-white"
+                            />
                           </div>
                         </div>
                       </div>
@@ -8230,19 +8181,7 @@ ${result.analysis.risks || "N/A"}
                     onClick={() => setShowBroadcastModal(false)}
                     className="text-gray-400 hover:text-gray-600"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
+                    <FontAwesomeIcon icon={faTimes} className="w-5 h-5" />
                   </button>
                 </div>
 
@@ -8332,19 +8271,7 @@ ${result.analysis.risks || "N/A"}
                     }}
                     className="text-gray-400 hover:text-gray-600"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
+                    <FontAwesomeIcon icon={faTimes} className="w-5 h-5" />
                   </button>
                 </div>
               </div>
@@ -8560,19 +8487,7 @@ ${result.analysis.risks || "N/A"}
                     onClick={() => setShowUserInfoPanel(false)}
                     className="text-gray-400 hover:text-gray-600"
                   >
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M6 18L18 6M6 6l12 12"
-                      />
-                    </svg>
+                    <FontAwesomeIcon icon={faTimes} className="w-5 h-5" />
                   </button>
                 </div>
               </div>
@@ -8617,19 +8532,10 @@ ${result.analysis.risks || "N/A"}
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <svg
+                      <FontAwesomeIcon
+                        icon={faBuilding}
                         className="w-5 h-5 text-gray-500"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                        />
-                      </svg>
+                      />
                     </div>
 
                     <div>
