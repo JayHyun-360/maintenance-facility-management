@@ -3147,7 +3147,7 @@ ${result.analysis.risks || "N/A"}
             {/* Left Side - Logo and Title */}
 
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border-2 border-white/30 overflow-hidden">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center border-2 border-white/70 overflow-hidden">
                 <img
                   src="/admin-logo.svg"
                   alt="Maintenance Logo"
