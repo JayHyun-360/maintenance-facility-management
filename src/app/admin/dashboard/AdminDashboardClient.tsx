@@ -3792,7 +3792,7 @@ ${result.analysis.risks || "N/A"}
                               ? Math.round((count / stats.total) * 100)
                               : 0;
 
-                          const Icon = nature.icon;
+                          const IconComponent = nature.icon;
 
                           return (
                             <motion.div
