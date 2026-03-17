@@ -812,7 +812,7 @@ export default function UserDashboardClient({
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
 
-      <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300">
+      <div className="bg-[#5D9C59] shadow-lg border-b transition-all duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center gap-4">
@@ -1614,7 +1614,7 @@ export default function UserDashboardClient({
         }`}
       >
         <div className="h-full overflow-y-auto">
-          <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+          <div className="bg-[#5D9C59] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
             <div className="flex justify-center items-center">
               <h2 className="font-header text-xl font-bold text-white">
                 Notifications
@@ -1750,7 +1750,7 @@ export default function UserDashboardClient({
           <div className="h-full overflow-y-auto">
             {/* Sidebar Header */}
 
-            <div className="bg-[#427A43] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
+            <div className="bg-[#5D9C59] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
               <div className="flex justify-between items-center">
                 <h2 className="font-header text-xl font-bold text-white">
                   Profile Settings
@@ -1765,7 +1765,7 @@ export default function UserDashboardClient({
               <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
                 <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                   <svg
-                    className="w-5 h-5 text-[#427A43]"
+                    className="w-5 h-5 text-[#5D9C59]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -1804,7 +1804,7 @@ export default function UserDashboardClient({
                       </div>
                       <label
                         htmlFor="avatar-upload"
-                        className="absolute bottom-0 right-0 bg-[#427A43] text-white p-2 rounded-full cursor-pointer hover:bg-[#366337] transition-colors shadow-md"
+                        className="absolute bottom-0 right-0 bg-[#5D9C59] text-white p-2 rounded-full cursor-pointer hover:bg-[#4a7c4a] transition-colors shadow-md"
                       >
                         <svg
                           className="w-4 h-4"
@@ -1871,7 +1871,7 @@ export default function UserDashboardClient({
                           full_name: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm text-gray-900"
                     />
                   </div>
 
@@ -1900,7 +1900,7 @@ export default function UserDashboardClient({
                           visual_role: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900 bg-white"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm text-gray-900 bg-white"
                     >
                       <option value="">Select a role</option>
                       <option value="Teacher">Teacher</option>
@@ -2027,7 +2027,7 @@ export default function UserDashboardClient({
                             | "system",
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#427A43] focus:border-transparent text-sm text-gray-900 bg-white"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm text-gray-900 bg-white"
                     >
                       <option value="light">Light</option>
                       <option value="dark">Dark</option>
@@ -2048,7 +2048,7 @@ export default function UserDashboardClient({
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full px-4 py-3 bg-[#427A43] text-white font-semibold rounded-lg hover:bg-[#366337] disabled:bg-gray-400 transition-colors"
+                className="w-full px-4 py-3 bg-[#5D9C59] text-white font-semibold rounded-lg hover:bg-[#4a7c4a] disabled:bg-gray-400 transition-colors"
               >
                 {saving ? "Saving..." : "Save Changes"}
               </button>
@@ -2312,7 +2312,7 @@ export default function UserDashboardClient({
               <div className="flex justify-end mt-6">
                 <button
                   onClick={() => setShowAnnouncementModal(false)}
-                  className="px-4 py-2 bg-[#427A43] text-white rounded-lg hover:bg-[#366337] transition-colors text-sm font-medium"
+                  className="px-4 py-2 bg-[#5D9C59] text-white rounded-lg hover:bg-[#4a7c4a] transition-colors text-sm font-medium"
                 >
                   Close
                 </button>
