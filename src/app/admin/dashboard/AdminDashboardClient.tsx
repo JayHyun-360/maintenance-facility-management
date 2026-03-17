@@ -169,7 +169,6 @@ export default function AdminDashboardClient({
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchResults, setShowSearchResults] = useState(false);
 
-  // Tutorial state
   const [showTutorial, setShowTutorial] = useState(false);
   const [tutorialStep, setTutorialStep] = useState(0);
 
@@ -3179,8 +3178,8 @@ ${result.analysis.risks || "N/A"}
         <div className="bg-green-600 shadow-lg border-b transition-all duration-300">
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
-              {/* Left Side - Search Bar and Help */}
-              <div className="flex items-center gap-4">
+              {/* Left Side - Search Bar */}
+              <div className="relative">
                 <div className="relative">
                   <input
                     type="text"
@@ -3318,63 +3317,12 @@ ${result.analysis.risks || "N/A"}
 
             {/* Right Side - Profile, Settings, etc */}
             <div className="flex items-center gap-3">
-                <button
-                  onClick={handleThemeToggle}
-                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
-                  title={`Current theme: ${profile?.theme_preference}`}
-                >
-                  {profile?.theme_preference === "dark" ? (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                      />
-                    </svg>
-                  ) : profile?.theme_preference === "light" ? (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-                      />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
-                  )}
-                </button>
-
-                {/* Notifications Bell */}
-
-                <button
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
-                  title="Notifications"
-                >
+              <button
+                onClick={handleThemeToggle}
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
+                title={`Current theme: ${profile?.theme_preference}`}
+              >
+                {profile?.theme_preference === "dark" ? (
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -3385,72 +3333,129 @@ ${result.analysis.risks || "N/A"}
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={2}
-                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
                     />
                   </svg>
-
-                  {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                      {unreadCount > 9 ? "9+" : unreadCount}
-                    </span>
-                  )}
-                </button>
-
-                {/* AI Chat Robot Icon */}
-
-                <button
-                  onClick={() => setShowAIChat(!showAIChat)}
-                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
-                  title="AI Assistant"
-                >
-                  <Bot className="w-5 h-5" />
-                </button>
-
-                <button
-                  onClick={() => setShowProfileSidebar(true)}
-                  className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
-                >
-                  Settings
-                </button>
-
-                {/* Profile Avatar */}
-
-                <div className="relative">
-                  <button
-                    onClick={() => setShowProfileViewer(!showProfileViewer)}
-                    className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
-                    title="Click to view profile picture"
+                ) : profile?.theme_preference === "light" ? (
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    {userAvatar ? (
-                      <img
-                        src={userAvatar}
-                        alt="Profile"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = "none";
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                )}
+              </button>
 
-                          e.currentTarget.nextElementSibling?.classList.remove(
-                            "hidden",
-                          );
-                        }}
-                      />
-                    ) : null}
+              {/* Notifications Bell */}
 
-                    <span
-                      className={`text-white font-bold ${userAvatar ? "hidden" : ""}`}
-                    >
-                      {profile?.full_name?.charAt(0).toUpperCase() || "A"}
-                    </span>
-                  </button>
+              <button
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                title="Notifications"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                  />
+                </svg>
+
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {unreadCount > 9 ? "9+" : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {/* AI Chat Robot Icon */}
+
+              <button
+                onClick={() => setShowAIChat(!showAIChat)}
+                className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                title="AI Assistant"
+              >
+                <Bot className="w-5 h-5" />
+              </button>
+
+              <button
+                onClick={() => setShowProfileSidebar(true)}
+                className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
+              >
+                Settings
+              </button>
+
+              {/* Profile Avatar */}
+
+              <div className="relative">
+                <button
+                  onClick={() => setShowProfileViewer(!showProfileViewer)}
+                  className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
+                  title="Click to view profile picture"
+                >
+                  {userAvatar ? (
+                    <img
+                      src={userAvatar}
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        e.currentTarget.nextElementSibling?.classList.remove(
+                          "hidden",
+                        );
+                      }}
+                    />
+                  ) : null}
+
+                  <span
+                    className={`text-lg font-bold text-white ${
+                      userAvatar ? "hidden" : ""
+                    }`}
+                  >
+                    {profile?.full_name?.charAt(0).toUpperCase() || "?"}
+                  </span>
 
                   <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
 
                   {showProfileViewer && userAvatar && (
                     <div
-                      className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 ${showProfileViewer ? "opacity-100" : "opacity-0"}`}
+                      className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 ${
+                        showProfileViewer ? "opacity-100" : "opacity-0"
+                      }`}
                     >
                       <div
-                        className={`relative transform transition-all duration-300 ${showProfileViewer ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
+                        className={`relative transform transition-all duration-300 ${
+                          showProfileViewer
+                            ? "scale-100 opacity-100"
+                            : "scale-95 opacity-0"
+                        }`}
                         ref={profileViewerRef}
                       >
                         <div className="w-72 h-72 rounded-full bg-white/20 backdrop-blur-xl shadow-2xl border-2 border-white/30 flex flex-col items-center justify-center p-8">
@@ -3473,7 +3478,7 @@ ${result.analysis.risks || "N/A"}
                       </div>
                     </div>
                   )}
-                </div>
+                </button>
               </div>
             </div>
           </div>
@@ -8840,7 +8845,6 @@ ${result.analysis.risks || "N/A"}
         {showTutorial && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center">
             <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden">
-              {/* Progress bar */}
               <div className="h-1 bg-gray-200">
                 <div
                   className="h-full bg-green-500 transition-all duration-300"
@@ -8849,105 +8853,166 @@ ${result.analysis.risks || "N/A"}
               </div>
 
               <div className="p-8">
-                {/* Step content */}
                 {tutorialStep === 0 && (
                   <div className="text-center">
                     <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      <svg
+                        className="w-10 h-10 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Search Bar</h3>
-                    <p className="text-gray-600">Here, you can quickly search for any maintenance request by typing the requester's name, location, nature, or description.</p>
-                    <div className="mt-4 flex justify-center">
-                      <svg className="w-6 h-6 text-green-500 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                      </svg>
-                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      Search Bar
+                    </h3>
+                    <p className="text-gray-600">
+                      Search for any maintenance request by name, location,
+                      nature, or description.
+                    </p>
                   </div>
                 )}
 
                 {tutorialStep === 1 && (
                   <div className="text-center">
                     <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <svg
+                        className="w-10 h-10 text-blue-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Help & Tutorial</h3>
-                    <p className="text-gray-600">Click here anytime to revisit this tutorial and learn how to use the admin dashboard.</p>
-                    <div className="mt-4 flex justify-center">
-                      <svg className="w-6 h-6 text-green-500 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                      </svg>
-                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      Help & Tutorial
+                    </h3>
+                    <p className="text-gray-600">
+                      Click here anytime to revisit this tutorial.
+                    </p>
                   </div>
                 )}
 
                 {tutorialStep === 2 && (
                   <div className="text-center">
                     <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                      <svg
+                        className="w-10 h-10 text-purple-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                        />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Theme Toggle</h3>
-                    <p className="text-gray-600">Here, you can switch between light, dark, and system themes to customize your viewing experience.</p>
-                    <div className="mt-4 flex justify-center">
-                      <svg className="w-6 h-6 text-green-500 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                      </svg>
-                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      Theme Toggle
+                    </h3>
+                    <p className="text-gray-600">
+                      Switch between light, dark, and system themes.
+                    </p>
                   </div>
                 )}
 
                 {tutorialStep === 3 && (
                   <div className="text-center">
                     <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                      <svg
+                        className="w-10 h-10 text-red-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                        />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">Notifications</h3>
-                    <p className="text-gray-600">Click here to view all your notifications, including new requests and status updates.</p>
-                    <div className="mt-4 flex justify-center">
-                      <svg className="w-6 h-6 text-green-500 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                      </svg>
-                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      Notifications
+                    </h3>
+                    <p className="text-gray-600">
+                      View all your notifications, including new requests and
+                      status updates.
+                    </p>
                   </div>
                 )}
 
                 {tutorialStep === 4 && (
                   <div className="text-center">
                     <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      <svg
+                        className="w-10 h-10 text-yellow-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">AI Assistant</h3>
-                    <p className="text-gray-600">Here, you can access the AI assistant to help analyze requests, generate reports, and answer questions.</p>
-                    <div className="mt-4 flex justify-center">
-                      <svg className="w-6 h-6 text-green-500 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                      </svg>
-                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      AI Assistant
+                    </h3>
+                    <p className="text-gray-600">
+                      Access the AI assistant to analyze requests and generate
+                      reports.
+                    </p>
                   </div>
                 )}
 
                 {tutorialStep === 5 && (
                   <div className="text-center">
                     <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      <svg
+                        className="w-10 h-10 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">All Set!</h3>
-                    <p className="text-gray-600">You're ready to go! Use the sidebar to navigate between Overview, Analytics, Master Queue, and Announcements.</p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">
+                      All Set!
+                    </h3>
+                    <p className="text-gray-600">
+                      Use the sidebar to navigate between Overview, Analytics,
+                      Master Queue, and Announcements.
+                    </p>
                   </div>
                 )}
 
-                {/* Navigation buttons */}
                 <div className="flex justify-between items-center mt-8">
                   <button
                     onClick={() => {
