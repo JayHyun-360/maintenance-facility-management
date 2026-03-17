@@ -5372,11 +5372,7 @@ ${result.analysis.risks || "N/A"}
                               )}
                             </p>
 
-                            <p className="text-sm text-gray-600 mt-1">
-                              {notification.message}
-                            </p>
-
-                            <p className="text-xs text-gray-400 mt-2">
+                            <p className="text-xs text-gray-400 mt-1">
                               <SafeDate date={notification.created_at} />
                             </p>
                           </div>
