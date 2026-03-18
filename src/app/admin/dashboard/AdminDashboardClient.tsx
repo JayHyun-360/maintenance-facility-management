@@ -3190,8 +3190,8 @@ ${result.analysis.risks || "N/A"}
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
               {/* Left Side - Search Bar + Help Button */}
-              <div className="flex items-center gap-4">
-                <div className="relative">
+              <div className="flex items-center gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
+                <div className="relative order-1">
                   <div className="relative">
                     <input
                       type="text"
@@ -3206,8 +3206,8 @@ ${result.analysis.risks || "N/A"}
                       onBlur={() =>
                         setTimeout(() => setShowSearchResults(false), 200)
                       }
-                      placeholder="Search requests, users, locations..."
-                      className="w-80 px-4 py-2.5 pl-10 bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 transition-all duration-300"
+                      placeholder="Search..."
+                      className="w-48 sm:w-64 md:w-80 px-4 py-2.5 pl-10 bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 transition-all duration-300"
                     />
                     <svg
                       className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"
@@ -3248,7 +3248,7 @@ ${result.analysis.risks || "N/A"}
                   </div>
                   {/* Search Results Dropdown */}
                   {showSearchResults && (
-                    <div className="absolute top-full mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto">
+                    <div className="absolute top-full mt-2 w-72 sm:w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-y-auto">
                       {searchQuery.length > 0 && (
                         <div className="p-2 border-b border-gray-100">
                           <p className="text-xs text-gray-500 px-2">
