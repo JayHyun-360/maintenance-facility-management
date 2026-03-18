@@ -1032,7 +1032,7 @@ export default function UserDashboardClient({
           <div className="p-4 border-t border-green-100">
             <button
               onClick={handleSignOut}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white hover:bg-green-50 text-green-700 rounded-lg transition-all duration-200 font-medium border border-green-200 shadow-sm hover:shadow-md"
+              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white hover:bg-red-50 text-green-700 hover:text-red-600 rounded-lg transition-all duration-200 font-medium border border-green-200 shadow-sm hover:shadow-md"
             >
               <svg
                 className="w-5 h-5"

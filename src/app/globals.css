@@ -52,7 +52,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #2196f3;
+    background-color: #4caf50;
     border-radius: 34px;
     transition: background-color 0.3s;
   }
@@ -71,7 +71,7 @@
   }
 
   .theme-toggle-switch input:checked + .toggle-slider {
-    background-color: #4caf50;
+    background-color: #2196f3;
   }
 
   .theme-toggle-switch input:checked + .toggle-slider::before {
