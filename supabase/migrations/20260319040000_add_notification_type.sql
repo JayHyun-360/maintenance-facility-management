@@ -2,7 +2,7 @@
 ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS type TEXT DEFAULT 'notification' CHECK (type IN ('announcement', 'notification'));
 
 -- Update existing notifications based on title pattern:
--- Status notifications (Request Completed, Request Started, etc.) should be 'notification'
+-- Status notifications should be 'notification'
 -- Broadcasts/announcements should be 'announcement'
 UPDATE notifications 
 SET type = 'notification' 
@@ -12,7 +12,9 @@ AND (
   OR title LIKE 'Request Started%'
   OR title LIKE 'Request Cancelled%'
   OR title LIKE 'Request Updated%'
+  OR title LIKE 'Request Status%'
   OR title LIKE 'New Message%'
+  OR title LIKE 'Your maintenance request%'
 );
 
 -- Set remaining null types to 'announcement' (for backward compatibility with old broadcasts)
