@@ -18,8 +18,8 @@ BEGIN
   FOR v_user IN 
     SELECT id FROM profiles WHERE database_role = 'user'
   LOOP
-    INSERT INTO public.notifications (user_id, title, message, link_url, target_role)
-    VALUES (v_user.id, p_title, p_message, p_link_url, p_target_role);
+    INSERT INTO public.notifications (user_id, title, message, link_url, target_role, type)
+    VALUES (v_user.id, p_title, p_message, p_link_url, p_target_role, 'announcement');
     v_count := v_count + 1;
   END LOOP;
   

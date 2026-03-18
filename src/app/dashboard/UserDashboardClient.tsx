@@ -64,6 +64,8 @@ export default function UserDashboardClient({
 
   const [notifications, setNotifications] = useState<any[]>([]);
 
+  const [announcements, setAnnouncements] = useState<any[]>([]);
+
   const [unreadCount, setUnreadCount] = useState(0);
 
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
@@ -398,6 +400,18 @@ export default function UserDashboardClient({
     }
   };
 
+  // Fetch only announcements for the announcements modal
+  const fetchAnnouncements = async () => {
+    const { data } = await (supabase.from("notifications") as any)
+      .select("*")
+      .eq("user_id", userId)
+      .eq("type", "announcement")
+      .order("created_at", { ascending: false })
+      .limit(50);
+
+    return data || [];
+  };
+
   const markNotificationRead = async (notificationId: string) => {
     await (supabase.from("notifications") as any)
 
@@ -474,6 +488,7 @@ export default function UserDashboardClient({
 
   useEffect(() => {
     fetchNotifications();
+    fetchAnnouncements().then(setAnnouncements);
 
     const notificationInterval = setInterval(fetchNotifications, 10000);
 
@@ -2511,13 +2526,13 @@ export default function UserDashboardClient({
               </button>
             </div>
             <div className="flex-1 overflow-y-auto p-6">
-              {notifications.length === 0 ? (
+              {announcements.length === 0 ? (
                 <p className="text-gray-500 text-center py-8">
                   No announcements yet
                 </p>
               ) : (
                 <div className="space-y-4">
-                  {notifications.map((notification) => (
+                  {announcements.map((notification) => (
                     <div
                       key={notification.id}
                       onClick={() => {

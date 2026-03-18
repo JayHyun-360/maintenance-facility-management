@@ -1724,6 +1724,8 @@ export default function AdminDashboardClient({
         link_url: "/dashboard",
 
         target_role: "user",
+
+        type: "announcement",
       }));
 
       await (supabase.from("notifications") as any).insert(notifications);
