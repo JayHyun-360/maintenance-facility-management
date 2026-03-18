@@ -35,8 +35,8 @@
   .theme-toggle-switch {
     position: relative;
     display: inline-block;
-    width: 44px;
-    height: 26px;
+    width: 36px;
+    height: 20px;
   }
 
   .theme-toggle-switch input {
@@ -60,8 +60,8 @@
   .theme-toggle-switch .toggle-slider::before {
     content: "";
     position: absolute;
-    width: 22px;
-    height: 22px;
+    width: 16px;
+    height: 16px;
     border-radius: 50%;
     top: 2px;
     left: 2px;
@@ -75,7 +75,7 @@
   }
 
   .theme-toggle-switch input:checked + .toggle-slider::before {
-    transform: translateX(18px);
+    transform: translateX(16px);
   }
 
   /* Light theme variant */
@@ -88,7 +88,7 @@
   }
 
   .theme-toggle-switch.light input:checked + .toggle-slider::before {
-    transform: translateX(8px);
+    transform: translateX(6px);
   }
 
   /* Dark theme variant */
@@ -101,7 +101,7 @@
   }
 
   .theme-toggle-switch.dark input:checked + .toggle-slider::before {
-    transform: translateX(18px);
+    transform: translateX(16px);
   }
 
   /* Vertical Sidebar Layout for Admin Dashboard */

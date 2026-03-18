@@ -972,7 +972,7 @@ export default function UserDashboardClient({
                   }}
                   className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200"
                 >
-                  <label className="theme-toggle-switch dark cursor-pointer">
+                  <label className="theme-toggle-switch cursor-pointer">
                     <input
                       type="checkbox"
                       checked={profile?.theme_preference === "dark"}

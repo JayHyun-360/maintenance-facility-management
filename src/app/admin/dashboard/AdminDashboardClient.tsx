@@ -3355,21 +3355,15 @@ ${result.analysis.risks || "N/A"}
 
               {/* Right Side - Theme, Notifications, AI Chat, Settings, Profile */}
               <div className="flex items-center gap-3">
-                <button
-                  onClick={handleThemeToggle}
-                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
-                  title={`Current theme: ${profile?.theme_preference}`}
-                >
-                  <label className="theme-toggle-switch dark cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={profile?.theme_preference === "dark"}
-                      onChange={handleThemeToggle}
-                      className="hidden"
-                    />
-                    <span className="toggle-slider"></span>
-                  </label>
-                </button>
+                <label className="theme-toggle-switch cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={profile?.theme_preference === "dark"}
+                    onChange={handleThemeToggle}
+                    className="hidden"
+                  />
+                  <span className="toggle-slider"></span>
+                </label>
 
                 {/* Notifications Bell */}
                 <button
