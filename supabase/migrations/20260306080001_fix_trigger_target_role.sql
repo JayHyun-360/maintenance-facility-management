@@ -37,8 +37,8 @@ BEGIN
       END CASE;
 
       -- Insert notification with target_role for user dashboard filtering
-      INSERT INTO public.notifications (user_id, title, message, link_url, target_role)
-      VALUES (v_requester_id, v_title, v_message, '/dashboard', 'user');
+      INSERT INTO public.notifications (user_id, title, message, link_url, target_role, type)
+      VALUES (v_requester_id, v_title, v_message, '/dashboard', 'user', 'notification');
     END IF;
   END IF;
 

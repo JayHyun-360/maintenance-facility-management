@@ -84,8 +84,8 @@ BEGIN
       END CASE;
 
       -- Insert notification
-      INSERT INTO public.notifications (user_id, title, message, link_url)
-      VALUES (v_requester_id, v_title, v_message, '/dashboard');
+      INSERT INTO public.notifications (user_id, title, message, link_url, target_role, type)
+      VALUES (v_requester_id, v_title, v_message, '/dashboard', 'user', 'notification');
     END IF;
   END IF;
 
