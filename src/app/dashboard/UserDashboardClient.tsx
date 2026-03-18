@@ -817,12 +817,23 @@ export default function UserDashboardClient({
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
 
-      <div className="bg-[#5D9C59] shadow-lg border-b transition-all duration-300">
+      <div className="bg-green-600 shadow-lg border-b transition-all duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
-            <div className="flex items-center gap-4">
-              {/* Profile Avatar */}
+            {/* Left Side - Logo and Dashboard text */}
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
+                <FontAwesomeIcon
+                  icon={faFeatherPointed}
+                  className="w-8 h-8 text-white"
+                />
+              </div>
+              <h1 className="text-white font-bold text-xl">Dashboard</h1>
+            </div>
 
+            {/* Right Side - Profile and Hamburger */}
+            <div className="flex items-center gap-3">
+              {/* Profile Avatar */}
               <div className="relative">
                 <button
                   onClick={() => setShowProfileViewer(!showProfileViewer)}
@@ -873,7 +884,6 @@ export default function UserDashboardClient({
                             className="w-full h-full object-contain"
                             style={{
                               imageRendering: "auto",
-
                               imageResolution: "from-image",
                             }}
                           />
@@ -892,23 +902,6 @@ export default function UserDashboardClient({
                 )}
               </div>
 
-              {/* Role badges */}
-              <div className="flex items-center gap-2">
-                <span className="bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-white transition-all duration-300 hover:bg-white/30">
-                  {profile?.visual_role}
-                </span>
-
-                <span className="text-white/80 text-sm">•</span>
-
-                <span className="text-white/80 text-sm font-medium">
-                  {profile?.database_role === "admin"
-                    ? "Administrator"
-                    : "User"}
-                </span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3">
               {/* Hamburger Menu Button */}
               <button
                 onClick={() => setShowHamburgerMenu(!showHamburgerMenu)}
@@ -957,7 +950,7 @@ export default function UserDashboardClient({
               </div>
               <div className="flex-1 min-w-0">
                 <h1 className="text-green-800 font-bold text-lg truncate">
-                  Dashboard
+                  Menu
                 </h1>
                 <div className="text-green-600/70 text-xs truncate">
                   <div>Integrated Visual Feedback</div>
