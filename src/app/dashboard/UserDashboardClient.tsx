@@ -89,8 +89,7 @@ export default function UserDashboardClient({
     visual_role: profile?.visual_role || "",
     theme_preference: (profile?.theme_preference || "light") as
       | "light"
-      | "dark"
-      | "system",
+      | "night_blue",
   });
 
   const [saving, setSaving] = useState(false);
@@ -2150,15 +2149,13 @@ export default function UserDashboardClient({
                           ...profileFormData,
                           theme_preference: e.target.value as
                             | "light"
-                            | "dark"
-                            | "system",
+                            | "night_blue",
                         })
                       }
                       className="w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent bg-white"
                     >
                       <option value="light">Light</option>
-                      <option value="dark">Dark</option>
-                      <option value="system">System</option>
+                      <option value="night_blue">Night Blue</option>
                     </select>
                   </div>
                 </button>

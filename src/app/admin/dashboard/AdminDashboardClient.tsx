@@ -816,8 +816,7 @@ export default function AdminDashboardClient({
 
     theme_preference: (initialProfile?.theme_preference || "light") as
       | "light"
-      | "dark"
-      | "system",
+      | "night_blue",
   });
 
   const [saving, setSaving] = useState(false);
@@ -5940,15 +5939,13 @@ ${result.analysis.risks || "N/A"}
                             ...formData,
                             theme_preference: e.target.value as
                               | "light"
-                              | "dark"
-                              | "system",
+                              | "night_blue",
                           })
                         }
                         className="w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white"
                       >
                         <option value="light">Light</option>
-                        <option value="dark">Dark</option>
-                        <option value="system">System</option>
+                        <option value="night_blue">Night Blue</option>
                       </select>
                     </div>
                   </button>
