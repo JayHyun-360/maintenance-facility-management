@@ -822,6 +822,8 @@ export default function AdminDashboardClient({
 
   const [saving, setSaving] = useState(false);
 
+  const [intensityLevel, setIntensityLevel] = useState(100);
+
   const [successMessage, setSuccessMessage] = useState("");
 
   // Avatar upload state
@@ -3253,7 +3255,12 @@ ${result.analysis.risks || "N/A"}
   }, [selectedRequestForReport]);
 
   return (
-    <div className="min-h-screen bg-[#F5F5DC] flex">
+    <div
+      className="min-h-screen bg-[#F5F5DC] flex"
+      style={{
+        filter: `brightness(${intensityLevel}%) contrast(${intensityLevel}%) saturate(${intensityLevel}%)`,
+      }}
+    >
       {/* Sidebar */}
       <Sidebar
         activeTab={activeTab}
@@ -3462,6 +3469,68 @@ ${result.analysis.risks || "N/A"}
                     </span>
                   )}
                 </button>
+
+                {/* Intensity Adjuster */}
+                <div className="flex items-center gap-2 px-2">
+                  <button
+                    onClick={() =>
+                      setIntensityLevel(Math.max(20, intensityLevel - 20))
+                    }
+                    className="p-1.5 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 text-white"
+                    title="Decrease intensity"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M20 12H4"
+                      />
+                    </svg>
+                  </button>
+                  <div className="relative w-16 h-2 bg-white/30 rounded-full overflow-hidden">
+                    <div
+                      className="absolute left-0 top-0 h-full bg-white transition-all duration-300"
+                      style={{ width: `${intensityLevel}%` }}
+                    />
+                    <input
+                      type="range"
+                      min="20"
+                      max="100"
+                      value={intensityLevel}
+                      onChange={(e) =>
+                        setIntensityLevel(Number(e.target.value))
+                      }
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                  </div>
+                  <button
+                    onClick={() =>
+                      setIntensityLevel(Math.min(100, intensityLevel + 20))
+                    }
+                    className="p-1.5 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 text-white"
+                    title="Increase intensity"
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                  </button>
+                </div>
 
                 {/* Theme Toggle */}
                 <button
