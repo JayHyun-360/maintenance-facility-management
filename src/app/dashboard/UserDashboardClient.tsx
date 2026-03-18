@@ -94,7 +94,6 @@ export default function UserDashboardClient({
   });
 
   const [saving, setSaving] = useState(false);
-  const [intensityLevel, setIntensityLevel] = useState(100);
   const [successMessage, setSuccessMessage] = useState("");
 
   // Avatar upload state
@@ -837,12 +836,7 @@ export default function UserDashboardClient({
   };
 
   return (
-    <div
-      className="min-h-screen bg-[#F5F5DC]"
-      style={{
-        filter: `brightness(${intensityLevel}%) contrast(${intensityLevel}%) saturate(${intensityLevel}%)`,
-      }}
-    >
+    <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
 
       <div className="bg-green-600 shadow-lg border-b transition-all duration-300">
@@ -1809,82 +1803,6 @@ export default function UserDashboardClient({
             />
             <span className="toggle-slider"></span>
           </label>
-        </div>
-
-        {/* Intensity Adjuster */}
-        <div className="px-4 py-3 border-b border-green-100 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-green-700">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
-            <span className="text-sm font-medium">Intensity</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() =>
-                setIntensityLevel(Math.max(20, intensityLevel - 20))
-              }
-              className="p-1 rounded-lg bg-green-100 hover:bg-green-200 transition-colors text-green-700"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M20 12H4"
-                />
-              </svg>
-            </button>
-            <div className="relative w-20 h-2 bg-green-200 rounded-full overflow-hidden">
-              <div
-                className="absolute left-0 top-0 h-full bg-green-500 transition-all duration-300"
-                style={{ width: `${intensityLevel}%` }}
-              />
-              <input
-                type="range"
-                min="20"
-                max="100"
-                value={intensityLevel}
-                onChange={(e) => setIntensityLevel(Number(e.target.value))}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-              />
-            </div>
-            <button
-              onClick={() =>
-                setIntensityLevel(Math.min(100, intensityLevel + 20))
-              }
-              className="p-1 rounded-lg bg-green-100 hover:bg-green-200 transition-colors text-green-700"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 4v16m8-8H4"
-                />
-              </svg>
-            </button>
-          </div>
         </div>
 
         {/* Notifications Content */}
