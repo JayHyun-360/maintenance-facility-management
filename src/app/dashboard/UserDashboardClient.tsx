@@ -892,26 +892,19 @@ export default function UserDashboardClient({
                 )}
               </div>
 
-              {/* Welcome Text */}
+              {/* Role badges */}
+              <div className="flex items-center gap-2">
+                <span className="bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-white transition-all duration-300 hover:bg-white/30">
+                  {profile?.visual_role}
+                </span>
 
-              <div className="text-white">
-                <h1 className="font-header text-2xl font-bold transition-all duration-300 hover:scale-105">
-                  Welcome back, {profile?.full_name}!
-                </h1>
+                <span className="text-white/80 text-sm">•</span>
 
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="bg-white/20 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-white transition-all duration-300 hover:bg-white/30">
-                    {profile?.visual_role}
-                  </span>
-
-                  <span className="text-white/80 text-sm">•</span>
-
-                  <span className="text-white/80 text-sm font-medium">
-                    {profile?.database_role === "admin"
-                      ? "Administrator"
-                      : "User"}
-                  </span>
-                </div>
+                <span className="text-white/80 text-sm font-medium">
+                  {profile?.database_role === "admin"
+                    ? "Administrator"
+                    : "User"}
+                </span>
               </div>
             </div>
 
@@ -1787,11 +1780,7 @@ export default function UserDashboardClient({
                           {notification.title}
                         </p>
 
-                        <p className="text-sm text-gray-600 mt-1">
-                          {notification.message}
-                        </p>
-
-                        <p className="text-xs text-gray-400 mt-2">
+                        <p className="text-xs text-gray-400 mt-1">
                           {new Date(notification.created_at).toLocaleString()}
                         </p>
                       </div>
@@ -1861,29 +1850,96 @@ export default function UserDashboardClient({
         {/* Sidebar */}
 
         <div
-          className={`fixed top-0 left-0 h-full w-80 bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${
+          className={`fixed top-0 left-0 h-full w-80 bg-gray-50 border-r border-green-200 shadow-xl z-50 transform transition-transform duration-500 ease-out flex flex-col ${
             showProfileSidebar ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="h-full overflow-y-auto">
-            {/* Sidebar Header */}
-
-            <div className="bg-[#5D9C59] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
-              <div className="flex justify-between items-center">
-                <h2 className="font-header text-xl font-bold text-white">
-                  Profile Settings
-                </h2>
-              </div>
-            </div>
-
-            {/* Profile Content */}
-
-            <div className="p-6 space-y-6">
-              {/* Profile Information - Editable */}
-              <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-                <h3 className="font-header text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+          {/* Profile Header - Like menu sidebar logo section */}
+          <div className="p-6 border-b border-green-100">
+            <div className="flex flex-col items-center">
+              {/* Profile Photo */}
+              <div className="relative mb-4">
+                <div className="w-20 h-20 rounded-full bg-gray-200 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center">
+                  {profile?.avatar_url || userAvatar ? (
+                    <img
+                      src={
+                        avatarPreview || profile?.avatar_url || userAvatar || ""
+                      }
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-3xl font-bold text-gray-400">
+                      {profile?.full_name?.charAt(0).toUpperCase() || "U"}
+                    </span>
+                  )}
+                </div>
+                <label
+                  htmlFor="avatar-upload"
+                  className="absolute bottom-0 right-0 bg-[#5D9C59] text-white p-1.5 rounded-full cursor-pointer hover:bg-[#4a7c4a] transition-colors shadow-md"
+                >
                   <svg
-                    className="w-5 h-5 text-[#5D9C59]"
+                    className="w-3.5 h-3.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  <input
+                    id="avatar-upload-sidebar"
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleAvatarUpload}
+                    disabled={uploadingAvatar}
+                  />
+                </label>
+              </div>
+
+              {/* Full Name - 2 lines max */}
+              <h2 className="text-green-800 font-bold text-lg text-center line-clamp-2">
+                {profile?.full_name || "User"}
+              </h2>
+
+              {/* Visual Role Badge */}
+              <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-green-700 mt-2">
+                {profile?.visual_role || "User"}
+              </span>
+
+              {/* Access Mode Badge */}
+              <span
+                className={`px-3 py-1 rounded-full text-xs font-semibold text-white mt-2 ${isAdmin ? "bg-red-500" : "bg-green-500"}`}
+              >
+                {isAdmin ? "ADMIN" : "USER"}
+              </span>
+            </div>
+          </div>
+
+          {/* Navigation-style Sections */}
+          <nav className="flex-1 py-4 px-3 overflow-y-auto">
+            <ul className="space-y-1">
+              {/* Full Name Section */}
+              <li>
+                <button
+                  onClick={() =>
+                    document.getElementById("profile-fullname")?.focus()
+                  }
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200"
+                >
+                  <svg
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -1895,92 +1951,10 @@ export default function UserDashboardClient({
                       d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
-                  Your Profile
-                </h3>
-
-                <div className="space-y-4">
-                  {/* Avatar Upload */}
-                  <div className="flex flex-col items-center py-4">
-                    <div className="relative">
-                      <div className="w-24 h-24 rounded-full bg-gray-200 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center">
-                        {profile?.avatar_url || userAvatar ? (
-                          <img
-                            src={
-                              avatarPreview ||
-                              profile?.avatar_url ||
-                              userAvatar ||
-                              ""
-                            }
-                            alt="Profile"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-3xl font-bold text-gray-400">
-                            {profile?.full_name?.charAt(0).toUpperCase() || "U"}
-                          </span>
-                        )}
-                      </div>
-                      <label
-                        htmlFor="avatar-upload"
-                        className="absolute bottom-0 right-0 bg-[#5D9C59] text-white p-2 rounded-full cursor-pointer hover:bg-[#4a7c4a] transition-colors shadow-md"
-                      >
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                        </svg>
-                        <input
-                          id="avatar-upload"
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={handleAvatarUpload}
-                          disabled={uploadingAvatar}
-                        />
-                      </label>
-                    </div>
-                    {uploadingAvatar && (
-                      <p className="text-sm text-gray-500 mt-2">Uploading...</p>
-                    )}
-                    {validationErrors.avatar && (
-                      <p className="text-sm text-red-500 mt-2">
-                        {validationErrors.avatar}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1 flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-                        />
-                      </svg>
-                      Full Name
-                    </label>
+                  <div className="flex-1 text-left">
+                    <span className="font-medium">Full Name</span>
                     <input
+                      id="profile-fullname"
                       type="text"
                       value={profileFormData.full_name}
                       onChange={(e) =>
@@ -1989,27 +1963,30 @@ export default function UserDashboardClient({
                           full_name: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm text-gray-900"
+                      className="w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent"
                     />
                   </div>
+                </button>
+              </li>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1 flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                        />
-                      </svg>
-                      Visual Role
-                    </label>
+              {/* Visual Role Section */}
+              <li>
+                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
+                  </svg>
+                  <div className="flex-1 text-left">
+                    <span className="font-medium">Visual Role</span>
                     <select
                       value={profileFormData.visual_role}
                       onChange={(e) =>
@@ -2018,7 +1995,7 @@ export default function UserDashboardClient({
                           visual_role: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm text-gray-900 bg-white"
+                      className="w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent bg-white"
                     >
                       <option value="">Select a role</option>
                       <option value="Teacher">Teacher</option>
@@ -2026,114 +2003,57 @@ export default function UserDashboardClient({
                       <option value="Student">Student</option>
                     </select>
                   </div>
+                </button>
+              </li>
 
-                  <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-4 border border-blue-200">
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4 text-blue-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                        />
-                      </svg>
-                      Current Access Mode
-                    </label>
-
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-lg font-bold text-blue-900">
-                          {isAdmin ? "Administrator" : "Regular User"}
-                        </p>
-                        <p className="text-sm text-blue-700">
-                          {isAdmin
-                            ? "You have full access to admin dashboard"
-                            : "You can submit and view maintenance requests"}
-                        </p>
-                      </div>
-
-                      <div
-                        className={`px-3 py-1 rounded-full text-white font-semibold text-sm ${
-                          isAdmin ? "bg-red-500" : "bg-green-500"
-                        }`}
-                      >
-                        {isAdmin ? "ADMIN" : "USER"}
-                      </div>
-                    </div>
-                  </div>
-
-                  {!isAdmin && profile?.educational_level && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-500 mb-1 flex items-center gap-2">
-                        <svg
-                          className="w-4 h-4 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-                          />
-                        </svg>
-                        Educational Level
-                      </label>
-
-                      <p className="text-gray-900 font-medium">
-                        {profile.educational_level}
-                      </p>
-                    </div>
+              {/* Theme Preference Section */}
+              <li>
+                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
+                  {profileFormData.theme_preference === "dark" ? (
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                      />
+                    </svg>
+                  ) : profileFormData.theme_preference === "light" ? (
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                      />
+                    </svg>
                   )}
-
-                  {!isAdmin && profile?.department && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-500 mb-1 flex items-center gap-2">
-                        <svg
-                          className="w-4 h-4 text-gray-400"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                          />
-                        </svg>
-                        Department
-                      </label>
-
-                      <p className="text-gray-900 font-medium">
-                        {profile.department}
-                      </p>
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1 flex items-center gap-2">
-                      <svg
-                        className="w-4 h-4 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
-                        />
-                      </svg>
-                      Theme Preference
-                    </label>
+                  <div className="flex-1 text-left">
+                    <span className="font-medium">Theme</span>
                     <select
                       value={profileFormData.theme_preference}
                       onChange={(e) =>
@@ -2145,66 +2065,78 @@ export default function UserDashboardClient({
                             | "system",
                         })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent text-sm text-gray-900 bg-white"
+                      className="w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent bg-white"
                     >
                       <option value="light">Light</option>
                       <option value="dark">Dark</option>
                       <option value="system">System</option>
                     </select>
                   </div>
+                </button>
+              </li>
 
-                  <div className="pt-3 border-t border-gray-100 text-sm text-gray-500">
-                    Account created:{" "}
-                    {profile?.created_at
-                      ? new Date(profile.created_at).toLocaleDateString()
-                      : ""}
-                  </div>
-                </div>
-              </div>
-
-              {/* Save Button */}
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                className="w-full px-4 py-3 bg-[#5D9C59] text-white font-semibold rounded-lg hover:bg-[#4a7c4a] disabled:bg-gray-400 transition-colors"
-              >
-                {saving ? "Saving..." : "Save Changes"}
-              </button>
-
-              {/* Success Message */}
-              {successMessage && (
-                <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm text-center">
-                  {successMessage}
-                </div>
+              {/* Educational Level - Display Only */}
+              {!isAdmin && profile?.educational_level && (
+                <li>
+                  <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                      />
+                    </svg>
+                    <div className="flex-1 text-left">
+                      <span className="font-medium">Education Level</span>
+                      <p className="text-sm text-gray-600">
+                        {profile.educational_level}
+                      </p>
+                    </div>
+                  </button>
+                </li>
               )}
 
-              {/* Data Export Section */}
-              <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                <h3 className="font-header text-sm font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                  <svg
-                    className="w-4 h-4 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-                    />
-                  </svg>
-                  Your Data
-                </h3>
-                <p className="text-xs text-gray-500 mb-3">
-                  Download a copy of your profile and maintenance requests.
-                </p>
+              {/* Department - Display Only */}
+              {!isAdmin && profile?.department && (
+                <li>
+                  <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                      />
+                    </svg>
+                    <div className="flex-1 text-left">
+                      <span className="font-medium">Department</span>
+                      <p className="text-sm text-gray-600">
+                        {profile.department}
+                      </p>
+                    </div>
+                  </button>
+                </li>
+              )}
+
+              {/* Export Data */}
+              <li>
                 <button
                   onClick={handleExportData}
-                  className="w-full px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200"
                 >
                   <svg
-                    className="w-4 h-4"
+                    className="w-5 h-5"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -2216,23 +2148,20 @@ export default function UserDashboardClient({
                       d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
                     />
                   </svg>
-                  Export Data
+                  <span className="font-medium">Export Data</span>
                 </button>
-              </div>
+              </li>
 
-              {/* Unsaved Changes Warning */}
-              {hasUnsavedChanges && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm text-center">
-                  You have unsaved changes
-                </div>
-              )}
-
-              {/* Mode Switching */}
+              {/* Mode Switching - Admin Available */}
               {!isAdmin && profile?.database_role === "admin" && (
-                <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
-                  <h3 className="font-header text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <li>
+                  <button
+                    onClick={handleUserModeSwitch}
+                    disabled={loading}
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-amber-700 hover:bg-white hover:shadow-sm hover:text-amber-800 transition-all duration-200"
+                  >
                     <svg
-                      className="w-5 h-5 text-blue-600"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -2244,29 +2173,19 @@ export default function UserDashboardClient({
                         d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
                       />
                     </svg>
-                    Admin Access Available
-                  </h3>
-
-                  <p className="text-gray-600 text-sm mb-4">
-                    You have admin privileges but are currently in user mode.
-                    You can switch back to admin mode.
-                  </p>
-
-                  <button
-                    onClick={handleUserModeSwitch}
-                    disabled={loading}
-                    className="w-full px-4 py-3 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 disabled:bg-gray-400 transition-colors"
-                  >
-                    {loading ? "Switching..." : "Switch to Admin Mode"}
+                    <span className="font-medium">
+                      {loading ? "Switching..." : "Switch to Admin Mode"}
+                    </span>
                   </button>
-                </div>
+                </li>
               )}
 
+              {/* Mode Switching - Regular User */}
               {!isAdmin && profile?.database_role === "user" && (
-                <div className="bg-green-50 border border-green-200 rounded-xl p-6">
-                  <h3 className="font-header text-lg font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <li>
+                  <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 bg-green-50 transition-all duration-200 cursor-default">
                     <svg
-                      className="w-5 h-5 text-green-600"
+                      className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -2278,15 +2197,66 @@ export default function UserDashboardClient({
                         d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                       />
                     </svg>
-                    User Mode
-                  </h3>
-
-                  <p className="text-gray-600 text-sm">
-                    You are currently in user mode. You can submit maintenance
-                    requests and track their status.
-                  </p>
-                </div>
+                    <span className="font-medium">User Mode Active</span>
+                  </button>
+                </li>
               )}
+            </ul>
+          </nav>
+
+          {/* Bottom Section - Save Button */}
+          <div className="p-4 border-t border-green-100 space-y-3">
+            {/* Success Message */}
+            {successMessage && (
+              <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm text-center">
+                {successMessage}
+              </div>
+            )}
+
+            {/* Unsaved Changes Warning */}
+            {hasUnsavedChanges && (
+              <div className="p-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-xs text-center">
+                Unsaved changes
+              </div>
+            )}
+
+            {/* Save Button */}
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#5D9C59] text-white font-semibold rounded-lg hover:bg-[#4a7c4a] disabled:bg-gray-400 transition-colors"
+            >
+              {saving ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                  Save Changes
+                </>
+              )}
+            </button>
+
+            {/* Account Info */}
+            <div className="text-center text-xs text-gray-500">
+              Account created:{" "}
+              {profile?.created_at
+                ? new Date(profile.created_at).toLocaleDateString()
+                : ""}
             </div>
           </div>
         </div>
