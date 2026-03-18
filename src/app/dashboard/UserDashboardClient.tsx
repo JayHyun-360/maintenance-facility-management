@@ -949,10 +949,27 @@ export default function UserDashboardClient({
 
           {/* Sidebar */}
           <div className="fixed left-0 top-0 h-full w-64 bg-gray-50 border-r border-green-200 z-50 shadow-xl transform transition-transform duration-300 ease-in-out flex flex-col">
-            {/* Header */}
+            {/* Logo and Title */}
             <div className="p-6 border-b border-green-100">
-              <div className="flex items-center justify-between">
-                <h2 className="text-green-800 font-bold text-lg">Menu</h2>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
+                  <svg
+                    className="w-8 h-8 text-green-600"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h1 className="text-green-800 font-bold text-lg truncate">
+                    Dashboard
+                  </h1>
+                  <div className="text-green-600/70 text-xs truncate">
+                    <div>Integrated Visual Feedback</div>
+                    <div>& Maintenance Utility</div>
+                  </div>
+                </div>
                 <button
                   onClick={() => setShowHamburgerMenu(false)}
                   className="p-1 hover:bg-green-100 rounded-lg transition-colors"
