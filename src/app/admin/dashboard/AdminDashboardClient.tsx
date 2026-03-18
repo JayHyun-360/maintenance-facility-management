@@ -3524,8 +3524,8 @@ ${result.analysis.risks || "N/A"}
                       <div
                         className={`relative transform transition-all duration-300 ${
                           showProfileViewer
-                            ? "scale-100 opacity-100"
-                            : "scale-95 opacity-0"
+                            ? "scale-100 opacity-100 pointer-events-auto"
+                            : "scale-95 opacity-0 pointer-events-none"
                         }`}
                         ref={profileViewerRef}
                       >
@@ -9003,8 +9003,8 @@ ${result.analysis.risks || "N/A"}
         <div
           className={`fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-2xl p-12 z-[60] transition-all duration-300 max-w-4xl w-full mx-4 ${
             showIntroductionModal
-              ? "scale-100 opacity-100"
-              : "scale-95 opacity-0"
+              ? "scale-100 opacity-100 pointer-events-auto"
+              : "scale-95 opacity-0 pointer-events-none"
           }`}
         >
           <div className="flex justify-between items-center mb-8">
