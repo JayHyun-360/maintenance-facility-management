@@ -89,7 +89,8 @@ export default function UserDashboardClient({
     visual_role: profile?.visual_role || "",
     theme_preference: (profile?.theme_preference || "light") as
       | "light"
-      | "night_blue",
+      | "dark"
+      | "system",
   });
 
   const [saving, setSaving] = useState(false);
@@ -704,10 +705,16 @@ export default function UserDashboardClient({
     if (!profile) return;
 
     const newTheme: ThemePreference =
-      profile.theme_preference === "light" ? "night_blue" : "light";
+      profile.theme_preference === "light"
+        ? "dark"
+        : profile.theme_preference === "dark"
+          ? "system"
+          : "light";
 
     const { error } = await (supabase.from("profiles") as any)
+
       .update({ theme_preference: newTheme })
+
       .eq("id", profile.id);
 
     if (!error) {
@@ -828,20 +835,11 @@ export default function UserDashboardClient({
     setShowConfirm(true);
   };
 
-  const isNightBlue = profile?.theme_preference === "night_blue";
-
   return (
-    <div
-      className={`min-h-screen theme-transition ${isNightBlue ? "theme-night-blue" : "theme-light"}`}
-      style={{ backgroundColor: "var(--theme-bg-primary)" }}
-      data-theme={isNightBlue ? "night_blue" : "light"}
-    >
+    <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
 
-      <div
-        className="shadow-lg border-b transition-all duration-300"
-        style={{ backgroundColor: "var(--theme-header-bg)" }}
-      >
+      <div className="bg-green-600 shadow-lg border-b transition-all duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Left Side - Logo and Dashboard text */}
@@ -1778,7 +1776,7 @@ export default function UserDashboardClient({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              {profile?.theme_preference === "night_blue" ? (
+              {profile?.theme_preference === "dark" ? (
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -1799,7 +1797,7 @@ export default function UserDashboardClient({
           <label className="theme-toggle-switch cursor-pointer">
             <input
               type="checkbox"
-              checked={profile?.theme_preference === "night_blue"}
+              checked={profile?.theme_preference === "dark"}
               onChange={handleThemeToggle}
               className="hidden"
             />
@@ -2100,7 +2098,7 @@ export default function UserDashboardClient({
               {/* Theme Preference Section */}
               <li>
                 <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
-                  {profileFormData.theme_preference === "night_blue" ? (
+                  {profileFormData.theme_preference === "dark" ? (
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -2152,13 +2150,15 @@ export default function UserDashboardClient({
                           ...profileFormData,
                           theme_preference: e.target.value as
                             | "light"
-                            | "night_blue",
+                            | "dark"
+                            | "system",
                         })
                       }
                       className="w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent bg-white"
                     >
                       <option value="light">Light</option>
-                      <option value="night_blue">Night Blue</option>
+                      <option value="dark">Dark</option>
+                      <option value="system">System</option>
                     </select>
                   </div>
                 </button>

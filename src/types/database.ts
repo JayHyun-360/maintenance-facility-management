@@ -24,7 +24,7 @@ export interface Database {
           department: string | null;
           is_anonymous: boolean;
           is_blocked: boolean | null;
-          theme_preference: "light" | "dark" | "night_blue";
+          theme_preference: "light" | "dark" | "system";
           avatar_url: string | null;
           created_at: string;
         };
@@ -37,7 +37,7 @@ export interface Database {
           department?: string | null;
           is_anonymous?: boolean;
           is_blocked?: boolean | null;
-          theme_preference?: "light" | "dark" | "night_blue";
+          theme_preference?: "light" | "dark" | "system";
           avatar_url?: string | null;
           created_at?: string;
         };
@@ -50,7 +50,7 @@ export interface Database {
           department?: string | null;
           is_anonymous?: boolean | null;
           is_blocked?: boolean | null;
-          theme_preference?: "light" | "dark" | "night_blue" | null;
+          theme_preference?: "light" | "dark" | "system" | null;
           avatar_url?: string | null;
           created_at?: string | null;
         };
@@ -217,7 +217,7 @@ export const VISUAL_ROLES = {
 export const THEME_PREFERENCES = {
   LIGHT: "light",
   DARK: "dark",
-  NIGHT_BLUE: "night_blue",
+  SYSTEM: "system",
 } as const;
 
 export const REQUEST_STATUS = {

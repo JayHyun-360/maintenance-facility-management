@@ -816,7 +816,8 @@ export default function AdminDashboardClient({
 
     theme_preference: (initialProfile?.theme_preference || "light") as
       | "light"
-      | "night_blue",
+      | "dark"
+      | "system",
   });
 
   const [saving, setSaving] = useState(false);
@@ -1800,10 +1801,16 @@ export default function AdminDashboardClient({
     if (!profile) return;
 
     const newTheme: ThemePreference =
-      profile.theme_preference === "light" ? "night_blue" : "light";
+      profile.theme_preference === "light"
+        ? "dark"
+        : profile.theme_preference === "dark"
+          ? "system"
+          : "light";
 
     const { error } = await (supabase.from("profiles") as any)
+
       .update({ theme_preference: newTheme })
+
       .eq("id", profile.id);
 
     if (!error) {
@@ -3245,14 +3252,8 @@ ${result.analysis.risks || "N/A"}
     }
   }, [selectedRequestForReport]);
 
-  const isNightBlue = profile?.theme_preference === "night_blue";
-
   return (
-    <div
-      className={`min-h-screen flex theme-transition ${isNightBlue ? "theme-night-blue" : "theme-light"}`}
-      style={{ backgroundColor: "var(--theme-bg-primary)" }}
-      data-theme={isNightBlue ? "night_blue" : "light"}
-    >
+    <div className="min-h-screen bg-[#F5F5DC] flex">
       {/* Sidebar */}
       <Sidebar
         activeTab={activeTab}
@@ -3264,10 +3265,7 @@ ${result.analysis.risks || "N/A"}
       {/* Main wrapper with header and content */}
       <div className="flex-1 ml-64">
         {/* Header - Full width at top */}
-        <div
-          className="shadow-lg border-b transition-all duration-300"
-          style={{ backgroundColor: "var(--theme-header-bg)" }}
-        >
+        <div className="bg-green-600 shadow-lg border-b transition-all duration-300">
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
               {/* Left Side - Search Bar + Help Button */}
@@ -5890,7 +5888,7 @@ ${result.analysis.risks || "N/A"}
                 {/* Theme Preference Section */}
                 <li>
                   <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
-                    {formData.theme_preference === "night_blue" ? (
+                    {formData.theme_preference === "dark" ? (
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -5942,13 +5940,15 @@ ${result.analysis.risks || "N/A"}
                             ...formData,
                             theme_preference: e.target.value as
                               | "light"
-                              | "night_blue",
+                              | "dark"
+                              | "system",
                           })
                         }
                         className="w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white"
                       >
                         <option value="light">Light</option>
-                        <option value="night_blue">Night Blue</option>
+                        <option value="dark">Dark</option>
+                        <option value="system">System</option>
                       </select>
                     </div>
                   </button>

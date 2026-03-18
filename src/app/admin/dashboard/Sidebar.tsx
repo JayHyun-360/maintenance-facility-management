@@ -12,7 +12,6 @@ interface SidebarProps {
   profile: {
     full_name?: string | null;
     visual_role?: string | null;
-    theme_preference?: string | null;
   } | null;
   userAvatar?: string | null;
 }
@@ -110,40 +109,22 @@ export default function Sidebar({
     window.location.href = "/login";
   };
 
-  const isNightBlue = profile?.theme_preference === "night_blue";
-
   return (
-    <div
-      className={`w-64 min-h-screen border-r flex flex-col fixed left-0 top-0 shadow-sm theme-transition ${isNightBlue ? "theme-night-blue" : "theme-light"}`}
-      style={{
-        backgroundColor: "var(--theme-sidebar-bg)",
-        borderColor: "var(--theme-border)",
-      }}
-    >
+    <div className="w-64 min-h-screen bg-gray-50 border-r border-green-200 flex flex-col fixed left-0 top-0 shadow-sm">
       {/* Logo and Title */}
-      <div
-        className="p-6 border-b"
-        style={{ borderColor: "var(--theme-border)" }}
-      >
+      <div className="p-6 border-b border-green-100">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
             <FontAwesomeIcon
               icon={faFeatherPointed}
-              className="w-8 h-8"
-              style={{ color: isNightBlue ? "#64b5f6" : "#5D9C59" }}
+              className="w-8 h-8 text-green-600"
             />
           </div>
           <div className="flex-1 min-w-0">
-            <h1
-              className="font-bold text-lg truncate"
-              style={{ color: isNightBlue ? "#e3f2fd" : "#1a5c20" }}
-            >
+            <h1 className="text-green-800 font-bold text-lg truncate">
               Dashboard
             </h1>
-            <div
-              className="text-xs truncate"
-              style={{ color: isNightBlue ? "#90caf9" : "#5D9C59" }}
-            >
+            <div className="text-green-600/70 text-xs truncate">
               <div>Integrated Visual Feedback</div>
               <div>& Maintenance Utility</div>
             </div>
@@ -160,22 +141,10 @@ export default function Sidebar({
                 id={`tutorial-nav-${item.id}`}
                 onClick={() => onTabChange(item.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                  activeTab === item.id ? "shadow-md" : "hover:shadow-sm"
+                  activeTab === item.id
+                    ? "bg-green-500 text-white shadow-md"
+                    : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                 }`}
-                style={{
-                  backgroundColor:
-                    activeTab === item.id
-                      ? isNightBlue
-                        ? "#1a3a5c"
-                        : "#5D9C59"
-                      : "transparent",
-                  color:
-                    activeTab === item.id
-                      ? "#ffffff"
-                      : isNightBlue
-                        ? "#90caf9"
-                        : "#1a5c20",
-                }}
               >
                 {item.icon}
                 <span className="font-medium">{item.label}</span>
@@ -186,16 +155,8 @@ export default function Sidebar({
       </nav>
 
       {/* Theme Toggle */}
-      <div
-        className="px-4 py-3 border-t flex items-center justify-between"
-        style={{
-          borderColor: "var(--theme-border)",
-        }}
-      >
-        <div
-          className="flex items-center gap-2"
-          style={{ color: isNightBlue ? "#90caf9" : "#1a5c20" }}
-        >
+      <div className="px-4 py-3 border-t border-green-100 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-green-700">
           <svg
             className="w-4 h-4"
             fill="none"
@@ -218,18 +179,10 @@ export default function Sidebar({
       </div>
 
       {/* Sign Out */}
-      <div
-        className="p-4 border-t"
-        style={{ borderColor: "var(--theme-border)" }}
-      >
+      <div className="p-4 border-t border-green-100">
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 font-medium border shadow-sm hover:shadow-md"
-          style={{
-            backgroundColor: isNightBlue ? "#1a3a5c" : "#ffffff",
-            color: isNightBlue ? "#90caf9" : "#1a5c20",
-            borderColor: "var(--theme-border)",
-          }}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white text-green-700 hover:text-red-600 rounded-lg transition-all duration-200 font-medium border border-green-200 shadow-sm hover:shadow-md"
         >
           <svg
             className="w-5 h-5"
