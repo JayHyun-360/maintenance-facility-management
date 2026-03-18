@@ -3245,10 +3245,13 @@ ${result.analysis.risks || "N/A"}
     }
   }, [selectedRequestForReport]);
 
+  const isNightBlue = profile?.theme_preference === "night_blue";
+
   return (
     <div
-      className={`min-h-screen flex theme-transition ${profile?.theme_preference === "night_blue" ? "theme-night-blue" : "theme-light"}`}
+      className={`min-h-screen flex theme-transition ${isNightBlue ? "theme-night-blue" : "theme-light"}`}
       style={{ backgroundColor: "var(--theme-bg-primary)" }}
+      data-theme={isNightBlue ? "night_blue" : "light"}
     >
       {/* Sidebar */}
       <Sidebar

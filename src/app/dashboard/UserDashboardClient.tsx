@@ -828,10 +828,13 @@ export default function UserDashboardClient({
     setShowConfirm(true);
   };
 
+  const isNightBlue = profile?.theme_preference === "night_blue";
+
   return (
     <div
-      className={`min-h-screen theme-transition ${profile?.theme_preference === "night_blue" ? "theme-night-blue" : "theme-light"}`}
+      className={`min-h-screen theme-transition ${isNightBlue ? "theme-night-blue" : "theme-light"}`}
       style={{ backgroundColor: "var(--theme-bg-primary)" }}
+      data-theme={isNightBlue ? "night_blue" : "light"}
     >
       {/* Enhanced Header */}
 

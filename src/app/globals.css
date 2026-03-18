@@ -171,6 +171,66 @@
     animation: themeBlendIn 0.4s ease-in-out forwards;
   }
 
+  /* Theme-aware component styles using data-theme attribute */
+  [data-theme="night_blue"] {
+    --theme-bg-primary: #0a1628;
+    --theme-bg-secondary: #0f2744;
+    --theme-bg-card: #132f4c;
+    --theme-bg-hover: #1a3a5c;
+    --theme-text-primary: #e3f2fd;
+    --theme-text-secondary: #90caf9;
+    --theme-text-muted: #5c7a99;
+    --theme-accent: #64b5f6;
+    --theme-accent-hover: #42a5f5;
+    --theme-border: #1e4976;
+    --theme-success: #66bb6a;
+    --theme-warning: #ffa726;
+    --theme-error: #ef5350;
+    --theme-sidebar-bg: #071a2e;
+    --theme-header-bg: #0d2840;
+  }
+
+  [data-theme="light"] {
+    --theme-bg-primary: #f5f5dc;
+    --theme-bg-secondary: #f0f0e6;
+    --theme-bg-card: #ffffff;
+    --theme-bg-hover: #f8f8f0;
+    --theme-text-primary: #1a1a1a;
+    --theme-text-secondary: #4a5568;
+    --theme-text-muted: #718096;
+    --theme-accent: #5d9c59;
+    --theme-accent-hover: #4a7c4a;
+    --theme-border: #e2e8f0;
+    --theme-success: #48bb78;
+    --theme-warning: #ed8936;
+    --theme-error: #f56565;
+    --theme-sidebar-bg: #f5f5f5;
+    --theme-header-bg: #5d9c59;
+  }
+
+  /* Apply theme colors to common elements */
+  [data-theme="night_blue"] .bg-white {
+    background-color: var(--theme-bg-card) !important;
+  }
+
+  [data-theme="night_blue"] .text-gray-500,
+  [data-theme="night_blue"] .text-gray-600,
+  [data-theme="night_blue"] .text-gray-700,
+  [data-theme="night_blue"] .text-gray-800,
+  [data-theme="night_blue"] .text-gray-900 {
+    color: var(--theme-text-secondary) !important;
+  }
+
+  [data-theme="night_blue"] .border-gray-100,
+  [data-theme="night_blue"] .border-gray-200 {
+    border-color: var(--theme-border) !important;
+  }
+
+  [data-theme="night_blue"] .hover\:bg-gray-50:hover,
+  [data-theme="night_blue"] .hover\:bg-gray-100:hover {
+    background-color: var(--theme-bg-hover) !important;
+  }
+
   /* Vertical Sidebar Layout for Admin Dashboard */
   .admin-sidebar-layout {
     display: flex;
