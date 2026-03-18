@@ -828,7 +828,12 @@ export default function UserDashboardClient({
                   className="w-8 h-8 text-white"
                 />
               </div>
-              <h1 className="text-white font-bold text-xl">Dashboard</h1>
+              <div className="flex flex-col">
+                <h1 className="text-white font-bold text-xl">Dashboard</h1>
+                <span className="text-white/70 text-xs hidden md:block">
+                  Integrated Visual Feedback & Maintenance Utility
+                </span>
+              </div>
             </div>
 
             {/* Right Side - Profile and Hamburger */}
