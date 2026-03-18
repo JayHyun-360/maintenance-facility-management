@@ -705,16 +705,10 @@ export default function UserDashboardClient({
     if (!profile) return;
 
     const newTheme: ThemePreference =
-      profile.theme_preference === "light"
-        ? "dark"
-        : profile.theme_preference === "dark"
-          ? "system"
-          : "light";
+      profile.theme_preference === "light" ? "night_blue" : "light";
 
     const { error } = await (supabase.from("profiles") as any)
-
       .update({ theme_preference: newTheme })
-
       .eq("id", profile.id);
 
     if (!error) {
@@ -836,10 +830,16 @@ export default function UserDashboardClient({
   };
 
   return (
-    <div className="min-h-screen bg-[#F5F5DC]">
+    <div
+      className={`min-h-screen theme-transition ${profile?.theme_preference === "night_blue" ? "theme-night-blue" : "theme-light"}`}
+      style={{ backgroundColor: "var(--theme-bg-primary)" }}
+    >
       {/* Enhanced Header */}
 
-      <div className="bg-green-600 shadow-lg border-b transition-all duration-300">
+      <div
+        className="shadow-lg border-b transition-all duration-300"
+        style={{ backgroundColor: "var(--theme-header-bg)" }}
+      >
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Left Side - Logo and Dashboard text */}
@@ -1776,7 +1776,7 @@ export default function UserDashboardClient({
               stroke="currentColor"
               viewBox="0 0 24 24"
             >
-              {profile?.theme_preference === "dark" ? (
+              {profile?.theme_preference === "night_blue" ? (
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -1797,7 +1797,7 @@ export default function UserDashboardClient({
           <label className="theme-toggle-switch cursor-pointer">
             <input
               type="checkbox"
-              checked={profile?.theme_preference === "dark"}
+              checked={profile?.theme_preference === "night_blue"}
               onChange={handleThemeToggle}
               className="hidden"
             />
@@ -2098,7 +2098,7 @@ export default function UserDashboardClient({
               {/* Theme Preference Section */}
               <li>
                 <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
-                  {profileFormData.theme_preference === "dark" ? (
+                  {profileFormData.theme_preference === "night_blue" ? (
                     <svg
                       className="w-5 h-5"
                       fill="none"

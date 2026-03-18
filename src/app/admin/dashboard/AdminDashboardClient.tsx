@@ -1801,16 +1801,10 @@ export default function AdminDashboardClient({
     if (!profile) return;
 
     const newTheme: ThemePreference =
-      profile.theme_preference === "light"
-        ? "dark"
-        : profile.theme_preference === "dark"
-          ? "system"
-          : "light";
+      profile.theme_preference === "light" ? "night_blue" : "light";
 
     const { error } = await (supabase.from("profiles") as any)
-
       .update({ theme_preference: newTheme })
-
       .eq("id", profile.id);
 
     if (!error) {
@@ -3253,7 +3247,10 @@ ${result.analysis.risks || "N/A"}
   }, [selectedRequestForReport]);
 
   return (
-    <div className="min-h-screen bg-[#F5F5DC] flex">
+    <div
+      className={`min-h-screen flex theme-transition ${profile?.theme_preference === "night_blue" ? "theme-night-blue" : "theme-light"}`}
+      style={{ backgroundColor: "var(--theme-bg-primary)" }}
+    >
       {/* Sidebar */}
       <Sidebar
         activeTab={activeTab}
@@ -3265,7 +3262,10 @@ ${result.analysis.risks || "N/A"}
       {/* Main wrapper with header and content */}
       <div className="flex-1 ml-64">
         {/* Header - Full width at top */}
-        <div className="bg-green-600 shadow-lg border-b transition-all duration-300">
+        <div
+          className="shadow-lg border-b transition-all duration-300"
+          style={{ backgroundColor: "var(--theme-header-bg)" }}
+        >
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
               {/* Left Side - Search Bar + Help Button */}
@@ -5888,7 +5888,7 @@ ${result.analysis.risks || "N/A"}
                 {/* Theme Preference Section */}
                 <li>
                   <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
-                    {formData.theme_preference === "dark" ? (
+                    {formData.theme_preference === "night_blue" ? (
                       <svg
                         className="w-5 h-5"
                         fill="none"
