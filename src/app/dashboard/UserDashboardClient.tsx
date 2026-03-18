@@ -817,7 +817,7 @@ export default function UserDashboardClient({
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
 
-      <div className="bg-[#5D9C59] shadow-lg border-b transition-all duration-300">
+      <div className="bg-green-600 shadow-lg border-b transition-all duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Left Side - Logo and Dashboard text */}
@@ -945,14 +945,14 @@ export default function UserDashboardClient({
               <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
                 <FontAwesomeIcon
                   icon={faFeatherPointed}
-                  className="w-8 h-8 text-[#5D9C59]"
+                  className="w-8 h-8 text-green-600"
                 />
               </div>
               <div className="flex-1 min-w-0">
                 <h1 className="text-green-800 font-bold text-lg truncate">
                   Menu
                 </h1>
-                <div className="text-[#5D9C59]/70 text-xs truncate">
+                <div className="text-green-600/70 text-xs truncate">
                   <div>Integrated Visual Feedback</div>
                   <div>& Maintenance Utility</div>
                 </div>
@@ -1125,7 +1125,7 @@ export default function UserDashboardClient({
                 {!showForm && (
                   <button
                     onClick={() => setShowForm(true)}
-                    className="bg-[#5D9C59] text-white px-4 py-2 rounded-lg hover:bg-[#4a7c4a] transition-all duration-300 transform hover:scale-105"
+                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
                   >
                     Create
                   </button>
@@ -1155,7 +1155,7 @@ export default function UserDashboardClient({
                     <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-xl">
                       <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
                         <svg
-                          className="w-8 h-8 text-[#5D9C59]"
+                          className="w-8 h-8 text-green-600"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -1182,7 +1182,7 @@ export default function UserDashboardClient({
                   <div className="relative">
                     <label className="block text-sm font-semibold text-gray-800 mb-2 transition-all duration-300 flex items-center gap-2">
                       <svg
-                        className="w-4 h-4 text-[#5D9C59]"
+                        className="w-4 h-4 text-green-600"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -1713,7 +1713,7 @@ export default function UserDashboardClient({
 
       <div
         ref={notificationsRef}
-        className={`fixed top-0 right-0 h-full w-80 bg-gray-50 border-r border-green-200 shadow-xl z-40 transform transition-transform duration-500 ease-out flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-64 bg-gray-50 border-r border-green-200 shadow-xl z-40 transform transition-transform duration-500 ease-out flex flex-col ${
           showNotifications ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -1758,7 +1758,7 @@ export default function UserDashboardClient({
           <div className="flex justify-between items-center mb-4 pb-3 border-b border-green-100">
             <button
               onClick={markAllNotificationsRead}
-              className="text-sm text-[#5D9C59] hover:text-[#4a7c4a] font-medium transition-colors"
+              className="text-sm text-green-600 hover:text-green-700 font-medium transition-colors"
             >
               Mark all as read
             </button>
@@ -1790,7 +1790,7 @@ export default function UserDashboardClient({
                   <div className="flex items-start gap-3">
                     <div
                       className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
-                        !notification.is_read ? "bg-[#5D9C59]" : "bg-gray-300"
+                        !notification.is_read ? "bg-green-500" : "bg-gray-300"
                       }`}
                     />
 
@@ -1956,7 +1956,7 @@ export default function UserDashboardClient({
 
               {/* Access Mode Badge */}
               <span
-                className={`px-3 py-1 rounded-full text-xs font-semibold text-white mt-2 ${isAdmin ? "bg-red-500" : "bg-[#5D9C59]"}`}
+                className={`px-3 py-1 rounded-full text-xs font-semibold text-white mt-2 ${isAdmin ? "bg-red-500" : "bg-green-500"}`}
               >
                 {isAdmin ? "ADMIN" : "USER"}
               </span>
