@@ -6,8 +6,7 @@ ALTER TABLE public.notifications ADD COLUMN IF NOT EXISTS type TEXT DEFAULT 'not
 -- Broadcasts/announcements should be 'announcement'
 UPDATE notifications 
 SET type = 'notification' 
-WHERE type IS NULL 
-AND (
+WHERE (
   title LIKE 'Request Completed%'
   OR title LIKE 'Request Started%'
   OR title LIKE 'Request Cancelled%'
@@ -17,8 +16,17 @@ AND (
   OR title LIKE 'Your maintenance request%'
 );
 
--- Set remaining null types to 'announcement' (for backward compatibility with old broadcasts)
-UPDATE notifications SET type = 'announcement' WHERE type IS NULL;
+-- Set remaining notifications that are NOT status-related to 'announcement'
+UPDATE notifications 
+SET type = 'announcement' 
+WHERE type = 'notification'
+AND title NOT LIKE 'Request Completed%'
+AND title NOT LIKE 'Request Started%'
+AND title NOT LIKE 'Request Cancelled%'
+AND title NOT LIKE 'Request Updated%'
+AND title NOT LIKE 'Request Status%'
+AND title NOT LIKE 'New Message%'
+AND title NOT LIKE 'Your maintenance request%';
 
 -- Make the type column not null with a default
 ALTER TABLE public.notifications ALTER COLUMN type SET DEFAULT 'notification';
