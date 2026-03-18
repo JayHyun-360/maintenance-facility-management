@@ -68,6 +68,13 @@ export default function UserDashboardClient({
 
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
 
+  const [showAllAnnouncementsModal, setShowAllAnnouncementsModal] =
+    useState(false);
+
+  const [showHelpModal, setShowHelpModal] = useState(false);
+
+  const [activeHelpTab, setActiveHelpTab] = useState<"faq" | "about">("faq");
+
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<any>(null);
 
   const [expandedPhotos, setExpandedPhotos] = useState<Set<string>>(new Set());
@@ -968,6 +975,58 @@ export default function UserDashboardClient({
           {/* Menu Items */}
           <nav className="flex-1 py-4 px-3">
             <ul className="space-y-1">
+              {/* Announcements */}
+              <li>
+                <button
+                  onClick={() => {
+                    setShowAllAnnouncementsModal(true);
+                    setShowHamburgerMenu(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+                    />
+                  </svg>
+                  <span className="font-medium">Announcements</span>
+                </button>
+              </li>
+
+              {/* Help */}
+              <li>
+                <button
+                  onClick={() => {
+                    setShowHelpModal(true);
+                    setShowHamburgerMenu(false);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span className="font-medium">Help</span>
+                </button>
+              </li>
+
               {/* Notifications */}
               <li>
                 <button
@@ -2420,6 +2479,253 @@ export default function UserDashboardClient({
                   Close
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* All Announcements Modal */}
+      {showAllAnnouncementsModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="font-header text-xl font-semibold text-gray-900">
+                All Announcements
+              </h3>
+              <button
+                onClick={() => setShowAllAnnouncementsModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6">
+              {notifications.length === 0 ? (
+                <p className="text-gray-500 text-center py-8">
+                  No announcements yet
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {notifications.map((notification) => (
+                    <div
+                      key={notification.id}
+                      onClick={() => {
+                        setSelectedAnnouncement(notification);
+                        setShowAnnouncementModal(true);
+                      }}
+                      className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h4 className="font-semibold text-gray-900">
+                            {notification.title}
+                          </h4>
+                          <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                            {notification.message}
+                          </p>
+                        </div>
+                        {!notification.is_read && (
+                          <span className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0 mt-2"></span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-400 mt-2">
+                        {new Date(notification.created_at).toLocaleString()}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t border-gray-200">
+              <button
+                onClick={() => setShowAllAnnouncementsModal(false)}
+                className="w-full px-4 py-2 bg-[#5D9C59] text-white rounded-lg hover:bg-[#4a7c4a] transition-colors font-medium"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Help Modal with FAQ and About tabs */}
+      {showHelpModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+            <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+              <h3 className="font-header text-xl font-semibold text-gray-900">
+                Help & About
+              </h3>
+              <button
+                onClick={() => setShowHelpModal(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div className="border-b border-gray-200">
+              <div className="flex">
+                <button
+                  onClick={() => setActiveHelpTab("faq")}
+                  className={`flex-1 px-6 py-3 font-medium transition-colors ${
+                    activeHelpTab === "faq"
+                      ? "text-[#5D9C59] border-b-2 border-[#5D9C59]"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  FAQ
+                </button>
+                <button
+                  onClick={() => setActiveHelpTab("about")}
+                  className={`flex-1 px-6 py-3 font-medium transition-colors ${
+                    activeHelpTab === "about"
+                      ? "text-[#5D9C59] border-b-2 border-[#5D9C59]"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  About
+                </button>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6">
+              {activeHelpTab === "faq" ? (
+                <div className="space-y-4">
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">
+                      How do I submit a maintenance request?
+                    </div>
+                    <div className="px-4 py-3 text-gray-600 text-sm">
+                      Click the "Create" button in the New Request section, fill
+                      in the required details, and submit. You'll receive a
+                      confirmation once submitted.
+                    </div>
+                  </div>
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">
+                      How can I track my request status?
+                    </div>
+                    <div className="px-4 py-3 text-gray-600 text-sm">
+                      Your requests are displayed in the "My Requests" section.
+                      Each request shows its current status (Pending, In
+                      Progress, Completed, etc.).
+                    </div>
+                  </div>
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">
+                      Can I edit or cancel my request?
+                    </div>
+                    <div className="px-4 py-3 text-gray-600 text-sm">
+                      Once submitted, requests cannot be edited. Please contact
+                      the admin team if you need to cancel or modify your
+                      request.
+                    </div>
+                  </div>
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">
+                      How do I upload photos with my request?
+                    </div>
+                    <div className="px-4 py-3 text-gray-600 text-sm">
+                      When creating a request, use the photo upload section to
+                      add up to 4 images showing the issue. This helps our team
+                      understand the problem better.
+                    </div>
+                  </div>
+                  <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-gray-50 px-4 py-3 font-medium text-gray-900">
+                      What if I forget my password?
+                    </div>
+                    <div className="px-4 py-3 text-gray-600 text-sm">
+                      Use the "Forgot Password" link on the login page to reset
+                      your password via email.
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  <div className="text-center py-4">
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg
+                        className="w-10 h-10 text-green-600"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+                        />
+                      </svg>
+                    </div>
+                    <h4 className="text-xl font-bold text-gray-900">IVFMU</h4>
+                    <p className="text-gray-500 mt-1">
+                      Integrated Visual Feedback & Maintenance Utility
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h5 className="font-semibold text-gray-900 mb-2">
+                      Version
+                    </h5>
+                    <p className="text-gray-600 text-sm">1.0.0</p>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h5 className="font-semibold text-gray-900 mb-2">
+                      Purpose
+                    </h5>
+                    <p className="text-gray-600 text-sm">
+                      IVFMU is a comprehensive maintenance request management
+                      system designed to streamline the process of reporting and
+                      resolving facility issues. It allows users to easily
+                      submit maintenance requests, track their status, and
+                      receive notifications.
+                    </p>
+                  </div>
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h5 className="font-semibold text-gray-900 mb-2">
+                      Features
+                    </h5>
+                    <ul className="text-gray-600 text-sm space-y-1">
+                      <li>• Submit maintenance requests with photos</li>
+                      <li>• Track request status in real-time</li>
+                      <li>• Receive notifications and announcements</li>
+                      <li>• User-friendly dashboard interface</li>
+                      <li>• Dark/Light theme support</li>
+                    </ul>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t border-gray-200">
+              <button
+                onClick={() => setShowHelpModal(false)}
+                className="w-full px-4 py-2 bg-[#5D9C59] text-white rounded-lg hover:bg-[#4a7c4a] transition-colors font-medium"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
