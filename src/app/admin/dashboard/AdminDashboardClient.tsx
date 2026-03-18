@@ -1325,21 +1325,22 @@ export default function AdminDashboardClient({
   };
 
   const deleteNotification = async (notificationId: string) => {
+    const notification = notifications.find((n) => n.id === notificationId);
+    const wasUnread = notification && !notification.is_read;
+
     // Delete from database
-
     await (supabase.from("notifications") as any)
-
       .delete()
-
       .eq("id", notificationId);
 
     // Update local state
-
     setNotifications((prev) =>
       prev.filter((notif) => notif.id !== notificationId),
     );
 
-    setUnreadCount((prev) => Math.max(0, prev - 1));
+    if (wasUnread) {
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    }
 
     setOpenNotificationMenu(null);
   };
@@ -4595,7 +4596,7 @@ ${result.analysis.risks || "N/A"}
                       {generateDistributionData().map((item) => (
                         <div
                           key={item.name}
-                          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer group"
+                          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 transition-colors group"
                         >
                           <div
                             className="w-3 h-3 rounded-full group-hover:scale-110 transition-transform"
@@ -5597,6 +5598,10 @@ ${result.analysis.risks || "N/A"}
                   return (
                     <div
                       key={notification.id}
+                      onClick={() =>
+                        !notification.is_read &&
+                        markNotificationRead(notification.id)
+                      }
                       className={`p-4 rounded-lg border transition-all cursor-pointer ${
                         !notification.is_read
                           ? isEmergency
