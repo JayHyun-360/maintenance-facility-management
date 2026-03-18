@@ -817,7 +817,7 @@ export default function UserDashboardClient({
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
 
-      <div className="bg-green-600 shadow-lg border-b transition-all duration-300">
+      <div className="bg-[#5D9C59] shadow-lg border-b transition-all duration-300">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Left Side - Logo and Dashboard text */}
@@ -945,14 +945,14 @@ export default function UserDashboardClient({
               <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
                 <FontAwesomeIcon
                   icon={faFeatherPointed}
-                  className="w-8 h-8 text-green-600"
+                  className="w-8 h-8 text-[#5D9C59]"
                 />
               </div>
               <div className="flex-1 min-w-0">
                 <h1 className="text-green-800 font-bold text-lg truncate">
                   Menu
                 </h1>
-                <div className="text-green-600/70 text-xs truncate">
+                <div className="text-[#5D9C59]/70 text-xs truncate">
                   <div>Integrated Visual Feedback</div>
                   <div>& Maintenance Utility</div>
                 </div>
@@ -1125,7 +1125,7 @@ export default function UserDashboardClient({
                 {!showForm && (
                   <button
                     onClick={() => setShowForm(true)}
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
+                    className="bg-[#5D9C59] text-white px-4 py-2 rounded-lg hover:bg-[#4a7c4a] transition-all duration-300 transform hover:scale-105"
                   >
                     Create
                   </button>
@@ -1155,7 +1155,7 @@ export default function UserDashboardClient({
                     <div className="absolute inset-0 bg-white/95 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-xl">
                       <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
                         <svg
-                          className="w-8 h-8 text-green-600"
+                          className="w-8 h-8 text-[#5D9C59]"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -1182,7 +1182,7 @@ export default function UserDashboardClient({
                   <div className="relative">
                     <label className="block text-sm font-semibold text-gray-800 mb-2 transition-all duration-300 flex items-center gap-2">
                       <svg
-                        className="w-4 h-4 text-green-600"
+                        className="w-4 h-4 text-[#5D9C59]"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -1713,118 +1713,161 @@ export default function UserDashboardClient({
 
       <div
         ref={notificationsRef}
-        className={`fixed top-0 right-0 h-full w-80 bg-white shadow-2xl z-40 transform transition-transform duration-500 ease-out ${
+        className={`fixed top-0 right-0 h-full w-80 bg-gray-50 border-r border-green-200 shadow-xl z-40 transform transition-transform duration-500 ease-out flex flex-col ${
           showNotifications ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="h-full overflow-y-auto">
-          <div className="bg-[#5D9C59] shadow-lg border-b transition-all duration-300 p-6 sticky top-0 z-10">
-            <div className="flex justify-center items-center">
-              <h2 className="font-header text-xl font-bold text-white">
+        {/* Logo and Title - Like menu sidebar */}
+        <div className="p-6 border-b border-green-100">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
+              <svg
+                className="w-8 h-8 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
+                />
+              </svg>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-green-800 font-bold text-lg truncate">
                 Notifications
-              </h2>
-            </div>
-          </div>
-
-          <div className="p-4">
-            <div className="flex justify-between items-center mb-4">
-              <button
-                onClick={markAllNotificationsRead}
-                className="text-sm text-green-600 hover:text-green-700"
-              >
-                Mark all as read
-              </button>
-
-              <button
-                onClick={deleteAllReadNotifications}
-                className="text-sm text-red-500 hover:text-red-600"
-              >
-                Delete all read
-              </button>
-            </div>
-
-            {notifications.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">
-                No notifications yet
+              </h1>
+              <div className="text-green-600/70 text-xs truncate">
+                <div>Stay updated with your</div>
+                <div>latest activities</div>
               </div>
-            ) : (
-              <div className="space-y-3">
-                {notifications.map((notification: any) => (
-                  <div
-                    key={notification.id}
-                    className={`p-4 rounded-lg border transition-all ${
-                      !notification.is_read
-                        ? "bg-blue-50 border-blue-200"
-                        : "bg-gray-50 border-gray-200 hover:bg-gray-100"
-                    }`}
-                  >
-                    <div className="flex items-start gap-3">
-                      <div
-                        className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
-                          !notification.is_read ? "bg-blue-500" : "bg-gray-300"
-                        }`}
-                      />
-
-                      <div
-                        className="flex-1 min-w-0 cursor-pointer"
-                        onClick={() => viewAnnouncement(notification)}
-                      >
-                        <p className="font-medium text-sm text-gray-900">
-                          {notification.title}
-                        </p>
-
-                        <p className="text-xs text-gray-400 mt-1">
-                          {new Date(notification.created_at).toLocaleString()}
-                        </p>
-                      </div>
-
-                      <div className="relative">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-
-                            setOpenNotificationMenu(
-                              openNotificationMenu === notification.id
-                                ? null
-                                : notification.id,
-                            );
-                          }}
-                          className="p-1 hover:bg-gray-200 rounded"
-                        >
-                          <svg
-                            className="w-5 h-5 text-gray-500"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle cx="12" cy="6" r="2" />
-
-                            <circle cx="12" cy="12" r="2" />
-
-                            <circle cx="12" cy="18" r="2" />
-                          </svg>
-                        </button>
-
-                        {openNotificationMenu === notification.id && (
-                          <div className="absolute right-0 mt-1 w-32 bg-white border rounded-lg shadow-lg z-10">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-
-                                deleteNotification(notification.id);
-                              }}
-                              className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 rounded-lg"
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+            </div>
+            {unreadCount > 0 && (
+              <div className="bg-red-500 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
+                {unreadCount > 9 ? "9+" : unreadCount}
               </div>
             )}
           </div>
+        </div>
+
+        {/* Notifications Content */}
+        <div className="flex-1 p-4 overflow-y-auto">
+          {/* Action Buttons */}
+          <div className="flex justify-between items-center mb-4 pb-3 border-b border-green-100">
+            <button
+              onClick={markAllNotificationsRead}
+              className="text-sm text-[#5D9C59] hover:text-[#4a7c4a] font-medium transition-colors"
+            >
+              Mark all as read
+            </button>
+
+            <button
+              onClick={deleteAllReadNotifications}
+              className="text-sm text-red-500 hover:text-red-600 font-medium transition-colors"
+            >
+              Delete all read
+            </button>
+          </div>
+
+          {notifications.length === 0 ? (
+            <div className="p-4 text-center text-gray-500">
+              No notifications yet
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {notifications.map((notification: any) => (
+                <div
+                  key={notification.id}
+                  className={`p-4 rounded-lg border transition-all cursor-pointer ${
+                    !notification.is_read
+                      ? "bg-white border-green-200 shadow-sm hover:shadow-md hover:border-green-300"
+                      : "bg-gray-50 border-gray-200 hover:bg-white hover:shadow-sm hover:border-green-200"
+                  }`}
+                  onClick={() => viewAnnouncement(notification)}
+                >
+                  <div className="flex items-start gap-3">
+                    <div
+                      className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
+                        !notification.is_read ? "bg-[#5D9C59]" : "bg-gray-300"
+                      }`}
+                    />
+
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm text-gray-900 mb-1">
+                        {notification.title}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(notification.created_at).toLocaleString()}
+                      </p>
+                    </div>
+
+                    <div className="relative">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setOpenNotificationMenu(
+                            openNotificationMenu === notification.id
+                              ? null
+                              : notification.id,
+                          );
+                        }}
+                        className="p-1 hover:bg-gray-100 rounded transition-colors"
+                      >
+                        <svg
+                          className="w-4 h-4 text-gray-400"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle cx="12" cy="6" r="2" />
+                          <circle cx="12" cy="12" r="2" />
+                          <circle cx="12" cy="18" r="2" />
+                        </svg>
+                      </button>
+
+                      {openNotificationMenu === notification.id && (
+                        <div className="absolute right-0 mt-1 w-32 bg-white border border-green-200 rounded-lg shadow-lg z-10">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteNotification(notification.id);
+                            }}
+                            className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Close Button - Like sign out in other sidebars */}
+        <div className="p-4 border-t border-green-100">
+          <button
+            onClick={() => setShowNotifications(false)}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white hover:bg-green-50 text-green-700 rounded-lg transition-all duration-200 font-medium border border-green-200 shadow-sm hover:shadow-md"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+            Close
+          </button>
         </div>
       </div>
 
@@ -1913,7 +1956,7 @@ export default function UserDashboardClient({
 
               {/* Access Mode Badge */}
               <span
-                className={`px-3 py-1 rounded-full text-xs font-semibold text-white mt-2 ${isAdmin ? "bg-red-500" : "bg-green-500"}`}
+                className={`px-3 py-1 rounded-full text-xs font-semibold text-white mt-2 ${isAdmin ? "bg-red-500" : "bg-[#5D9C59]"}`}
               >
                 {isAdmin ? "ADMIN" : "USER"}
               </span>
