@@ -14,6 +14,7 @@ import { createClient } from "@/lib/supabase/client";
 
 import Sidebar from "./Sidebar";
 import RotatingText from "./RotatingText";
+import SpotlightTutorial, { TutorialStep } from "./SpotlightTutorial";
 
 import { jsPDF } from "jspdf";
 
@@ -173,6 +174,81 @@ export default function AdminDashboardClient({
 
   const [showTutorial, setShowTutorial] = useState(false);
   const [tutorialStep, setTutorialStep] = useState(0);
+
+  const tutorialSteps: TutorialStep[] = [
+    {
+      id: "search",
+      targetSelector: "#tutorial-search",
+      title: "Search Functionality",
+      description:
+        "Search across all maintenance requests by name, location, nature, or description. Results appear instantly as you type.",
+      position: "bottom",
+    },
+    {
+      id: "help",
+      targetSelector: "#tutorial-help",
+      title: "Help & Tutorial",
+      description:
+        "Click here anytime to revisit this interactive tutorial and learn about new features.",
+      position: "bottom",
+    },
+    {
+      id: "notifications",
+      targetSelector: "#tutorial-notifications",
+      title: "Notifications Center",
+      description:
+        "View all your notifications including new requests, status updates, and system announcements. Red badge shows unread count.",
+      position: "bottom",
+    },
+    {
+      id: "theme",
+      targetSelector: "#tutorial-theme",
+      title: "Theme & AI Assistant",
+      description:
+        "Toggle between light, dark, and system themes. Also access the AI assistant for advanced request analysis.",
+      position: "bottom",
+    },
+    {
+      id: "profile",
+      targetSelector: "#tutorial-profile",
+      title: "Profile Settings",
+      description:
+        "Click your avatar to view your profile, switch between admin/user modes, and access account settings.",
+      position: "left",
+    },
+    {
+      id: "sidebar-overview",
+      targetSelector: "#tutorial-nav-overview",
+      title: "Overview Dashboard",
+      description:
+        "View key metrics including total requests, pending, in-progress, and completed counts. See recent requests and nature breakdown.",
+      position: "right",
+    },
+    {
+      id: "sidebar-analytics",
+      targetSelector: "#tutorial-nav-analytics",
+      title: "Analytics & Reports",
+      description:
+        "Access detailed analytics with charts showing request distribution by nature, status, urgency, and more. Export data as needed.",
+      position: "right",
+    },
+    {
+      id: "sidebar-queue",
+      targetSelector: "#tutorial-nav-master-queue",
+      title: "Master Queue",
+      description:
+        "View and manage all maintenance requests. Filter by status, urgency, nature, date range. Use bulk actions for efficient management.",
+      position: "right",
+    },
+    {
+      id: "sidebar-announcements",
+      targetSelector: "#tutorial-nav-announcements",
+      title: "Announcements",
+      description:
+        "Create and manage system-wide announcements to communicate with all users about maintenance schedules, updates, and notices.",
+      position: "right",
+    },
+  ];
 
   const [showAIChat, setShowAIChat] = useState(false);
 
@@ -3191,7 +3267,7 @@ ${result.analysis.risks || "N/A"}
             <div className="flex justify-between items-center h-20">
               {/* Left Side - Search Bar + Help Button */}
               <div className="flex items-center gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
-                <div className="relative order-1">
+                <div className="relative order-1" id="tutorial-search">
                   <div className="relative">
                     <input
                       type="text"
@@ -3306,6 +3382,7 @@ ${result.analysis.risks || "N/A"}
 
                 {/* Help/Tutorial Button */}
                 <button
+                  id="tutorial-help"
                   onClick={() => {
                     setShowTutorial(true);
                     setTutorialStep(0);
@@ -3355,8 +3432,9 @@ ${result.analysis.risks || "N/A"}
 
               {/* Right Side - Notifications, AI Chat, Settings, Profile */}
               <div className="flex items-center gap-3">
-                {/* Notifications Bell */}
+                {/* Notifications Button */}
                 <button
+                  id="tutorial-notifications"
                   onClick={() => setShowNotifications(!showNotifications)}
                   className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                   title="Notifications"
@@ -3382,9 +3460,10 @@ ${result.analysis.risks || "N/A"}
                   )}
                 </button>
 
-                {/* AI Chat Robot Icon */}
+                {/* Theme Toggle */}
                 <button
-                  onClick={() => setShowAIChat(!showAIChat)}
+                  id="tutorial-theme"
+                  onClick={() => setShowAIChat(true)}
                   className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                   title="AI Assistant"
                 >
@@ -3399,7 +3478,7 @@ ${result.analysis.risks || "N/A"}
                 </button>
 
                 {/* Profile Avatar */}
-                <div className="relative">
+                <div className="relative" id="tutorial-profile">
                   <button
                     onClick={() => setShowProfileViewer(!showProfileViewer)}
                     className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
@@ -8894,228 +8973,15 @@ ${result.analysis.risks || "N/A"}
           </div>
         )}
 
-        {/* Tutorial Modal */}
-        {showTutorial && (
-          <>
-            <div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60]"
-              onClick={() => setShowTutorial(false)}
-            />
-            <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 pointer-events-none">
-              <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto pointer-events-auto">
-                <div className="h-1 bg-gray-200 sticky top-0">
-                  <div
-                    className="h-full bg-green-500 transition-all duration-300"
-                    style={{ width: `${((tutorialStep + 1) / 6) * 100}%` }}
-                  />
-                </div>
-
-                <div className="p-4 sm:p-6 lg:p-8">
-                  {tutorialStep === 0 && (
-                    <div className="text-center">
-                      <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <svg
-                          className="w-10 h-10 text-green-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                          />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        Search Bar
-                      </h3>
-                      <p className="text-gray-600">
-                        Search for any maintenance request by name, location,
-                        nature, or description.
-                      </p>
-                    </div>
-                  )}
-
-                  {tutorialStep === 1 && (
-                    <div className="text-center">
-                      <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <svg
-                          className="w-10 h-10 text-blue-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                          />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        Help & Tutorial
-                      </h3>
-                      <p className="text-gray-600">
-                        Click here anytime to revisit this tutorial.
-                      </p>
-                    </div>
-                  )}
-
-                  {tutorialStep === 2 && (
-                    <div className="text-center">
-                      <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <svg
-                          className="w-10 h-10 text-purple-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                          />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        Theme Toggle
-                      </h3>
-                      <p className="text-gray-600">
-                        Switch between light, dark, and system themes.
-                      </p>
-                    </div>
-                  )}
-
-                  {tutorialStep === 3 && (
-                    <div className="text-center">
-                      <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <svg
-                          className="w-10 h-10 text-red-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                          />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        Notifications
-                      </h3>
-                      <p className="text-gray-600">
-                        View all your notifications, including new requests and
-                        status updates.
-                      </p>
-                    </div>
-                  )}
-
-                  {tutorialStep === 4 && (
-                    <div className="text-center">
-                      <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <svg
-                          className="w-10 h-10 text-yellow-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                          />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        AI Assistant
-                      </h3>
-                      <p className="text-gray-600">
-                        Access the AI assistant to analyze requests and generate
-                        reports.
-                      </p>
-                    </div>
-                  )}
-
-                  {tutorialStep === 5 && (
-                    <div className="text-center">
-                      <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <svg
-                          className="w-10 h-10 text-green-600"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">
-                        All Set!
-                      </h3>
-                      <p className="text-gray-600">
-                        Use the sidebar to navigate between Overview, Analytics,
-                        Master Queue, and Announcements.
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="flex justify-between items-center mt-8">
-                    <button
-                      onClick={() => {
-                        if (tutorialStep > 0) {
-                          setTutorialStep(tutorialStep - 1);
-                        }
-                      }}
-                      className={`px-6 py-2.5 rounded-lg font-medium transition-all duration-200 ${
-                        tutorialStep === 0
-                          ? "text-gray-300 cursor-not-allowed"
-                          : "text-gray-600 hover:bg-gray-100"
-                      }`}
-                      disabled={tutorialStep === 0}
-                    >
-                      Back
-                    </button>
-
-                    <span className="text-sm text-gray-500">
-                      {tutorialStep + 1} of 6
-                    </span>
-
-                    {tutorialStep < 5 ? (
-                      <button
-                        onClick={() => setTutorialStep(tutorialStep + 1)}
-                        className="px-6 py-2.5 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-all duration-200"
-                      >
-                        Next
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          setShowTutorial(false);
-                          setTutorialStep(0);
-                        }}
-                        className="px-6 py-2.5 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition-all duration-200"
-                      >
-                        Got it
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+        <SpotlightTutorial
+          isOpen={showTutorial}
+          onClose={() => {
+            setShowTutorial(false);
+            setTutorialStep(0);
+          }}
+          steps={tutorialSteps}
+          onStepChange={(step) => setTutorialStep(step)}
+        />
       </div>
 
       {/* Introduction Modal */}

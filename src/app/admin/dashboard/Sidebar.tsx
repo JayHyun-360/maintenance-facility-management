@@ -138,6 +138,7 @@ export default function Sidebar({
           {navItems.map((item) => (
             <li key={item.id}>
               <button
+                id={`tutorial-nav-${item.id}`}
                 onClick={() => onTabChange(item.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                   activeTab === item.id
