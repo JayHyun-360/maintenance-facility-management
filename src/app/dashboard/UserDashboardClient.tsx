@@ -1850,7 +1850,7 @@ export default function UserDashboardClient({
         {/* Sidebar */}
 
         <div
-          className={`fixed top-0 left-0 h-full w-80 bg-gray-50 border-r border-green-200 shadow-xl z-50 transform transition-transform duration-500 ease-out flex flex-col ${
+          className={`fixed top-0 left-0 h-full w-64 bg-gray-50 border-r border-green-200 shadow-xl z-50 transform transition-transform duration-500 ease-out flex flex-col ${
             showProfileSidebar ? "translate-x-0" : "-translate-x-full"
           }`}
         >
