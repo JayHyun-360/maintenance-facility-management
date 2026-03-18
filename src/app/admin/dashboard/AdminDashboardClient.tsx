@@ -5546,7 +5546,7 @@ ${result.analysis.risks || "N/A"}
                     </div>
                   </div>
 
-                  ))}
+                  )}
                 </div>
               )}
             </div>
