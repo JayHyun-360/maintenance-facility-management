@@ -3353,18 +3353,8 @@ ${result.analysis.risks || "N/A"}
               {/* Middle - Empty for now */}
               <div className="flex-1"></div>
 
-              {/* Right Side - Theme, Notifications, AI Chat, Settings, Profile */}
+              {/* Right Side - Notifications, AI Chat, Settings, Profile */}
               <div className="flex items-center gap-3">
-                <label className="theme-toggle-switch cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={profile?.theme_preference === "dark"}
-                    onChange={handleThemeToggle}
-                    className="hidden"
-                  />
-                  <span className="toggle-slider"></span>
-                </label>
-
                 {/* Notifications Bell */}
                 <button
                   onClick={() => setShowNotifications(!showNotifications)}
