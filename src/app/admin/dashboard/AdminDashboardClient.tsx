@@ -8896,16 +8896,16 @@ ${result.analysis.risks || "N/A"}
 
         {/* Tutorial Modal */}
         {showTutorial && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full mx-4 overflow-hidden">
-              <div className="h-1 bg-gray-200">
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+              <div className="h-1 bg-gray-200 sticky top-0">
                 <div
                   className="h-full bg-green-500 transition-all duration-300"
                   style={{ width: `${((tutorialStep + 1) / 6) * 100}%` }}
                 />
               </div>
 
-              <div className="p-8">
+              <div className="p-4 sm:p-6 lg:p-8">
                 {tutorialStep === 0 && (
                   <div className="text-center">
                     <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
