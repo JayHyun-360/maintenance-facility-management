@@ -3516,7 +3516,9 @@ ${result.analysis.risks || "N/A"}
                   {showProfileViewer && userAvatar && (
                     <div
                       className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 ${
-                        showProfileViewer ? "opacity-100" : "opacity-0"
+                        showProfileViewer
+                          ? "opacity-100"
+                          : "opacity-0 pointer-events-none"
                       }`}
                     >
                       <div
@@ -5598,10 +5600,7 @@ ${result.analysis.risks || "N/A"}
                   return (
                     <div
                       key={notification.id}
-                      onClick={() =>
-                        !notification.is_read &&
-                        markNotificationRead(notification.id)
-                      }
+                      onClick={() => markNotificationRead(notification.id)}
                       className={`p-4 rounded-lg border transition-all cursor-pointer ${
                         !notification.is_read
                           ? isEmergency
