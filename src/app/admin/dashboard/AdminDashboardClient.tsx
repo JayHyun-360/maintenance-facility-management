@@ -1011,6 +1011,8 @@ export default function AdminDashboardClient({
 
   const profileViewerRef = useRef<HTMLDivElement>(null);
 
+  const profileSidebarRef = useRef<HTMLDivElement>(null);
+
   const notificationsRef = useRef<HTMLDivElement>(null);
 
   const aiChatRef = useRef<HTMLDivElement>(null);
@@ -1024,6 +1026,13 @@ export default function AdminDashboardClient({
         !profileViewerRef.current.contains(event.target as Node)
       ) {
         setShowProfileViewer(false);
+      }
+
+      if (
+        profileSidebarRef.current &&
+        !profileSidebarRef.current.contains(event.target as Node)
+      ) {
+        setShowProfileSidebar(false);
       }
 
       if (
@@ -5673,6 +5682,7 @@ ${result.analysis.risks || "N/A"}
           />
 
           <div
+            ref={profileSidebarRef}
             className={`fixed top-0 left-0 h-full w-80 bg-gray-50 border-r border-green-200 shadow-xl z-50 transform transition-transform duration-500 ease-out flex flex-col ${
               showProfileSidebar ? "translate-x-0" : "-translate-x-full"
             }`}
