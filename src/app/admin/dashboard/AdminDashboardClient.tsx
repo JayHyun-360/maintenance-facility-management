@@ -6522,9 +6522,6 @@ ${result.analysis.risks || "N/A"}
                                 type="radio"
                                 name="workEvaluation"
                                 value={option.value}
-                                checked={
-                                  reportFormData.workEvaluation === option.value
-                                }
                                 disabled
                                 className="w-4 h-4 border-gray-300 mt-0.5"
                               />
