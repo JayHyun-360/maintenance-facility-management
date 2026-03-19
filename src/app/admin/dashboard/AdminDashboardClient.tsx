@@ -6215,16 +6215,10 @@ ${result.analysis.risks || "N/A"}
                           </label>
 
                           <input
-                            type="date"
+                            type="text"
                             value={reportFormData.date}
-                            onChange={(e) =>
-                              setReportFormData((prev) => ({
-                                ...prev,
-
-                                date: e.target.value,
-                              }))
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                            readOnly
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-100 text-sm text-gray-600"
                           />
                         </div>
 
@@ -6234,16 +6228,10 @@ ${result.analysis.risks || "N/A"}
                           </label>
 
                           <input
-                            type="time"
+                            type="text"
                             value={reportFormData.time}
-                            onChange={(e) =>
-                              setReportFormData((prev) => ({
-                                ...prev,
-
-                                time: e.target.value,
-                              }))
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                            readOnly
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-100 text-sm text-gray-600"
                           />
                         </div>
                       </div>
@@ -6291,15 +6279,9 @@ ${result.analysis.risks || "N/A"}
 
                         <textarea
                           value={reportFormData.whatWillBeDone}
-                          onChange={(e) =>
-                            setReportFormData((prev) => ({
-                              ...prev,
-
-                              whatWillBeDone: e.target.value,
-                            }))
-                          }
+                          readOnly
                           rows={3}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-100 text-sm text-gray-600"
                           placeholder="Action to be taken"
                         />
                       </div>
@@ -6311,15 +6293,9 @@ ${result.analysis.risks || "N/A"}
 
                         <textarea
                           value={reportFormData.supportingReasons}
-                          onChange={(e) =>
-                            setReportFormData((prev) => ({
-                              ...prev,
-
-                              supportingReasons: e.target.value,
-                            }))
-                          }
+                          readOnly
                           rows={2}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-100 text-sm text-gray-600"
                           placeholder="Reasons for this request"
                         />
                       </div>
@@ -6443,8 +6419,7 @@ ${result.analysis.risks || "N/A"}
                                 dateTimeReceived: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm bg-gray-100"
-                            readOnly
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
                           />
                         </div>
 
@@ -6463,8 +6438,7 @@ ${result.analysis.risks || "N/A"}
                                 performedBy: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm bg-gray-100"
-                            readOnly
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
                             placeholder="Technician name"
                           />
                         </div>
@@ -6486,8 +6460,7 @@ ${result.analysis.risks || "N/A"}
                                 dateTimeCompleted: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm bg-gray-100"
-                            readOnly
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
                           />
                         </div>
 
@@ -6506,8 +6479,7 @@ ${result.analysis.risks || "N/A"}
                                 acknowledgeBy: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm bg-gray-100"
-                            readOnly
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
                             placeholder="Acknowledged by"
                           />
                         </div>
@@ -6550,7 +6522,7 @@ ${result.analysis.risks || "N/A"}
                           ].map((option) => (
                             <label
                               key={option.value}
-                              className="flex items-start space-x-2 opacity-50 cursor-not-allowed"
+                              className="flex items-start space-x-2 cursor-pointer"
                             >
                               <input
                                 type="radio"
@@ -6559,16 +6531,22 @@ ${result.analysis.risks || "N/A"}
                                 checked={
                                   reportFormData.workEvaluation === option.value
                                 }
-                                disabled
-                                className="w-4 h-4 text-gray-400 border-gray-300 mt-0.5"
+                                onChange={(e) =>
+                                  setReportFormData((prev) => ({
+                                    ...prev,
+
+                                    workEvaluation: e.target.value,
+                                  }))
+                                }
+                                className="w-4 h-4 text-green-600 border-gray-300 mt-0.5 focus:ring-green-500"
                               />
 
                               <div>
-                                <span className="text-sm text-gray-500 font-medium">
+                                <span className="text-sm text-gray-700 font-medium">
                                   {option.value}
                                 </span>
 
-                                <p className="text-xs text-gray-400">
+                                <p className="text-xs text-gray-500">
                                   {option.description}
                                 </p>
                               </div>
