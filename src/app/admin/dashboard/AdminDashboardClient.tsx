@@ -2966,12 +2966,12 @@ ${result.analysis.risks || "N/A"}
       const rightColOffset = left + contentWidth / 2 + 10;
       
       pdf.line(rightColOffset + 10, sigRow1Y, right - 5, sigRow1Y);
-      pdf.text(reportFormData.vpAASD || "GEMMA E. AGUILAR, M.Ed", rightColOffset + (contentWidth / 4) + 2.5, sigRow1Y - 1, { align: "center" });
+      pdf.text(reportFormData.vpAASD || "", rightColOffset + (contentWidth / 4) + 2.5, sigRow1Y - 1, { align: "center" });
       pdf.text("VP - AASD", rightColOffset + (contentWidth / 4) + 2.5, sigRow1Y + 3.5, { align: "center" });
 
       pdf.text("Received by:", rightColOffset - 10, sigRow2Y - 0.5);
       pdf.line(rightColOffset + 10, sigRow2Y, right - 5, sigRow2Y);
-      pdf.text(reportFormData.gmsHead || "BONIE C. BARNESO", rightColOffset + (contentWidth / 4) + 2.5, sigRow2Y - 1, { align: "center" });
+      pdf.text(reportFormData.gmsHead || "", rightColOffset + (contentWidth / 4) + 2.5, sigRow2Y - 1, { align: "center" });
       pdf.text("GMS Head", rightColOffset + (contentWidth / 4) + 2.5, sigRow2Y + 3.5, { align: "center" });
 
       // Large bottom grid for Evaluation
@@ -2984,7 +2984,7 @@ ${result.analysis.risks || "N/A"}
       const weCol1 = 40; // Date/Time Received, etc (Labels)
       const weCol2 = 45; // Fill sections (Empty or text)
       const weCol3 = 25; // Work Evaluation Title
-      const weCol4 = 15; // Small checkbox region
+      const weCol4 = 7; // Extremely narrow small checkbox region
       // weCol5 is the rest (Outstanding, etc.)
 
       pdf.line(left + weCol1, gridTop, left + weCol1, gridTop + gridH);
@@ -3045,16 +3045,17 @@ ${result.analysis.risks || "N/A"}
         const boxX = left + weCol1 + weCol2 + weCol3;
         const cy = gridTop + weRowH * i;
 
-        // Draw check inside the cell if selected
+        // Draw check inside the narrow cell if selected
         if (reportFormData.workEvaluation === opt.key) {
            pdf.setLineWidth(0.4);
-           pdf.line(boxX + 3, cy + 3, boxX + weCol4 - 3, cy + weRowH - 3);
-           pdf.line(boxX + 3, cy + weRowH - 3, boxX + weCol4 - 3, cy + 3);
+           // Cross in the very small cell box
+           pdf.line(boxX + 1.5, cy + 2, boxX + weCol4 - 1.5, cy + weRowH - 2);
+           pdf.line(boxX + 1.5, cy + weRowH - 2, boxX + weCol4 - 1.5, cy + 2);
            pdf.setLineWidth(0.18);
         }
 
-        // Text placed in the 5th column
-        pdf.text(opt.label, boxX + weCol4 + 4, cy + weRowH / 2 + 1.5);
+        // Text placed tightly next to the small column
+        pdf.text(opt.label, boxX + weCol4 + 2, cy + weRowH / 2 + 1.5);
       });
 
       // Bottom rating descriptions
