@@ -6412,14 +6412,8 @@ ${result.analysis.risks || "N/A"}
                           <input
                             type="text"
                             value={reportFormData.dateTimeReceived}
-                            onChange={(e) =>
-                              setReportFormData((prev) => ({
-                                ...prev,
-
-                                dateTimeReceived: e.target.value,
-                              }))
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                            readOnly
+                            className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-100 text-sm text-gray-600"
                           />
                         </div>
 
@@ -6522,7 +6516,7 @@ ${result.analysis.risks || "N/A"}
                           ].map((option) => (
                             <label
                               key={option.value}
-                              className="flex items-start space-x-2 cursor-pointer"
+                              className="flex items-start space-x-2 cursor-default"
                             >
                               <input
                                 type="radio"
@@ -6531,14 +6525,8 @@ ${result.analysis.risks || "N/A"}
                                 checked={
                                   reportFormData.workEvaluation === option.value
                                 }
-                                onChange={(e) =>
-                                  setReportFormData((prev) => ({
-                                    ...prev,
-
-                                    workEvaluation: e.target.value,
-                                  }))
-                                }
-                                className="w-4 h-4 text-green-600 border-gray-300 mt-0.5 focus:ring-green-500"
+                                disabled
+                                className="w-4 h-4 border-gray-300 mt-0.5"
                               />
 
                               <div>
