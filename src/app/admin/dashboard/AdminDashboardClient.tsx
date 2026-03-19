@@ -2733,13 +2733,14 @@ ${result.analysis.risks || "N/A"}
       const bodyBlack: [number, number, number] = [0, 0, 0];
 
       // Header with logo and college info
-      pdf.setFont("helvetica", "bold");
-      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(10);
+      pdf.setTextColor(...bodyBlack);
 
-      // Add logo
+      // Add logo on the left of centered text
       try {
-        const logoSize = 18; // mm
-        const logoX = left + 45;
+        const logoSize = 12; // mm
+        const logoX = (pageWidth / 2) - 55;
         const logoY = 8;
         
         // Fetch the local logo uploaded from the chat context (copied to public/dlsl-logo-new.png)
@@ -2759,22 +2760,16 @@ ${result.analysis.risks || "N/A"}
         console.warn("Logo generation failed", error);
       }
 
-      // College name on the right of the logo
-      const textStartX = left + 65;
-      pdf.setFont("helvetica", "bold");
-      pdf.setTextColor(110, 140, 110); // Slight green tint for the college name as in some printouts
-      pdf.text("DE LA SALLE JOHN BOSCO COLLEGE", textStartX, 15);
-      
+      // College name centered
       pdf.setFont("helvetica", "normal");
-      pdf.setFontSize(10);
-      pdf.setTextColor(...bodyBlack);
-      pdf.text("Mangagoy, Bislig City, Surigao del Sur", textStartX + 4, 20);
+      pdf.text("DE LA SALLE JOHN BOSCO COLLEGE", pageWidth / 2, 14, { align: "center" });
+      pdf.text("Mangagoy, Bislig City, Surigao del Sur", pageWidth / 2, 18, { align: "center" });
 
       // TO line with better positioning
       pdf.setFontSize(10);
       pdf.setTextColor(...bodyBlack);
       pdf.text("TO:", left, 35);
-      pdf.line(left + 8, 35.5, left + 80, 35.5);
+      pdf.line(left + 8, 35.5, left + 75, 35.5); // long boldish line next to TO:
 
       // Title - Centered, no box
       pdf.setFont("helvetica", "bold");
@@ -2790,12 +2785,7 @@ ${result.analysis.risks || "N/A"}
       });
 
       // Nature of Request checkboxes and urgency/date section
-      const natureY = 56;
-      const sectionHeight = 24;
-
-      // Draw the main section box
-      pdf.setLineWidth(0.3);
-      pdf.rect(left, natureY, contentWidth, sectionHeight);
+      const natureY = 58;
 
       // Left column for Nature checkboxes (PLUMBING, etc.)
       const natureOptions = [
@@ -2805,12 +2795,12 @@ ${result.analysis.risks || "N/A"}
         { key: "personnelServices", label: "PERSONNEL SERVICES" },
       ];
 
-      let currentY = natureY + 5;
-      const checkboxX = left + 15;
+      let currentY = natureY;
+      const checkboxX = left; // aligned all the way left
 
       pdf.setFont("helvetica", "normal");
       pdf.setFontSize(9);
-      pdf.setTextColor(...headerGray);
+      pdf.setTextColor(...bodyBlack);
       natureOptions.forEach((opt) => {
         pdf.rect(checkboxX, currentY - 3.5, 9, 4.5);
         if (
@@ -2822,16 +2812,12 @@ ${result.analysis.risks || "N/A"}
           pdf.line(checkboxX, currentY + 1, checkboxX + 9, currentY - 3.5);
         }
         pdf.text(opt.label, checkboxX + 12, currentY);
-        currentY += 5.5;
+        currentY += 6;
       });
 
-      // Middle vertical line separating Nature of Request and Urgency
-      const middleX = left + 85;
-      pdf.line(middleX, natureY, middleX, natureY + sectionHeight);
-
       // Middle column for Urgency
-      const urgencyX = middleX + 15;
-      let urgencyY = natureY + 6;
+      const urgencyX = pageWidth / 2 - 30; // Centered somewhat
+      let urgencyY = natureY;
 
       const urgencyOptions = [
         { key: "very_urgent", label: "Very Urgent/Emergency" },
@@ -2846,27 +2832,27 @@ ${result.analysis.risks || "N/A"}
           pdf.line(urgencyX, urgencyY + 1, urgencyX + 9, urgencyY - 3.5);
         }
         pdf.text(opt.label, urgencyX + 12, urgencyY);
-        urgencyY += 7.5;
+        urgencyY += 6;
       });
 
-      // Date and Time on the right side next to Urgency
-      const dateX = urgencyX + 45;
-      pdf.text("Date:", dateX, natureY + 11);
-      pdf.line(dateX + 9, natureY + 11.5, right - 5, natureY + 11.5);
-      pdf.setTextColor(...bodyBlack);
-      pdf.text(`${reportFormData.date || ""}`, dateX + 12, natureY + 11);
+      // Date and Time aligned dynamically next to Urgent / Not Urgent
+      const rightColX = urgencyX + 45;
+      
+      // Date aligned with Urgent
+      pdf.text("Date:", rightColX, natureY + 6);
+      pdf.line(rightColX + 10, natureY + 6.5, right, natureY + 6.5);
+      pdf.text(`${reportFormData.date || ""}`, rightColX + 13, natureY + 6);
 
-      pdf.setTextColor(...headerGray);
-      pdf.text("Time:", dateX, natureY + 18.5);
-      pdf.line(dateX + 9, natureY + 19, right - 5, natureY + 19);
-      pdf.setTextColor(...bodyBlack);
-      pdf.text(`${reportFormData.time || ""}`, dateX + 12, natureY + 18.5);
+      // Time aligned with Not Urgent
+      pdf.text("Time:", rightColX, natureY + 12);
+      pdf.line(rightColX + 10, natureY + 12.5, right, natureY + 12.5);
+      pdf.text(`${reportFormData.time || ""}`, rightColX + 13, natureY + 12);
 
-      // Main request table with exactly 4 empty rows below header
-      const tableTop = natureY + sectionHeight + 3;
+      // Main request table with exactly 8 empty rows below header
+      const tableTop = currentY + 4;
       const headerH = 10;
-      const rowH = 7.5;
-      const rows = 4;
+      const rowH = 7;
+      const rows = 8;
       const tableH = headerH + rowH * rows;
 
       // Column widths to match image proportions
@@ -2950,66 +2936,68 @@ ${result.analysis.risks || "N/A"}
       
       // Requested by / Approved by Labels
       pdf.setTextColor(...bodyBlack);
-      pdf.setFont("helvetica", "italic");
+      pdf.setFont("helvetica", "normal");
       pdf.text("Requested by: (Requesting Department)", left, requestApproveY);
       
-      pdf.setFont("helvetica", "italic");
       pdf.text(
         "Approved by: Administrative Affairs & Services Division",
         left + contentWidth / 2,
         requestApproveY,
       );
 
-      // Name of Employee and VP AASD (row 1 under request/approve)
-      const sigRow1Y = requestApproveY + 10;
-      const sigRow2Y = requestApproveY + 18;
+      // Name of Employee and VP AASD
+      const sigRow1Y = requestApproveY + 14;
+      const sigRow2Y = requestApproveY + 28; // Spacing for signatures
 
       pdf.setFont("helvetica", "normal");
       pdf.setFontSize(8);
       pdf.setTextColor(...bodyBlack);
 
       // Left column text
-      pdf.text(reportFormData.nameOfEmployee || "", left + 20, sigRow1Y - 1);
-      pdf.line(left + 15, sigRow1Y, left + 85, sigRow1Y);
-      pdf.text("Name of Employee", left + 35, sigRow1Y + 4);
+      pdf.line(left + 5, sigRow1Y, left + 65, sigRow1Y);
+      pdf.text(reportFormData.nameOfEmployee || "", left + 10, sigRow1Y - 1);
+      pdf.text("Name of Employee", left + 35, sigRow1Y + 3.5, { align: "center" });
 
-      pdf.text(reportFormData.departmentHead || "", left + 20, sigRow2Y - 1);
-      pdf.line(left + 15, sigRow2Y, left + 85, sigRow2Y);
-      pdf.text("Department Head", left + 35, sigRow2Y + 4);
+      pdf.line(left + 5, sigRow2Y, left + 65, sigRow2Y);
+      pdf.text(reportFormData.departmentHead || "", left + 10, sigRow2Y - 1);
+      pdf.text("Department Head", left + 35, sigRow2Y + 3.5, { align: "center" });
 
       // Right column text
-      const rightColOffset = left + contentWidth / 2;
-      pdf.text(reportFormData.vpAASD || "", rightColOffset + 25, sigRow1Y - 1);
-      pdf.line(rightColOffset + 15, sigRow1Y, right - 5, sigRow1Y);
-      pdf.text("VP - AASD", rightColOffset + 40, sigRow1Y + 4);
+      const rightColOffset = left + contentWidth / 2 + 10;
+      
+      pdf.line(rightColOffset + 10, sigRow1Y, right - 5, sigRow1Y);
+      pdf.text(reportFormData.vpAASD || "GEMMA E. AGUILAR, M.Ed", rightColOffset + (contentWidth / 4) + 2.5, sigRow1Y - 1, { align: "center" });
+      pdf.text("VP - AASD", rightColOffset + (contentWidth / 4) + 2.5, sigRow1Y + 3.5, { align: "center" });
 
-      pdf.text("Received by:", rightColOffset - 5, sigRow2Y);
-      pdf.text(reportFormData.gmsHead || "", rightColOffset + 25, sigRow2Y - 1);
-      pdf.line(rightColOffset + 15, sigRow2Y, right - 5, sigRow2Y);
-      pdf.text("GMS Head", rightColOffset + 40, sigRow2Y + 4);
+      pdf.text("Received by:", rightColOffset - 10, sigRow2Y - 0.5);
+      pdf.line(rightColOffset + 10, sigRow2Y, right - 5, sigRow2Y);
+      pdf.text(reportFormData.gmsHead || "BONIE C. BARNESO", rightColOffset + (contentWidth / 4) + 2.5, sigRow2Y - 1, { align: "center" });
+      pdf.text("GMS Head", rightColOffset + (contentWidth / 4) + 2.5, sigRow2Y + 3.5, { align: "center" });
 
       // Large bottom grid for Evaluation
       const gridTop = sigRow2Y + 8;
-      const gridH = 36; // Total height for the 4 rows
+      const gridH = 34; // Total height for the 4 rows
       
       pdf.rect(left, gridTop, contentWidth, gridH);
       
       // Bottom grid columns
-      const weCol1 = 45; // Date/Time Received, etc (Labels)
+      const weCol1 = 40; // Date/Time Received, etc (Labels)
       const weCol2 = 45; // Fill sections (Empty or text)
       const weCol3 = 25; // Work Evaluation Title
-      // weCol4 is the rest (Outstanding, etc.)
+      const weCol4 = 15; // Small checkbox region
+      // weCol5 is the rest (Outstanding, etc.)
 
       pdf.line(left + weCol1, gridTop, left + weCol1, gridTop + gridH);
       pdf.line(left + weCol1 + weCol2, gridTop, left + weCol1 + weCol2, gridTop + gridH);
       pdf.line(left + weCol1 + weCol2 + weCol3, gridTop, left + weCol1 + weCol2 + weCol3, gridTop + gridH);
+      pdf.line(left + weCol1 + weCol2 + weCol3 + weCol4, gridTop, left + weCol1 + weCol2 + weCol3 + weCol4, gridTop + gridH);
 
       // Horizontal lines for the grid
       const weRowH = gridH / 4;
       for (let i = 1; i < 4; i++) {
         // Line spanning first two columns
         pdf.line(left, gridTop + weRowH * i, left + weCol1 + weCol2, gridTop + weRowH * i);
-        // Line spanning the 4th column
+        // Line spanning the 4th and 5th columns
         pdf.line(left + weCol1 + weCol2 + weCol3, gridTop + weRowH * i, right, gridTop + weRowH * i);
       }
 
@@ -3043,7 +3031,7 @@ ${result.analysis.risks || "N/A"}
       pdf.setFontSize(9);
       pdf.text("Work Evaluation", left + weCol1 + weCol2 + 12.5, gridTop + gridH / 2 + 1.5, { align: "center" });
 
-      // Column 4 checkboxes and labels
+      // Column 4 checkboxes and labels (Column 5)
       pdf.setFont("helvetica", "normal");
       pdf.setFontSize(7.5);
       const ratingOptions = [
@@ -3054,19 +3042,19 @@ ${result.analysis.risks || "N/A"}
       ];
 
       ratingOptions.forEach((opt, i) => {
-        const boxX = left + weCol1 + weCol2 + weCol3 + 5;
-        const cy = gridTop + weRowH * i + 4.5; // Checkbox Y
+        const boxX = left + weCol1 + weCol2 + weCol3;
+        const cy = gridTop + weRowH * i;
 
-        // Checkbox box
-        pdf.setFillColor(255, 255, 255);
-        pdf.rect(boxX, cy - 2.5, 22, 5, "S"); // Checkbox line
-
+        // Draw check inside the cell if selected
         if (reportFormData.workEvaluation === opt.key) {
-           pdf.line(boxX, cy - 2.5, boxX + 22, cy + 2.5);
+           pdf.setLineWidth(0.4);
+           pdf.line(boxX + 3, cy + 3, boxX + weCol4 - 3, cy + weRowH - 3);
+           pdf.line(boxX + 3, cy + weRowH - 3, boxX + weCol4 - 3, cy + 3);
+           pdf.setLineWidth(0.18);
         }
 
-        // Text
-        pdf.text(opt.label, boxX + 25, cy + 1.5);
+        // Text placed in the 5th column
+        pdf.text(opt.label, boxX + weCol4 + 4, cy + weRowH / 2 + 1.5);
       });
 
       // Bottom rating descriptions
