@@ -3045,9 +3045,13 @@ ${result.analysis.risks || "N/A"}
 
       pdf.setTextColor(...bodyBlack);
 
-      pdf.line(left + 8, lineY2, left + half - 8, lineY2);
+      pdf.setFontSize(8);
 
-      pdf.line(left + half + 8, lineY2, right - 8, lineY2);
+      // Print name of employee value
+      pdf.text(reportFormData.nameOfEmployee || "", left + 8, lineY1 + 5);
+
+      // Print VP AASD value
+      pdf.text(reportFormData.vpAASD || "", left + half + 8, lineY1 + 5);
 
       pdf.setTextColor(...headerGray);
 
@@ -3056,6 +3060,12 @@ ${result.analysis.risks || "N/A"}
       pdf.text("GMS Head", left + half + 38, lineY2 + 5);
 
       pdf.setTextColor(...bodyBlack);
+
+      // Print Department Head value
+      pdf.text(reportFormData.departmentHead || "", left + 8, lineY2 + 5);
+
+      // Print GMS Head value
+      pdf.text(reportFormData.gmsHead || "", left + half + 8, lineY2 + 5);
 
       // Work Evaluation block (boxed, with right rating table)
 
@@ -3227,13 +3237,42 @@ ${result.analysis.risks || "N/A"}
 
   useEffect(() => {
     if (selectedRequestForReport) {
+      // Map the request nature to the form's nature checkboxes
+      const natureMap: Record<
+        string,
+        keyof typeof reportFormData.natureOfRequest
+      > = {
+        Plumbing: "plumbing",
+        Carpentry: "carpentry",
+        Electrical: "electrical",
+        HVAC: "personnelServices",
+        Cleaning: "personnelServices",
+        Other: "personnelServices",
+      };
+
+      const mappedNature =
+        natureMap[selectedRequestForReport.nature] || "plumbing";
+
       setReportFormData((prev) => ({
         ...prev,
 
-        location: selectedRequestForReport.location,
+        // Nature - auto-populated from request, read-only
+        natureOfRequest: {
+          plumbing: selectedRequestForReport.nature === "Plumbing",
+          carpentry: selectedRequestForReport.nature === "Carpentry",
+          electrical: selectedRequestForReport.nature === "Electrical",
+          personnelServices: ["HVAC", "Cleaning", "Other"].includes(
+            selectedRequestForReport.nature,
+          ),
+        },
 
-        descriptionOfProblem: selectedRequestForReport.description,
+        // Location - from request, read-only
+        location: selectedRequestForReport.location || "",
 
+        // Description - from request, read-only
+        descriptionOfProblem: selectedRequestForReport.description || "",
+
+        // Urgency - from request, read-only
         urgency:
           selectedRequestForReport.urgency === "Emergency"
             ? "Very Urgent/Emergency"
@@ -3241,18 +3280,28 @@ ${result.analysis.risks || "N/A"}
               ? "Urgent"
               : "Not Urgent",
 
-        date: new Date().toLocaleDateString(),
+        // Date/Time - from request creation, read-only
+        date: selectedRequestForReport.created_at
+          ? new Date(selectedRequestForReport.created_at).toLocaleDateString()
+          : new Date().toLocaleDateString(),
 
-        time: new Date().toLocaleTimeString(),
+        time: selectedRequestForReport.created_at
+          ? new Date(selectedRequestForReport.created_at).toLocaleTimeString()
+          : new Date().toLocaleTimeString(),
 
+        // Requester name - from request, read-only
         nameOfEmployee: selectedRequestForReport.profiles?.full_name || "",
 
-        dateTimeReceived: new Date().toLocaleString(),
+        // Date received - from request, read-only
+        dateTimeReceived: selectedRequestForReport.created_at
+          ? new Date(selectedRequestForReport.created_at).toLocaleString()
+          : new Date().toLocaleString(),
       }));
     }
   }, [selectedRequestForReport]);
 
   return (
+    // ...
     <div className="min-h-screen bg-[#F5F5DC] flex">
       {/* Sidebar */}
       <Sidebar
@@ -6106,7 +6155,7 @@ ${result.analysis.risks || "N/A"}
                       ].map((option) => (
                         <label
                           key={option.key}
-                          className="flex items-center space-x-2 cursor-pointer"
+                          className="flex items-center space-x-2 cursor-not-allowed opacity-75"
                         >
                           <input
                             type="checkbox"
@@ -6115,21 +6164,11 @@ ${result.analysis.risks || "N/A"}
                                 option.key as keyof typeof reportFormData.natureOfRequest
                               ]
                             }
-                            onChange={(e) =>
-                              setReportFormData((prev) => ({
-                                ...prev,
-
-                                natureOfRequest: {
-                                  ...prev.natureOfRequest,
-
-                                  [option.key]: e.target.checked,
-                                },
-                              }))
-                            }
-                            className="w-4 h-4 text-green-500 border-gray-300 rounded focus:ring-green-500"
+                            disabled
+                            className="w-4 h-4 text-gray-400 border-gray-300 rounded"
                           />
 
-                          <span className="text-sm text-gray-700">
+                          <span className="text-sm text-gray-600">
                             {option.label}
                           </span>
                         </label>
@@ -6150,24 +6189,18 @@ ${result.analysis.risks || "N/A"}
                           ].map((option) => (
                             <label
                               key={option}
-                              className="flex items-center space-x-2 cursor-pointer"
+                              className="flex items-center space-x-2 cursor-not-allowed opacity-75"
                             >
                               <input
                                 type="radio"
                                 name="urgency"
                                 value={option}
                                 checked={reportFormData.urgency === option}
-                                onChange={(e) =>
-                                  setReportFormData((prev) => ({
-                                    ...prev,
-
-                                    urgency: e.target.value,
-                                  }))
-                                }
-                                className="w-4 h-4 text-green-500 border-gray-300 focus:ring-green-500"
+                                disabled
+                                className="w-4 h-4 text-gray-400 border-gray-300 rounded"
                               />
 
-                              <span className="text-sm text-gray-700">
+                              <span className="text-sm text-gray-600">
                                 {option}
                               </span>
                             </label>
@@ -6233,15 +6266,8 @@ ${result.analysis.risks || "N/A"}
                         <input
                           type="text"
                           value={reportFormData.location}
-                          onChange={(e) =>
-                            setReportFormData((prev) => ({
-                              ...prev,
-
-                              location: e.target.value,
-                            }))
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
-                          placeholder="Enter location"
+                          readOnly
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-100 text-sm text-gray-600"
                         />
                       </div>
 
@@ -6252,16 +6278,9 @@ ${result.analysis.risks || "N/A"}
 
                         <textarea
                           value={reportFormData.descriptionOfProblem}
-                          onChange={(e) =>
-                            setReportFormData((prev) => ({
-                              ...prev,
-
-                              descriptionOfProblem: e.target.value,
-                            }))
-                          }
+                          readOnly
                           rows={3}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
-                          placeholder="Describe the problem"
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-100 text-sm text-gray-600"
                         />
                       </div>
 
@@ -6337,14 +6356,8 @@ ${result.analysis.risks || "N/A"}
                         <input
                           type="text"
                           value={reportFormData.nameOfEmployee}
-                          onChange={(e) =>
-                            setReportFormData((prev) => ({
-                              ...prev,
-
-                              nameOfEmployee: e.target.value,
-                            }))
-                          }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm mb-2"
+                          readOnly
+                          className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-100 text-sm text-gray-600 mb-2"
                           placeholder="Name of Employee"
                         />
 
@@ -6537,29 +6550,25 @@ ${result.analysis.risks || "N/A"}
                           ].map((option) => (
                             <label
                               key={option.value}
-                              className="flex items-start space-x-2 opacity-75"
+                              className="flex items-start space-x-2 opacity-50 cursor-not-allowed"
                             >
                               <input
                                 type="radio"
                                 name="workEvaluation"
                                 value={option.value}
-                                onChange={(e) =>
-                                  setReportFormData((prev) => ({
-                                    ...prev,
-
-                                    workEvaluation: e.target.value,
-                                  }))
+                                checked={
+                                  reportFormData.workEvaluation === option.value
                                 }
-                                className="w-4 h-4 text-green-500 border-gray-300 focus:ring-green-500 mt-0.5"
                                 disabled
+                                className="w-4 h-4 text-gray-400 border-gray-300 mt-0.5"
                               />
 
                               <div>
-                                <span className="text-sm text-gray-700 font-medium">
+                                <span className="text-sm text-gray-500 font-medium">
                                   {option.value}
                                 </span>
 
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs text-gray-400">
                                   {option.description}
                                 </p>
                               </div>
