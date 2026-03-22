@@ -1,5 +1,7 @@
 "use server";
 
+// Login actions - handles Google OAuth sign-in
+
 import { createServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
