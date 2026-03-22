@@ -118,6 +118,31 @@ export default function LoginPage() {
     }
   }, [showGuestModal]);
 
+  // Render hCaptcha when email form is opened
+  useEffect(() => {
+    if (showEmailForm && window.hcaptcha) {
+      const container = document.getElementById("email-captcha-container");
+      if (container && container.innerHTML.trim() === "") {
+        window.hcaptcha.render(container, {
+          sitekey: process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!,
+          callback: (token: string) => {
+            setEmailData((prev) => ({ ...prev, captchaToken: token }));
+            setErrors((prev) => ({ ...prev, captcha: "" }));
+          },
+          "error-callback": () => {
+            setErrors({
+              captcha: "Captcha verification failed. Please try again.",
+            });
+          },
+          "expired-callback": () => {
+            setEmailData((prev) => ({ ...prev, captchaToken: "" }));
+            setErrors({ captcha: "Captcha expired. Please verify again." });
+          },
+        });
+      }
+    }
+  }, [showEmailForm]);
+
   const resetCaptcha = () => {
     if (window.hcaptcha) {
       window.hcaptcha.reset();
@@ -598,13 +623,7 @@ export default function LoginPage() {
                 </div>
 
                 <div>
-                  <div
-                    className="h-captcha"
-                    data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
-                    data-callback="onHCaptchaVerify"
-                    data-error-callback="onHCaptchaError"
-                    data-expired-callback="onHCaptchaExpire"
-                  ></div>
+                  <div id="email-captcha-container" className="h-captcha"></div>
                   {errors.captcha && (
                     <p className="mt-1 text-sm text-red-600">
                       {errors.captcha}
