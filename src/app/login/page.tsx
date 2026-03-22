@@ -549,21 +549,23 @@ export default function LoginPage() {
               <span className="font-medium">Continue as Guest</span>
             </button>
 
-            {/* hCaptcha for Email and Guest options */}
-            <div className="mt-6">
-              <div
-                className="h-captcha"
-                data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
-                data-callback="onHCaptchaVerify"
-                data-error-callback="onHCaptchaError"
-                data-expired-callback="onHCaptchaExpire"
-              ></div>
-              {errors.captcha && (
-                <p className="mt-1 text-sm text-red-600 text-center">
-                  {errors.captcha}
-                </p>
-              )}
-            </div>
+            {/* hCaptcha - hide when guest modal is open since it has its own captcha */}
+            {!showGuestModal && (
+              <div className="mt-6">
+                <div
+                  className="h-captcha"
+                  data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
+                  data-callback="onHCaptchaVerify"
+                  data-error-callback="onHCaptchaError"
+                  data-expired-callback="onHCaptchaExpire"
+                ></div>
+                {errors.captcha && (
+                  <p className="mt-1 text-sm text-red-600 text-center">
+                    {errors.captcha}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         ) : (
           <div className="space-y-4">

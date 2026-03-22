@@ -61,6 +61,7 @@ export async function createUserProfile(formData: {
             department:
               formData.databaseRole === "admin" ? null : formData.department,
             is_anonymous: isAnonymousUser,
+            theme_preference: "system", // Fix theme_preference constraint error
           })
           .eq("id", userId);
 
@@ -102,6 +103,7 @@ export async function createUserProfile(formData: {
       department:
         formData.databaseRole === "admin" ? null : formData.department,
       is_anonymous: isAnonymousUser,
+      theme_preference: "system",
     });
 
     if (insertError) {
