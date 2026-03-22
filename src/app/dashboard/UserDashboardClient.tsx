@@ -1457,7 +1457,7 @@ export default function UserDashboardClient({
                       Attach Photos (Optional)
                     </label>
 
-                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-4 hover:border-green-500 transition-colors">
+                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-green-500 hover:bg-green-50/30 transition-all cursor-pointer">
                       <input
                         type="file"
                         accept="image/*"
@@ -1470,7 +1470,7 @@ export default function UserDashboardClient({
 
                       <label
                         htmlFor="photo-upload"
-                        className={`flex flex-col items-center justify-center cursor-pointer ${photoFiles.length >= 5 ? "opacity-50 cursor-not-allowed" : ""}`}
+                        className={`flex flex-col items-center justify-center cursor-pointer py-2 ${photoFiles.length >= 5 ? "opacity-50 cursor-not-allowed" : ""}`}
                       >
                         <svg
                           className="w-8 h-8 text-gray-400 mb-2"
@@ -1509,7 +1509,7 @@ export default function UserDashboardClient({
                             <button
                               type="button"
                               onClick={() => removePhoto(index)}
-                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
+                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold hover:bg-red-600 hover:scale-110 transition-all shadow-md"
                             >
                               ×
                             </button>
@@ -1866,10 +1866,10 @@ export default function UserDashboardClient({
                               : notification.id,
                           );
                         }}
-                        className="p-1 hover:bg-gray-100 rounded transition-colors"
+                        className="p-2 hover:bg-gray-100 rounded transition-colors"
                       >
                         <svg
-                          className="w-4 h-4 text-gray-400"
+                          className="w-5 h-5 text-gray-400"
                           fill="currentColor"
                           viewBox="0 0 24 24"
                         >
@@ -1965,10 +1965,10 @@ export default function UserDashboardClient({
                 </div>
                 <label
                   htmlFor="avatar-upload"
-                  className="absolute bottom-0 right-0 bg-[#5D9C59] text-white p-1.5 rounded-full cursor-pointer hover:bg-[#4a7c4a] transition-colors shadow-md"
+                  className="absolute bottom-0 right-0 bg-[#5D9C59] text-white p-2 rounded-full cursor-pointer hover:bg-[#4a7c4a] hover:scale-110 transition-all shadow-md"
                 >
                   <svg
-                    className="w-3.5 h-3.5"
+                    className="w-4 h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
