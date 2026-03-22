@@ -155,7 +155,10 @@ export default function Sidebar({
       </nav>
 
       {/* Theme Toggle */}
-      <div className="px-4 py-3 border-t border-green-100 flex items-center justify-between">
+      <div
+        id="tutorial-sidebar-theme"
+        className="px-4 py-3 border-t border-green-100 flex items-center justify-between"
+      >
         <div className="flex items-center gap-2 text-green-700">
           <svg
             className="w-4 h-4"

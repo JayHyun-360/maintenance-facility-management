@@ -182,7 +182,7 @@ export default function AdminDashboardClient({
       title: "Search Functionality",
       description:
         "Search across all maintenance requests by name, location, nature, or description. Results appear instantly as you type.",
-      position: "bottom",
+      position: "right",
     },
     {
       id: "help",
@@ -190,7 +190,7 @@ export default function AdminDashboardClient({
       title: "Help & Tutorial",
       description:
         "Click here anytime to revisit this interactive tutorial and learn about new features.",
-      position: "bottom",
+      position: "right",
     },
     {
       id: "notifications",
@@ -198,22 +198,30 @@ export default function AdminDashboardClient({
       title: "Notifications Center",
       description:
         "View all your notifications including new requests, status updates, and system announcements. Red badge shows unread count.",
-      position: "bottom",
+      position: "left",
+    },
+    {
+      id: "ai",
+      targetSelector: "#tutorial-ai",
+      title: "AI Assistant",
+      description:
+        "Access the AI assistant for advanced request analysis, insights, and automation.",
+      position: "left",
     },
     {
       id: "theme",
-      targetSelector: "#tutorial-theme",
-      title: "Theme & AI Assistant",
+      targetSelector: "#tutorial-sidebar-theme",
+      title: "Theme Toggle",
       description:
-        "Toggle between light, dark, and system themes. Also access the AI assistant for advanced request analysis.",
-      position: "bottom",
+        "Toggle between light and dark themes. Click to switch modes.",
+      position: "right",
     },
     {
-      id: "profile",
-      targetSelector: "#tutorial-profile",
+      id: "settings",
+      targetSelector: "#tutorial-settings",
       title: "Profile Settings",
       description:
-        "Click your avatar to view your profile, switch between admin/user modes, and access account settings.",
+        "Click here to access profile settings, switch between admin/user modes, and manage your account.",
       position: "left",
     },
     {
@@ -776,6 +784,12 @@ export default function AdminDashboardClient({
   const [blockedUsers, setBlockedUsers] = useState<string[]>([]);
 
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
+
+  const [showDeleteAnnouncementModal, setShowDeleteAnnouncementModal] =
+    useState(false);
+  const [announcementToDelete, setAnnouncementToDelete] = useState<
+    string | null
+  >(null);
 
   const [broadcastTitle, setBroadcastTitle] = useState("");
 
@@ -1759,6 +1773,29 @@ export default function AdminDashboardClient({
     }
   };
 
+  const handleDeleteAnnouncement = async () => {
+    if (!announcementToDelete) return;
+
+    const { error } = await (supabase as any).rpc("delete_announcement", {
+      p_announcement_id: announcementToDelete,
+    });
+
+    if (error) {
+      console.error("Error deleting announcement:", error);
+      alert("Failed to delete announcement");
+      return;
+    }
+
+    setShowDeleteAnnouncementModal(false);
+    setAnnouncementToDelete(null);
+    fetchAnnouncements();
+  };
+
+  const openDeleteAnnouncementModal = (announcementId: string) => {
+    setAnnouncementToDelete(announcementId);
+    setShowDeleteAnnouncementModal(true);
+  };
+
   useEffect(() => {
     fetchAnnouncements();
   }, []);
@@ -2740,9 +2777,9 @@ ${result.analysis.risks || "N/A"}
       // Add logo on the left of centered text
       try {
         const logoSize = 12; // mm
-        const logoX = (pageWidth / 2) - 55;
+        const logoX = pageWidth / 2 - 55;
         const logoY = 8;
-        
+
         // Fetch the local logo uploaded from the chat context (copied to public/dlsl-logo-new.png)
         const imgData = await fetch("/dlsl-logo-new.png")
           .then((res) => res.blob())
@@ -2754,7 +2791,7 @@ ${result.analysis.risks || "N/A"}
                 reader.readAsDataURL(blob);
               }),
           );
-          
+
         pdf.addImage(imgData, "PNG", logoX, logoY, logoSize, logoSize);
       } catch (error) {
         console.warn("Logo generation failed", error);
@@ -2762,8 +2799,12 @@ ${result.analysis.risks || "N/A"}
 
       // College name centered
       pdf.setFont("helvetica", "normal");
-      pdf.text("DE LA SALLE JOHN BOSCO COLLEGE", pageWidth / 2, 14, { align: "center" });
-      pdf.text("Mangagoy, Bislig City, Surigao del Sur", pageWidth / 2, 18, { align: "center" });
+      pdf.text("DE LA SALLE JOHN BOSCO COLLEGE", pageWidth / 2, 14, {
+        align: "center",
+      });
+      pdf.text("Mangagoy, Bislig City, Surigao del Sur", pageWidth / 2, 18, {
+        align: "center",
+      });
 
       // TO line with better positioning
       pdf.setFontSize(10);
@@ -2837,7 +2878,7 @@ ${result.analysis.risks || "N/A"}
 
       // Date and Time aligned dynamically next to Urgent / Not Urgent
       const rightColX = urgencyX + 45;
-      
+
       // Date aligned with Urgent
       pdf.text("Date:", rightColX, natureY + 6);
       pdf.line(rightColX + 10, natureY + 6.5, right, natureY + 6.5);
@@ -2902,7 +2943,9 @@ ${result.analysis.risks || "N/A"}
       pdf.setTextColor(...bodyBlack);
       headerTexts.forEach((lines, idx) => {
         lines.forEach((line, li) => {
-          pdf.text(line, colX[idx], tableTop + 5 + li * 3.5, { align: "center" });
+          pdf.text(line, colX[idx], tableTop + 5 + li * 3.5, {
+            align: "center",
+          });
         });
       });
 
@@ -2923,8 +2966,13 @@ ${result.analysis.risks || "N/A"}
       values.forEach((val, idx) => {
         const maxW = colW[idx] - 6;
         const lines = pdf.splitTextToSize(val, maxW);
-        const cellLeft = vx - colW.slice(idx).reduce((a,b)=>a+b,0) + left; // Calculate exact left margin for cell
-        const actualColLeft = [left, left+w1, left+w1+w2, left+w1+w2+w3][idx];
+        const cellLeft = vx - colW.slice(idx).reduce((a, b) => a + b, 0) + left; // Calculate exact left margin for cell
+        const actualColLeft = [
+          left,
+          left + w1,
+          left + w1 + w2,
+          left + w1 + w2 + w3,
+        ][idx];
         lines.slice(0, 2).forEach((line: string, li: number) => {
           pdf.text(line, actualColLeft + 3, firstRowY + li * 3.8);
         });
@@ -2933,12 +2981,12 @@ ${result.analysis.risks || "N/A"}
       // Signature sections exactly matching image layout
       const requestApproveY = tableTop + tableH + 6;
       pdf.setFontSize(8);
-      
+
       // Requested by / Approved by Labels
       pdf.setTextColor(...bodyBlack);
       pdf.setFont("helvetica", "normal");
       pdf.text("Requested by: (Requesting Department)", left, requestApproveY);
-      
+
       pdf.text(
         "Approved by: Administrative Affairs & Services Division",
         left + contentWidth / 2,
@@ -2956,30 +3004,54 @@ ${result.analysis.risks || "N/A"}
       // Left column text
       pdf.line(left + 5, sigRow1Y, left + 65, sigRow1Y);
       pdf.text(reportFormData.nameOfEmployee || "", left + 10, sigRow1Y - 1);
-      pdf.text("Name of Employee", left + 35, sigRow1Y + 3.5, { align: "center" });
+      pdf.text("Name of Employee", left + 35, sigRow1Y + 3.5, {
+        align: "center",
+      });
 
       pdf.line(left + 5, sigRow2Y, left + 65, sigRow2Y);
       pdf.text(reportFormData.departmentHead || "", left + 10, sigRow2Y - 1);
-      pdf.text("Department Head", left + 35, sigRow2Y + 3.5, { align: "center" });
+      pdf.text("Department Head", left + 35, sigRow2Y + 3.5, {
+        align: "center",
+      });
 
       // Right column text
       const rightColOffset = left + contentWidth / 2 + 10;
-      
+
       pdf.line(rightColOffset + 10, sigRow1Y, right - 5, sigRow1Y);
-      pdf.text(reportFormData.vpAASD || "", rightColOffset + (contentWidth / 4) + 2.5, sigRow1Y - 1, { align: "center" });
-      pdf.text("VP - AASD", rightColOffset + (contentWidth / 4) + 2.5, sigRow1Y + 3.5, { align: "center" });
+      pdf.text(
+        reportFormData.vpAASD || "",
+        rightColOffset + contentWidth / 4 + 2.5,
+        sigRow1Y - 1,
+        { align: "center" },
+      );
+      pdf.text(
+        "VP - AASD",
+        rightColOffset + contentWidth / 4 + 2.5,
+        sigRow1Y + 3.5,
+        { align: "center" },
+      );
 
       pdf.text("Received by:", rightColOffset - 10, sigRow2Y - 0.5);
       pdf.line(rightColOffset + 10, sigRow2Y, right - 5, sigRow2Y);
-      pdf.text(reportFormData.gmsHead || "", rightColOffset + (contentWidth / 4) + 2.5, sigRow2Y - 1, { align: "center" });
-      pdf.text("GMS Head", rightColOffset + (contentWidth / 4) + 2.5, sigRow2Y + 3.5, { align: "center" });
+      pdf.text(
+        reportFormData.gmsHead || "",
+        rightColOffset + contentWidth / 4 + 2.5,
+        sigRow2Y - 1,
+        { align: "center" },
+      );
+      pdf.text(
+        "GMS Head",
+        rightColOffset + contentWidth / 4 + 2.5,
+        sigRow2Y + 3.5,
+        { align: "center" },
+      );
 
       // Large bottom grid for Evaluation
       const gridTop = sigRow2Y + 8;
       const gridH = 34; // Total height for the 4 rows
-      
+
       pdf.rect(left, gridTop, contentWidth, gridH);
-      
+
       // Bottom grid columns
       const weCol1 = 40; // Date/Time Received, etc (Labels)
       const weCol2 = 45; // Fill sections (Empty or text)
@@ -2988,17 +3060,42 @@ ${result.analysis.risks || "N/A"}
       // weCol5 is the rest (Outstanding, etc.)
 
       pdf.line(left + weCol1, gridTop, left + weCol1, gridTop + gridH);
-      pdf.line(left + weCol1 + weCol2, gridTop, left + weCol1 + weCol2, gridTop + gridH);
-      pdf.line(left + weCol1 + weCol2 + weCol3, gridTop, left + weCol1 + weCol2 + weCol3, gridTop + gridH);
-      pdf.line(left + weCol1 + weCol2 + weCol3 + weCol4, gridTop, left + weCol1 + weCol2 + weCol3 + weCol4, gridTop + gridH);
+      pdf.line(
+        left + weCol1 + weCol2,
+        gridTop,
+        left + weCol1 + weCol2,
+        gridTop + gridH,
+      );
+      pdf.line(
+        left + weCol1 + weCol2 + weCol3,
+        gridTop,
+        left + weCol1 + weCol2 + weCol3,
+        gridTop + gridH,
+      );
+      pdf.line(
+        left + weCol1 + weCol2 + weCol3 + weCol4,
+        gridTop,
+        left + weCol1 + weCol2 + weCol3 + weCol4,
+        gridTop + gridH,
+      );
 
       // Horizontal lines for the grid
       const weRowH = gridH / 4;
       for (let i = 1; i < 4; i++) {
         // Line spanning first two columns
-        pdf.line(left, gridTop + weRowH * i, left + weCol1 + weCol2, gridTop + weRowH * i);
+        pdf.line(
+          left,
+          gridTop + weRowH * i,
+          left + weCol1 + weCol2,
+          gridTop + weRowH * i,
+        );
         // Line spanning the 4th and 5th columns
-        pdf.line(left + weCol1 + weCol2 + weCol3, gridTop + weRowH * i, right, gridTop + weRowH * i);
+        pdf.line(
+          left + weCol1 + weCol2 + weCol3,
+          gridTop + weRowH * i,
+          right,
+          gridTop + weRowH * i,
+        );
       }
 
       // Labels for column 1
@@ -3029,7 +3126,12 @@ ${result.analysis.risks || "N/A"}
       // "Work Evaluation" vertically centered in Column 3
       pdf.setFont("helvetica", "bold");
       pdf.setFontSize(9);
-      pdf.text("Work Evaluation", left + weCol1 + weCol2 + 12.5, gridTop + gridH / 2 + 1.5, { align: "center" });
+      pdf.text(
+        "Work Evaluation",
+        left + weCol1 + weCol2 + 12.5,
+        gridTop + gridH / 2 + 1.5,
+        { align: "center" },
+      );
 
       // Column 4 checkboxes and labels (Column 5)
       pdf.setFont("helvetica", "normal");
@@ -3047,11 +3149,11 @@ ${result.analysis.risks || "N/A"}
 
         // Draw check inside the narrow cell if selected
         if (reportFormData.workEvaluation === opt.key) {
-           pdf.setLineWidth(0.4);
-           // Cross in the very small cell box
-           pdf.line(boxX + 1.5, cy + 2, boxX + weCol4 - 1.5, cy + weRowH - 2);
-           pdf.line(boxX + 1.5, cy + weRowH - 2, boxX + weCol4 - 1.5, cy + 2);
-           pdf.setLineWidth(0.18);
+          pdf.setLineWidth(0.4);
+          // Cross in the very small cell box
+          pdf.line(boxX + 1.5, cy + 2, boxX + weCol4 - 1.5, cy + weRowH - 2);
+          pdf.line(boxX + 1.5, cy + weRowH - 2, boxX + weCol4 - 1.5, cy + 2);
+          pdf.setLineWidth(0.18);
         }
 
         // Text placed tightly next to the small column
@@ -3381,9 +3483,9 @@ ${result.analysis.risks || "N/A"}
                   )}
                 </button>
 
-                {/* Theme Toggle */}
+                {/* AI Assistant */}
                 <button
-                  id="tutorial-theme"
+                  id="tutorial-ai"
                   onClick={() => setShowAIChat(true)}
                   className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                   title="AI Assistant"
@@ -3392,6 +3494,7 @@ ${result.analysis.risks || "N/A"}
                 </button>
 
                 <button
+                  id="tutorial-settings"
                   onClick={() => setShowProfileSidebar(true)}
                   className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
                 >
@@ -3399,7 +3502,7 @@ ${result.analysis.risks || "N/A"}
                 </button>
 
                 {/* Profile Avatar */}
-                <div className="relative" id="tutorial-profile">
+                <div className="relative">
                   <button
                     onClick={() => setShowProfileViewer(!showProfileViewer)}
                     className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
@@ -4972,16 +5075,39 @@ ${result.analysis.risks || "N/A"}
                     userMessages["announcements"].slice(0, 5).map((msg) => (
                       <div
                         key={msg.id}
-                        className="p-4 bg-gray-50 rounded-lg border border-gray-100"
+                        className="p-4 bg-gray-50 rounded-lg border border-gray-100 relative group"
                       >
                         <div className="flex items-start justify-between">
                           <p className="text-gray-900 font-medium">
                             {msg.title || "Announcement"}
                           </p>
 
-                          <span className="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded-full">
-                            {msg.recipient_count || 0} recipients
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-gray-500 bg-gray-200 px-2 py-1 rounded-full">
+                              {msg.recipient_count || 0} recipients
+                            </span>
+                            <button
+                              onClick={() =>
+                                openDeleteAnnouncementModal(msg.id)
+                              }
+                              className="p-1 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                              title="Delete announcement"
+                            >
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                />
+                              </svg>
+                            </button>
+                          </div>
                         </div>
 
                         <p className="text-gray-700 mt-2">{msg.message}</p>
@@ -8490,6 +8616,82 @@ ${result.analysis.risks || "N/A"}
                     className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     Send Warning / Notice
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Delete Announcement Confirmation Modal */}
+        {showDeleteAnnouncementModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
+              <div className="p-6 border-b border-gray-200">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-header text-lg font-semibold text-gray-900 flex items-center gap-2">
+                    <svg
+                      className="w-5 h-5 text-red-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                      />
+                    </svg>
+                    Delete Announcement
+                  </h3>
+
+                  <button
+                    onClick={() => {
+                      setShowDeleteAnnouncementModal(false);
+                      setAnnouncementToDelete(null);
+                    }}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div className="p-6">
+                <p className="text-gray-600 mb-4">
+                  Are you sure you want to delete this announcement? This action
+                  cannot be undone.
+                </p>
+
+                <div className="flex justify-end gap-3">
+                  <button
+                    onClick={() => {
+                      setShowDeleteAnnouncementModal(false);
+                      setAnnouncementToDelete(null);
+                    }}
+                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors text-sm font-medium"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    onClick={handleDeleteAnnouncement}
+                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-medium"
+                  >
+                    Delete
                   </button>
                 </div>
               </div>
