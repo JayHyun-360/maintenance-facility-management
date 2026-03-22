@@ -93,6 +93,31 @@ export default function LoginPage() {
     };
   }, []);
 
+  // Render hCaptcha when guest modal is opened
+  useEffect(() => {
+    if (showGuestModal && window.hcaptcha) {
+      const container = document.getElementById("guest-captcha-container");
+      if (container && container.innerHTML.trim() === "") {
+        window.hcaptcha.render(container, {
+          sitekey: process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!,
+          callback: (token: string) => {
+            setGuestData((prev) => ({ ...prev, captchaToken: token }));
+            setErrors((prev) => ({ ...prev, captcha: "" }));
+          },
+          "error-callback": () => {
+            setErrors({
+              captcha: "Captcha verification failed. Please try again.",
+            });
+          },
+          "expired-callback": () => {
+            setGuestData((prev) => ({ ...prev, captchaToken: "" }));
+            setErrors({ captcha: "Captcha expired. Please verify again." });
+          },
+        });
+      }
+    }
+  }, [showGuestModal]);
+
   const resetCaptcha = () => {
     if (window.hcaptcha) {
       window.hcaptcha.reset();
@@ -223,6 +248,11 @@ export default function LoginPage() {
   };
 
   const handleGuestAgreementAccept = async () => {
+    if (!guestData.captchaToken) {
+      setErrors({ captcha: "Please complete captcha verification" });
+      return;
+    }
+
     setLoading(true);
     try {
       const { error, data } = await supabase.auth.signInAnonymously({
@@ -678,13 +708,7 @@ export default function LoginPage() {
             </div>
 
             <div className="mt-4">
-              <div
-                className="h-captcha"
-                data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
-                data-callback="onHCaptchaVerify"
-                data-error-callback="onHCaptchaError"
-                data-expired-callback="onHCaptchaExpire"
-              ></div>
+              <div id="guest-captcha-container" className="h-captcha"></div>
             </div>
 
             <div className="flex gap-3 mt-6">
