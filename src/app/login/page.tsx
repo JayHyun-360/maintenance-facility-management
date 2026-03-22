@@ -290,6 +290,7 @@ export default function LoginPage() {
             educational_level: null,
             department: null,
             is_anonymous: true,
+            theme_preference: "system",
           },
         },
       });
@@ -338,6 +339,7 @@ export default function LoginPage() {
             educational_level: guestData.educationalLevel || null,
             department: guestData.department || null,
             is_anonymous: true,
+            theme_preference: "system",
           },
         },
       });
