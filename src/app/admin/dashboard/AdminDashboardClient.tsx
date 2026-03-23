@@ -3237,7 +3237,7 @@ ${result.analysis.risks || "N/A"}
           carpentry: selectedRequestForReport.nature === "Carpentry",
           electrical: selectedRequestForReport.nature === "Electrical",
           personnelServices: ["HVAC", "Cleaning", "Other"].includes(
-            selectedRequestForReport.nature
+            selectedRequestForReport.nature,
           ),
           masonry: selectedRequestForReport.nature === "Masonry",
         },
@@ -6141,7 +6141,8 @@ ${result.analysis.risks || "N/A"}
                     </h3>
 
                     <div className="grid grid-cols-2 gap-3 mb-4">
-                      {[n                        { key: "plumbing", label: "PLUMBING" },
+                      {[
+                        { key: "plumbing", label: "PLUMBING" },
 
                         { key: "carpentry", label: "CARPENTRY" },
 
