@@ -3894,6 +3894,19 @@ ${result.analysis.risks || "N/A"}
                           gradient:
                             "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
                         },
+
+                        {
+                          name: "Masonry",
+
+                          color: "from-orange-500 to-orange-600",
+
+                          bgLight: "bg-orange-50",
+
+                          icon: Hammer,
+
+                          gradient:
+                            "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
+                        },
                       ]
 
                         .map((nature) => ({
@@ -4255,6 +4268,19 @@ ${result.analysis.risks || "N/A"}
 
                           gradient:
                             "linear-gradient(135deg, #6B7280 0%, #4B5563 100%)",
+                        },
+
+                        {
+                          name: "Masonry",
+
+                          color: "from-orange-500 to-orange-600",
+
+                          bgLight: "bg-orange-50",
+
+                          icon: Hammer,
+
+                          gradient:
+                            "linear-gradient(135deg, #F97316 0%, #EA580C 100%)",
                         },
                       ].map((nature, index) => {
                         const count = requests.filter(
@@ -4838,6 +4864,8 @@ ${result.analysis.risks || "N/A"}
 
                             "Cleaning",
 
+                            "Masonry",
+
                             "Other",
                           ].map((nature) => (
                             <label
@@ -5242,6 +5270,10 @@ ${result.analysis.risks || "N/A"}
                       <Sparkles className="w-4 h-4 text-white" />
                     )}
 
+                    {showDetailModal.nature === "Masonry" && (
+                      <Hammer className="w-4 h-4 text-white" />
+                    )}
+
                     {![
                       "Plumbing",
 
@@ -5250,6 +5282,8 @@ ${result.analysis.risks || "N/A"}
                       "Carpentry",
 
                       "Personnel Services",
+
+                      "Masonry",
                     ].includes(showDetailModal.nature) && (
                       <Activity className="w-4 h-4 text-white" />
                     )}
