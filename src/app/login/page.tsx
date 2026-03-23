@@ -489,6 +489,7 @@ export default function LoginPage() {
         {!showEmailForm ? (
           <div className="space-y-3">
             <button
+              data-hcaptcha-enabled="false"
               onClick={(e) => {
                 e.stopPropagation();
                 handleGoogleSignIn();
@@ -520,6 +521,7 @@ export default function LoginPage() {
             </button>
 
             <button
+              data-hcaptcha-enabled="false"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowEmailForm(true);
@@ -553,6 +555,7 @@ export default function LoginPage() {
             </div>
 
             <button
+              data-hcaptcha-enabled="false"
               onClick={(e) => {
                 e.stopPropagation();
                 setShowGuestModal(true);
