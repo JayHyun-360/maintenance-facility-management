@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global styles */
 @layer base {
   html {
     font-family:
