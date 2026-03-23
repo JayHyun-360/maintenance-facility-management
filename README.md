@@ -1,8 +1,11 @@
 # Maintenance Facility Management
 
+<!-- trigger redeploy -->
+
 A Next.js application for managing maintenance facility requests with admin dashboard and user portal.
 
 ## Tech Stack
+
 - Next.js 14+ (App Router)
 - TypeScript
 - Supabase (PostgreSQL)
@@ -16,4 +19,5 @@ npm run dev
 ```
 
 ## Deployment
+
 Deployed on Vercel.
