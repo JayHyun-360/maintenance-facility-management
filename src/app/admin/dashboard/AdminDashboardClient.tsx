@@ -4190,7 +4190,7 @@ ${result.analysis.risks || "N/A"}
                       </motion.div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
                       {[
                         {
                           name: "Plumbing",
@@ -4316,7 +4316,7 @@ ${result.analysis.risks || "N/A"}
                             whileTap={{ scale: 0.98 }}
                             className="group relative"
                           >
-                            <div className="relative bg-white rounded-2xl p-5 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+                            <div className="relative bg-white rounded-2xl p-3 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
                               {/* Animated background gradient */}
 
                               <motion.div
@@ -4336,14 +4336,14 @@ ${result.analysis.risks || "N/A"}
                               <div className="relative z-10">
                                 {/* Icon section */}
 
-                                <div className="flex items-center justify-between mb-4">
+                                <div className="flex items-center justify-between mb-2">
                                   <motion.div
-                                    className={`p-3 rounded-xl ${nature.bgLight} group-hover:scale-110 transition-transform duration-300`}
+                                    className={`p-2 rounded-lg ${nature.bgLight} group-hover:scale-110 transition-transform duration-300`}
                                     whileHover={{ rotate: [0, -10, 10, 0] }}
                                     transition={{ duration: 0.5 }}
                                   >
                                     <Icon
-                                      className="w-5 h-5"
+                                      className="w-4 h-4"
                                       style={{
                                         color:
                                           nature.gradient.match(
@@ -4365,16 +4365,16 @@ ${result.analysis.risks || "N/A"}
 
                                 {/* Content */}
 
-                                <div className="space-y-3">
+                                <div className="space-y-1">
                                   <div>
-                                    <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-700 transition-colors">
+                                    <h3 className="font-semibold text-gray-900 text-xs group-hover:text-gray-700 transition-colors">
                                       {nature.name}
                                     </h3>
                                   </div>
 
-                                  <div className="flex items-baseline gap-2">
+                                  <div className="flex items-baseline gap-1">
                                     <motion.span
-                                      className="text-2xl font-bold text-gray-900"
+                                      className="text-xl font-bold text-gray-900"
                                       initial={{ opacity: 0, y: 10 }}
                                       animate={{ opacity: 1, y: 0 }}
                                       transition={{ delay: 0.3 + index * 0.1 }}
@@ -4382,14 +4382,14 @@ ${result.analysis.risks || "N/A"}
                                       {count}
                                     </motion.span>
 
-                                    <span className="text-sm text-gray-500 font-medium">
+                                    <span className="text-xs text-gray-500 font-medium">
                                       {percentage}%
                                     </span>
                                   </div>
 
                                   {/* Progress bar */}
 
-                                  <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
+                                  <div className="relative h-1.5 bg-gray-100 rounded-full overflow-hidden">
                                     <motion.div
                                       className={`h-full bg-gradient-to-r ${nature.color} rounded-full relative`}
                                       initial={{ width: 0 }}
