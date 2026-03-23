@@ -694,6 +694,8 @@ export default function AdminDashboardClient({
       electrical: false,
 
       personnelServices: false,
+
+      masonry: false,
     },
 
     urgency: "Not Urgent",
@@ -2834,6 +2836,7 @@ ${result.analysis.risks || "N/A"}
         { key: "carpentry", label: "CARPENTRY" },
         { key: "electrical", label: "ELECTRICAL" },
         { key: "personnelServices", label: "PERSONNEL SERVICES" },
+        { key: "masonry", label: "MASONRY" },
       ];
 
       let currentY = natureY;
@@ -3217,6 +3220,7 @@ ${result.analysis.risks || "N/A"}
         Carpentry: "carpentry",
         Electrical: "electrical",
         HVAC: "personnelServices",
+        Masonry: "masonry",
         Cleaning: "personnelServices",
         Other: "personnelServices",
       };
@@ -3233,8 +3237,9 @@ ${result.analysis.risks || "N/A"}
           carpentry: selectedRequestForReport.nature === "Carpentry",
           electrical: selectedRequestForReport.nature === "Electrical",
           personnelServices: ["HVAC", "Cleaning", "Other"].includes(
-            selectedRequestForReport.nature,
+            selectedRequestForReport.nature
           ),
+          masonry: selectedRequestForReport.nature === "Masonry",
         },
 
         // Location - from request, read-only
@@ -6136,8 +6141,7 @@ ${result.analysis.risks || "N/A"}
                     </h3>
 
                     <div className="grid grid-cols-2 gap-3 mb-4">
-                      {[
-                        { key: "plumbing", label: "PLUMBING" },
+                      {[n                        { key: "plumbing", label: "PLUMBING" },
 
                         { key: "carpentry", label: "CARPENTRY" },
 
@@ -6147,6 +6151,8 @@ ${result.analysis.risks || "N/A"}
                           key: "personnelServices",
                           label: "PERSONNEL SERVICES",
                         },
+
+                        { key: "masonry", label: "MASONRY" },
                       ].map((option) => (
                         <label
                           key={option.key}

@@ -1244,6 +1244,8 @@ export default function UserDashboardClient({
 
                         <option value="Cleaning">Cleaning</option>
 
+                        <option value="Masonry">Masonry</option>
+
                         <option value="Other">Other</option>
                       </select>
 
