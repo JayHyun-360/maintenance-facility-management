@@ -60,7 +60,7 @@ export async function analyzeMaintenanceRequest(
   }
 }
 
-// Helper function for admin chat assistance
+// Helper function for admin chat assistance with enhanced capabilities
 export async function getAdminAssistance(
   query: string,
   context?: any,
@@ -71,6 +71,61 @@ export async function getAdminAssistance(
   if (!model) {
     throw new Error("Gemini API not initialized - check GOOGLE_GEMINI_API_KEY");
   }
+
+  const lowerQuery = query.toLowerCase();
+
+  // Determine if we need to fetch additional data
+  const needsDatabaseQuery = shouldUseDatabaseQuery(lowerQuery);
+  const needsWebSearch = shouldUseWebSearch(lowerQuery);
+
+  let dbResults: any = null;
+  let webResults: any = null;
+
+  // Fetch database results if needed
+  if (needsDatabaseQuery) {
+    try {
+      const dbResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/api/ai/database-query`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+          },
+          body: JSON.stringify({ query }),
+        },
+      );
+      const dbData = await dbResponse.json();
+      if (dbData.success) {
+        dbResults = dbData;
+      }
+    } catch (e) {
+      console.error("Database query failed:", e);
+    }
+  }
+
+  // Fetch web search results if needed
+  if (needsWebSearch) {
+    try {
+      const webResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_SUPABASE_URL}/api/ai/web-search`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ query }),
+        },
+      );
+      const webData = await webResponse.json();
+      if (webData.success) {
+        webResults = webData;
+      }
+    } catch (e) {
+      console.error("Web search failed:", e);
+    }
+  }
+
   try {
     const parts: any[] = [];
 
@@ -94,6 +149,39 @@ Completed: ${context.completedRequests || "N/A"}`
 }
 
 User Query: "${query}"`;
+
+    // Add database query results if available
+    if (dbResults?.success && dbResults.data?.length > 0) {
+      promptText += `
+
+DATABASE QUERY RESULTS:
+${dbResults.summary || ""}
+
+${formatDatabaseResults(dbResults.data)}
+
+Use this data to answer the user's question accurately.`;
+    }
+
+    // Add web search results if available
+    if (webResults?.success) {
+      promptText += `
+
+WEB SEARCH RESULTS:
+${webResults.formatted || ""}
+
+Use this information to supplement your answer if relevant.`;
+    }
+
+    // If web search is needed but not configured, inform the user
+    if (
+      needsWebSearch &&
+      !webResults?.success &&
+      webResults?.needsConfiguration
+    ) {
+      promptText += `
+
+NOTE: The user is asking about information that may require current web data. Web search is not currently configured. You can suggest enabling it for more up-to-date information.`;
+    }
 
     // If images are attached, add explicit analysis instructions
     if (hasImages) {
@@ -129,7 +217,8 @@ Attached Request Details:
 
 Provide helpful, actionable advice for managing maintenance requests, user communications, and system optimization.
 Keep responses concise and relevant to facility management. When discussing statistics or trends, reference the current dashboard counts provided above.
-When images are provided, always include a detailed visual analysis section in your response.`;
+When images are provided, always include a detailed visual analysis section in your response.
+When the user asks about specific data (counts, lists, details), always reference the database query results provided above.`;
 
     parts.push({ text: promptText });
 
@@ -175,6 +264,102 @@ When images are provided, always include a detailed visual analysis section in y
     }
     throw new Error(`Failed to get AI assistance: ${errorMessage}`);
   }
+}
+
+// Determine if query requires database lookup
+function shouldUseDatabaseQuery(query: string): boolean {
+  const dbTriggers = [
+    "show me",
+    "list",
+    "get all",
+    "find",
+    "search",
+    "how many",
+    "count",
+    "total",
+    "what are",
+    "give me",
+    "display",
+    "view",
+    "recent",
+    "latest",
+    "oldest",
+    "pending",
+    "completed",
+    "in progress",
+    "by status",
+    "by nature",
+    "by urgency",
+    "by location",
+    "this week",
+    "this month",
+    "today",
+    "users",
+    "profiles",
+    "announcements",
+    "notifications",
+    "audit",
+    "history",
+    "logs",
+  ];
+  return dbTriggers.some((trigger) => query.includes(trigger));
+}
+
+// Determine if query requires web search
+function shouldUseWebSearch(query: string): boolean {
+  const webTriggers = [
+    "current",
+    "latest",
+    "news",
+    "weather",
+    "today's",
+    "what is the",
+    "how do i",
+    "how to",
+    "what's the best",
+    "recommend",
+    "compare",
+    "price",
+    "cost",
+    "buy",
+    "purchase",
+    "external",
+    "online",
+    "internet",
+    "search for",
+    "look up",
+    "find information",
+  ];
+  return webTriggers.some((trigger) => query.includes(trigger));
+}
+
+// Format database results for prompt
+function formatDatabaseResults(data: any[]): string {
+  if (!data || data.length === 0) return "No data found.";
+
+  const limitedData = data.slice(0, 20); // Limit to 20 items for prompt size
+
+  return limitedData
+    .map((item, index) => {
+      // Handle maintenance requests
+      if (item.nature) {
+        return `[${index + 1}] ID: ${item.id}, Nature: ${item.nature}, Status: ${item.status}, Urgency: ${item.urgency}, Location: ${item.location}, Created: ${item.created_at?.split("T")[0] || "N/A"}`;
+      }
+      // Handle profiles
+      if (item.full_name) {
+        return `[${index + 1}] Name: ${item.full_name}, Role: ${item.visual_role || item.database_role}, Email: ${item.email || "N/A"}`;
+      }
+      // Handle announcements
+      if (item.title) {
+        return `[${index + 1}] Title: ${item.title}, Message: ${item.message?.substring(0, 100)}..., Created: ${item.created_at?.split("T")[0] || "N/A"}`;
+      }
+      // Handle notifications
+      if (item.notification_type) {
+        return `[${index + 1}] Title: ${item.title}, Read: ${item.is_read}, Created: ${item.created_at?.split("T")[0] || "N/A"}`;
+      }
+      return `[${index + 1}] ${JSON.stringify(item).substring(0, 100)}`;
+    })
+    .join("\n");
 }
 
 // Helper function to generate smart responses
