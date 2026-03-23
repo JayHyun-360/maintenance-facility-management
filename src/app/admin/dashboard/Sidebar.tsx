@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFeatherPointed } from "@fortawesome/free-solid-svg-icons";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface SidebarProps {
   activeTab: string;
@@ -103,28 +104,39 @@ export default function Sidebar({
 }: SidebarProps) {
   const router = useRouter();
   const supabase = createClient();
+  const { theme, toggleTheme } = useTheme();
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     window.location.href = "/login";
   };
 
+  const isDark = theme === "dark";
+
   return (
-    <div className="w-64 min-h-screen bg-gray-50 border-r border-green-200 flex flex-col fixed left-0 top-0 shadow-sm">
+    <div
+      className={`w-64 min-h-screen ${isDark ? "bg-gray-900 border-blue-800/30" : "bg-gray-50 border-green-200"} border-r flex flex-col fixed left-0 top-0 shadow-sm`}
+    >
       {/* Logo and Title */}
-      <div className="p-6 border-b border-green-100">
+      <div
+        className={`p-6 ${isDark ? "border-blue-800/30" : "border-green-100"} border-b`}
+      >
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
             <FontAwesomeIcon
               icon={faFeatherPointed}
-              className="w-8 h-8 text-green-600"
+              className={`w-8 h-8 ${isDark ? "text-blue-500" : "text-green-600"}`}
             />
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="text-green-800 font-bold text-lg truncate">
+            <h1
+              className={`font-bold text-lg truncate ${isDark ? "text-blue-400" : "text-green-800"}`}
+            >
               Dashboard
             </h1>
-            <div className="text-green-600/70 text-xs truncate">
+            <div
+              className={`text-xs truncate ${isDark ? "text-blue-400/70" : "text-green-600/70"}`}
+            >
               <div>Integrated Visual Feedback</div>
               <div>& Maintenance Utility</div>
             </div>
@@ -142,8 +154,12 @@ export default function Sidebar({
                 onClick={() => onTabChange(item.id)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                   activeTab === item.id
-                    ? "bg-green-500 text-white shadow-md"
-                    : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
+                    ? isDark
+                      ? "bg-blue-600 text-white shadow-md"
+                      : "bg-green-500 text-white shadow-md"
+                    : isDark
+                      ? "text-blue-300 hover:bg-gray-800 hover:shadow-sm hover:text-blue-200"
+                      : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                 }`}
               >
                 {item.icon}
@@ -157,35 +173,64 @@ export default function Sidebar({
       {/* Theme Toggle */}
       <div
         id="tutorial-sidebar-theme"
-        className="px-4 py-3 border-t border-green-100 flex items-center justify-between"
+        className={`px-4 py-3 flex items-center justify-between ${isDark ? "border-blue-800/30" : "border-green-100"} border-t`}
       >
-        <div className="flex items-center gap-2 text-green-700">
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-            />
-          </svg>
+        <div
+          className={`flex items-center gap-2 ${isDark ? "text-blue-300" : "text-green-700"}`}
+        >
+          {isDark ? (
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              />
+            </svg>
+          ) : (
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+          )}
           <span className="text-sm font-medium">Theme</span>
         </div>
         <label className="theme-toggle-switch cursor-pointer">
-          <input type="checkbox" className="hidden" />
+          <input
+            type="checkbox"
+            className="hidden"
+            checked={isDark}
+            onChange={toggleTheme}
+          />
           <span className="toggle-slider"></span>
         </label>
       </div>
 
       {/* Sign Out */}
-      <div className="p-4 border-t border-green-100">
+      <div
+        className={`p-4 ${isDark ? "border-blue-800/30" : "border-green-100"} border-t`}
+      >
         <button
           onClick={handleSignOut}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white text-green-700 hover:text-red-600 rounded-lg transition-all duration-200 font-medium border border-green-200 shadow-sm hover:shadow-md"
+          className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 font-medium border shadow-sm hover:shadow-md ${
+            isDark
+              ? "bg-gray-800 text-blue-300 hover:text-red-400 border-blue-700/50"
+              : "bg-white text-green-700 hover:text-red-600 border-green-200"
+          }`}
         >
           <svg
             className="w-5 h-5"

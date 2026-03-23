@@ -79,6 +79,15 @@
     transform: translateX(16px);
   }
 
+  /* Dark mode toggle - blue accent */
+  .dark .theme-toggle-switch .toggle-slider {
+    background-color: #1e3a5f;
+  }
+
+  .dark .theme-toggle-switch input:checked + .toggle-slider {
+    background-color: #3b82f6;
+  }
+
   /* Light theme variant */
   .theme-toggle-switch.light .toggle-slider {
     background-color: #bebebe;
