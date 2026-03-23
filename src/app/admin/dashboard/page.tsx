@@ -1,6 +1,7 @@
 import { createServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import AdminDashboardClient from "./AdminDashboardClient";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import type { Profile, MaintenanceRequest } from "@/types/database";
 
 interface RequestWithProfile extends MaintenanceRequest {
@@ -107,13 +108,15 @@ export default async function AdminDashboard({ searchParams }: PageProps) {
 
   // Pass to client component for interactivity
   return (
-    <AdminDashboardClient
-      initialRequests={requests}
-      initialStats={initialStats}
-      initialProfile={fullProfile}
-      userAvatar={userAvatar}
-      userId={session.user.id}
-      initialRequestId={requestId}
-    />
+    <ThemeProvider>
+      <AdminDashboardClient
+        initialRequests={requests}
+        initialStats={initialStats}
+        initialProfile={fullProfile}
+        userAvatar={userAvatar}
+        userId={session.user.id}
+        initialRequestId={requestId}
+      />
+    </ThemeProvider>
   );
 }
