@@ -706,10 +706,24 @@ export default function UserDashboardClient({
   const handleThemeToggle = async () => {
     if (!profile) return;
 
+    const currentTheme = profile.theme_preference || "system";
+
+    // Ensure we have a valid theme_preference in the database first
+    if (
+      !profile.theme_preference ||
+      !["light", "dark", "system"].includes(profile.theme_preference)
+    ) {
+      await (supabase.from("profiles") as any)
+        .update({ theme_preference: "system" })
+        .eq("id", profile.id);
+      setProfile({ ...profile, theme_preference: "system" });
+      return;
+    }
+
     const newTheme: ThemePreference =
-      profile.theme_preference === "light"
+      currentTheme === "light"
         ? "dark"
-        : profile.theme_preference === "dark"
+        : currentTheme === "dark"
           ? "system"
           : "light";
 
@@ -1118,7 +1132,7 @@ export default function UserDashboardClient({
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                {profile?.theme_preference === "dark" ? (
+                {(profile?.theme_preference || "system") === "dark" ? (
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -1139,7 +1153,7 @@ export default function UserDashboardClient({
             <label className="theme-toggle-switch cursor-pointer">
               <input
                 type="checkbox"
-                checked={profile?.theme_preference === "dark"}
+                checked={(profile?.theme_preference || "system") === "dark"}
                 onChange={handleThemeToggle}
                 className="hidden"
               />
