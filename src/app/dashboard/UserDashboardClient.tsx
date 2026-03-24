@@ -224,6 +224,41 @@ export default function UserDashboardClient({
     }
   };
 
+  // Delete avatar handler
+  const handleDeleteAvatar = async () => {
+    if (!profile || !profile.avatar_url) return;
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your profile picture?",
+    );
+    if (!confirmed) return;
+
+    try {
+      // Extract file path from URL for storage deletion
+      const urlParts = profile.avatar_url.split(
+        "/storage/v1/object/public/avatars/",
+      );
+      if (urlParts.length > 1) {
+        const fileName = urlParts[1];
+        await supabase.storage.from("avatars").remove([fileName]);
+      }
+
+      // Update profile to remove avatar_url
+      await (supabase.from("profiles") as any)
+        .update({ avatar_url: null })
+        .eq("id", profile.id);
+
+      setProfile({ ...profile, avatar_url: null });
+      router.refresh();
+    } catch (error) {
+      console.error("Delete avatar error:", error);
+      setValidationErrors({
+        ...validationErrors,
+        avatar: "Failed to delete avatar",
+      });
+    }
+  };
+
   // Password change handler
   const handlePasswordChange = async () => {
     setPasswordError("");
@@ -2184,6 +2219,27 @@ export default function UserDashboardClient({
                     disabled={uploadingAvatar}
                   />
                 </label>
+                {profile?.avatar_url && (
+                  <button
+                    onClick={handleDeleteAvatar}
+                    className={`absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white p-1 rounded-full transition-colors shadow-md`}
+                    title="Delete avatar"
+                  >
+                    <svg
+                      className="w-3.5 h-3.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                )}
               </div>
 
               {/* Full Name - 2 lines max */}
