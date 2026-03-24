@@ -2113,10 +2113,10 @@ export default function UserDashboardClient({
                 </button>
               </li>
 
-              {/* Theme Preference Section */}
+              {/* Theme Preference Section - Display Only */}
               <li>
                 <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
-                  {profileFormData.theme_preference === "dark" ? (
+                  {(profile?.theme_preference || "system") === "dark" ? (
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -2130,7 +2130,7 @@ export default function UserDashboardClient({
                         d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
                       />
                     </svg>
-                  ) : profileFormData.theme_preference === "light" ? (
+                  ) : (profile?.theme_preference || "system") === "light" ? (
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -2161,23 +2161,9 @@ export default function UserDashboardClient({
                   )}
                   <div className="flex-1 text-left">
                     <span className="font-medium">Theme</span>
-                    <select
-                      value={profileFormData.theme_preference}
-                      onChange={(e) =>
-                        setProfileFormData({
-                          ...profileFormData,
-                          theme_preference: e.target.value as
-                            | "light"
-                            | "dark"
-                            | "system",
-                        })
-                      }
-                      className="w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent bg-white"
-                    >
-                      <option value="light">Light</option>
-                      <option value="dark">Dark</option>
-                      <option value="system">System</option>
-                    </select>
+                    <p className="text-sm text-gray-500 capitalize">
+                      {profile?.theme_preference || "system"}
+                    </p>
                   </div>
                 </button>
               </li>

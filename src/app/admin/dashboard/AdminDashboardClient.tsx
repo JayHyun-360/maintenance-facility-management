@@ -6022,12 +6022,12 @@ ${result.analysis.risks || "N/A"}
                   </button>
                 </li>
 
-                {/* Theme Preference Section */}
+                {/* Theme Preference Section - Display Only */}
                 <li>
                   <button
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
                   >
-                    {formData.theme_preference === "dark" ? (
+                    {(profile?.theme_preference || "system") === "dark" ? (
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -6041,7 +6041,7 @@ ${result.analysis.risks || "N/A"}
                           d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
                         />
                       </svg>
-                    ) : formData.theme_preference === "light" ? (
+                    ) : (profile?.theme_preference || "system") === "light" ? (
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -6072,23 +6072,11 @@ ${result.analysis.risks || "N/A"}
                     )}
                     <div className="flex-1 text-left">
                       <span className="font-medium">Theme</span>
-                      <select
-                        value={formData.theme_preference}
-                        onChange={(e) =>
-                          setFormData({
-                            ...formData,
-                            theme_preference: e.target.value as
-                              | "light"
-                              | "dark"
-                              | "system",
-                          })
-                        }
-                        className={`w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#1E90FF] focus:border-transparent bg-white`}
+                      <p
+                        className={`text-sm capitalize ${isDark ? "text-gray-400" : "text-gray-500"}`}
                       >
-                        <option value="light">Light</option>
-                        <option value="dark">Dark</option>
-                        <option value="system">System</option>
-                      </select>
+                        {profile?.theme_preference || "system"}
+                      </p>
                     </div>
                   </button>
                 </li>
