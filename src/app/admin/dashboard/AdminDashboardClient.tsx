@@ -1160,6 +1160,28 @@ export default function AdminDashboardClient({
     return () => clearInterval(interval);
   }, []);
 
+  // Preserve scroll position on state updates
+  const scrollPositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      scrollPositionRef.current = { x: window.scrollX, y: window.scrollY };
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Restore scroll position after requests update
+  useEffect(() => {
+    if (scrollPositionRef.current.y > 0) {
+      window.scrollTo({
+        top: scrollPositionRef.current.y,
+        behavior: "instant",
+      });
+    }
+  }, [requests]);
+
   // Unsaved changes warning
 
   useEffect(() => {
@@ -1481,6 +1503,9 @@ export default function AdminDashboardClient({
 
     newStatus: RequestStatus,
   ) => {
+    // Save scroll position before the update
+    scrollPositionRef.current = { x: window.scrollX, y: window.scrollY };
+
     const {
       data: { user },
     } = await supabase.auth.getUser();

@@ -516,6 +516,26 @@ export default function UserDashboardClient({
     return () => clearInterval(requestInterval);
   }, [userId]);
 
+  // Preserve scroll position on state updates
+  const scrollPositionRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      scrollPositionRef.current = { x: window.scrollX, y: window.scrollY };
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (scrollPositionRef.current.y > 0) {
+      window.scrollTo({
+        top: scrollPositionRef.current.y,
+        behavior: "instant",
+      });
+    }
+  }, [requests]);
+
   // Unsaved changes warning
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
