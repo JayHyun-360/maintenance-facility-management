@@ -3293,7 +3293,7 @@ ${result.analysis.risks || "N/A"}
       <div className="flex-1 ml-64">
         {/* Header - Full width at top */}
         <div
-          className={`shadow-lg border-b transition-all duration-300 ${isDark ? "bg-gray-900 border-blue-800/30" : "bg-green-600 border-green-700"}`}
+          className={`shadow-lg border-b transition-all duration-300 ${isDark ? "bg-[#2A2A2A] border-blue-800/30" : "bg-green-600 border-green-700"}`}
         >
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">

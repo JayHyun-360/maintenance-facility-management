@@ -115,7 +115,7 @@ export default function Sidebar({
 
   return (
     <div
-      className={`w-64 min-h-screen ${isDark ? "bg-gray-900 border-blue-800/30" : "bg-gray-50 border-green-200"} border-r flex flex-col fixed left-0 top-0 shadow-sm`}
+      className={`w-64 min-h-screen ${isDark ? "bg-[#2A2A2A] border-blue-800/30" : "bg-gray-50 border-green-200"} border-r flex flex-col fixed left-0 top-0 shadow-sm`}
     >
       {/* Logo and Title */}
       <div
