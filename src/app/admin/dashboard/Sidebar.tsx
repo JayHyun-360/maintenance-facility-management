@@ -135,7 +135,7 @@ export default function Sidebar({
               Dashboard
             </h1>
             <div
-              className={`text-xs truncate ${isDark ? "text-white/70" : "text-green-600/70"}`}
+              className={`text-xs truncate ${isDark ? "text-white" : "text-green-600/70"}`}
             >
               <div>Integrated Visual Feedback</div>
               <div>& Maintenance Utility</div>
