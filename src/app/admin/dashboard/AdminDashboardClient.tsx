@@ -3293,7 +3293,7 @@ ${result.analysis.risks || "N/A"}
       <div className="flex-1 ml-64">
         {/* Header - Full width at top */}
         <div
-          className={`shadow-lg border-b transition-all duration-300 ${isDark ? "bg-[#1E90FF] border-blue-600" : "bg-green-600 border-green-700"}`}
+          className={`shadow-lg border-b transition-all duration-300 ${isDark ? "bg-blue-600 border-blue-700" : "bg-green-600 border-green-700"}`}
         >
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
@@ -3315,10 +3315,10 @@ ${result.analysis.risks || "N/A"}
                         setTimeout(() => setShowSearchResults(false), 200)
                       }
                       placeholder="Search..."
-                      className={`w-48 sm:w-64 md:w-80 px-4 py-2.5 pl-10 ${isDark ? "bg-[#1E90FF]/20" : "bg-white/20"} backdrop-blur-sm border ${isDark ? "border-[#1E90FF]/30" : "border-white/30"} rounded-lg ${isDark ? "text-white" : "text-white"} placeholder-white/70 focus:outline-none focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]/50" : "focus:ring-white/50"} ${isDark ? "focus:bg-[#1E90FF]/30" : "focus:bg-white/30"} transition-all duration-300`}
+                      className={`w-48 sm:w-64 md:w-80 px-4 py-2.5 pl-10 ${isDark ? "bg-white/20" : "bg-white/20"} backdrop-blur-sm border ${isDark ? "border-white/30" : "border-white/30"} rounded-lg ${isDark ? "text-white" : "text-white"} placeholder-white/70 focus:outline-none focus:ring-2 ${isDark ? "focus:ring-white/50" : "focus:ring-white/50"} ${isDark ? "focus:bg-white/30" : "focus:bg-white/30"} transition-all duration-300`}
                     />
                     <svg
-                      className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-[#1E90FF]" : "text-white"}`}
+                      className={`absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 ${isDark ? "text-white" : "text-white"}`}
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -3336,7 +3336,7 @@ ${result.analysis.risks || "N/A"}
                           setSearchQuery("");
                           setShowSearchResults(false);
                         }}
-                        className={`absolute right-3 top-1/2 -translate-y-1/2 ${isDark ? "text-[#1E90FF]" : "text-white"} hover:text-white`}
+                        className={`absolute right-3 top-1/2 -translate-y-1/2 ${isDark ? "text-white" : "text-white"} hover:text-white`}
                       >
                         <svg
                           className="w-4 h-4"
@@ -6193,7 +6193,7 @@ ${result.analysis.risks || "N/A"}
           >
             <div className="h-full overflow-y-auto">
               <div
-                className={`${isDark ? "bg-[#1E90FF] border-blue-600" : "bg-green-600 border-green-700"} shadow-lg border-b p-6 sticky top-0 z-10`}
+                className={`${isDark ? "bg-blue-600 border-blue-700" : "bg-green-600 border-green-700"} shadow-lg border-b p-6 sticky top-0 z-10`}
               >
                 <div className="flex items-center justify-between">
                   <div>
