@@ -3293,7 +3293,7 @@ ${result.analysis.risks || "N/A"}
       <div className="flex-1 ml-64">
         {/* Header - Full width at top */}
         <div
-          className={`shadow-lg border-b transition-all duration-300 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-green-600 border-green-700"}`}
+          className={`shadow-lg border-b transition-all duration-300 ${isDark ? "bg-[#1E90FF] border-blue-600" : "bg-green-600 border-green-700"}`}
         >
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
@@ -6193,7 +6193,7 @@ ${result.analysis.risks || "N/A"}
           >
             <div className="h-full overflow-y-auto">
               <div
-                className={`${isDark ? "bg-[#1E90FF]" : "bg-green-600"} shadow-lg border-b p-6 sticky top-0 z-10`}
+                className={`${isDark ? "bg-[#1E90FF] border-blue-600" : "bg-green-600 border-green-700"} shadow-lg border-b p-6 sticky top-0 z-10`}
               >
                 <div className="flex items-center justify-between">
                   <div>
