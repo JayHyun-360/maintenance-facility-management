@@ -41,7 +41,13 @@ export default function UserDashboardClient({
 }: UserDashboardClientProps) {
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
-  const isDark = theme === "dark";
+  const isDark = mounted && theme === "dark";
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [profile, setProfile] = useState<Profile | null>(initialProfile);
 
@@ -870,7 +876,7 @@ export default function UserDashboardClient({
       {/* Enhanced Header */}
 
       <div
-        className={`bg-green-600 shadow-lg border-b transition-all duration-300 ${isDark ? "bg-blue-600 border-blue-700" : "bg-green-600 border-green-700"}`}
+        className={`shadow-lg border-b transition-all duration-300 ${isDark ? "bg-blue-600 border-blue-700" : "bg-green-600 border-green-700"}`}
       >
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
