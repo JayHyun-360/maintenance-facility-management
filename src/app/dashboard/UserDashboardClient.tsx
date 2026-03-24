@@ -1250,7 +1250,7 @@ export default function UserDashboardClient({
 
           <div className="lg:col-span-1">
             <div
-              className={`rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn ${isDark ? "bg-[#E6F0F8]" : "bg-white"}`}
+              className={`rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn ${isDark ? "bg-white" : "bg-white"}`}
             >
               <div className="flex justify-between items-center mb-4">
                 <h2 className="font-header text-lg font-semibold text-gray-900 transition-all duration-300">
@@ -1722,7 +1722,7 @@ export default function UserDashboardClient({
 
           <div className="lg:col-span-2">
             <div
-              className={`rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn ${isDark ? "bg-[#E6F0F8]" : "bg-white"}`}
+              className={`rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn ${isDark ? "bg-white" : "bg-white"}`}
             >
               <h2
                 className={`font-header text-lg font-semibold mb-4 transition-all duration-300 ${isDark ? "text-white" : "text-gray-900"}`}
