@@ -5,7 +5,7 @@ import type { Profile, MaintenanceRequest } from "@/types/database";
 
 // User dashboard page - displays maintenance request form and user's requests
 export default async function UserDashboard() {
-  // ✅ Check session on SERVER where it always works!
+  // Check session on server
   const supabase = await createServerClient();
   const {
     data: { session },
