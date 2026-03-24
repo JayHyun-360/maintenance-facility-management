@@ -931,7 +931,7 @@ export default function UserDashboardClient({
                 </button>
 
                 <div
-                  className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 animate-pulse ${isDark ? "bg-[#1E90FF] border-[#1E1E1E]" : "bg-green-400 border-white"}`}
+                  className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 animate-pulse ${isDark ? "bg-green-400 border-[#1E1E1E]" : "bg-green-400 border-white"}`}
                 ></div>
 
                 {/* Profile Picture Viewer */}
