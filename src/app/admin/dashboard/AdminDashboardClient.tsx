@@ -3468,7 +3468,7 @@ ${result.analysis.risks || "N/A"}
                 <button
                   id="tutorial-notifications"
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className={`p-2 rounded-lg ${isDark ? "bg-[#1E90FF]/20" : "bg-green-500/20"} backdrop-blur-sm hover:${isDark ? "bg-[#1E90FF]/30" : "bg-green-500/30"} transition-all duration-300 transform hover:scale-105 text-white relative`}
+                  className={`p-2 rounded-lg ${isDark ? "bg-[#1E90FF]/20" : "bg-white/20"} backdrop-blur-sm hover:${isDark ? "bg-[#1E90FF]/30" : "bg-white/30"} transition-all duration-300 transform hover:scale-105 text-white relative`}
                   title="Notifications"
                 >
                   <svg
