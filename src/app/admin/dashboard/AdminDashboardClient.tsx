@@ -3285,7 +3285,9 @@ ${result.analysis.risks || "N/A"}
   }, [selectedRequestForReport]);
 
   return (
-    <div className="min-h-screen bg-[#F5F5DC] flex">
+    <div
+      className={`min-h-screen ${isDark ? "bg-[#E6F4FF]" : "bg-[#F5F5DC]"} flex`}
+    >
       {/* Sidebar */}
       <Sidebar
         activeTab={activeTab}

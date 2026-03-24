@@ -873,7 +873,7 @@ export default function UserDashboardClient({
   };
 
   return (
-    <div className="min-h-screen bg-[#E6F4FF]">
+    <div className={`min-h-screen ${isDark ? "bg-[#E6F4FF]" : "bg-[#F5F5DC]"}`}>
       {/* Enhanced Header */}
 
       <div
