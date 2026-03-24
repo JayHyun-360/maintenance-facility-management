@@ -1248,7 +1248,9 @@ export default function UserDashboardClient({
           {/* New Request Form */}
 
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+            <div
+              className={`rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn ${isDark ? "bg-[#6CA3D4]" : "bg-white"}`}
+            >
               <div className="flex justify-between items-center mb-4">
                 <h2 className="font-header text-lg font-semibold text-gray-900 transition-all duration-300">
                   New Request
@@ -1718,8 +1720,12 @@ export default function UserDashboardClient({
           {/* Requests List */}
 
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
-              <h2 className="font-header text-lg font-semibold text-gray-900 mb-4 transition-all duration-300">
+            <div
+              className={`rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn ${isDark ? "bg-[#6CA3D4]" : "bg-white"}`}
+            >
+              <h2
+                className={`font-header text-lg font-semibold mb-4 transition-all duration-300 ${isDark ? "text-white" : "text-gray-900"}`}
+              >
                 Your Requests
               </h2>
 
