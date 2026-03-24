@@ -761,9 +761,6 @@ export default function UserDashboardClient({
         ...profile,
         theme_preference: currentTheme as ThemePreference,
       });
-    } else {
-      // Refresh to ensure profile state is in sync with database
-      router.refresh();
     }
   };
 

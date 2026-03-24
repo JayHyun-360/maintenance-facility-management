@@ -1890,9 +1890,6 @@ export default function AdminDashboardClient({
         ...profile,
         theme_preference: currentTheme as ThemePreference,
       });
-    } else {
-      // Refresh to ensure profile state is in sync with database
-      router.refresh();
     }
   };
 
