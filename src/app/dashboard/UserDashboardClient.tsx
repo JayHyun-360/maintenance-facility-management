@@ -1005,17 +1005,17 @@ export default function UserDashboardClient({
 
         {/* Sidebar */}
         <div
-          className={`fixed left-0 top-0 h-full w-64 ${isDark ? "bg-[#0F2233] border-[#6CA3D4]/30" : "bg-gray-50 border-green-200"} z-50 shadow-xl flex flex-col transition-transform duration-300 ease-in-out ${showHamburgerMenu ? "translate-x-0" : "-translate-x-full"}`}
+          className={`fixed left-0 top-0 h-full w-64 ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30" : "bg-gray-50 border-green-200"} z-50 shadow-xl flex flex-col transition-transform duration-300 ease-in-out ${showHamburgerMenu ? "translate-x-0" : "-translate-x-full"}`}
         >
           {/* Logo and Title */}
           <div
-            className={`p-6 ${isDark ? "border-[#6CA3D4]/30" : "border-green-100"} border-b`}
+            className={`p-6 ${isDark ? "border-[#3B85C6]/30" : "border-green-100"} border-b`}
           >
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
                 <FontAwesomeIcon
                   icon={faFeatherPointed}
-                  className={`w-8 h-8 ${isDark ? "text-[#6CA3D4]" : "text-green-600"}`}
+                  className={`w-8 h-8 ${isDark ? "text-[#3B85C6]" : "text-green-600"}`}
                 />
               </div>
               <div className="flex-1 min-w-0">
@@ -1046,7 +1046,7 @@ export default function UserDashboardClient({
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-[#6CA3D4] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
+                      ? "text-[#3B85C6] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -1076,7 +1076,7 @@ export default function UserDashboardClient({
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-[#6CA3D4] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
+                      ? "text-[#3B85C6] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -1106,7 +1106,7 @@ export default function UserDashboardClient({
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 relative ${
                     isDark
-                      ? "text-[#6CA3D4] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
+                      ? "text-[#3B85C6] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -1141,7 +1141,7 @@ export default function UserDashboardClient({
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-[#6CA3D4] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
+                      ? "text-[#3B85C6] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -1172,10 +1172,10 @@ export default function UserDashboardClient({
 
           {/* Theme Toggle - Above Sign Out */}
           <div
-            className={`px-4 py-3 border-t flex items-center justify-between ${isDark ? "border-[#6CA3D4]/30" : "border-green-100"}`}
+            className={`px-4 py-3 border-t flex items-center justify-between ${isDark ? "border-[#3B85C6]/30" : "border-green-100"}`}
           >
             <div
-              className={`flex items-center gap-2 ${isDark ? "text-[#6CA3D4]" : "text-green-700"}`}
+              className={`flex items-center gap-2 ${isDark ? "text-[#3B85C6]" : "text-green-700"}`}
             >
               <svg
                 className="w-5 h-5"
@@ -1214,13 +1214,13 @@ export default function UserDashboardClient({
 
           {/* Sign Out - Bottom */}
           <div
-            className={`p-4 border-t ${isDark ? "border-[#6CA3D4]/30" : "border-green-100"}`}
+            className={`p-4 border-t ${isDark ? "border-[#3B85C6]/30" : "border-green-100"}`}
           >
             <button
               onClick={handleSignOut}
               className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 font-medium border shadow-sm hover:shadow-md ${
                 isDark
-                  ? "bg-[#0F2233] text-[#6CA3D4] hover:text-red-400 border-[#6CA3D4]/50"
+                  ? "bg-[#0F2233] text-[#3B85C6] hover:text-red-400 border-[#3B85C6]/50"
                   : "bg-white text-green-700 hover:text-red-600 border-green-200"
               }`}
             >
@@ -1259,7 +1259,7 @@ export default function UserDashboardClient({
                     onClick={() => setShowForm(true)}
                     className={`text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 ${
                       isDark
-                        ? "bg-[#6CA3D4] hover:bg-[#6CA3D4]/80"
+                        ? "bg-[#3B85C6] hover:bg-[#3B85C6]/80"
                         : "bg-green-500 hover:bg-green-600"
                     }`}
                   >
@@ -1668,7 +1668,7 @@ export default function UserDashboardClient({
                       type="submit"
                       className={`flex-1 px-6 py-3 text-white rounded-xl transition-all duration-300 transform hover:scale-105 font-medium shadow-lg hover:shadow-xl ${
                         isDark
-                          ? "bg-gradient-to-r from-[#6CA3D4] to-blue-600 hover:from-[#6CA3D4]/80 hover:to-blue-700"
+                          ? "bg-gradient-to-r from-[#3B85C6] to-blue-600 hover:from-[#3B85C6]/80 hover:to-blue-700"
                           : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
                       }`}
                     >
@@ -1884,18 +1884,18 @@ export default function UserDashboardClient({
 
       <div
         ref={notificationsRef}
-        className={`fixed top-0 right-0 h-full w-64 ${isDark ? "bg-[#0F2233] border-[#6CA3D4]/30" : "bg-gray-50 border-green-200"} shadow-xl z-40 transform transition-transform duration-500 ease-out flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-64 ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30" : "bg-gray-50 border-green-200"} shadow-xl z-40 transform transition-transform duration-500 ease-out flex flex-col ${
           showNotifications ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Logo and Title - Like menu sidebar */}
         <div
-          className={`p-6 ${isDark ? "border-[#6CA3D4]/30" : "border-green-100"} border-b`}
+          className={`p-6 ${isDark ? "border-[#3B85C6]/30" : "border-green-100"} border-b`}
         >
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
               <svg
-                className={`w-8 h-8 ${isDark ? "text-[#6CA3D4]" : "text-green-600"}`}
+                className={`w-8 h-8 ${isDark ? "text-[#3B85C6]" : "text-green-600"}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -1927,13 +1927,13 @@ export default function UserDashboardClient({
         <div className="flex-1 p-4 overflow-y-auto">
           {/* Action Buttons */}
           <div
-            className={`flex justify-between items-center mb-4 pb-3 border-b ${isDark ? "border-[#6CA3D4]/30" : "border-green-100"}`}
+            className={`flex justify-between items-center mb-4 pb-3 border-b ${isDark ? "border-[#3B85C6]/30" : "border-green-100"}`}
           >
             <button
               onClick={markAllNotificationsRead}
               className={`text-sm font-medium transition-colors ${
                 isDark
-                  ? "text-[#6CA3D4] hover:text-[#6CA3D4]/80"
+                  ? "text-[#3B85C6] hover:text-[#3B85C6]/80"
                   : "text-green-600 hover:text-green-700"
               }`}
             >
@@ -1962,10 +1962,10 @@ export default function UserDashboardClient({
                   className={`p-4 rounded-lg border transition-all cursor-pointer ${
                     !notification.is_read
                       ? isDark
-                        ? "bg-[#0F2233] border-[#6CA3D4]/30 shadow-sm hover:shadow-md hover:border-[#6CA3D4]/50"
+                        ? "bg-[#0F2233] border-[#3B85C6]/30 shadow-sm hover:shadow-md hover:border-[#3B85C6]/50"
                         : "bg-white border-green-200 shadow-sm hover:shadow-md hover:border-green-300"
                       : isDark
-                        ? "bg-[#1A3A54] border-[#6CA3D4]/30 hover:bg-[#0F2233] hover:shadow-sm hover:border-[#6CA3D4]/30"
+                        ? "bg-[#1A3A54] border-[#3B85C6]/30 hover:bg-[#0F2233] hover:shadow-sm hover:border-[#3B85C6]/30"
                         : "bg-gray-50 border-gray-200 hover:bg-white hover:shadow-sm hover:border-green-200"
                   }`}
                   onClick={() => viewAnnouncement(notification)}
@@ -1975,7 +1975,7 @@ export default function UserDashboardClient({
                       className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
                         !notification.is_read
                           ? isDark
-                            ? "bg-[#6CA3D4]"
+                            ? "bg-[#3B85C6]"
                             : "bg-green-500"
                           : isDark
                             ? "bg-gray-600"
@@ -2023,7 +2023,7 @@ export default function UserDashboardClient({
                         <div
                           className={`absolute right-0 mt-1 w-32 rounded-lg shadow-lg z-10 ${
                             isDark
-                              ? "bg-[#0F2233] border border-[#6CA3D4]/30"
+                              ? "bg-[#0F2233] border border-[#3B85C6]/30"
                               : "bg-white border border-green-200"
                           }`}
                         >
@@ -2052,13 +2052,13 @@ export default function UserDashboardClient({
 
         {/* Close Button - Like sign out in other sidebars */}
         <div
-          className={`p-4 border-t ${isDark ? "border-[#6CA3D4]/30" : "border-green-100"}`}
+          className={`p-4 border-t ${isDark ? "border-[#3B85C6]/30" : "border-green-100"}`}
         >
           <button
             onClick={() => setShowNotifications(false)}
             className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 font-medium border shadow-sm hover:shadow-md ${
               isDark
-                ? "bg-[#0F2233] text-[#6CA3D4] hover:text-red-400 border-[#6CA3D4]/50"
+                ? "bg-[#0F2233] text-[#3B85C6] hover:text-red-400 border-[#3B85C6]/50"
                 : "bg-white hover:bg-green-50 text-green-700 border-green-200"
             }`}
           >
@@ -2095,19 +2095,19 @@ export default function UserDashboardClient({
         {/* Sidebar */}
 
         <div
-          className={`fixed top-0 left-0 h-full w-64 ${isDark ? "bg-[#0F2233] border-[#6CA3D4]/30" : "bg-gray-50 border-green-200"} shadow-xl z-50 transform transition-transform duration-500 ease-out flex flex-col ${
+          className={`fixed top-0 left-0 h-full w-64 ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30" : "bg-gray-50 border-green-200"} shadow-xl z-50 transform transition-transform duration-500 ease-out flex flex-col ${
             showProfileSidebar ? "translate-x-0" : "-translate-x-full"
           }`}
         >
           {/* Profile Header - Like menu sidebar logo section */}
           <div
-            className={`p-6 ${isDark ? "border-[#6CA3D4]/30" : "border-green-100"} border-b`}
+            className={`p-6 ${isDark ? "border-[#3B85C6]/30" : "border-green-100"} border-b`}
           >
             <div className="flex flex-col items-center">
               {/* Profile Photo */}
               <div className="relative mb-4">
                 <div
-                  className={`w-20 h-20 rounded-full bg-gray-200 border-4 shadow-lg overflow-hidden flex items-center justify-center ${isDark ? "border-[#6CA3D4]/30" : "border-white"}`}
+                  className={`w-20 h-20 rounded-full bg-gray-200 border-4 shadow-lg overflow-hidden flex items-center justify-center ${isDark ? "border-[#3B85C6]/30" : "border-white"}`}
                 >
                   {profile?.avatar_url || userAvatar ? (
                     <img
@@ -2127,7 +2127,7 @@ export default function UserDashboardClient({
                   htmlFor="avatar-upload"
                   className={`absolute bottom-0 right-0 p-2 rounded-full cursor-pointer hover:scale-110 transition-all shadow-md ${
                     isDark
-                      ? "bg-[#6CA3D4] hover:bg-[#6CA3D4]/80"
+                      ? "bg-[#3B85C6] hover:bg-[#3B85C6]/80"
                       : "bg-[#5D9C59] hover:bg-[#4a7c4a]"
                   } text-white`}
                 >
@@ -2172,7 +2172,7 @@ export default function UserDashboardClient({
               <span
                 className={`backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium mt-2 ${
                   isDark
-                    ? "bg-[#6CA3D4]/20 text-[#6CA3D4]"
+                    ? "bg-[#3B85C6]/20 text-[#3B85C6]"
                     : "bg-white/20 text-green-700"
                 }`}
               >
@@ -2181,7 +2181,7 @@ export default function UserDashboardClient({
 
               {/* Access Mode Badge */}
               <span
-                className={`px-3 py-1 rounded-full text-xs font-semibold text-white mt-2 ${isAdmin ? "bg-red-500" : isDark ? "bg-[#6CA3D4]" : "bg-green-500"}`}
+                className={`px-3 py-1 rounded-full text-xs font-semibold text-white mt-2 ${isAdmin ? "bg-red-500" : isDark ? "bg-[#3B85C6]" : "bg-green-500"}`}
               >
                 {isAdmin ? "ADMIN" : "USER"}
               </span>
@@ -2199,7 +2199,7 @@ export default function UserDashboardClient({
                   }
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-[#6CA3D4] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
+                      ? "text-[#3B85C6] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -2243,7 +2243,7 @@ export default function UserDashboardClient({
                 <button
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-[#6CA3D4] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
+                      ? "text-[#3B85C6] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -2290,7 +2290,7 @@ export default function UserDashboardClient({
                 <button
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-[#6CA3D4] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
+                      ? "text-[#3B85C6] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -2340,7 +2340,7 @@ export default function UserDashboardClient({
                   <button
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                       isDark
-                        ? "text-[#6CA3D4] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
+                        ? "text-[#3B85C6] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                         : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                     }`}
                   >
@@ -2373,7 +2373,7 @@ export default function UserDashboardClient({
                   <button
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                       isDark
-                        ? "text-[#6CA3D4] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
+                        ? "text-[#3B85C6] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                         : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                     }`}
                   >
@@ -2406,7 +2406,7 @@ export default function UserDashboardClient({
                   onClick={handleExportData}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-[#6CA3D4] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
+                      ? "text-[#3B85C6] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -2435,7 +2435,7 @@ export default function UserDashboardClient({
                     disabled={loading}
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                       isDark
-                        ? "bg-[#6CA3D4]/10 text-[#6CA3D4] hover:bg-[#6CA3D4]/20"
+                        ? "bg-[#3B85C6]/10 text-[#3B85C6] hover:bg-[#3B85C6]/20"
                         : "bg-green-50 text-green-700 hover:bg-green-100"
                     }`}
                   >
@@ -2465,7 +2465,7 @@ export default function UserDashboardClient({
                   <button
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-default ${
                       isDark
-                        ? "bg-[#6CA3D4]/10 text-[#6CA3D4]"
+                        ? "bg-[#3B85C6]/10 text-[#3B85C6]"
                         : "bg-green-50 text-green-700"
                     }`}
                   >
@@ -2491,14 +2491,14 @@ export default function UserDashboardClient({
 
           {/* Bottom Section - Save Button */}
           <div
-            className={`p-4 border-t space-y-3 ${isDark ? "border-[#6CA3D4]/30" : "border-green-100"}`}
+            className={`p-4 border-t space-y-3 ${isDark ? "border-[#3B85C6]/30" : "border-green-100"}`}
           >
             {/* Success Message */}
             {successMessage && (
               <div
                 className={`p-3 rounded-lg text-sm text-center ${
                   isDark
-                    ? "bg-[#6CA3D4]/10 border border-[#6CA3D4]/30 text-[#6CA3D4]"
+                    ? "bg-[#3B85C6]/10 border border-[#3B85C6]/30 text-[#3B85C6]"
                     : "bg-green-50 border border-green-200 text-green-700"
                 }`}
               >
@@ -2525,7 +2525,7 @@ export default function UserDashboardClient({
               disabled={saving}
               className={`w-full flex items-center justify-center gap-2 px-4 py-3 text-white font-semibold rounded-lg disabled:bg-gray-400 transition-colors ${
                 isDark
-                  ? "bg-[#6CA3D4] hover:bg-[#6CA3D4]/80"
+                  ? "bg-[#3B85C6] hover:bg-[#3B85C6]/80"
                   : "bg-[#5D9C59] hover:bg-[#4a7c4a]"
               }`}
             >
@@ -2607,7 +2607,7 @@ export default function UserDashboardClient({
                 disabled={loading}
                 className={`flex-1 px-4 py-2 text-white rounded-lg disabled:bg-gray-400 transition-colors ${
                   isDark
-                    ? "bg-[#6CA3D4] hover:bg-[#6CA3D4]/80"
+                    ? "bg-[#3B85C6] hover:bg-[#3B85C6]/80"
                     : "bg-blue-500 hover:bg-blue-600"
                 }`}
               >
@@ -2714,7 +2714,7 @@ export default function UserDashboardClient({
                   onClick={() => setShowAnnouncementModal(false)}
                   className={`px-4 py-2 text-white rounded-lg transition-colors text-sm font-medium ${
                     isDark
-                      ? "bg-[#6CA3D4] hover:bg-[#6CA3D4]/80"
+                      ? "bg-[#3B85C6] hover:bg-[#3B85C6]/80"
                       : "bg-[#5D9C59] hover:bg-[#4a7c4a]"
                   }`}
                 >
@@ -2799,7 +2799,7 @@ export default function UserDashboardClient({
                         </div>
                         {!notification.is_read && (
                           <span
-                            className={`w-2 h-2 rounded-full flex-shrink-0 mt-2 ${isDark ? "bg-[#6CA3D4]" : "bg-green-500"}`}
+                            className={`w-2 h-2 rounded-full flex-shrink-0 mt-2 ${isDark ? "bg-[#3B85C6]" : "bg-green-500"}`}
                           ></span>
                         )}
                       </div>
@@ -2820,7 +2820,7 @@ export default function UserDashboardClient({
                 onClick={() => setShowAllAnnouncementsModal(false)}
                 className={`w-full px-4 py-2 text-white rounded-lg transition-colors font-medium ${
                   isDark
-                    ? "bg-[#6CA3D4] hover:bg-[#6CA3D4]/80"
+                    ? "bg-[#3B85C6] hover:bg-[#3B85C6]/80"
                     : "bg-[#5D9C59] hover:bg-[#4a7c4a]"
                 }`}
               >
@@ -2877,7 +2877,7 @@ export default function UserDashboardClient({
                   className={`flex-1 px-6 py-3 font-medium transition-colors ${
                     activeHelpTab === "faq"
                       ? isDark
-                        ? "text-[#6CA3D4] border-b-2 border-[#6CA3D4]"
+                        ? "text-[#3B85C6] border-b-2 border-[#3B85C6]"
                         : "text-[#5D9C59] border-b-2 border-[#5D9C59]"
                       : isDark
                         ? "text-gray-400 hover:text-white"
@@ -2891,7 +2891,7 @@ export default function UserDashboardClient({
                   className={`flex-1 px-6 py-3 font-medium transition-colors ${
                     activeHelpTab === "about"
                       ? isDark
-                        ? "text-[#6CA3D4] border-b-2 border-[#6CA3D4]"
+                        ? "text-[#3B85C6] border-b-2 border-[#3B85C6]"
                         : "text-[#5D9C59] border-b-2 border-[#5D9C59]"
                       : isDark
                         ? "text-gray-400 hover:text-white"
@@ -2992,7 +2992,7 @@ export default function UserDashboardClient({
                       className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${isDark ? "bg-gray-700" : "bg-green-100"}`}
                     >
                       <svg
-                        className={`w-10 h-10 ${isDark ? "text-[#6CA3D4]" : "text-green-600"}`}
+                        className={`w-10 h-10 ${isDark ? "text-[#3B85C6]" : "text-green-600"}`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -3076,7 +3076,7 @@ export default function UserDashboardClient({
                 onClick={() => setShowHelpModal(false)}
                 className={`w-full px-4 py-2 text-white rounded-lg transition-colors font-medium ${
                   isDark
-                    ? "bg-[#6CA3D4] hover:bg-[#6CA3D4]/80"
+                    ? "bg-[#3B85C6] hover:bg-[#3B85C6]/80"
                     : "bg-[#5D9C59] hover:bg-[#4a7c4a]"
                 }`}
               >
