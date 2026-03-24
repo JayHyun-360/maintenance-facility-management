@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import AdminDashboardClient from "./AdminDashboardClient";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import type { Profile, MaintenanceRequest } from "@/types/database";
+import type { Theme } from "@/contexts/ThemeContext";
 
 // Admin dashboard page
 interface RequestWithProfile extends MaintenanceRequest {
@@ -109,7 +110,9 @@ export default async function AdminDashboard({ searchParams }: PageProps) {
 
   // Pass to client component for interactivity
   return (
-    <ThemeProvider>
+    <ThemeProvider
+      initialTheme={(fullProfile?.theme_preference as Theme) || "light"}
+    >
       <AdminDashboardClient
         initialRequests={requests}
         initialStats={initialStats}

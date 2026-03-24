@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import UserDashboardClient from "./UserDashboardClient";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import type { Profile, MaintenanceRequest } from "@/types/database";
+import type { Theme } from "@/contexts/ThemeContext";
 
 // User dashboard page - displays maintenance request form and user's requests
 // ThemeProvider wraps the client component for theme context
@@ -79,7 +80,9 @@ export default async function UserDashboard() {
 
   // Pass to client component for interactivity
   return (
-    <ThemeProvider>
+    <ThemeProvider
+      initialTheme={(finalProfile?.theme_preference as Theme) || "light"}
+    >
       <UserDashboardClient
         initialProfile={finalProfile}
         initialRequests={(requests || []) as MaintenanceRequest[]}
