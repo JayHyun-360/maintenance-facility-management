@@ -3280,7 +3280,9 @@ ${result.analysis.risks || "N/A"}
   }, [selectedRequestForReport]);
 
   return (
-    <div className="min-h-screen bg-[#F5F5DC] flex">
+    <div
+      className={`min-h-screen ${isDark ? "bg-[#2A2A2A]" : "bg-[#F5F5DC]"} flex`}
+    >
       {/* Sidebar */}
       <Sidebar
         activeTab={activeTab}
@@ -3395,10 +3397,14 @@ ${result.analysis.risks || "N/A"}
                                   {req.status}
                                 </span>
                               </div>
-                              <p className="text-sm text-gray-600 truncate mt-1">
+                              <p
+                                className={`text-sm ${isDark ? "text-[#E0E0E0]" : "text-gray-600"} truncate mt-1`}
+                              >
                                 {req.location} - {req.description}
                               </p>
-                              <p className="text-xs text-gray-400 mt-1">
+                              <p
+                                className={`text-xs ${isDark ? "text-white/60" : "text-gray-400"} mt-1`}
+                              >
                                 {new Date(req.created_at).toLocaleDateString()}
                               </p>
                             </button>
@@ -3597,14 +3603,20 @@ ${result.analysis.risks || "N/A"}
                 {/* Stats Cards */}
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                  <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                  <div
+                    className={`bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn ${isDark ? "bg-[#333333]" : "bg-white"}`}
+                  >
                     <div className="flex items-center">
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-600">
+                        <p
+                          className={`text-sm font-medium ${isDark ? "text-[#E0E0E0]" : "text-gray-600"}`}
+                        >
                           Total Requests
                         </p>
 
-                        <p className="text-2xl font-bold text-gray-900">
+                        <p
+                          className={`text-2xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}
+                        >
                           {stats.total}
                         </p>
                       </div>
@@ -3629,10 +3641,14 @@ ${result.analysis.risks || "N/A"}
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                  <div
+                    className={`bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn ${isDark ? "bg-[#333333]" : "bg-white"}`}
+                  >
                     <div className="flex items-center">
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-600">
+                        <p
+                          className={`text-sm font-medium ${isDark ? "text-[#E0E0E0]" : "text-gray-600"}`}
+                        >
                           Pending
                         </p>
 
@@ -3659,10 +3675,14 @@ ${result.analysis.risks || "N/A"}
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                  <div
+                    className={`bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn ${isDark ? "bg-[#333333]" : "bg-white"}`}
+                  >
                     <div className="flex items-center">
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-600">
+                        <p
+                          className={`text-sm font-medium ${isDark ? "text-[#E0E0E0]" : "text-gray-600"}`}
+                        >
                           In Progress
                         </p>
 
@@ -3689,10 +3709,14 @@ ${result.analysis.risks || "N/A"}
                     </div>
                   </div>
 
-                  <div className="bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn">
+                  <div
+                    className={`bg-white rounded-xl shadow-sm p-6 transition-all duration-300 hover:shadow-md hover:scale-[1.02] animate-fadeIn ${isDark ? "bg-[#333333]" : "bg-white"}`}
+                  >
                     <div className="flex items-center">
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-600">
+                        <p
+                          className={`text-sm font-medium ${isDark ? "text-[#E0E0E0]" : "text-gray-600"}`}
+                        >
                           Completed
                         </p>
 
@@ -3726,8 +3750,12 @@ ${result.analysis.risks || "N/A"}
 
                 {/* Recent Requests - Last 1 Hour */}
 
-                <div className="bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn">
-                  <h2 className="font-header text-lg font-semibold text-gray-900 mb-4">
+                <div
+                  className={`bg-white rounded-xl shadow-sm p-6 mb-8 transition-all duration-300 hover:shadow-md animate-fadeIn ${isDark ? "bg-[#333333]" : "bg-white"}`}
+                >
+                  <h2
+                    className={`font-header text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"} mb-4`}
+                  >
                     Recent Requests (Last 1 Hour)
                   </h2>
 
@@ -3746,7 +3774,9 @@ ${result.analysis.risks || "N/A"}
                             className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                           >
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-gray-900 truncate">
+                              <p
+                                className={`text-sm font-medium ${isDark ? "text-white" : "text-gray-900"} truncate`}
+                              >
                                 {request.nature}
                               </p>
 
@@ -3805,7 +3835,9 @@ ${result.analysis.risks || "N/A"}
                             Most Requests by Nature
                           </h2>
 
-                          <p className="text-sm text-gray-500 mt-1">
+                          <p
+                            className={`text-sm ${isDark ? "text-[#E0E0E0]" : "text-gray-500"} mt-1`}
+                          >
                             Top 3 maintenance request categories
                           </p>
                         </div>
@@ -3819,7 +3851,9 @@ ${result.analysis.risks || "N/A"}
                       >
                         <Activity className="w-4 h-4 text-blue-600" />
 
-                        <span className="text-sm font-semibold text-gray-700">
+                        <span
+                          className={`text-sm font-semibold ${isDark ? "text-white" : "text-gray-700"}`}
+                        >
                           {stats.total}
                         </span>
 
@@ -3969,7 +4003,9 @@ ${result.analysis.risks || "N/A"}
                               whileTap={{ scale: 0.98 }}
                               className="group relative"
                             >
-                              <div className="relative bg-white rounded-2xl p-5 border border-gray-100/50 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden">
+                              <div
+                                className={`bg-white rounded-2xl shadow-sm p-5 border ${isDark ? "border-[#444444] bg-[#333333]" : "border-gray-100/50 bg-white"} hover:shadow-xl transition-all duration-300 overflow-hidden`}
+                              >
                                 {/* Animated background gradient */}
 
                                 <motion.div
@@ -4022,14 +4058,16 @@ ${result.analysis.risks || "N/A"}
 
                                   <div className="space-y-3">
                                     <div>
-                                      <h3 className="font-semibold text-gray-900 text-sm group-hover:text-gray-700 transition-colors">
+                                      <h3
+                                        className={`font-semibold ${isDark ? "text-white" : "text-gray-900"} text-sm group-hover:text-gray-700 transition-colors`}
+                                      >
                                         {nature.name}
                                       </h3>
                                     </div>
 
                                     <div className="flex items-baseline gap-2">
                                       <motion.span
-                                        className="text-2xl font-bold text-gray-900"
+                                        className={`text-2xl font-bold ${isDark ? "text-white" : "text-gray-900"}`}
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{
@@ -4122,34 +4160,46 @@ ${result.analysis.risks || "N/A"}
                 {/* Minimal Bento Grid */}
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-                  <div className="col-span-2 bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
+                  <div
+                    className={`col-span-2 bg-white rounded-lg p-4 border ${isDark ? "border-[#444444] bg-[#333333]" : "border-gray-100 bg-white"} hover:shadow-md hover:border-gray-200 transition-all duration-200`}
+                  >
                     <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
                       Total Requests
                     </p>
 
-                    <p className="text-4xl font-bold text-gray-900 mt-1">
+                    <p
+                      className={`text-4xl font-bold ${isDark ? "text-white" : "text-gray-900"} mt-1`}
+                    >
                       {stats.total}
                     </p>
                   </div>
 
-                  <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
+                  <div
+                    className={`bg-white rounded-lg p-4 border ${isDark ? "border-[#444444] bg-[#333333]" : "border-gray-100 bg-white"} hover:shadow-md hover:border-gray-200 transition-all duration-200`}
+                  >
                     <p className="text-xs font-medium text-yellow-600 uppercase tracking-wide">
                       Pending
                     </p>
 
-                    <p className="text-3xl font-bold text-gray-900 mt-1">
+                    <p
+                      className={`text-3xl font-bold ${isDark ? "text-white" : "text-gray-900"} mt-1`}
+                    >
                       {stats.pending}
                     </p>
                   </div>
 
-                  <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
+                  <div
+                    className={`bg-white rounded-lg p-4 border ${isDark ? "border-[#444444] bg-[#333333]" : "border-gray-100 bg-white"} hover:shadow-md hover:border-gray-200 transition-all duration-200`}
+                  >
                     <p
                       className={`text-xs font-medium ${isDark ? "text-[#1E90FF]" : "text-green-600"} uppercase tracking-wide`}
                     >
                       Completed
                     </p>
 
-                    <p className="text-3xl font-bold text-gray-900 mt-1">
+                    <p
+                      className={`text-3xl font-bold ${isDark ? "text-white" : "text-gray-900"} mt-1`}
+                    >
                       {stats.completed}
                     </p>
                   </div>
@@ -4186,7 +4236,9 @@ ${result.analysis.risks || "N/A"}
                             Requests by Nature
                           </h2>
 
-                          <p className="text-sm text-gray-500 mt-1">
+                          <p
+                            className={`text-sm ${isDark ? "text-[#E0E0E0]" : "text-gray-500"} mt-1`}
+                          >
                             Distribution of maintenance requests
                           </p>
                         </div>
@@ -4200,7 +4252,9 @@ ${result.analysis.risks || "N/A"}
                       >
                         <Activity className="w-4 h-4 text-blue-600" />
 
-                        <span className="text-sm font-semibold text-gray-700">
+                        <span
+                          className={`text-sm font-semibold ${isDark ? "text-white" : "text-gray-700"}`}
+                        >
                           {stats.total}
                         </span>
 
@@ -4442,7 +4496,9 @@ ${result.analysis.risks || "N/A"}
                 {/* Status Distribution - Interactive Line Chart */}
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div className="bg-white rounded-lg p-6 border border-gray-100 hover:shadow-md transition-all duration-200">
+                  <div
+                    className={`bg-white rounded-lg p-6 border ${isDark ? "border-[#444444] bg-[#333333]" : "border-gray-100 bg-white"} hover:shadow-md transition-all duration-200`}
+                  >
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="text-sm font-medium text-gray-600">
                         Status Trends (30 Days)
@@ -4601,7 +4657,9 @@ ${result.analysis.risks || "N/A"}
                     )}
                   </div>
 
-                  <div className="bg-white rounded-lg p-6 border border-gray-100 hover:shadow-md transition-all duration-200">
+                  <div
+                    className={`bg-white rounded-lg p-6 border ${isDark ? "border-[#444444] bg-[#333333]" : "border-gray-100 bg-white"} hover:shadow-md transition-all duration-200`}
+                  >
                     <div className="flex items-center justify-between mb-4">
                       <h4 className="text-sm font-medium text-gray-600">
                         Status Distribution
@@ -4770,7 +4828,9 @@ ${result.analysis.risks || "N/A"}
                 {/* Filter Panel */}
 
                 {showFilterPanel && (
-                  <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-md">
+                  <div
+                    className={`bg-white rounded-lg border ${isDark ? "border-[#444444] bg-[#333333]" : "border-gray-200 bg-white"} p-4 shadow-md`}
+                  >
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2">
                         <label className="flex items-center gap-2 cursor-pointer">
@@ -4992,13 +5052,19 @@ ${result.analysis.risks || "N/A"}
 
                 {/* Table */}
 
-                <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div
+                  className={`bg-white rounded-xl shadow-sm overflow-hidden ${isDark ? "bg-[#333333]" : "bg-white"}`}
+                >
                   <div className="px-6 py-4 border-b border-gray-200">
-                    <h2 className="font-header text-lg font-semibold text-gray-900">
+                    <h2
+                      className={`font-header text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"}`}
+                    >
                       All Maintenance Requests
                     </h2>
 
-                    <p className="text-sm text-gray-600">
+                    <p
+                      className={`text-sm ${isDark ? "text-[#E0E0E0]" : "text-gray-600"}`}
+                    >
                       {requests.length} total requests
                     </p>
                   </div>
@@ -5050,7 +5116,9 @@ ${result.analysis.risks || "N/A"}
           {/* Announcements Tab - Broadcast Only */}
 
           {activeTab === "announcements" && (
-            <div className="bg-white rounded-xl shadow-sm p-6">
+            <div
+              className={`bg-white rounded-xl shadow-sm p-6 ${isDark ? "bg-[#333333]" : "bg-white"}`}
+            >
               <div className="flex items-center justify-between mb-6">
                 <h2 className="font-header text-lg font-semibold text-gray-900">
                   Announcements
@@ -5191,7 +5259,9 @@ ${result.analysis.risks || "N/A"}
 
         {editingRequest && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div
+              className={`bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto ${isDark ? "bg-[#333333]" : "bg-white"}`}
+            >
               <div className="bg-green-500 p-6 rounded-t-xl">
                 <div className="flex justify-between items-center">
                   <h2 className="font-header text-xl font-bold text-white">
@@ -5274,7 +5344,9 @@ ${result.analysis.risks || "N/A"}
               onClick={() => setShowDetailModal(null)}
             />
 
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100 relative z-10 flex flex-col">
+            <div
+              className={`bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100 relative z-10 flex flex-col ${isDark ? "bg-[#333333]" : "bg-white"}`}
+            >
               {/* Header */}
 
               <div className="bg-gradient-to-r from-green-600 to-green-800 p-4">
@@ -5411,7 +5483,9 @@ ${result.analysis.risks || "N/A"}
                       </h3>
                     </div>
 
-                    <p className="text-gray-900 font-medium text-sm">
+                    <p
+                      className={`text-gray-900 font-medium text-sm ${isDark ? "text-white" : "text-gray-900"}`}
+                    >
                       {showDetailModal.location}
                     </p>
                   </div>
@@ -5441,7 +5515,9 @@ ${result.analysis.risks || "N/A"}
                       </h3>
                     </div>
 
-                    <p className="text-gray-900 font-medium text-sm">
+                    <p
+                      className={`text-gray-900 font-medium text-sm ${isDark ? "text-white" : "text-gray-900"}`}
+                    >
                       {showDetailModal.profiles?.full_name || "Unknown"}
                     </p>
 
@@ -5496,7 +5572,9 @@ ${result.analysis.risks || "N/A"}
                       </h3>
                     </div>
 
-                    <p className="text-gray-900 font-medium text-sm">
+                    <p
+                      className={`text-gray-900 font-medium text-sm ${isDark ? "text-white" : "text-gray-900"}`}
+                    >
                       <SafeDate date={showDetailModal.created_at} />
                     </p>
 
