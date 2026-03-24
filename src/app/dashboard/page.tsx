@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import UserDashboardClient from "./UserDashboardClient";
 import type { Profile, MaintenanceRequest } from "@/types/database";
 
+// User dashboard page - displays maintenance request form and user's requests
 export default async function UserDashboard() {
   // ✅ Check session on SERVER where it always works!
   const supabase = await createServerClient();
