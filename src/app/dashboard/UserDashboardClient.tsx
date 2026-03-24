@@ -2673,10 +2673,10 @@ export default function UserDashboardClient({
       {showAnnouncementModal && selectedAnnouncement && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div
-            className={`rounded-xl shadow-2xl w-full max-w-md ${isDark ? "bg-gray-800" : "bg-white"}`}
+            className={`rounded-xl shadow-2xl w-full max-w-md ${isDark ? "bg-[#0F2233]" : "bg-white"}`}
           >
             <div
-              className={`p-6 border-b ${isDark ? "border-gray-700" : "border-gray-200"}`}
+              className={`p-6 border-b ${isDark ? "border-[#3B85C6]/30" : "border-gray-200"}`}
             >
               <div className="flex items-center justify-between">
                 <h3
@@ -2743,10 +2743,10 @@ export default function UserDashboardClient({
       {showAllAnnouncementsModal && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <div
-            className={`rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col ${isDark ? "bg-gray-800" : "bg-white"}`}
+            className={`rounded-xl shadow-2xl w-full max-w-2xl max-h-[80vh] overflow-hidden flex flex-col ${isDark ? "bg-[#0F2233]" : "bg-white"}`}
           >
             <div
-              className={`p-6 border-b flex items-center justify-between ${isDark ? "border-gray-700" : "border-gray-200"}`}
+              className={`p-6 border-b flex items-center justify-between ${isDark ? "border-[#3B85C6]/30" : "border-gray-200"}`}
             >
               <h3
                 className={`font-header text-xl font-semibold ${isDark ? "text-white" : "text-gray-900"}`}
@@ -2757,7 +2757,7 @@ export default function UserDashboardClient({
                 onClick={() => setShowAllAnnouncementsModal(false)}
                 className={
                   isDark
-                    ? "text-gray-400 hover:text-white"
+                    ? "text-white/60 hover:text-white"
                     : "text-gray-400 hover:text-gray-600"
                 }
               >
@@ -2828,7 +2828,7 @@ export default function UserDashboardClient({
               )}
             </div>
             <div
-              className={`p-4 border-t ${isDark ? "border-gray-700" : "border-gray-200"}`}
+              className={`p-4 border-t ${isDark ? "border-[#3B85C6]/30" : "border-gray-200"}`}
             >
               <button
                 onClick={() => setShowAllAnnouncementsModal(false)}
