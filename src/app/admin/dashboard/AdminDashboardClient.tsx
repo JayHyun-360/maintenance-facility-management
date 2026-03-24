@@ -8420,22 +8420,18 @@ ${result.analysis.risks || "N/A"}
 
         {showBroadcastModal && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div
-              className={`rounded-xl shadow-2xl w-full max-w-md ${isDark ? "bg-[#0F2233]" : "bg-white"}`}
-            >
+            <div className={`rounded-xl shadow-2xl w-full max-w-md bg-white`}>
               <div
                 className={`p-6 ${isDark ? "border-[#3B85C6]/30" : "border-gray-200"} border-b`}
               >
                 <div className="flex items-center justify-between">
-                  <h3
-                    className={`font-header text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"}`}
-                  >
+                  <h3 className="font-header text-lg font-semibold text-gray-900">
                     Broadcast Message to All Users
                   </h3>
 
                   <button
                     onClick={() => setShowBroadcastModal(false)}
-                    className={`${isDark ? "text-white/60 hover:text-white" : "text-gray-400 hover:text-gray-600"}`}
+                    className="text-gray-400 hover:text-gray-600"
                   >
                     <svg
                       className="w-5 h-5"
