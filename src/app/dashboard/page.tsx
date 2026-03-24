@@ -45,8 +45,8 @@ export default async function UserDashboard() {
     educational_level: null,
     department: null,
     is_anonymous: false,
-    theme_preference: "system" as const,
-    created_at: new Date().toISOString(),
+    theme_preference: "light" as const,
+    created_at: profile?.created_at || "",
   };
 
   // ✅ Check if user's profile role is admin - redirect if needed
