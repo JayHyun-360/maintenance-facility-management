@@ -5736,7 +5736,9 @@ ${result.analysis.risks || "N/A"}
                       className={`p-4 rounded-lg border transition-all cursor-pointer ${
                         !notification.is_read
                           ? isEmergency
-                            ? "bg-white border-red-200 shadow-sm hover:shadow-md hover:border-red-300"
+                            ? isDark
+                              ? "bg-red-500/20 border-red-500/30 shadow-sm hover:shadow-md hover:border-red-500/50"
+                              : "bg-white border-red-200 shadow-sm hover:shadow-md hover:border-red-300"
                             : isDark
                               ? "bg-[#0F2233] border-[#3B85C6]/30 shadow-sm hover:shadow-md hover:border-[#3B85C6]"
                               : "bg-white border-green-200 shadow-sm hover:shadow-md hover:border-green-300"
