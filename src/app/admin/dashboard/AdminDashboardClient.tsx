@@ -2406,7 +2406,7 @@ ${result.analysis.risks || "N/A"}
 
                       setShowDetailModal(request);
                     }}
-                    className="flex-shrink-0 p-1 text-gray-400 hover:text-green-500 hover:bg-gray-100 rounded transition-colors"
+                    className={`flex-shrink-0 p-1 ${isDark ? "text-[#1E90FF] hover:text-[#1E90FF] hover:bg-[#1E90FF]/10" : "text-gray-400 hover:text-green-500 hover:bg-gray-100"} rounded transition-colors`}
                     title="See more information"
                   >
                     <svg
@@ -3609,9 +3609,11 @@ ${result.analysis.risks || "N/A"}
                         </p>
                       </div>
 
-                      <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
+                      <div
+                        className={`w-12 h-12 ${isDark ? "bg-[#1E90FF]/10" : "bg-green-500/10"} rounded-lg flex items-center justify-center`}
+                      >
                         <svg
-                          className="w-6 h-6 text-green-500"
+                          className={`w-6 h-6 ${isDark ? "text-[#1E90FF]" : "text-green-500"}`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -3694,14 +3696,18 @@ ${result.analysis.risks || "N/A"}
                           Completed
                         </p>
 
-                        <p className="text-2xl font-bold text-green-600">
+                        <p
+                          className={`text-2xl font-bold ${isDark ? "text-[#1E90FF]" : "text-green-600"}`}
+                        >
                           {stats.completed}
                         </p>
                       </div>
 
-                      <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <div
+                        className={`w-12 h-12 ${isDark ? "bg-[#1E90FF]/10" : "bg-green-100"} rounded-lg flex items-center justify-center`}
+                      >
                         <svg
-                          className="w-6 h-6 text-green-600"
+                          className={`w-6 h-6 ${isDark ? "text-[#1E90FF]" : "text-green-600"}`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -4137,7 +4143,9 @@ ${result.analysis.risks || "N/A"}
                   </div>
 
                   <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
-                    <p className="text-xs font-medium text-green-600 uppercase tracking-wide">
+                    <p
+                      className={`text-xs font-medium ${isDark ? "text-[#1E90FF]" : "text-green-600"} uppercase tracking-wide`}
+                    >
                       Completed
                     </p>
 
@@ -4727,7 +4735,7 @@ ${result.analysis.risks || "N/A"}
                       placeholder="Search by nature, location, or description..."
                       value={tableSearchQuery}
                       onChange={(e) => setTableSearchQuery(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                      className={`w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent`}
                     />
                   </div>
 
@@ -4770,7 +4778,7 @@ ${result.analysis.risks || "N/A"}
                             type="checkbox"
                             checked={selectAll}
                             onChange={(e) => setSelectAll(e.target.checked)}
-                            className="w-4 h-4 text-green-500 rounded border-gray-300 focus:ring-green-500"
+                            className={`w-4 h-4 ${isDark ? "text-[#1E90FF]" : "text-green-500"} rounded border-gray-300 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"}`}
                           />
 
                           <span className="text-sm font-medium text-gray-700">
@@ -4852,7 +4860,7 @@ ${result.analysis.risks || "N/A"}
                                     });
                                   }
                                 }}
-                                className="w-4 h-4 text-green-500 rounded border-gray-300 focus:ring-green-500"
+                                className={`w-4 h-4 ${isDark ? "text-[#1E90FF]" : "text-green-500"} rounded border-gray-300 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"}`}
                               />
 
                               <span className="text-sm text-gray-700">
@@ -4916,7 +4924,7 @@ ${result.analysis.risks || "N/A"}
                                     });
                                   }
                                 }}
-                                className="w-4 h-4 text-green-500 rounded border-gray-300 focus:ring-green-500"
+                                className={`w-4 h-4 ${isDark ? "text-[#1E90FF]" : "text-green-500"} rounded border-gray-300 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"}`}
                               />
 
                               <span className="text-sm text-gray-700">
@@ -4968,7 +4976,7 @@ ${result.analysis.risks || "N/A"}
                                     });
                                   }
                                 }}
-                                className="w-4 h-4 text-green-500 rounded border-gray-300 focus:ring-green-500"
+                                className={`w-4 h-4 ${isDark ? "text-[#1E90FF]" : "text-green-500"} rounded border-gray-300 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"}`}
                               />
 
                               <span className="text-sm text-gray-700">
@@ -5050,7 +5058,7 @@ ${result.analysis.risks || "N/A"}
 
                 <button
                   onClick={() => setShowBroadcastModal(true)}
-                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 text-sm font-medium"
+                  className={`px-4 py-2 ${isDark ? "bg-[#1E90FF]" : "bg-green-600"} text-white rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-700"} transition-colors flex items-center gap-2 text-sm font-medium`}
                 >
                   <svg
                     className="w-4 h-4"
@@ -5091,7 +5099,7 @@ ${result.analysis.risks || "N/A"}
 
               <div className="bg-gray-50 rounded-xl p-8 text-center">
                 <svg
-                  className="w-16 h-16 mx-auto mb-4 text-green-500"
+                  className={`w-16 h-16 mx-auto mb-4 ${isDark ? "text-[#1E90FF]" : "text-green-500"}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -5225,7 +5233,7 @@ ${result.analysis.risks || "N/A"}
                         status: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500"
+                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"}`}
                   >
                     <option value="Pending">Pending</option>
 
@@ -5247,7 +5255,7 @@ ${result.analysis.risks || "N/A"}
 
                   <button
                     onClick={handleSaveStatus}
-                    className="flex-1 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                    className={`flex-1 px-4 py-2 ${isDark ? "bg-[#1E90FF]" : "bg-green-500"} text-white rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-600"}`}
                   >
                     Update Status
                   </button>
@@ -6415,7 +6423,7 @@ ${result.analysis.risks || "N/A"}
                               requestingDepartment: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm mb-2"
+                          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm mb-2`}
                           placeholder="Department name"
                         />
 
@@ -6437,7 +6445,7 @@ ${result.analysis.risks || "N/A"}
                               departmentHead: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
                           placeholder="Department Head"
                         />
                       </div>
@@ -6458,7 +6466,7 @@ ${result.analysis.risks || "N/A"}
                               vpAASD: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
                           placeholder="VP - AASD"
                         />
                       </div>
@@ -6478,7 +6486,7 @@ ${result.analysis.risks || "N/A"}
                               gmsHead: e.target.value,
                             }))
                           }
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
                           placeholder="GMS Head"
                         />
                       </div>
@@ -6522,7 +6530,7 @@ ${result.analysis.risks || "N/A"}
                                 performedBy: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
                             placeholder="Technician name"
                           />
                         </div>
@@ -6544,7 +6552,7 @@ ${result.analysis.risks || "N/A"}
                                 dateTimeCompleted: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
                           />
                         </div>
 
@@ -6563,7 +6571,7 @@ ${result.analysis.risks || "N/A"}
                                 acknowledgeBy: e.target.value,
                               }))
                             }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm"
+                            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
                             placeholder="Acknowledged by"
                           />
                         </div>
@@ -6646,7 +6654,7 @@ ${result.analysis.risks || "N/A"}
 
                     <button
                       onClick={generatePDFReport}
-                      className="flex-1 px-4 py-2.5 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors flex items-center justify-center gap-2"
+                      className={`flex-1 px-4 py-2.5 ${isDark ? "bg-[#1E90FF]" : "bg-green-500"} text-white font-medium rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-600"} transition-colors flex items-center justify-center gap-2`}
                     >
                       <svg
                         className="w-4 h-4"
@@ -7167,7 +7175,7 @@ ${result.analysis.risks || "N/A"}
                         value={aiSearchQuery}
                         onChange={(e) => setAiSearchQuery(e.target.value)}
                         placeholder="Search messages..."
-                        className="w-full pl-8 pr-8 py-1.5 bg-[#1E293B] border border-slate-700 rounded-md text-white placeholder-white/40 text-xs focus:outline-none focus:ring-1 focus:ring-green-500/50"
+                        className={`w-full pl-8 pr-8 py-1.5 bg-[#1E293B] border border-slate-700 rounded-md text-white placeholder-white/40 text-xs focus:outline-none focus:ring-1 ${isDark ? "focus:ring-[#1E90FF]/50" : "focus:ring-green-500/50"}`}
                       />
 
                       {aiSearchQuery && (
@@ -7572,7 +7580,7 @@ ${result.analysis.risks || "N/A"}
                                           setAiStatusText("");
                                         }
                                       }}
-                                      className="px-3 py-1 bg-green-600 text-white text-xs rounded-md hover:bg-green-500 transition-colors"
+                                      className={`px-3 py-1 ${isDark ? "bg-[#1E90FF]" : "bg-green-600"} text-white text-xs rounded-md hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-500"} transition-colors`}
                                     >
                                       Save & Resend
                                     </button>
@@ -7942,7 +7950,9 @@ ${result.analysis.risks || "N/A"}
                         <div className="relative">
                           <div className="absolute inset-0 rounded-md bg-green-500 blur-sm opacity-60 animate-pulse" />
 
-                          <div className="relative w-6 h-6 rounded-md bg-green-600 flex items-center justify-center shadow shadow-green-500/30">
+                          <div
+                            className={`relative w-6 h-6 rounded-md ${isDark ? "bg-[#1E90FF]" : "bg-green-600"} flex items-center justify-center shadow ${isDark ? "shadow-[#1E90FF]/30" : "shadow-green-500/30"}`}
+                          >
                             <Bot className="w-3.5 h-3.5 text-white" />
                           </div>
                         </div>
@@ -8031,7 +8041,7 @@ ${result.analysis.risks || "N/A"}
                         <button
                           key={i}
                           onClick={() => setAiInput(chip.prompt)}
-                          className="flex items-center gap-2 px-3 py-2 bg-white/[0.03] border border-white/8 rounded-xl hover:bg-green-600/10 hover:border-green-500/30 hover:text-green-300 transition-all text-white/60 text-left group"
+                          className={`flex items-center gap-2 px-3 py-2 ${isDark ? "bg-white/[0.03] border-white/8 hover:bg-[#1E90FF]/10 hover:border-[#1E90FF]/30 hover:text-[#1E90FF]" : "bg-white/[0.03] border-white/8 hover:bg-green-600/10 hover:border-green-500/30 hover:text-green-300"} transition-all text-white/60 text-left group`}
                         >
                           <div className="w-5 h-5 rounded-md bg-white/5 group-hover:bg-green-500/20 flex items-center justify-center flex-shrink-0 transition-all">
                             <svg
@@ -8302,7 +8312,7 @@ ${result.analysis.risks || "N/A"}
                           }}
                           placeholder="Ask me about maintenance..."
                           rows={1}
-                          className="w-full px-3 py-2 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/50 focus:border-green-500/50 text-white placeholder-white/40 resize-none min-h-[40px] max-h-[100px] text-sm"
+                          className={`w-full px-3 py-2 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]/50 focus:border-[#1E90FF]/50" : "focus:ring-green-500/50 focus:border-green-500/50"} text-white placeholder-white/40 resize-none min-h-[40px] max-h-[100px] text-sm`}
                           disabled={aiLoading}
                           style={{
                             height: "auto",
@@ -8438,7 +8448,7 @@ ${result.analysis.risks || "N/A"}
                     value={broadcastTitle}
                     onChange={(e) => setBroadcastTitle(e.target.value)}
                     placeholder="Enter announcement title..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent`}
                   />
                 </div>
 
@@ -8447,7 +8457,7 @@ ${result.analysis.risks || "N/A"}
                   onChange={(e) => setBroadcastMessage(e.target.value)}
                   placeholder="Type your broadcast message here..."
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent resize-none"
+                  className={`w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent resize-none`}
                 />
 
                 <div className="flex justify-end gap-3 mt-4">
@@ -8461,7 +8471,7 @@ ${result.analysis.risks || "N/A"}
                   <button
                     onClick={sendBroadcastMessage}
                     disabled={!broadcastMessage.trim()}
-                    className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                    className={`px-4 py-2 ${isDark ? "bg-[#1E90FF]" : "bg-green-600"} text-white rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-700"} transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     Send to All ({users.length} users)
                   </button>
@@ -8966,7 +8976,7 @@ ${result.analysis.risks || "N/A"}
 
                       fetchUserMessages(selectedUser.id);
                     }}
-                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium flex items-center justify-center gap-2"
+                    className={`flex-1 px-4 py-2 ${isDark ? "bg-[#1E90FF]" : "bg-green-600"} text-white rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-700"} transition-colors text-sm font-medium flex items-center justify-center gap-2`}
                   >
                     <svg
                       className="w-4 h-4"
@@ -9184,7 +9194,7 @@ ${result.analysis.risks || "N/A"}
               Excellent
             </p>
             <div
-              className={`rounded-2xl p-8 inline-block ${isDark ? "bg-blue-600" : "bg-green-600"}`}
+              className={`rounded-2xl p-8 inline-block ${isDark ? "bg-[#1E90FF]" : "bg-green-600"}`}
             >
               <RotatingText
                 texts={["Maintenance", "Facility", "Management", "System"]}
