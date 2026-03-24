@@ -1787,7 +1787,7 @@ export default function UserDashboardClient({
                           <span>Urgency: {request.urgency}</span>
 
                           <div className="flex items-center gap-2">
-                            <span>
+                            <span suppressHydrationWarning>
                               {new Date(
                                 request.created_at,
                               ).toLocaleDateString()}
@@ -2383,7 +2383,10 @@ export default function UserDashboardClient({
             </button>
 
             {/* Account Info */}
-            <div className="text-center text-xs text-gray-500">
+            <div
+              className="text-center text-xs text-gray-500"
+              suppressHydrationWarning
+            >
               Account created:{" "}
               {profile?.created_at
                 ? new Date(profile.created_at).toLocaleDateString()
