@@ -2625,7 +2625,7 @@ ${result.analysis.risks || "N/A"}
 
                   setShowReportSidebar(true);
                 }}
-                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#1E90FF] text-white text-xs font-medium rounded-lg hover:bg-[#1E90FF]/80 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 ${isDark ? "bg-[#1E90FF]" : "bg-green-500"} text-white text-xs font-medium rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-600"} transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105`}
                 title="Generate Report"
               >
                 <svg
@@ -3468,7 +3468,7 @@ ${result.analysis.risks || "N/A"}
                 <button
                   id="tutorial-notifications"
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="p-2 rounded-lg bg-[#1E90FF]/20 backdrop-blur-sm hover:bg-[#1E90FF]/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                  className={`p-2 rounded-lg ${isDark ? "bg-[#1E90FF]/20" : "bg-green-500/20"} backdrop-blur-sm hover:${isDark ? "bg-[#1E90FF]/30" : "bg-green-500/30"} transition-all duration-300 transform hover:scale-105 text-white relative`}
                   title="Notifications"
                 >
                   <svg
@@ -5607,7 +5607,7 @@ ${result.analysis.risks || "N/A"}
 
                     setShowDetailModal(null);
                   }}
-                  className="w-full px-3 py-2 bg-[#1E90FF] text-white rounded-lg hover:bg-[#1E90FF]/80 transition-colors font-medium text-sm flex items-center justify-center gap-1.5"
+                  className={`w-full px-3 py-2 ${isDark ? "bg-[#1E90FF]" : "bg-green-600"} text-white rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-700"} transition-colors font-medium text-sm flex items-center justify-center gap-1.5`}
                 >
                   <svg
                     className="w-3 h-3"
@@ -6184,7 +6184,9 @@ ${result.analysis.risks || "N/A"}
             className={`fixed top-0 right-0 h-full w-[600px] bg-white shadow-2xl z-50 transform transition-transform duration-500 ease-out ${showReportSidebar ? "translate-x-0" : "translate-x-full"}`}
           >
             <div className="h-full overflow-y-auto">
-              <div className="bg-[#1E90FF] shadow-lg border-b p-6 sticky top-0 z-10">
+              <div
+                className={`${isDark ? "bg-[#1E90FF]" : "bg-green-600"} shadow-lg border-b p-6 sticky top-0 z-10`}
+              >
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="font-header text-xl font-bold text-white">
