@@ -3331,6 +3331,7 @@ ${result.analysis.risks || "N/A"}
         onTabChange={(tab) => setActiveTab(tab as any)}
         profile={profile}
         userAvatar={userAvatar}
+        onThemeToggle={handleThemeToggle}
       />
 
       {/* Main wrapper with header and content */}

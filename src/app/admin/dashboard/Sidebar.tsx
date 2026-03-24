@@ -15,6 +15,7 @@ interface SidebarProps {
     visual_role?: string | null;
   } | null;
   userAvatar?: string | null;
+  onThemeToggle?: () => void;
 }
 
 const navItems = [
@@ -101,10 +102,19 @@ export default function Sidebar({
   onTabChange,
   profile,
   userAvatar,
+  onThemeToggle,
 }: SidebarProps) {
   const router = useRouter();
   const supabase = createClient();
   const { theme, toggleTheme } = useTheme();
+
+  const handleThemeToggle = () => {
+    if (onThemeToggle) {
+      onThemeToggle();
+    } else {
+      toggleTheme();
+    }
+  };
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
@@ -214,7 +224,7 @@ export default function Sidebar({
             type="checkbox"
             className="hidden"
             checked={isDark}
-            onChange={toggleTheme}
+            onChange={handleThemeToggle}
           />
           <span className="toggle-slider"></span>
         </label>
