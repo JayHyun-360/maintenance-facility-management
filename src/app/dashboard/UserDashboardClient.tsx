@@ -749,6 +749,21 @@ export default function UserDashboardClient({
     }
   };
 
+  const handleClearRequest = async (requestId: string) => {
+    const confirmed = confirm(
+      "Are you sure you want to clear this request? It will be hidden from your view but preserved in the database.",
+    );
+    if (!confirmed) return;
+
+    const { error } = await (supabase.from("maintenance_requests") as any)
+      .update({ is_cleared_by_user: true })
+      .eq("id", requestId);
+
+    if (!error) {
+      setRequests(requests.filter((r: any) => r.id !== requestId));
+    }
+  };
+
   const handleSignOut = async () => {
     // Check if user is a guest
     if (profile?.is_anonymous) {
@@ -1672,109 +1687,134 @@ export default function UserDashboardClient({
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {requests.map((request) => (
-                    <div
-                      key={request.id}
-                      className="border border-gray-200 rounded-lg p-4 transition-all duration-300 hover:shadow-md hover:scale-[1.01] hover:border-gray-300 animate-fadeIn"
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="font-header font-medium text-gray-900 transition-all duration-300">
-                            {request.nature}
-                          </h3>
+                  {requests
+                    .filter((r: any) => !r.is_cleared_by_user)
+                    .map((request) => (
+                      <div
+                        key={request.id}
+                        className="border border-gray-200 rounded-lg p-4 transition-all duration-300 hover:shadow-md hover:scale-[1.01] hover:border-gray-300 animate-fadeIn"
+                      >
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h3 className="font-header font-medium text-gray-900 transition-all duration-300">
+                              {request.nature}
+                            </h3>
 
-                          <p className="text-sm text-gray-600 transition-all duration-300">
-                            {request.location}
-                          </p>
-                        </div>
+                            <p className="text-sm text-gray-600 transition-all duration-300">
+                              {request.location}
+                            </p>
+                          </div>
 
-                        <span
-                          className={`px-2 py-1 text-xs font-medium rounded-full transition-all duration-300 ${getStatusColor(request.status)}`}
-                        >
-                          {request.status}
-                        </span>
-                      </div>
-
-                      <p className="text-sm text-gray-700 mb-2 transition-all duration-300">
-                        {request.description}
-                      </p>
-
-                      {/* Photo Display */}
-
-                      {request.photos && request.photos.length > 0 && (
-                        <div className="mt-2">
-                          <button
-                            type="button"
-                            onClick={(e) => togglePhotos(e, request.id)}
-                            className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
+                          <span
+                            className={`px-2 py-1 text-xs font-medium rounded-full transition-all duration-300 ${getStatusColor(request.status)}`}
                           >
-                            {expandedPhotos.has(request.id) ? (
-                              <>
-                                <svg
-                                  className="w-3 h-3"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
-                                  />
-                                </svg>
-                                Hide photos
-                              </>
-                            ) : (
-                              <>
-                                <svg
-                                  className="w-3 h-3"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                  />
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                                  />
-                                </svg>
-                                Show photos ({request.photos.length})
-                              </>
-                            )}
-                          </button>
-                          {expandedPhotos.has(request.id) && (
-                            <div className="flex gap-2 mt-2 overflow-x-auto pb-1">
-                              {request.photos.map((photo, index) => (
-                                <img
-                                  key={index}
-                                  src={photo}
-                                  alt={`Attachment ${index + 1}`}
-                                  className="w-16 h-16 object-cover rounded-lg border border-gray-200 flex-shrink-0 cursor-pointer hover:scale-110 transition-transform"
-                                  onClick={() => setSelectedPhoto(photo)}
-                                />
-                              ))}
-                            </div>
-                          )}
+                            {request.status}
+                          </span>
                         </div>
-                      )}
 
-                      <div className="flex justify-between items-center text-xs text-gray-500 transition-all duration-300">
-                        <span>Urgency: {request.urgency}</span>
+                        <p className="text-sm text-gray-700 mb-2 transition-all duration-300">
+                          {request.description}
+                        </p>
 
-                        <span>
-                          {new Date(request.created_at).toLocaleDateString()}
-                        </span>
+                        {/* Photo Display */}
+
+                        {request.photos && request.photos.length > 0 && (
+                          <div className="mt-2">
+                            <button
+                              type="button"
+                              onClick={(e) => togglePhotos(e, request.id)}
+                              className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-md transition-colors"
+                            >
+                              {expandedPhotos.has(request.id) ? (
+                                <>
+                                  <svg
+                                    className="w-3 h-3"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"
+                                    />
+                                  </svg>
+                                  Hide photos
+                                </>
+                              ) : (
+                                <>
+                                  <svg
+                                    className="w-3 h-3"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                                    />
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                                    />
+                                  </svg>
+                                  Show photos ({request.photos.length})
+                                </>
+                              )}
+                            </button>
+                            {expandedPhotos.has(request.id) && (
+                              <div className="flex gap-2 mt-2 overflow-x-auto pb-1">
+                                {request.photos.map((photo, index) => (
+                                  <img
+                                    key={index}
+                                    src={photo}
+                                    alt={`Attachment ${index + 1}`}
+                                    className="w-16 h-16 object-cover rounded-lg border border-gray-200 flex-shrink-0 cursor-pointer hover:scale-110 transition-transform"
+                                    onClick={() => setSelectedPhoto(photo)}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="flex justify-between items-center text-xs text-gray-500 transition-all duration-300">
+                          <span>Urgency: {request.urgency}</span>
+
+                          <div className="flex items-center gap-2">
+                            <span>
+                              {new Date(
+                                request.created_at,
+                              ).toLocaleDateString()}
+                            </span>
+                            <button
+                              onClick={() => handleClearRequest(request.id)}
+                              className="text-gray-400 hover:text-red-500 transition-colors"
+                              title="Clear request"
+                            >
+                              <svg
+                                className="w-4 h-4"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               )}
             </div>

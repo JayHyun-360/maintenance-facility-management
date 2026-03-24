@@ -1,9 +1,11 @@
 import { createServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import UserDashboardClient from "./UserDashboardClient";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import type { Profile, MaintenanceRequest } from "@/types/database";
 
 // User dashboard page - displays maintenance request form and user's requests
+// ThemeProvider wraps the client component for theme context
 export default async function UserDashboard() {
   // Check session on server
   const supabase = await createServerClient();
@@ -77,11 +79,13 @@ export default async function UserDashboard() {
 
   // Pass to client component for interactivity
   return (
-    <UserDashboardClient
-      initialProfile={finalProfile}
-      initialRequests={(requests || []) as MaintenanceRequest[]}
-      userId={session.user.id}
-      userAvatar={userAvatar}
-    />
+    <ThemeProvider>
+      <UserDashboardClient
+        initialProfile={finalProfile}
+        initialRequests={(requests || []) as MaintenanceRequest[]}
+        userId={session.user.id}
+        userAvatar={userAvatar}
+      />
+    </ThemeProvider>
   );
 }
