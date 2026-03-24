@@ -877,7 +877,7 @@ export default function UserDashboardClient({
       {/* Enhanced Header */}
 
       <div
-        className={`shadow-lg border-b transition-all duration-300 ${isDark ? "bg-blue-600 border-blue-700" : "bg-green-600 border-green-700"}`}
+        className={`shadow-lg border-b transition-all duration-300 ${isDark ? "bg-[#16334C] border-[#16334C]" : "bg-green-600 border-green-700"}`}
       >
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
@@ -931,7 +931,7 @@ export default function UserDashboardClient({
                 </button>
 
                 <div
-                  className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 animate-pulse ${isDark ? "bg-green-400 border-[#1E1E1E]" : "bg-green-400 border-white"}`}
+                  className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 animate-pulse ${isDark ? "bg-green-400 border-[#16334C]" : "bg-green-400 border-white"}`}
                 ></div>
 
                 {/* Profile Picture Viewer */}
