@@ -5633,16 +5633,16 @@ ${result.analysis.risks || "N/A"}
 
         <div
           ref={notificationsRef}
-          className={`fixed top-0 right-0 h-full w-80 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-50 border-[#1E90FF]/30"} shadow-xl z-40 transform transition-transform duration-500 ease-out flex flex-col ${showNotifications ? "translate-x-0" : "translate-x-full"}`}
+          className={`fixed top-0 right-0 h-full w-80 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-50 border-green-200"} shadow-xl z-40 transform transition-transform duration-500 ease-out flex flex-col ${showNotifications ? "translate-x-0" : "translate-x-full"}`}
         >
           {/* Logo and Title */}
           <div
-            className={`p-6 ${isDark ? "border-[#1E90FF]/30" : "border-[#1E90FF]/30"} border-b`}
+            className={`p-6 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-b`}
           >
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
                 <svg
-                  className={`w-8 h-8 ${isDark ? "text-[#1E90FF]" : "text-[#1E90FF]"}`}
+                  className={`w-8 h-8 ${isDark ? "text-[#1E90FF]" : "text-green-600"}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -5657,12 +5657,12 @@ ${result.analysis.risks || "N/A"}
               </div>
               <div className="flex-1 min-w-0">
                 <h1
-                  className={`${isDark ? "text-white" : "text-[#1E90FF]"} font-bold text-lg truncate`}
+                  className={`${isDark ? "text-white" : "text-green-800"} font-bold text-lg truncate`}
                 >
                   Notifications
                 </h1>
                 <div
-                  className={`${isDark ? "text-white/70" : "text-[#1E90FF]/70"} text-xs truncate`}
+                  className={`${isDark ? "text-white/70" : "text-green-600/70"} text-xs truncate`}
                 >
                   <div>Stay updated with your</div>
                   <div>latest activities</div>
@@ -5680,11 +5680,11 @@ ${result.analysis.risks || "N/A"}
           <div className="flex-1 p-4 overflow-y-auto">
             {/* Action Buttons */}
             <div
-              className={`flex justify-between items-center mb-4 pb-3 ${isDark ? "border-[#1E90FF]/30" : "border-[#1E90FF]/30"} border-b`}
+              className={`flex justify-between items-center mb-4 pb-3 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-b`}
             >
               <button
                 onClick={markAllNotificationsRead}
-                className={`text-sm ${isDark ? "text-[#1E90FF] hover:text-[#1E90FF]/80" : "text-[#1E90FF] hover:text-[#1E90FF]/80"} font-medium transition-colors`}
+                className={`text-sm ${isDark ? "text-[#1E90FF] hover:text-[#1E90FF]/80" : "text-green-600 hover:text-green-700"} font-medium transition-colors`}
               >
                 Mark all as read
               </button>
@@ -5801,11 +5801,11 @@ ${result.analysis.risks || "N/A"}
 
           {/* Close Button */}
           <div
-            className={`p-4 ${isDark ? "border-[#1E90FF]/30" : "border-[#1E90FF]/30"} border-t`}
+            className={`p-4 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-t`}
           >
             <button
               onClick={() => setShowNotifications(false)}
-              className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 ${isDark ? "bg-[#1E1E1E] text-[#1E90FF] hover:bg-[#1E90FF]/10 border-[#1E90FF]/30" : "bg-white hover:bg-[#1E90FF]/10 text-[#1E90FF] border-[#1E90FF]/30"} rounded-lg transition-all duration-200 font-medium border shadow-sm hover:shadow-md`}
+              className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 ${isDark ? "bg-[#1E1E1E] text-[#1E90FF] hover:bg-[#1E90FF]/10 border-[#1E90FF]/30" : "bg-white hover:bg-green-50 text-green-700 border-green-200"} rounded-lg transition-all duration-200 font-medium border shadow-sm hover:shadow-md`}
             >
               <svg
                 className="w-5 h-5"
@@ -5839,17 +5839,17 @@ ${result.analysis.risks || "N/A"}
 
           <div
             ref={profileSidebarRef}
-            className={`fixed top-0 left-0 h-full w-80 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-50 border-[#1E90FF]/30"} shadow-xl z-50 transform transition-transform duration-500 ease-out flex flex-col ${showProfileSidebar ? "translate-x-0" : "-translate-x-full"}`}
+            className={`fixed top-0 left-0 h-full w-80 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-50 border-green-200"} shadow-xl z-50 transform transition-transform duration-500 ease-out flex flex-col ${showProfileSidebar ? "translate-x-0" : "-translate-x-full"}`}
           >
             {/* Profile Header */}
             <div
-              className={`p-6 ${isDark ? "border-[#1E90FF]/30" : "border-[#1E90FF]/30"} border-b`}
+              className={`p-6 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-b`}
             >
               <div className="flex flex-col items-center">
                 {/* Profile Photo */}
                 <div className="relative mb-4">
                   <div
-                    className={`w-20 h-20 rounded-full ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-200 border-[#1E90FF]/30"} border-4 shadow-lg overflow-hidden flex items-center justify-center`}
+                    className={`w-20 h-20 rounded-full ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-200 border-white"} border-4 shadow-lg overflow-hidden flex items-center justify-center`}
                   >
                     {profile?.avatar_url || userAvatar ? (
                       <img
@@ -5870,7 +5870,7 @@ ${result.analysis.risks || "N/A"}
                   </div>
                   <label
                     htmlFor="avatar-upload"
-                    className={`absolute bottom-0 right-0 ${isDark ? "bg-[#1E90FF]" : "bg-[#1E90FF]"} text-white p-1.5 rounded-full cursor-pointer hover:${isDark ? "bg-[#1E90FF]/80" : "bg-[#1E90FF]/80"} transition-colors shadow-md`}
+                    className={`absolute bottom-0 right-0 ${isDark ? "bg-[#1E90FF]" : "bg-green-500"} text-white p-1.5 rounded-full cursor-pointer hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-600"} transition-colors shadow-md`}
                   >
                     <svg
                       className="w-3.5 h-3.5"
@@ -5914,14 +5914,14 @@ ${result.analysis.risks || "N/A"}
 
                 {/* Full Name */}
                 <h2
-                  className={`${isDark ? "text-white" : "text-[#1E90FF]"} font-bold text-lg text-center line-clamp-2`}
+                  className={`${isDark ? "text-white" : "text-green-800"} font-bold text-lg text-center line-clamp-2`}
                 >
                   {profile?.full_name || "Admin"}
                 </h2>
 
                 {/* Visual Role Badge */}
                 <span
-                  className={`${isDark ? "bg-[#1E90FF]/20 text-[#1E90FF]" : "bg-[#1E90FF]/20 text-[#1E90FF]"} backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium mt-2`}
+                  className={`${isDark ? "bg-[#1E90FF]/20 text-[#1E90FF]" : "bg-white/20 text-green-700"} backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium mt-2`}
                 >
                   {profile?.visual_role || "Staff"}
                 </span>
@@ -5942,7 +5942,7 @@ ${result.analysis.risks || "N/A"}
                     onClick={() =>
                       document.getElementById("profile-fullname")?.focus()
                     }
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-[#1E90FF] hover:bg-[#1E90FF]/10 hover:shadow-sm hover:text-[#1E90FF]"} transition-all duration-200`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
                   >
                     <svg
                       className="w-5 h-5"
@@ -5978,7 +5978,7 @@ ${result.analysis.risks || "N/A"}
                 {/* Visual Role Section */}
                 <li>
                   <button
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-[#1E90FF] hover:bg-[#1E90FF]/10 hover:shadow-sm hover:text-[#1E90FF]"} transition-all duration-200`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
                   >
                     <svg
                       className="w-5 h-5"
@@ -6017,7 +6017,7 @@ ${result.analysis.risks || "N/A"}
                 {/* Theme Preference Section */}
                 <li>
                   <button
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-[#1E90FF] hover:bg-[#1E90FF]/10 hover:shadow-sm hover:text-[#1E90FF]"} transition-all duration-200`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
                   >
                     {formData.theme_preference === "dark" ? (
                       <svg
@@ -6089,7 +6089,7 @@ ${result.analysis.risks || "N/A"}
                 <li>
                   <button
                     onClick={handleExportData}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-[#1E90FF] hover:bg-[#1E90FF]/10 hover:shadow-sm hover:text-[#1E90FF]"} transition-all duration-200`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
                   >
                     <svg
                       className="w-5 h-5"
@@ -6112,12 +6112,12 @@ ${result.analysis.risks || "N/A"}
 
             {/* Bottom Section - Save Button */}
             <div
-              className={`p-4 ${isDark ? "border-[#1E90FF]/30" : "border-[#1E90FF]/30"} border-t space-y-3`}
+              className={`p-4 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-t space-y-3`}
             >
               {/* Success Message */}
               {successMessage && (
                 <div
-                  className={`p-3 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30 text-[#1E90FF]" : "bg-[#1E90FF]/10 border-[#1E90FF]/30 text-[#1E90FF]"} border rounded-lg text-sm text-center`}
+                  className={`p-3 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30 text-[#1E90FF]" : "bg-green-50 border-green-200 text-green-700"} border rounded-lg text-sm text-center`}
                 >
                   {successMessage}
                 </div>
@@ -6134,7 +6134,7 @@ ${result.analysis.risks || "N/A"}
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className={`w-full flex items-center justify-center gap-2 px-4 py-3 ${isDark ? "bg-[#1E90FF]" : "bg-[#1E90FF]"} text-white font-semibold rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-[#1E90FF]/80"} disabled:bg-gray-400 transition-colors`}
+                className={`w-full flex items-center justify-center gap-2 px-4 py-3 ${isDark ? "bg-[#1E90FF]" : "bg-green-500"} text-white font-semibold rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-600"} disabled:bg-gray-400 transition-colors`}
               >
                 {saving ? (
                   <>
