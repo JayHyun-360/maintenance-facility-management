@@ -3419,7 +3419,7 @@ ${result.analysis.risks || "N/A"}
                     setShowTutorial(true);
                     setTutorialStep(0);
                   }}
-                  className={`p-2 rounded-lg ${isDark ? "bg-[#1E90FF]/20" : "bg-white/20"} backdrop-blur-sm hover:${isDark ? "bg-[#1E90FF]/30" : "bg-white/30"} transition-all duration-300 transform hover:scale-105 text-white`}
+                  className={`p-2 rounded-lg ${isDark ? "bg-white/20" : "bg-white/20"} backdrop-blur-sm hover:${isDark ? "bg-white/30" : "bg-white/30"} transition-all duration-300 transform hover:scale-105 text-white`}
                   title="Help & Tutorial"
                 >
                   <svg
@@ -3440,7 +3440,7 @@ ${result.analysis.risks || "N/A"}
                 {/* Introduction Button */}
                 <button
                   onClick={() => setShowIntroductionModal(true)}
-                  className={`p-2 rounded-lg ${isDark ? "bg-[#1E90FF]/20" : "bg-white/20"} backdrop-blur-sm hover:${isDark ? "bg-[#1E90FF]/30" : "bg-white/30"} transition-all duration-300 transform hover:scale-105 text-white`}
+                  className={`p-2 rounded-lg ${isDark ? "bg-white/20" : "bg-white/20"} backdrop-blur-sm hover:${isDark ? "bg-white/30" : "bg-white/30"} transition-all duration-300 transform hover:scale-105 text-white`}
                   title="Cool Introduction"
                 >
                   <svg
@@ -3468,7 +3468,7 @@ ${result.analysis.risks || "N/A"}
                 <button
                   id="tutorial-notifications"
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className={`p-2 rounded-lg ${isDark ? "bg-[#1E90FF]/20" : "bg-white/20"} backdrop-blur-sm hover:${isDark ? "bg-[#1E90FF]/30" : "bg-white/30"} transition-all duration-300 transform hover:scale-105 text-white relative`}
+                  className={`p-2 rounded-lg ${isDark ? "bg-white/20" : "bg-white/20"} backdrop-blur-sm hover:${isDark ? "bg-white/30" : "bg-white/30"} transition-all duration-300 transform hover:scale-105 text-white relative`}
                   title="Notifications"
                 >
                   <svg
@@ -3496,7 +3496,7 @@ ${result.analysis.risks || "N/A"}
                 <button
                   id="tutorial-ai"
                   onClick={() => setShowAIChat(true)}
-                  className={`p-2 rounded-lg ${isDark ? "bg-[#1E90FF]/20" : "bg-white/20"} backdrop-blur-sm hover:${isDark ? "bg-[#1E90FF]/30" : "bg-white/30"} transition-all duration-300 transform hover:scale-105 text-white relative`}
+                  className={`p-2 rounded-lg ${isDark ? "bg-white/20" : "bg-white/20"} backdrop-blur-sm hover:${isDark ? "bg-white/30" : "bg-white/30"} transition-all duration-300 transform hover:scale-105 text-white relative`}
                   title="AI Assistant"
                 >
                   <Bot className="w-5 h-5" />
@@ -3505,7 +3505,7 @@ ${result.analysis.risks || "N/A"}
                 <button
                   id="tutorial-settings"
                   onClick={() => setShowProfileSidebar(true)}
-                  className={`px-3 py-2 ${isDark ? "bg-[#1E90FF]/20" : "bg-white/20"} backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:${isDark ? "bg-[#1E90FF]/30" : "bg-white/30"} hover:scale-105 text-sm`}
+                  className={`px-3 py-2 ${isDark ? "bg-white/20" : "bg-white/20"} backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:${isDark ? "bg-white/30" : "bg-white/30"} hover:scale-105 text-sm`}
                 >
                   Settings
                 </button>
@@ -3514,7 +3514,7 @@ ${result.analysis.risks || "N/A"}
                 <div className="relative">
                   <button
                     onClick={() => setShowProfileViewer(!showProfileViewer)}
-                    className={`w-10 h-10 ${isDark ? "bg-[#1E90FF]/20" : "bg-white/20"} backdrop-blur-sm rounded-full flex items-center justify-center border-2 ${isDark ? "border-[#1E90FF]/30" : "border-white/30"} transition-all duration-300 hover:scale-110 ${isDark ? "hover:bg-[#1E90FF]/30" : "hover:bg-white/30"} overflow-hidden`}
+                    className={`w-10 h-10 ${isDark ? "bg-white/20" : "bg-white/20"} backdrop-blur-sm rounded-full flex items-center justify-center border-2 ${isDark ? "border-white/30" : "border-white/30"} transition-all duration-300 hover:scale-110 ${isDark ? "hover:bg-white/30" : "hover:bg-white/30"} overflow-hidden`}
                     title="Click to view profile picture"
                   >
                     {userAvatar ? (
