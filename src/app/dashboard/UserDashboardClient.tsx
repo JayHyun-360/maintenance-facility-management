@@ -2118,7 +2118,11 @@ export default function UserDashboardClient({
                 </div>
                 <label
                   htmlFor="avatar-upload"
-                  className="absolute bottom-0 right-0 bg-[#5D9C59] text-white p-2 rounded-full cursor-pointer hover:bg-[#4a7c4a] hover:scale-110 transition-all shadow-md"
+                  className={`absolute bottom-0 right-0 p-2 rounded-full cursor-pointer hover:scale-110 transition-all shadow-md ${
+                    isDark
+                      ? "bg-[#1E90FF] hover:bg-[#1E90FF]/80"
+                      : "bg-[#5D9C59] hover:bg-[#4a7c4a]"
+                  } text-white`}
                 >
                   <svg
                     className="w-4 h-4"
@@ -2577,36 +2581,20 @@ export default function UserDashboardClient({
 
       {showConfirm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-xl shadow-xl p-8 max-w-md w-full">
-            <h4 className="text-lg font-bold text-gray-900 mb-4">
+          <div
+            className={`rounded-xl shadow-xl p-8 max-w-md w-full ${isDark ? "bg-gray-800" : "bg-white"}`}
+          >
+            <h4
+              className={`text-lg font-bold mb-4 ${isDark ? "text-white" : "text-gray-900"}`}
+            >
               Confirm Mode Switch
             </h4>
 
             {confirmType === "user" && (
               <>
-                <p className="text-gray-600 mb-4">
-                  You are about to switch to <strong>User Mode</strong>. You
-                  will be redirected to the user dashboard and will no longer
-                  have access to admin features.
-                </p>
-
-                <p className="text-sm text-gray-500 mb-6">
-                  You can switch back to admin mode from the profile settings.
-                </p>
-              </>
-            )}
-
-            {confirmType === "admin" && (
-              <>
-                <p className="text-gray-600 mb-4">
-                  You are about to switch to <strong>Admin Mode</strong>. You
-                  will be redirected to the admin dashboard with full access to
-                  maintenance management tools.
-                </p>
-
-                <p className="text-sm text-gray-500 mb-6">
-                  You can switch back to user mode from the profile settings.
-                </p>
+                <p
+                  className={`mb-4 ${isDark ? "text-gray-300" : "text-gray-600"}`}
+                ></p>
               </>
             )}
 
@@ -2614,7 +2602,11 @@ export default function UserDashboardClient({
               <button
                 onClick={() => setShowConfirm(false)}
                 disabled={loading}
-                className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:bg-gray-200 transition-colors"
+                className={`flex-1 px-4 py-2 rounded-lg disabled:bg-gray-200 transition-colors ${
+                  isDark
+                    ? "bg-gray-700 text-white hover:bg-gray-600"
+                    : "text-gray-700 bg-gray-100 hover:bg-gray-200"
+                }`}
               >
                 Cancel
               </button>
@@ -2622,7 +2614,11 @@ export default function UserDashboardClient({
               <button
                 onClick={() => handleModeSwitch(confirmType === "admin")}
                 disabled={loading}
-                className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:bg-gray-400 transition-colors"
+                className={`flex-1 px-4 py-2 text-white rounded-lg disabled:bg-gray-400 transition-colors ${
+                  isDark
+                    ? "bg-[#1E90FF] hover:bg-[#1E90FF]/80"
+                    : "bg-blue-500 hover:bg-blue-600"
+                }`}
               >
                 {loading ? "Switching..." : "Confirm"}
               </button>
