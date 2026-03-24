@@ -41,13 +41,14 @@ export default function UserDashboardClient({
 }: UserDashboardClientProps) {
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
-  const isDark = mounted && theme === "dark";
 
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const isDark = mounted && theme === "dark";
 
   const [profile, setProfile] = useState<Profile | null>(initialProfile);
 
