@@ -5282,7 +5282,7 @@ ${result.analysis.risks || "N/A"}
             />
 
             <div
-              className={`rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100 relative z-10 flex flex-col ${isDark ? "bg-[#0F2233]" : "bg-white"}`}
+              className={`rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100 relative z-10 flex flex-col bg-white`}
             >
               {/* Header */}
 
