@@ -1868,10 +1868,14 @@ export default function AdminDashboardClient({
     if (!profile) return;
 
     const currentTheme = (profile.theme_preference || "light").toLowerCase();
+    console.log("=== THEME TOGGLE ===");
+    console.log("Current profile theme_preference:", profile.theme_preference);
+    console.log("Current theme (from profile):", currentTheme);
 
     // Cycle only between light and dark
     const newTheme: ThemePreference =
       currentTheme === "light" ? "dark" : "light";
+    console.log("New theme to set:", newTheme);
 
     // Update ThemeContext for immediate UI update
     toggleTheme();
@@ -1882,6 +1886,11 @@ export default function AdminDashboardClient({
     const { error } = await (supabase.from("profiles") as any)
       .update({ theme_preference: newTheme })
       .eq("id", profile.id);
+
+    console.log(
+      "Database update result:",
+      error ? `Error: ${error.message}` : "Success",
+    );
 
     if (error) {
       console.error("Theme update error:", error);
