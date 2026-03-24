@@ -11,6 +11,8 @@ import { faFeatherPointed } from "@fortawesome/free-solid-svg-icons";
 
 import { createClient } from "@/lib/supabase/client";
 
+import { useTheme } from "@/contexts/ThemeContext";
+
 import type {
   Profile,
   MaintenanceRequest,
@@ -38,6 +40,8 @@ export default function UserDashboardClient({
   userAvatar,
 }: UserDashboardClientProps) {
   const router = useRouter();
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   const [profile, setProfile] = useState<Profile | null>(initialProfile);
 
@@ -712,6 +716,9 @@ export default function UserDashboardClient({
     const newTheme: ThemePreference =
       currentTheme === "light" ? "dark" : "light";
 
+    // Update ThemeContext for immediate UI update
+    toggleTheme();
+
     // Optimistically update local state first
     setProfile({ ...profile, theme_preference: newTheme as ThemePreference });
 
@@ -862,7 +869,9 @@ export default function UserDashboardClient({
     <div className="min-h-screen bg-[#F5F5DC]">
       {/* Enhanced Header */}
 
-      <div className="bg-green-600 shadow-lg border-b transition-all duration-300">
+      <div
+        className={`bg-green-600 shadow-lg border-b transition-all duration-300 ${isDark ? "bg-blue-600 border-blue-700" : "bg-green-600 border-green-700"}`}
+      >
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Left Side - Logo and Dashboard text */}
@@ -987,22 +996,28 @@ export default function UserDashboardClient({
 
         {/* Sidebar */}
         <div
-          className={`fixed left-0 top-0 h-full w-64 bg-gray-50 border-r border-green-200 z-50 shadow-xl flex flex-col transition-transform duration-300 ease-in-out ${showHamburgerMenu ? "translate-x-0" : "-translate-x-full"}`}
+          className={`fixed left-0 top-0 h-full w-64 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-50 border-green-200"} z-50 shadow-xl flex flex-col transition-transform duration-300 ease-in-out ${showHamburgerMenu ? "translate-x-0" : "-translate-x-full"}`}
         >
           {/* Logo and Title */}
-          <div className="p-6 border-b border-green-100">
+          <div
+            className={`p-6 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-b`}
+          >
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
                 <FontAwesomeIcon
                   icon={faFeatherPointed}
-                  className="w-8 h-8 text-green-600"
+                  className={`w-8 h-8 ${isDark ? "text-[#1E90FF]" : "text-green-600"}`}
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <h1 className="text-green-800 font-bold text-lg truncate">
+                <h1
+                  className={`font-bold text-lg truncate ${isDark ? "text-[#1E90FF]" : "text-green-800"}`}
+                >
                   Menu
                 </h1>
-                <div className="text-green-600/70 text-xs truncate">
+                <div
+                  className={`text-xs truncate ${isDark ? "text-white" : "text-green-600/70"}`}
+                >
                   <div>Integrated Visual Feedback</div>
                   <div>& Maintenance Utility</div>
                 </div>
@@ -1020,7 +1035,11 @@ export default function UserDashboardClient({
                     setShowAllAnnouncementsModal(true);
                     setShowHamburgerMenu(false);
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200"
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    isDark
+                      ? "text-[#1E90FF] hover:bg-gray-800 hover:shadow-sm hover:text-[#1E90FF]"
+                      : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
+                  }`}
                 >
                   <svg
                     className="w-5 h-5"
@@ -1046,7 +1065,11 @@ export default function UserDashboardClient({
                     setShowHelpModal(true);
                     setShowHamburgerMenu(false);
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200"
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    isDark
+                      ? "text-[#1E90FF] hover:bg-gray-800 hover:shadow-sm hover:text-[#1E90FF]"
+                      : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
+                  }`}
                 >
                   <svg
                     className="w-5 h-5"
@@ -1072,7 +1095,11 @@ export default function UserDashboardClient({
                     setShowNotifications(!showNotifications);
                     setShowHamburgerMenu(false);
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200 relative"
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 relative ${
+                    isDark
+                      ? "text-[#1E90FF] hover:bg-gray-800 hover:shadow-sm hover:text-[#1E90FF]"
+                      : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
+                  }`}
                 >
                   <svg
                     className="w-5 h-5"
@@ -1103,7 +1130,11 @@ export default function UserDashboardClient({
                     setShowProfileSidebar(true);
                     setShowHamburgerMenu(false);
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200"
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    isDark
+                      ? "text-[#1E90FF] hover:bg-gray-800 hover:shadow-sm hover:text-[#1E90FF]"
+                      : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
+                  }`}
                 >
                   <svg
                     className="w-5 h-5"
@@ -1131,8 +1162,12 @@ export default function UserDashboardClient({
           </nav>
 
           {/* Theme Toggle - Above Sign Out */}
-          <div className="px-4 py-3 border-t border-green-100 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-green-700">
+          <div
+            className={`px-4 py-3 border-t flex items-center justify-between ${isDark ? "border-[#1E90FF]/30" : "border-green-100"}`}
+          >
+            <div
+              className={`flex items-center gap-2 ${isDark ? "text-[#1E90FF]" : "text-green-700"}`}
+            >
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -1161,10 +1196,7 @@ export default function UserDashboardClient({
             <label className="theme-toggle-switch cursor-pointer">
               <input
                 type="checkbox"
-                checked={
-                  (profile?.theme_preference || "light").toLowerCase() ===
-                  "dark"
-                }
+                checked={isDark}
                 onChange={handleThemeToggle}
                 className="hidden"
               />
@@ -1173,10 +1205,16 @@ export default function UserDashboardClient({
           </div>
 
           {/* Sign Out - Bottom */}
-          <div className="p-4 border-t border-green-100">
+          <div
+            className={`p-4 border-t ${isDark ? "border-[#1E90FF]/30" : "border-green-100"}`}
+          >
             <button
               onClick={handleSignOut}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white text-green-700 hover:text-red-600 rounded-lg transition-all duration-200 font-medium border border-green-200 shadow-sm hover:shadow-md"
+              className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 font-medium border shadow-sm hover:shadow-md ${
+                isDark
+                  ? "bg-gray-800 text-[#1E90FF] hover:text-red-400 border-[#1E90FF]/50"
+                  : "bg-white text-green-700 hover:text-red-600 border-green-200"
+              }`}
             >
               <svg
                 className="w-5 h-5"
@@ -1211,7 +1249,11 @@ export default function UserDashboardClient({
                 {!showForm && (
                   <button
                     onClick={() => setShowForm(true)}
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105"
+                    className={`text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 ${
+                      isDark
+                        ? "bg-[#1E90FF] hover:bg-[#1E90FF]/80"
+                        : "bg-green-500 hover:bg-green-600"
+                    }`}
                   >
                     Create
                   </button>
@@ -1826,16 +1868,18 @@ export default function UserDashboardClient({
 
       <div
         ref={notificationsRef}
-        className={`fixed top-0 right-0 h-full w-64 bg-gray-50 border-r border-green-200 shadow-xl z-40 transform transition-transform duration-500 ease-out flex flex-col ${
+        className={`fixed top-0 right-0 h-full w-64 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-50 border-green-200"} shadow-xl z-40 transform transition-transform duration-500 ease-out flex flex-col ${
           showNotifications ? "translate-x-0" : "translate-x-full"
         }`}
       >
         {/* Logo and Title - Like menu sidebar */}
-        <div className="p-6 border-b border-green-100">
+        <div
+          className={`p-6 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-b`}
+        >
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
               <svg
-                className="w-8 h-8 text-green-600"
+                className={`w-8 h-8 ${isDark ? "text-[#1E90FF]" : "text-green-600"}`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -1849,10 +1893,14 @@ export default function UserDashboardClient({
               </svg>
             </div>
             <div className="flex-1 min-w-0">
-              <h1 className="text-green-800 font-bold text-lg truncate">
+              <h1
+                className={`font-bold text-lg truncate ${isDark ? "text-[#1E90FF]" : "text-green-800"}`}
+              >
                 Notifications
               </h1>
-              <div className="text-green-600/70 text-xs truncate">
+              <div
+                className={`text-xs truncate ${isDark ? "text-white" : "text-green-600/70"}`}
+              >
                 <div>Stay updated with your</div>
               </div>
             </div>
@@ -1862,10 +1910,16 @@ export default function UserDashboardClient({
         {/* Notifications Content */}
         <div className="flex-1 p-4 overflow-y-auto">
           {/* Action Buttons */}
-          <div className="flex justify-between items-center mb-4 pb-3 border-b border-green-100">
+          <div
+            className={`flex justify-between items-center mb-4 pb-3 border-b ${isDark ? "border-[#1E90FF]/30" : "border-green-100"}`}
+          >
             <button
               onClick={markAllNotificationsRead}
-              className="text-sm text-green-600 hover:text-green-700 font-medium transition-colors"
+              className={`text-sm font-medium transition-colors ${
+                isDark
+                  ? "text-[#1E90FF] hover:text-[#1E90FF]/80"
+                  : "text-green-600 hover:text-green-700"
+              }`}
             >
               Mark all as read
             </button>
@@ -1955,10 +2009,16 @@ export default function UserDashboardClient({
         </div>
 
         {/* Close Button - Like sign out in other sidebars */}
-        <div className="p-4 border-t border-green-100">
+        <div
+          className={`p-4 border-t ${isDark ? "border-[#1E90FF]/30" : "border-green-100"}`}
+        >
           <button
             onClick={() => setShowNotifications(false)}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white hover:bg-green-50 text-green-700 rounded-lg transition-all duration-200 font-medium border border-green-200 shadow-sm hover:shadow-md"
+            className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 font-medium border shadow-sm hover:shadow-md ${
+              isDark
+                ? "bg-gray-800 text-[#1E90FF] hover:text-red-400 border-[#1E90FF]/50"
+                : "bg-white hover:bg-green-50 text-green-700 border-green-200"
+            }`}
           >
             <svg
               className="w-5 h-5"
@@ -1993,16 +2053,20 @@ export default function UserDashboardClient({
         {/* Sidebar */}
 
         <div
-          className={`fixed top-0 left-0 h-full w-64 bg-gray-50 border-r border-green-200 shadow-xl z-50 transform transition-transform duration-500 ease-out flex flex-col ${
+          className={`fixed top-0 left-0 h-full w-64 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-50 border-green-200"} shadow-xl z-50 transform transition-transform duration-500 ease-out flex flex-col ${
             showProfileSidebar ? "translate-x-0" : "-translate-x-full"
           }`}
         >
           {/* Profile Header - Like menu sidebar logo section */}
-          <div className="p-6 border-b border-green-100">
+          <div
+            className={`p-6 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-b`}
+          >
             <div className="flex flex-col items-center">
               {/* Profile Photo */}
               <div className="relative mb-4">
-                <div className="w-20 h-20 rounded-full bg-gray-200 border-4 border-white shadow-lg overflow-hidden flex items-center justify-center">
+                <div
+                  className={`w-20 h-20 rounded-full bg-gray-200 border-4 shadow-lg overflow-hidden flex items-center justify-center ${isDark ? "border-[#1E90FF]/30" : "border-white"}`}
+                >
                   {profile?.avatar_url || userAvatar ? (
                     <img
                       src={
@@ -2336,10 +2400,18 @@ export default function UserDashboardClient({
           </nav>
 
           {/* Bottom Section - Save Button */}
-          <div className="p-4 border-t border-green-100 space-y-3">
+          <div
+            className={`p-4 border-t space-y-3 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"}`}
+          >
             {/* Success Message */}
             {successMessage && (
-              <div className="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm text-center">
+              <div
+                className={`p-3 rounded-lg text-sm text-center ${
+                  isDark
+                    ? "bg-[#1E90FF]/10 border border-[#1E90FF]/30 text-[#1E90FF]"
+                    : "bg-green-50 border border-green-200 text-green-700"
+                }`}
+              >
                 {successMessage}
               </div>
             )}
