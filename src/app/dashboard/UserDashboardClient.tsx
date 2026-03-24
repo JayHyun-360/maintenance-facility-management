@@ -1046,7 +1046,7 @@ export default function UserDashboardClient({
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-white hover:bg-[#1A3A54] hover:shadow-sm hover:text-white"
+                      ? "text-[#E6F0F8] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -1076,7 +1076,7 @@ export default function UserDashboardClient({
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-white hover:bg-[#1A3A54] hover:shadow-sm hover:text-white"
+                      ? "text-[#E6F0F8] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -1106,7 +1106,7 @@ export default function UserDashboardClient({
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 relative ${
                     isDark
-                      ? "text-white hover:bg-[#1A3A54] hover:shadow-sm hover:text-white"
+                      ? "text-[#E6F0F8] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -1141,7 +1141,7 @@ export default function UserDashboardClient({
                   }}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-white hover:bg-[#1A3A54] hover:shadow-sm hover:text-white"
+                      ? "text-[#E6F0F8] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -2204,7 +2204,7 @@ export default function UserDashboardClient({
                   }
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-white hover:bg-[#1A3A54] hover:shadow-sm hover:text-white"
+                      ? "text-[#E6F0F8] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -2248,7 +2248,7 @@ export default function UserDashboardClient({
                 <button
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-white hover:bg-[#1A3A54] hover:shadow-sm hover:text-white"
+                      ? "text-[#E6F0F8] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -2295,7 +2295,7 @@ export default function UserDashboardClient({
                 <button
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-white hover:bg-[#1A3A54] hover:shadow-sm hover:text-white"
+                      ? "text-[#E6F0F8] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
@@ -2345,7 +2345,7 @@ export default function UserDashboardClient({
                   <button
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                       isDark
-                        ? "text-white hover:bg-[#1A3A54] hover:shadow-sm hover:text-white"
+                        ? "text-[#E6F0F8] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                         : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                     }`}
                   >
@@ -2387,7 +2387,7 @@ export default function UserDashboardClient({
                   <button
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                       isDark
-                        ? "text-white hover:bg-[#1A3A54] hover:shadow-sm hover:text-white"
+                        ? "text-[#E6F0F8] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                         : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                     }`}
                   >
@@ -2420,7 +2420,7 @@ export default function UserDashboardClient({
                   onClick={handleExportData}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                     isDark
-                      ? "text-white hover:bg-[#1A3A54] hover:shadow-sm hover:text-white"
+                      ? "text-[#E6F0F8] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                   }`}
                 >
