@@ -1842,21 +1842,26 @@ export default function AdminDashboardClient({
   const handleThemeToggle = async () => {
     if (!profile) return;
 
+    const currentTheme = profile.theme_preference || "system";
+
     const newTheme: ThemePreference =
-      profile.theme_preference === "light"
+      currentTheme === "light"
         ? "dark"
-        : profile.theme_preference === "dark"
+        : currentTheme === "dark"
           ? "system"
           : "light";
 
+    // Optimistically update local state first
+    setProfile({ ...profile, theme_preference: newTheme });
+
     const { error } = await (supabase.from("profiles") as any)
-
       .update({ theme_preference: newTheme })
-
       .eq("id", profile.id);
 
-    if (!error) {
-      setProfile({ ...profile, theme_preference: newTheme });
+    if (error) {
+      console.error("Theme update error:", error);
+      // Revert on error
+      setProfile({ ...profile, theme_preference: currentTheme });
     }
   };
 

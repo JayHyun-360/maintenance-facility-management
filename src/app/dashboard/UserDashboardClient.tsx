@@ -708,18 +708,7 @@ export default function UserDashboardClient({
 
     const currentTheme = profile.theme_preference || "system";
 
-    // Ensure we have a valid theme_preference in the database first
-    if (
-      !profile.theme_preference ||
-      !["light", "dark", "system"].includes(profile.theme_preference)
-    ) {
-      await (supabase.from("profiles") as any)
-        .update({ theme_preference: "system" })
-        .eq("id", profile.id);
-      setProfile({ ...profile, theme_preference: "system" });
-      return;
-    }
-
+    // Determine the new theme
     const newTheme: ThemePreference =
       currentTheme === "light"
         ? "dark"
@@ -727,14 +716,18 @@ export default function UserDashboardClient({
           ? "system"
           : "light";
 
+    // Optimistically update local state first
+    setProfile({ ...profile, theme_preference: newTheme });
+
+    // Then try to update database
     const { error } = await (supabase.from("profiles") as any)
-
       .update({ theme_preference: newTheme })
-
       .eq("id", profile.id);
 
-    if (!error) {
-      setProfile({ ...profile, theme_preference: newTheme });
+    if (error) {
+      console.error("Theme update error:", error);
+      // Revert on error
+      setProfile({ ...profile, theme_preference: currentTheme });
     }
   };
 
