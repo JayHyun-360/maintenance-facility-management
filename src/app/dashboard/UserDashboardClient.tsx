@@ -706,18 +706,14 @@ export default function UserDashboardClient({
   const handleThemeToggle = async () => {
     if (!profile) return;
 
-    const currentTheme = profile.theme_preference || "system";
+    const currentTheme = (profile.theme_preference || "light").toLowerCase();
 
-    // Determine the new theme
+    // Cycle only between light and dark
     const newTheme: ThemePreference =
-      currentTheme === "light"
-        ? "dark"
-        : currentTheme === "dark"
-          ? "system"
-          : "light";
+      currentTheme === "light" ? "dark" : "light";
 
     // Optimistically update local state first
-    setProfile({ ...profile, theme_preference: newTheme });
+    setProfile({ ...profile, theme_preference: newTheme as ThemePreference });
 
     // Then try to update database
     const { error } = await (supabase.from("profiles") as any)
@@ -727,7 +723,10 @@ export default function UserDashboardClient({
     if (error) {
       console.error("Theme update error:", error);
       // Revert on error
-      setProfile({ ...profile, theme_preference: currentTheme });
+      setProfile({
+        ...profile,
+        theme_preference: currentTheme as ThemePreference,
+      });
     }
   };
 
@@ -1125,7 +1124,8 @@ export default function UserDashboardClient({
                 stroke="currentColor"
                 viewBox="0 0 24 24"
               >
-                {(profile?.theme_preference || "system") === "dark" ? (
+                {(profile?.theme_preference || "light").toLowerCase() ===
+                "dark" ? (
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -1146,7 +1146,10 @@ export default function UserDashboardClient({
             <label className="theme-toggle-switch cursor-pointer">
               <input
                 type="checkbox"
-                checked={(profile?.theme_preference || "system") === "dark"}
+                checked={
+                  (profile?.theme_preference || "light").toLowerCase() ===
+                  "dark"
+                }
                 onChange={handleThemeToggle}
                 className="hidden"
               />
@@ -2109,7 +2112,8 @@ export default function UserDashboardClient({
               {/* Theme Preference Section - Display Only */}
               <li>
                 <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
-                  {(profile?.theme_preference || "system") === "dark" ? (
+                  {(profile?.theme_preference || "light").toLowerCase() ===
+                  "dark" ? (
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -2123,7 +2127,8 @@ export default function UserDashboardClient({
                         d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
                       />
                     </svg>
-                  ) : (profile?.theme_preference || "system") === "light" ? (
+                  ) : (profile?.theme_preference || "light").toLowerCase() ===
+                    "light" ? (
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -2155,7 +2160,7 @@ export default function UserDashboardClient({
                   <div className="flex-1 text-left">
                     <span className="font-medium">Theme</span>
                     <p className="text-sm text-gray-500 capitalize">
-                      {profile?.theme_preference || "system"}
+                      {profile?.theme_preference || "light"}
                     </p>
                   </div>
                 </button>

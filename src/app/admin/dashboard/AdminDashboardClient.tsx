@@ -1842,14 +1842,11 @@ export default function AdminDashboardClient({
   const handleThemeToggle = async () => {
     if (!profile) return;
 
-    const currentTheme = profile.theme_preference || "system";
+    const currentTheme = (profile.theme_preference || "light").toLowerCase();
 
+    // Cycle only between light and dark
     const newTheme: ThemePreference =
-      currentTheme === "light"
-        ? "dark"
-        : currentTheme === "dark"
-          ? "system"
-          : "light";
+      currentTheme === "light" ? "dark" : "light";
 
     // Optimistically update local state first
     setProfile({ ...profile, theme_preference: newTheme });
@@ -1861,7 +1858,10 @@ export default function AdminDashboardClient({
     if (error) {
       console.error("Theme update error:", error);
       // Revert on error
-      setProfile({ ...profile, theme_preference: currentTheme });
+      setProfile({
+        ...profile,
+        theme_preference: currentTheme as ThemePreference,
+      });
     }
   };
 
@@ -6032,7 +6032,8 @@ ${result.analysis.risks || "N/A"}
                   <button
                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
                   >
-                    {(profile?.theme_preference || "system") === "dark" ? (
+                    {(profile?.theme_preference || "light").toLowerCase() ===
+                    "dark" ? (
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -6046,7 +6047,8 @@ ${result.analysis.risks || "N/A"}
                           d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
                         />
                       </svg>
-                    ) : (profile?.theme_preference || "system") === "light" ? (
+                    ) : (profile?.theme_preference || "light").toLowerCase() ===
+                      "light" ? (
                       <svg
                         className="w-5 h-5"
                         fill="none"
@@ -6080,7 +6082,7 @@ ${result.analysis.risks || "N/A"}
                       <p
                         className={`text-sm capitalize ${isDark ? "text-gray-400" : "text-gray-500"}`}
                       >
-                        {profile?.theme_preference || "system"}
+                        {profile?.theme_preference || "light"}
                       </p>
                     </div>
                   </button>
