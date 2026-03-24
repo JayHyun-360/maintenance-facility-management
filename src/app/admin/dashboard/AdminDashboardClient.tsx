@@ -5281,10 +5281,14 @@ ${result.analysis.risks || "N/A"}
               onClick={() => setShowDetailModal(null)}
             />
 
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100 relative z-10 flex flex-col">
+            <div
+              className={`rounded-2xl shadow-2xl w-full max-w-md max-h-[85vh] overflow-hidden transform transition-all duration-300 ease-out scale-100 opacity-100 relative z-10 flex flex-col ${isDark ? "bg-[#0F2233]" : "bg-white"}`}
+            >
               {/* Header */}
 
-              <div className="bg-gradient-to-r from-green-600 to-green-800 p-4">
+              <div
+                className={`p-4 ${isDark ? "bg-[#16334C]" : "bg-gradient-to-r from-green-600 to-green-800"}`}
+              >
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
                     {showDetailModal.nature === "Plumbing" && (
@@ -6190,7 +6194,7 @@ ${result.analysis.risks || "N/A"}
           >
             <div className="h-full overflow-y-auto">
               <div
-                className={`${isDark ? "bg-blue-600 border-blue-700" : "bg-green-600 border-green-700"} shadow-lg border-b p-6 sticky top-0 z-10`}
+                className={`${isDark ? "bg-[#16334C] border-[#16334C]" : "bg-green-600 border-green-700"} shadow-lg border-b p-6 sticky top-0 z-10`}
               >
                 <div className="flex items-center justify-between">
                   <div>
@@ -8401,16 +8405,22 @@ ${result.analysis.risks || "N/A"}
 
         {showBroadcastModal && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-md">
-              <div className="p-6 border-b border-gray-200">
+            <div
+              className={`rounded-xl shadow-2xl w-full max-w-md ${isDark ? "bg-[#0F2233]" : "bg-white"}`}
+            >
+              <div
+                className={`p-6 ${isDark ? "border-[#3B85C6]/30" : "border-gray-200"} border-b`}
+              >
                 <div className="flex items-center justify-between">
-                  <h3 className="font-header text-lg font-semibold text-gray-900">
+                  <h3
+                    className={`font-header text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"}`}
+                  >
                     Broadcast Message to All Users
                   </h3>
 
                   <button
                     onClick={() => setShowBroadcastModal(false)}
-                    className="text-gray-400 hover:text-gray-600"
+                    className={`${isDark ? "text-white/60 hover:text-white" : "text-gray-400 hover:text-gray-600"}`}
                   >
                     <svg
                       className="w-5 h-5"
@@ -8815,16 +8825,22 @@ ${result.analysis.risks || "N/A"}
 
         {showUserInfoPanel && selectedUser && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg">
-              <div className="p-6 border-b border-gray-200">
+            <div
+              className={`rounded-xl shadow-2xl w-full max-w-lg ${isDark ? "bg-[#0F2233]" : "bg-white"}`}
+            >
+              <div
+                className={`p-6 ${isDark ? "border-[#3B85C6]/30" : "border-gray-200"} border-b`}
+              >
                 <div className="flex items-center justify-between">
-                  <h3 className="font-header text-lg font-semibold text-gray-900">
+                  <h3
+                    className={`font-header text-lg font-semibold ${isDark ? "text-white" : "text-gray-900"}`}
+                  >
                     User Information
                   </h3>
 
                   <button
                     onClick={() => setShowUserInfoPanel(false)}
-                    className="text-gray-400 hover:text-gray-600"
+                    className={`${isDark ? "text-white/60 hover:text-white" : "text-gray-400 hover:text-gray-600"}`}
                   >
                     <svg
                       className="w-5 h-5"
@@ -9157,7 +9173,7 @@ ${result.analysis.risks || "N/A"}
             showIntroductionModal
               ? "scale-100 opacity-100 pointer-events-auto"
               : "scale-95 opacity-0 pointer-events-none"
-          } ${isDark ? "bg-gray-800" : "bg-white"}`}
+          } ${isDark ? "bg-[#0F2233]" : "bg-white"}`}
         >
           <div className="flex justify-between items-center mb-8">
             <h2
