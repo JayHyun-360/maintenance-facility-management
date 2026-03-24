@@ -5717,7 +5717,9 @@ ${result.analysis.risks || "N/A"}
             </div>
 
             {notifications.length === 0 ? (
-              <div className="p-4 text-center text-gray-500">
+              <div
+                className={`p-4 text-center ${isDark ? "text-white/60" : "text-gray-500"}`}
+              >
                 No notifications yet
               </div>
             ) : (
@@ -5760,7 +5762,9 @@ ${result.analysis.risks || "N/A"}
                           >
                             {notification.title}
                             {isEmergency && (
-                              <span className="ml-2 px-2 py-0.5 text-xs bg-red-100 text-red-700 rounded-full font-semibold">
+                              <span
+                                className={`ml-2 px-2 py-0.5 text-xs rounded-full font-semibold ${isDark ? "bg-red-500/20 text-red-400" : "bg-red-100 text-red-700"}`}
+                              >
                                 EMERGENCY
                               </span>
                             )}
@@ -5770,6 +5774,13 @@ ${result.analysis.risks || "N/A"}
                           >
                             <SafeDate date={notification.created_at} />
                           </p>
+                          {notification.message && (
+                            <p
+                              className={`text-xs mt-1 line-clamp-2 ${isDark ? "text-white/50" : "text-gray-500"}`}
+                            >
+                              {notification.message}
+                            </p>
+                          )}
                         </div>
 
                         <div className="relative">
@@ -5783,10 +5794,10 @@ ${result.analysis.risks || "N/A"}
                                   : notification.id,
                               );
                             }}
-                            className="p-1 hover:bg-gray-100 rounded transition-colors"
+                            className={`p-1 ${isDark ? "hover:bg-[#3B85C6]/20" : "hover:bg-gray-100"} rounded transition-colors`}
                           >
                             <svg
-                              className="w-4 h-4 text-gray-400"
+                              className={`w-4 h-4 ${isDark ? "text-white/60" : "text-gray-400"}`}
                               fill="currentColor"
                               viewBox="0 0 24 24"
                             >
@@ -5797,13 +5808,15 @@ ${result.analysis.risks || "N/A"}
                           </button>
 
                           {openNotificationMenu === notification.id && (
-                            <div className="absolute right-0 mt-1 w-32 bg-white border border-green-200 rounded-lg shadow-lg z-10">
+                            <div
+                              className={`absolute right-0 mt-1 w-32 rounded-lg shadow-lg z-10 ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30" : "bg-white border-green-200"}`}
+                            >
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
                                   deleteNotification(notification.id);
                                 }}
-                                className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                className={`w-full px-3 py-2 text-left text-sm rounded-lg transition-colors ${isDark ? "text-red-400 hover:bg-red-500/20" : "text-red-600 hover:bg-red-50"}`}
                               >
                                 Delete
                               </button>
