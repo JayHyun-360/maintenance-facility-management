@@ -153,7 +153,7 @@ export default function AdminDashboardClient({
   initialRequestId,
 }: AdminDashboardClientProps) {
   const router = useRouter();
-  const { theme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const isDark = theme === "dark";
 
   const [mounted, setMounted] = useState(false);
@@ -1872,6 +1872,9 @@ export default function AdminDashboardClient({
     // Cycle only between light and dark
     const newTheme: ThemePreference =
       currentTheme === "light" ? "dark" : "light";
+
+    // Update ThemeContext for immediate UI update
+    toggleTheme();
 
     // Optimistically update local state first
     setProfile({ ...profile, theme_preference: newTheme });
