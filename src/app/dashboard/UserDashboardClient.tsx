@@ -1641,7 +1641,11 @@ export default function UserDashboardClient({
                     <button
                       type="button"
                       onClick={() => setShowForm(false)}
-                      className="flex-1 px-6 py-3 text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 font-medium border-2 border-transparent hover:border-gray-300"
+                      className={`flex-1 px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 font-medium border-2 ${
+                        isDark
+                          ? "text-white bg-gray-700 hover:bg-gray-600 border-transparent"
+                          : "text-gray-700 bg-gray-100 hover:bg-gray-200 border-transparent hover:border-gray-300"
+                      }`}
                     >
                       <span className="flex items-center justify-center gap-2">
                         <svg
@@ -1663,7 +1667,11 @@ export default function UserDashboardClient({
 
                     <button
                       type="submit"
-                      className="flex-1 px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-xl hover:from-green-600 hover:to-emerald-700 transition-all duration-300 transform hover:scale-105 font-medium shadow-lg hover:shadow-xl"
+                      className={`flex-1 px-6 py-3 text-white rounded-xl transition-all duration-300 transform hover:scale-105 font-medium shadow-lg hover:shadow-xl ${
+                        isDark
+                          ? "bg-gradient-to-r from-[#1E90FF] to-blue-600 hover:from-[#1E90FF]/80 hover:to-blue-700"
+                          : "bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+                      }`}
                     >
                       <span className="flex items-center justify-center gap-2">
                         <svg
