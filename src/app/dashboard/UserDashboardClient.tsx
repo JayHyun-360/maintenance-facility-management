@@ -1940,7 +1940,9 @@ export default function UserDashboardClient({
           </div>
 
           {notifications.length === 0 ? (
-            <div className="p-4 text-center text-gray-500">
+            <div
+              className={`p-4 text-center ${isDark ? "text-white/60" : "text-gray-500"}`}
+            >
               No notifications yet
             </div>
           ) : (
@@ -1950,23 +1952,37 @@ export default function UserDashboardClient({
                   key={notification.id}
                   className={`p-4 rounded-lg border transition-all cursor-pointer ${
                     !notification.is_read
-                      ? "bg-white border-green-200 shadow-sm hover:shadow-md hover:border-green-300"
-                      : "bg-gray-50 border-gray-200 hover:bg-white hover:shadow-sm hover:border-green-200"
+                      ? isDark
+                        ? "bg-[#1E1E1E] border-[#1E90FF]/30 shadow-sm hover:shadow-md hover:border-[#1E90FF]/50"
+                        : "bg-white border-green-200 shadow-sm hover:shadow-md hover:border-green-300"
+                      : isDark
+                        ? "bg-gray-800 border-gray-700 hover:bg-[#1E1E1E] hover:shadow-sm hover:border-[#1E90FF]/30"
+                        : "bg-gray-50 border-gray-200 hover:bg-white hover:shadow-sm hover:border-green-200"
                   }`}
                   onClick={() => viewAnnouncement(notification)}
                 >
                   <div className="flex items-start gap-3">
                     <div
                       className={`w-2 h-2 mt-2 rounded-full flex-shrink-0 ${
-                        !notification.is_read ? "bg-green-500" : "bg-gray-300"
+                        !notification.is_read
+                          ? isDark
+                            ? "bg-[#1E90FF]"
+                            : "bg-green-500"
+                          : isDark
+                            ? "bg-gray-600"
+                            : "bg-gray-300"
                       }`}
                     />
 
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm text-gray-900 mb-1">
+                      <p
+                        className={`font-medium text-sm mb-1 ${isDark ? "text-white" : "text-gray-900"}`}
+                      >
                         {notification.title}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p
+                        className={`text-xs ${isDark ? "text-white/60" : "text-gray-500"}`}
+                      >
                         {new Date(notification.created_at).toLocaleString()}
                       </p>
                     </div>
@@ -2123,12 +2139,20 @@ export default function UserDashboardClient({
               </div>
 
               {/* Full Name - 2 lines max */}
-              <h2 className="text-green-800 font-bold text-lg text-center line-clamp-2">
+              <h2
+                className={`font-bold text-lg text-center line-clamp-2 ${isDark ? "text-white" : "text-green-800"}`}
+              >
                 {profile?.full_name || "User"}
               </h2>
 
               {/* Visual Role Badge */}
-              <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-green-700 mt-2">
+              <span
+                className={`backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium mt-2 ${
+                  isDark
+                    ? "bg-[#1E90FF]/20 text-[#1E90FF]"
+                    : "bg-white/20 text-green-700"
+                }`}
+              >
                 {profile?.visual_role || "User"}
               </span>
 
@@ -2150,7 +2174,11 @@ export default function UserDashboardClient({
                   onClick={() =>
                     document.getElementById("profile-fullname")?.focus()
                   }
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200"
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    isDark
+                      ? "text-[#1E90FF] hover:bg-gray-800 hover:shadow-sm hover:text-[#1E90FF]"
+                      : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
+                  }`}
                 >
                   <svg
                     className="w-5 h-5"
@@ -2177,7 +2205,11 @@ export default function UserDashboardClient({
                           full_name: e.target.value,
                         })
                       }
-                      className="w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent"
+                      className={`w-full mt-1 px-2 py-1 text-sm border rounded focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent ${
+                        isDark
+                          ? "bg-gray-700 border-gray-600 text-white"
+                          : "border-gray-300 bg-white"
+                      }`}
                     />
                   </div>
                 </button>
@@ -2185,7 +2217,13 @@ export default function UserDashboardClient({
 
               {/* Visual Role Section */}
               <li>
-                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
+                <button
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    isDark
+                      ? "text-[#1E90FF] hover:bg-gray-800 hover:shadow-sm hover:text-[#1E90FF]"
+                      : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
+                  }`}
+                >
                   <svg
                     className="w-5 h-5"
                     fill="none"
@@ -2209,7 +2247,11 @@ export default function UserDashboardClient({
                           visual_role: e.target.value,
                         })
                       }
-                      className="w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent bg-white"
+                      className={`w-full mt-1 px-2 py-1 text-sm border rounded focus:ring-2 focus:ring-[#5D9C59] focus:border-transparent ${
+                        isDark
+                          ? "bg-gray-700 border-gray-600 text-white"
+                          : "border-gray-300 bg-white"
+                      }`}
                     >
                       <option value="">Select a role</option>
                       <option value="Teacher">Teacher</option>
@@ -2222,7 +2264,13 @@ export default function UserDashboardClient({
 
               {/* Theme Preference Section - Display Only */}
               <li>
-                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
+                <button
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                    isDark
+                      ? "text-[#1E90FF] hover:bg-gray-800 hover:shadow-sm hover:text-[#1E90FF]"
+                      : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
+                  }`}
+                >
                   {(profile?.theme_preference || "light").toLowerCase() ===
                   "dark" ? (
                     <svg
@@ -2270,7 +2318,9 @@ export default function UserDashboardClient({
                   )}
                   <div className="flex-1 text-left">
                     <span className="font-medium">Theme</span>
-                    <p className="text-sm text-gray-500 capitalize">
+                    <p
+                      className={`text-sm capitalize ${isDark ? "text-white/60" : "text-gray-500"}`}
+                    >
                       {profile?.theme_preference || "light"}
                     </p>
                   </div>
@@ -2280,7 +2330,13 @@ export default function UserDashboardClient({
               {/* Educational Level - Display Only */}
               {!isAdmin && profile?.educational_level && (
                 <li>
-                  <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
+                  <button
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isDark
+                        ? "text-[#1E90FF] hover:bg-gray-800 hover:shadow-sm hover:text-[#1E90FF]"
+                        : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
+                    }`}
+                  >
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -2307,7 +2363,13 @@ export default function UserDashboardClient({
               {/* Department - Display Only */}
               {!isAdmin && profile?.department && (
                 <li>
-                  <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800 transition-all duration-200">
+                  <button
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isDark
+                        ? "text-[#1E90FF] hover:bg-gray-800 hover:shadow-sm hover:text-[#1E90FF]"
+                        : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
+                    }`}
+                  >
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -2354,13 +2416,17 @@ export default function UserDashboardClient({
                 </button>
               </li>
 
-              {/* Mode Switching - Admin Available */}
-              {!isAdmin && profile?.database_role === "admin" && (
+              {/* Switch to Admin Mode - Admin in User Mode */}
+              {isAdmin && profile?.database_role === "user" && (
                 <li>
                   <button
-                    onClick={handleUserModeSwitch}
+                    onClick={handleAdminModeSwitch}
                     disabled={loading}
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-amber-700 hover:bg-white hover:shadow-sm hover:text-amber-800 transition-all duration-200"
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                      isDark
+                        ? "bg-[#1E90FF]/10 text-[#1E90FF] hover:bg-[#1E90FF]/20"
+                        : "bg-green-50 text-green-700 hover:bg-green-100"
+                    }`}
                   >
                     <svg
                       className="w-5 h-5"
@@ -2385,7 +2451,13 @@ export default function UserDashboardClient({
               {/* Mode Switching - Regular User */}
               {!isAdmin && profile?.database_role === "user" && (
                 <li>
-                  <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-green-700 bg-green-50 transition-all duration-200 cursor-default">
+                  <button
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 cursor-default ${
+                      isDark
+                        ? "bg-[#1E90FF]/10 text-[#1E90FF]"
+                        : "bg-green-50 text-green-700"
+                    }`}
+                  >
                     <svg
                       className="w-5 h-5"
                       fill="none"
@@ -2425,7 +2497,13 @@ export default function UserDashboardClient({
 
             {/* Unsaved Changes Warning */}
             {hasUnsavedChanges && (
-              <div className="p-2 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-xs text-center">
+              <div
+                className={`p-2 border rounded-lg text-xs text-center ${
+                  isDark
+                    ? "bg-amber-900/20 border-amber-700 text-amber-400"
+                    : "bg-amber-50 border-amber-200 text-amber-700"
+                }`}
+              >
                 Unsaved changes
               </div>
             )}
@@ -2434,7 +2512,11 @@ export default function UserDashboardClient({
             <button
               onClick={handleSave}
               disabled={saving}
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#5D9C59] text-white font-semibold rounded-lg hover:bg-[#4a7c4a] disabled:bg-gray-400 transition-colors"
+              className={`w-full flex items-center justify-center gap-2 px-4 py-3 text-white font-semibold rounded-lg disabled:bg-gray-400 transition-colors ${
+                isDark
+                  ? "bg-[#1E90FF] hover:bg-[#1E90FF]/80"
+                  : "bg-[#5D9C59] hover:bg-[#4a7c4a]"
+              }`}
             >
               {saving ? (
                 <>
