@@ -115,27 +115,27 @@ export default function Sidebar({
 
   return (
     <div
-      className={`w-64 min-h-screen ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-50 border-green-200"} border-r flex flex-col fixed left-0 top-0 shadow-sm`}
+      className={`w-64 min-h-screen ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30" : "bg-gray-50 border-green-200"} border-r flex flex-col fixed left-0 top-0 shadow-sm`}
     >
       {/* Logo and Title */}
       <div
-        className={`p-6 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-b`}
+        className={`p-6 ${isDark ? "border-[#3B85C6]/30" : "border-green-100"} border-b`}
       >
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
             <FontAwesomeIcon
               icon={faFeatherPointed}
-              className={`w-8 h-8 ${isDark ? "text-[#1E90FF]" : "text-green-600"}`}
+              className={`w-8 h-8 ${isDark ? "text-[#3B85C6]" : "text-green-600"}`}
             />
           </div>
           <div className="flex-1 min-w-0">
             <h1
-              className={`font-bold text-lg truncate ${isDark ? "text-[#1E90FF]" : "text-green-800"}`}
+              className={`font-bold text-lg truncate ${isDark ? "text-[#E6F0F8]" : "text-green-800"}`}
             >
               Dashboard
             </h1>
             <div
-              className={`text-xs truncate ${isDark ? "text-white" : "text-green-600/70"}`}
+              className={`text-xs truncate ${isDark ? "text-[#E6F0F8]/70" : "text-green-600/70"}`}
             >
               <div>Integrated Visual Feedback</div>
               <div>& Maintenance Utility</div>
@@ -155,10 +155,10 @@ export default function Sidebar({
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
                   activeTab === item.id
                     ? isDark
-                      ? "bg-[#1E90FF] text-white shadow-md"
+                      ? "bg-[#3B85C6] text-white shadow-md"
                       : "bg-green-500 text-white shadow-md"
                     : isDark
-                      ? "text-[#1E90FF] hover:bg-gray-800 hover:shadow-sm hover:text-[#1E90FF]"
+                      ? "text-[#E6F0F8] hover:bg-[#1A3A54] hover:shadow-sm hover:text-[#E6F0F8]"
                       : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"
                 }`}
               >
@@ -173,10 +173,10 @@ export default function Sidebar({
       {/* Theme Toggle */}
       <div
         id="tutorial-sidebar-theme"
-        className={`px-4 py-3 flex items-center justify-between ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-t`}
+        className={`px-4 py-3 flex items-center justify-between ${isDark ? "border-[#3B85C6]/30" : "border-green-100"} border-t`}
       >
         <div
-          className={`flex items-center gap-2 ${isDark ? "text-[#1E90FF]" : "text-green-700"}`}
+          className={`flex items-center gap-2 ${isDark ? "text-[#3B85C6]" : "text-green-700"}`}
         >
           {isDark ? (
             <svg
@@ -222,13 +222,13 @@ export default function Sidebar({
 
       {/* Sign Out */}
       <div
-        className={`p-4 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-t`}
+        className={`p-4 ${isDark ? "border-[#3B85C6]/30" : "border-green-100"} border-t`}
       >
         <button
           onClick={handleSignOut}
           className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg transition-all duration-200 font-medium border shadow-sm hover:shadow-md ${
             isDark
-              ? "bg-gray-800 text-[#1E90FF] hover:text-red-400 border-[#1E90FF]/50"
+              ? "bg-gray-800 text-[#3B85C6] hover:text-red-400 border-[#3B85C6]/50"
               : "bg-white text-green-700 hover:text-red-600 border-green-200"
           }`}
         >

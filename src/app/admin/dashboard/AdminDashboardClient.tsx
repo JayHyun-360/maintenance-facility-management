@@ -2411,7 +2411,7 @@ ${result.analysis.risks || "N/A"}
 
                       setShowDetailModal(request);
                     }}
-                    className={`flex-shrink-0 p-1 ${isDark ? "text-[#1E90FF] hover:text-[#1E90FF] hover:bg-[#1E90FF]/10" : "text-gray-400 hover:text-green-500 hover:bg-gray-100"} rounded transition-colors`}
+                    className={`flex-shrink-0 p-1 ${isDark ? "text-[#3B85C6] hover:text-[#3B85C6] hover:bg-[#3B85C6]/10" : "text-gray-400 hover:text-green-500 hover:bg-gray-100"} rounded transition-colors`}
                     title="See more information"
                   >
                     <svg
@@ -2630,7 +2630,7 @@ ${result.analysis.risks || "N/A"}
 
                   setShowReportSidebar(true);
                 }}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 ${isDark ? "bg-[#1E90FF]" : "bg-green-500"} text-white text-xs font-medium rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-600"} transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105`}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 ${isDark ? "bg-[#3B85C6]" : "bg-green-500"} text-white text-xs font-medium rounded-lg hover:${isDark ? "bg-[#3B85C6]/80" : "bg-green-600"} transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105`}
                 title="Generate Report"
               >
                 <svg
@@ -3300,7 +3300,7 @@ ${result.analysis.risks || "N/A"}
       <div className="flex-1 ml-64">
         {/* Header - Full width at top */}
         <div
-          className={`shadow-lg border-b transition-all duration-300 ${isDark ? "bg-blue-600 border-blue-700" : "bg-green-600 border-green-700"}`}
+          className={`shadow-lg border-b transition-all duration-300 ${isDark ? "bg-[#16334C] border-[#16334C]" : "bg-green-600 border-green-700"}`}
         >
           <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-20">
@@ -3567,9 +3567,9 @@ ${result.analysis.risks || "N/A"}
                         ref={profileViewerRef}
                       >
                         <div
-                          className={`w-72 h-72 rounded-full ${isDark ? "bg-[#1E90FF]/20" : "bg-white/20"} backdrop-blur-xl shadow-2xl border-2 ${isDark ? "border-[#1E90FF]/30" : "border-white/30"} flex flex-col items-center justify-center p-8`}
+                          className={`w-72 h-72 rounded-full ${isDark ? "bg-[#3B85C6]/20" : "bg-white/20"} backdrop-blur-xl shadow-2xl border-2 ${isDark ? "border-[#3B85C6]/30" : "border-white/30"} flex flex-col items-center justify-center p-8`}
                         >
-                          <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-[#1E90FF]/50 shadow-lg mb-4 bg-white">
+                          <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-[#3B85C6]/50 shadow-lg mb-4 bg-white">
                             <img
                               src={userAvatar}
                               alt="Profile Picture"
@@ -3617,10 +3617,10 @@ ${result.analysis.risks || "N/A"}
                       </div>
 
                       <div
-                        className={`w-12 h-12 ${isDark ? "bg-[#1E90FF]/10" : "bg-green-500/10"} rounded-lg flex items-center justify-center`}
+                        className={`w-12 h-12 ${isDark ? "bg-[#3B85C6]/10" : "bg-green-500/10"} rounded-lg flex items-center justify-center`}
                       >
                         <svg
-                          className={`w-6 h-6 ${isDark ? "text-[#1E90FF]" : "text-green-500"}`}
+                          className={`w-6 h-6 ${isDark ? "text-[#3B85C6]" : "text-green-500"}`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -3704,17 +3704,17 @@ ${result.analysis.risks || "N/A"}
                         </p>
 
                         <p
-                          className={`text-2xl font-bold ${isDark ? "text-[#1E90FF]" : "text-green-600"}`}
+                          className={`text-2xl font-bold ${isDark ? "text-[#3B85C6]" : "text-green-600"}`}
                         >
                           {stats.completed}
                         </p>
                       </div>
 
                       <div
-                        className={`w-12 h-12 ${isDark ? "bg-[#1E90FF]/10" : "bg-green-100"} rounded-lg flex items-center justify-center`}
+                        className={`w-12 h-12 ${isDark ? "bg-[#3B85C6]/10" : "bg-green-100"} rounded-lg flex items-center justify-center`}
                       >
                         <svg
-                          className={`w-6 h-6 ${isDark ? "text-[#1E90FF]" : "text-green-600"}`}
+                          className={`w-6 h-6 ${isDark ? "text-[#3B85C6]" : "text-green-600"}`}
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -4151,7 +4151,7 @@ ${result.analysis.risks || "N/A"}
 
                   <div className="bg-white rounded-lg p-4 border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all duration-200">
                     <p
-                      className={`text-xs font-medium ${isDark ? "text-[#1E90FF]" : "text-green-600"} uppercase tracking-wide`}
+                      className={`text-xs font-medium ${isDark ? "text-[#3B85C6]" : "text-green-600"} uppercase tracking-wide`}
                     >
                       Completed
                     </p>
@@ -4742,7 +4742,7 @@ ${result.analysis.risks || "N/A"}
                       placeholder="Search by nature, location, or description..."
                       value={tableSearchQuery}
                       onChange={(e) => setTableSearchQuery(e.target.value)}
-                      className={`w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent`}
+                      className={`w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"} focus:border-transparent`}
                     />
                   </div>
 
@@ -4785,7 +4785,7 @@ ${result.analysis.risks || "N/A"}
                             type="checkbox"
                             checked={selectAll}
                             onChange={(e) => setSelectAll(e.target.checked)}
-                            className={`w-4 h-4 ${isDark ? "text-[#1E90FF]" : "text-green-500"} rounded border-gray-300 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"}`}
+                            className={`w-4 h-4 ${isDark ? "text-[#3B85C6]" : "text-green-500"} rounded border-gray-300 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"}`}
                           />
 
                           <span className="text-sm font-medium text-gray-700">
@@ -4867,7 +4867,7 @@ ${result.analysis.risks || "N/A"}
                                     });
                                   }
                                 }}
-                                className={`w-4 h-4 ${isDark ? "text-[#1E90FF]" : "text-green-500"} rounded border-gray-300 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"}`}
+                                className={`w-4 h-4 ${isDark ? "text-[#3B85C6]" : "text-green-500"} rounded border-gray-300 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"}`}
                               />
 
                               <span className="text-sm text-gray-700">
@@ -4931,7 +4931,7 @@ ${result.analysis.risks || "N/A"}
                                     });
                                   }
                                 }}
-                                className={`w-4 h-4 ${isDark ? "text-[#1E90FF]" : "text-green-500"} rounded border-gray-300 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"}`}
+                                className={`w-4 h-4 ${isDark ? "text-[#3B85C6]" : "text-green-500"} rounded border-gray-300 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"}`}
                               />
 
                               <span className="text-sm text-gray-700">
@@ -4983,7 +4983,7 @@ ${result.analysis.risks || "N/A"}
                                     });
                                   }
                                 }}
-                                className={`w-4 h-4 ${isDark ? "text-[#1E90FF]" : "text-green-500"} rounded border-gray-300 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"}`}
+                                className={`w-4 h-4 ${isDark ? "text-[#3B85C6]" : "text-green-500"} rounded border-gray-300 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"}`}
                               />
 
                               <span className="text-sm text-gray-700">
@@ -5065,7 +5065,7 @@ ${result.analysis.risks || "N/A"}
 
                 <button
                   onClick={() => setShowBroadcastModal(true)}
-                  className={`px-4 py-2 ${isDark ? "bg-[#1E90FF]" : "bg-green-600"} text-white rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-700"} transition-colors flex items-center gap-2 text-sm font-medium`}
+                  className={`px-4 py-2 ${isDark ? "bg-[#3B85C6]" : "bg-green-600"} text-white rounded-lg hover:${isDark ? "bg-[#3B85C6]/80" : "bg-green-700"} transition-colors flex items-center gap-2 text-sm font-medium`}
                 >
                   <svg
                     className="w-4 h-4"
@@ -5106,7 +5106,7 @@ ${result.analysis.risks || "N/A"}
 
               <div className="bg-gray-50 rounded-xl p-8 text-center">
                 <svg
-                  className={`w-16 h-16 mx-auto mb-4 ${isDark ? "text-[#1E90FF]" : "text-green-500"}`}
+                  className={`w-16 h-16 mx-auto mb-4 ${isDark ? "text-[#3B85C6]" : "text-green-500"}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -5240,7 +5240,7 @@ ${result.analysis.risks || "N/A"}
                         status: e.target.value,
                       })
                     }
-                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"}`}
+                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"}`}
                   >
                     <option value="Pending">Pending</option>
 
@@ -5262,7 +5262,7 @@ ${result.analysis.risks || "N/A"}
 
                   <button
                     onClick={handleSaveStatus}
-                    className={`flex-1 px-4 py-2 ${isDark ? "bg-[#1E90FF]" : "bg-green-500"} text-white rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-600"}`}
+                    className={`flex-1 px-4 py-2 ${isDark ? "bg-[#3B85C6]" : "bg-green-500"} text-white rounded-lg hover:${isDark ? "bg-[#3B85C6]/80" : "bg-green-600"}`}
                   >
                     Update Status
                   </button>
@@ -5622,7 +5622,7 @@ ${result.analysis.risks || "N/A"}
 
                     setShowDetailModal(null);
                   }}
-                  className={`w-full px-3 py-2 ${isDark ? "bg-[#1E90FF]" : "bg-green-600"} text-white rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-700"} transition-colors font-medium text-sm flex items-center justify-center gap-1.5`}
+                  className={`w-full px-3 py-2 ${isDark ? "bg-[#3B85C6]" : "bg-green-600"} text-white rounded-lg hover:${isDark ? "bg-[#3B85C6]/80" : "bg-green-700"} transition-colors font-medium text-sm flex items-center justify-center gap-1.5`}
                 >
                   <svg
                     className="w-3 h-3"
@@ -5648,16 +5648,16 @@ ${result.analysis.risks || "N/A"}
 
         <div
           ref={notificationsRef}
-          className={`fixed top-0 right-0 h-full w-80 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-50 border-green-200"} shadow-xl z-40 transform transition-transform duration-500 ease-out flex flex-col ${showNotifications ? "translate-x-0" : "translate-x-full"}`}
+          className={`fixed top-0 right-0 h-full w-80 ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30" : "bg-gray-50 border-green-200"} shadow-xl z-40 transform transition-transform duration-500 ease-out flex flex-col ${showNotifications ? "translate-x-0" : "translate-x-full"}`}
         >
           {/* Logo and Title */}
           <div
-            className={`p-6 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-b`}
+            className={`p-6 ${isDark ? "border-[#3B85C6]/30" : "border-green-100"} border-b`}
           >
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 relative flex-shrink-0 flex items-center justify-center">
                 <svg
-                  className={`w-8 h-8 ${isDark ? "text-[#1E90FF]" : "text-green-600"}`}
+                  className={`w-8 h-8 ${isDark ? "text-[#3B85C6]" : "text-green-600"}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -5695,11 +5695,11 @@ ${result.analysis.risks || "N/A"}
           <div className="flex-1 p-4 overflow-y-auto">
             {/* Action Buttons */}
             <div
-              className={`flex justify-between items-center mb-4 pb-3 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-b`}
+              className={`flex justify-between items-center mb-4 pb-3 ${isDark ? "border-[#3B85C6]/30" : "border-green-100"} border-b`}
             >
               <button
                 onClick={markAllNotificationsRead}
-                className={`text-sm ${isDark ? "text-[#1E90FF] hover:text-[#1E90FF]/80" : "text-green-600 hover:text-green-700"} font-medium transition-colors`}
+                className={`text-sm ${isDark ? "text-[#3B85C6] hover:text-[#3B85C6]/80" : "text-green-600 hover:text-green-700"} font-medium transition-colors`}
               >
                 Mark all as read
               </button>
@@ -5732,10 +5732,10 @@ ${result.analysis.risks || "N/A"}
                           ? isEmergency
                             ? "bg-white border-red-200 shadow-sm hover:shadow-md hover:border-red-300"
                             : isDark
-                              ? "bg-[#1E1E1E] border-[#1E90FF]/30 shadow-sm hover:shadow-md hover:border-[#1E90FF]"
+                              ? "bg-[#0F2233] border-[#3B85C6]/30 shadow-sm hover:shadow-md hover:border-[#3B85C6]"
                               : "bg-white border-green-200 shadow-sm hover:shadow-md hover:border-green-300"
                           : isDark
-                            ? "bg-[#1E1E1E]/50 border-[#1E90FF]/20 hover:bg-[#1E1E1E] hover:shadow-sm hover:border-[#1E90FF]/30"
+                            ? "bg-[#0F2233]/50 border-[#3B85C6]/20 hover:bg-[#0F2233] hover:shadow-sm hover:border-[#3B85C6]/30"
                             : "bg-gray-50 border-gray-200 hover:bg-white hover:shadow-sm hover:border-green-200"
                       }`}
                     >
@@ -5816,11 +5816,11 @@ ${result.analysis.risks || "N/A"}
 
           {/* Close Button */}
           <div
-            className={`p-4 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-t`}
+            className={`p-4 ${isDark ? "border-[#3B85C6]/30" : "border-green-100"} border-t`}
           >
             <button
               onClick={() => setShowNotifications(false)}
-              className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 ${isDark ? "bg-[#1E1E1E] text-[#1E90FF] hover:bg-[#1E90FF]/10 border-[#1E90FF]/30" : "bg-white hover:bg-green-50 text-green-700 border-green-200"} rounded-lg transition-all duration-200 font-medium border shadow-sm hover:shadow-md`}
+              className={`w-full flex items-center justify-center gap-2 px-4 py-2.5 ${isDark ? "bg-[#0F2233] text-[#3B85C6] hover:bg-[#3B85C6]/10 border-[#3B85C6]/30" : "bg-white hover:bg-green-50 text-green-700 border-green-200"} rounded-lg transition-all duration-200 font-medium border shadow-sm hover:shadow-md`}
             >
               <svg
                 className="w-5 h-5"
@@ -5854,17 +5854,17 @@ ${result.analysis.risks || "N/A"}
 
           <div
             ref={profileSidebarRef}
-            className={`fixed top-0 left-0 h-full w-80 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-50 border-green-200"} shadow-xl z-50 transform transition-transform duration-500 ease-out flex flex-col ${showProfileSidebar ? "translate-x-0" : "-translate-x-full"}`}
+            className={`fixed top-0 left-0 h-full w-80 ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30" : "bg-gray-50 border-green-200"} shadow-xl z-50 transform transition-transform duration-500 ease-out flex flex-col ${showProfileSidebar ? "translate-x-0" : "-translate-x-full"}`}
           >
             {/* Profile Header */}
             <div
-              className={`p-6 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-b`}
+              className={`p-6 ${isDark ? "border-[#3B85C6]/30" : "border-green-100"} border-b`}
             >
               <div className="flex flex-col items-center">
                 {/* Profile Photo */}
                 <div className="relative mb-4">
                   <div
-                    className={`w-20 h-20 rounded-full ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30" : "bg-gray-200 border-white"} border-4 shadow-lg overflow-hidden flex items-center justify-center`}
+                    className={`w-20 h-20 rounded-full ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30" : "bg-gray-200 border-white"} border-4 shadow-lg overflow-hidden flex items-center justify-center`}
                   >
                     {profile?.avatar_url || userAvatar ? (
                       <img
@@ -5885,7 +5885,7 @@ ${result.analysis.risks || "N/A"}
                   </div>
                   <label
                     htmlFor="avatar-upload"
-                    className={`absolute bottom-0 right-0 ${isDark ? "bg-[#1E90FF]" : "bg-green-500"} text-white p-1.5 rounded-full cursor-pointer hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-600"} transition-colors shadow-md`}
+                    className={`absolute bottom-0 right-0 ${isDark ? "bg-[#3B85C6]" : "bg-green-500"} text-white p-1.5 rounded-full cursor-pointer hover:${isDark ? "bg-[#3B85C6]/80" : "bg-green-600"} transition-colors shadow-md`}
                   >
                     <svg
                       className="w-3.5 h-3.5"
@@ -5936,7 +5936,7 @@ ${result.analysis.risks || "N/A"}
 
                 {/* Visual Role Badge */}
                 <span
-                  className={`${isDark ? "bg-[#1E90FF]/20 text-[#1E90FF]" : "bg-white/20 text-green-700"} backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium mt-2`}
+                  className={`${isDark ? "bg-[#3B85C6]/20 text-[#3B85C6]" : "bg-white/20 text-green-700"} backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium mt-2`}
                 >
                   {profile?.visual_role || "Staff"}
                 </span>
@@ -5957,7 +5957,7 @@ ${result.analysis.risks || "N/A"}
                     onClick={() =>
                       document.getElementById("profile-fullname")?.focus()
                     }
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#3B85C6] hover:bg-[#0F2233] hover:shadow-sm hover:text-[#3B85C6]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
                   >
                     <svg
                       className="w-5 h-5"
@@ -5984,7 +5984,7 @@ ${result.analysis.risks || "N/A"}
                             full_name: e.target.value,
                           })
                         }
-                        className={`w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#1E90FF] focus:border-transparent ${isDark ? "bg-[#1E1E1E] text-white" : "bg-white"}`}
+                        className={`w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#3B85C6] focus:border-transparent ${isDark ? "bg-[#0F2233] text-white" : "bg-white"}`}
                       />
                     </div>
                   </button>
@@ -5993,7 +5993,7 @@ ${result.analysis.risks || "N/A"}
                 {/* Visual Role Section */}
                 <li>
                   <button
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#3B85C6] hover:bg-[#0F2233] hover:shadow-sm hover:text-[#3B85C6]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
                   >
                     <svg
                       className="w-5 h-5"
@@ -6018,7 +6018,7 @@ ${result.analysis.risks || "N/A"}
                             visual_role: e.target.value,
                           })
                         }
-                        className={`w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#1E90FF] focus:border-transparent bg-white`}
+                        className={`w-full mt-1 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-[#3B85C6] focus:border-transparent bg-white`}
                       >
                         <option value="">Select a role</option>
                         <option value="Teacher">Teacher</option>
@@ -6032,7 +6032,7 @@ ${result.analysis.risks || "N/A"}
                 {/* Theme Preference Section - Display Only */}
                 <li>
                   <button
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#3B85C6] hover:bg-[#0F2233] hover:shadow-sm hover:text-[#3B85C6]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
                   >
                     {(profile?.theme_preference || "light").toLowerCase() ===
                     "dark" ? (
@@ -6094,7 +6094,7 @@ ${result.analysis.risks || "N/A"}
                 <li>
                   <button
                     onClick={handleExportData}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#1E90FF] hover:bg-[#1E1E1E] hover:shadow-sm hover:text-[#1E90FF]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg ${isDark ? "text-[#3B85C6] hover:bg-[#0F2233] hover:shadow-sm hover:text-[#3B85C6]" : "text-green-700 hover:bg-white hover:shadow-sm hover:text-green-800"} transition-all duration-200`}
                   >
                     <svg
                       className="w-5 h-5"
@@ -6117,12 +6117,12 @@ ${result.analysis.risks || "N/A"}
 
             {/* Bottom Section - Save Button */}
             <div
-              className={`p-4 ${isDark ? "border-[#1E90FF]/30" : "border-green-100"} border-t space-y-3`}
+              className={`p-4 ${isDark ? "border-[#3B85C6]/30" : "border-green-100"} border-t space-y-3`}
             >
               {/* Success Message */}
               {successMessage && (
                 <div
-                  className={`p-3 ${isDark ? "bg-[#1E1E1E] border-[#1E90FF]/30 text-[#1E90FF]" : "bg-green-50 border-green-200 text-green-700"} border rounded-lg text-sm text-center`}
+                  className={`p-3 ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30 text-[#3B85C6]" : "bg-green-50 border-green-200 text-green-700"} border rounded-lg text-sm text-center`}
                 >
                   {successMessage}
                 </div>
@@ -6139,7 +6139,7 @@ ${result.analysis.risks || "N/A"}
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className={`w-full flex items-center justify-center gap-2 px-4 py-3 ${isDark ? "bg-[#1E90FF]" : "bg-green-500"} text-white font-semibold rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-600"} disabled:bg-gray-400 transition-colors`}
+                className={`w-full flex items-center justify-center gap-2 px-4 py-3 ${isDark ? "bg-[#3B85C6]" : "bg-green-500"} text-white font-semibold rounded-lg hover:${isDark ? "bg-[#3B85C6]/80" : "bg-green-600"} disabled:bg-gray-400 transition-colors`}
               >
                 {saving ? (
                   <>
@@ -6420,7 +6420,7 @@ ${result.analysis.risks || "N/A"}
                               requestingDepartment: e.target.value,
                             }))
                           }
-                          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm mb-2`}
+                          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"} focus:border-transparent text-sm mb-2`}
                           placeholder="Department name"
                         />
 
@@ -6442,7 +6442,7 @@ ${result.analysis.risks || "N/A"}
                               departmentHead: e.target.value,
                             }))
                           }
-                          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
+                          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
                           placeholder="Department Head"
                         />
                       </div>
@@ -6463,7 +6463,7 @@ ${result.analysis.risks || "N/A"}
                               vpAASD: e.target.value,
                             }))
                           }
-                          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
+                          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
                           placeholder="VP - AASD"
                         />
                       </div>
@@ -6483,7 +6483,7 @@ ${result.analysis.risks || "N/A"}
                               gmsHead: e.target.value,
                             }))
                           }
-                          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
+                          className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
                           placeholder="GMS Head"
                         />
                       </div>
@@ -6527,7 +6527,7 @@ ${result.analysis.risks || "N/A"}
                                 performedBy: e.target.value,
                               }))
                             }
-                            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
+                            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
                             placeholder="Technician name"
                           />
                         </div>
@@ -6549,7 +6549,7 @@ ${result.analysis.risks || "N/A"}
                                 dateTimeCompleted: e.target.value,
                               }))
                             }
-                            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
+                            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
                           />
                         </div>
 
@@ -6568,7 +6568,7 @@ ${result.analysis.risks || "N/A"}
                                 acknowledgeBy: e.target.value,
                               }))
                             }
-                            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
+                            className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"} focus:border-transparent text-sm`}
                             placeholder="Acknowledged by"
                           />
                         </div>
@@ -6651,7 +6651,7 @@ ${result.analysis.risks || "N/A"}
 
                     <button
                       onClick={generatePDFReport}
-                      className={`flex-1 px-4 py-2.5 ${isDark ? "bg-[#1E90FF]" : "bg-green-500"} text-white font-medium rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-600"} transition-colors flex items-center justify-center gap-2`}
+                      className={`flex-1 px-4 py-2.5 ${isDark ? "bg-[#3B85C6]" : "bg-green-500"} text-white font-medium rounded-lg hover:${isDark ? "bg-[#3B85C6]/80" : "bg-green-600"} transition-colors flex items-center justify-center gap-2`}
                     >
                       <svg
                         className="w-4 h-4"
@@ -7172,7 +7172,7 @@ ${result.analysis.risks || "N/A"}
                         value={aiSearchQuery}
                         onChange={(e) => setAiSearchQuery(e.target.value)}
                         placeholder="Search messages..."
-                        className={`w-full pl-8 pr-8 py-1.5 bg-[#1E293B] border border-slate-700 rounded-md text-white placeholder-white/40 text-xs focus:outline-none focus:ring-1 ${isDark ? "focus:ring-[#1E90FF]/50" : "focus:ring-green-500/50"}`}
+                        className={`w-full pl-8 pr-8 py-1.5 bg-[#1E293B] border border-slate-700 rounded-md text-white placeholder-white/40 text-xs focus:outline-none focus:ring-1 ${isDark ? "focus:ring-[#3B85C6]/50" : "focus:ring-green-500/50"}`}
                       />
 
                       {aiSearchQuery && (
@@ -7577,7 +7577,7 @@ ${result.analysis.risks || "N/A"}
                                           setAiStatusText("");
                                         }
                                       }}
-                                      className={`px-3 py-1 ${isDark ? "bg-[#1E90FF]" : "bg-green-600"} text-white text-xs rounded-md hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-500"} transition-colors`}
+                                      className={`px-3 py-1 ${isDark ? "bg-[#3B85C6]" : "bg-green-600"} text-white text-xs rounded-md hover:${isDark ? "bg-[#3B85C6]/80" : "bg-green-500"} transition-colors`}
                                     >
                                       Save & Resend
                                     </button>
@@ -7948,7 +7948,7 @@ ${result.analysis.risks || "N/A"}
                           <div className="absolute inset-0 rounded-md bg-green-500 blur-sm opacity-60 animate-pulse" />
 
                           <div
-                            className={`relative w-6 h-6 rounded-md ${isDark ? "bg-[#1E90FF]" : "bg-green-600"} flex items-center justify-center shadow ${isDark ? "shadow-[#1E90FF]/30" : "shadow-green-500/30"}`}
+                            className={`relative w-6 h-6 rounded-md ${isDark ? "bg-[#3B85C6]" : "bg-green-600"} flex items-center justify-center shadow ${isDark ? "shadow-[#3B85C6]/30" : "shadow-green-500/30"}`}
                           >
                             <Bot className="w-3.5 h-3.5 text-white" />
                           </div>
@@ -8038,7 +8038,7 @@ ${result.analysis.risks || "N/A"}
                         <button
                           key={i}
                           onClick={() => setAiInput(chip.prompt)}
-                          className={`flex items-center gap-2 px-3 py-2 ${isDark ? "bg-white/[0.03] border-white/8 hover:bg-[#1E90FF]/10 hover:border-[#1E90FF]/30 hover:text-[#1E90FF]" : "bg-white/[0.03] border-white/8 hover:bg-green-600/10 hover:border-green-500/30 hover:text-green-300"} transition-all text-white/60 text-left group`}
+                          className={`flex items-center gap-2 px-3 py-2 ${isDark ? "bg-white/[0.03] border-white/8 hover:bg-[#3B85C6]/10 hover:border-[#3B85C6]/30 hover:text-[#3B85C6]" : "bg-white/[0.03] border-white/8 hover:bg-green-600/10 hover:border-green-500/30 hover:text-green-300"} transition-all text-white/60 text-left group`}
                         >
                           <div className="w-5 h-5 rounded-md bg-white/5 group-hover:bg-green-500/20 flex items-center justify-center flex-shrink-0 transition-all">
                             <svg
@@ -8309,7 +8309,7 @@ ${result.analysis.risks || "N/A"}
                           }}
                           placeholder="Ask me about maintenance..."
                           rows={1}
-                          className={`w-full px-3 py-2 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]/50 focus:border-[#1E90FF]/50" : "focus:ring-green-500/50 focus:border-green-500/50"} text-white placeholder-white/40 resize-none min-h-[40px] max-h-[100px] text-sm`}
+                          className={`w-full px-3 py-2 bg-[#1E293B]/80 border border-slate-600/50 rounded-xl focus:outline-none focus:ring-2 ${isDark ? "focus:ring-[#3B85C6]/50 focus:border-[#3B85C6]/50" : "focus:ring-green-500/50 focus:border-green-500/50"} text-white placeholder-white/40 resize-none min-h-[40px] max-h-[100px] text-sm`}
                           disabled={aiLoading}
                           style={{
                             height: "auto",
@@ -8445,7 +8445,7 @@ ${result.analysis.risks || "N/A"}
                     value={broadcastTitle}
                     onChange={(e) => setBroadcastTitle(e.target.value)}
                     placeholder="Enter announcement title..."
-                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent`}
+                    className={`w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"} focus:border-transparent`}
                   />
                 </div>
 
@@ -8454,7 +8454,7 @@ ${result.analysis.risks || "N/A"}
                   onChange={(e) => setBroadcastMessage(e.target.value)}
                   placeholder="Type your broadcast message here..."
                   rows={4}
-                  className={`w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 ${isDark ? "focus:ring-[#1E90FF]" : "focus:ring-green-500"} focus:border-transparent resize-none`}
+                  className={`w-full px-4 py-3 border border-gray-300 rounded-lg text-sm focus:ring-2 ${isDark ? "focus:ring-[#3B85C6]" : "focus:ring-green-500"} focus:border-transparent resize-none`}
                 />
 
                 <div className="flex justify-end gap-3 mt-4">
@@ -8468,7 +8468,7 @@ ${result.analysis.risks || "N/A"}
                   <button
                     onClick={sendBroadcastMessage}
                     disabled={!broadcastMessage.trim()}
-                    className={`px-4 py-2 ${isDark ? "bg-[#1E90FF]" : "bg-green-600"} text-white rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-700"} transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed`}
+                    className={`px-4 py-2 ${isDark ? "bg-[#3B85C6]" : "bg-green-600"} text-white rounded-lg hover:${isDark ? "bg-[#3B85C6]/80" : "bg-green-700"} transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     Send to All ({users.length} users)
                   </button>
@@ -8973,7 +8973,7 @@ ${result.analysis.risks || "N/A"}
 
                       fetchUserMessages(selectedUser.id);
                     }}
-                    className={`flex-1 px-4 py-2 ${isDark ? "bg-[#1E90FF]" : "bg-green-600"} text-white rounded-lg hover:${isDark ? "bg-[#1E90FF]/80" : "bg-green-700"} transition-colors text-sm font-medium flex items-center justify-center gap-2`}
+                    className={`flex-1 px-4 py-2 ${isDark ? "bg-[#3B85C6]" : "bg-green-600"} text-white rounded-lg hover:${isDark ? "bg-[#3B85C6]/80" : "bg-green-700"} transition-colors text-sm font-medium flex items-center justify-center gap-2`}
                   >
                     <svg
                       className="w-4 h-4"
@@ -9191,7 +9191,7 @@ ${result.analysis.risks || "N/A"}
               Excellent
             </p>
             <div
-              className={`rounded-2xl p-8 inline-block ${isDark ? "bg-[#1E90FF]" : "bg-green-600"}`}
+              className={`rounded-2xl p-8 inline-block ${isDark ? "bg-[#3B85C6]" : "bg-green-600"}`}
             >
               <RotatingText
                 texts={["Maintenance", "Facility", "Management", "System"]}
