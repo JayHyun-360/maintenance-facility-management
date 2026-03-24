@@ -1244,6 +1244,7 @@ export default function UserDashboardClient({
       </>
 
       <div className="w-full px-4 sm:px-6 lg:px-8 py-8 transition-all duration-300">
+        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 transition-all duration-300">
           {/* New Request Form */}
 
