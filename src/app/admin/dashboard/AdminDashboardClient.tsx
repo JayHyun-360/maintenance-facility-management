@@ -3315,10 +3315,10 @@ ${result.analysis.risks || "N/A"}
                         setTimeout(() => setShowSearchResults(false), 200)
                       }
                       placeholder="Search..."
-                      className="w-48 sm:w-64 md:w-80 px-4 py-2.5 pl-10 bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/30 transition-all duration-300"
+                      className="w-48 sm:w-64 md:w-80 px-4 py-2.5 pl-10 bg-[#1E90FF]/20 backdrop-blur-sm border border-[#1E90FF]/30 rounded-lg text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-[#1E90FF]/50 focus:bg-[#1E90FF]/30 transition-all duration-300"
                     />
                     <svg
-                      className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1E90FF]"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -3336,7 +3336,7 @@ ${result.analysis.risks || "N/A"}
                           setSearchQuery("");
                           setShowSearchResults(false);
                         }}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-white/70 hover:text-white"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1E90FF] hover:text-white"
                       >
                         <svg
                           className="w-4 h-4"
@@ -3419,7 +3419,7 @@ ${result.analysis.risks || "N/A"}
                     setShowTutorial(true);
                     setTutorialStep(0);
                   }}
-                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
+                  className="p-2 rounded-lg bg-[#1E90FF]/20 backdrop-blur-sm hover:bg-[#1E90FF]/30 transition-all duration-300 transform hover:scale-105 text-white"
                   title="Help & Tutorial"
                 >
                   <svg
@@ -3440,7 +3440,7 @@ ${result.analysis.risks || "N/A"}
                 {/* Introduction Button */}
                 <button
                   onClick={() => setShowIntroductionModal(true)}
-                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white"
+                  className="p-2 rounded-lg bg-[#1E90FF]/20 backdrop-blur-sm hover:bg-[#1E90FF]/30 transition-all duration-300 transform hover:scale-105 text-white"
                   title="Cool Introduction"
                 >
                   <svg
@@ -3468,7 +3468,7 @@ ${result.analysis.risks || "N/A"}
                 <button
                   id="tutorial-notifications"
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                  className="p-2 rounded-lg bg-[#1E90FF]/20 backdrop-blur-sm hover:bg-[#1E90FF]/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                   title="Notifications"
                 >
                   <svg
@@ -3496,7 +3496,7 @@ ${result.analysis.risks || "N/A"}
                 <button
                   id="tutorial-ai"
                   onClick={() => setShowAIChat(true)}
-                  className="p-2 rounded-lg bg-white/20 backdrop-blur-sm hover:bg-white/30 transition-all duration-300 transform hover:scale-105 text-white relative"
+                  className="p-2 rounded-lg bg-[#1E90FF]/20 backdrop-blur-sm hover:bg-[#1E90FF]/30 transition-all duration-300 transform hover:scale-105 text-white relative"
                   title="AI Assistant"
                 >
                   <Bot className="w-5 h-5" />
@@ -3505,7 +3505,7 @@ ${result.analysis.risks || "N/A"}
                 <button
                   id="tutorial-settings"
                   onClick={() => setShowProfileSidebar(true)}
-                  className="px-3 py-2 bg-white/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 text-sm"
+                  className="px-3 py-2 bg-[#1E90FF]/20 backdrop-blur-sm rounded-lg text-white font-medium transition-all duration-300 hover:bg-[#1E90FF]/30 hover:scale-105 text-sm"
                 >
                   Settings
                 </button>
@@ -3514,7 +3514,7 @@ ${result.analysis.risks || "N/A"}
                 <div className="relative">
                   <button
                     onClick={() => setShowProfileViewer(!showProfileViewer)}
-                    className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-white/30 transition-all duration-300 hover:scale-110 hover:bg-white/30 overflow-hidden"
+                    className="w-10 h-10 bg-[#1E90FF]/20 backdrop-blur-sm rounded-full flex items-center justify-center border-2 border-[#1E90FF]/30 transition-all duration-300 hover:scale-110 hover:bg-[#1E90FF]/30 overflow-hidden"
                     title="Click to view profile picture"
                   >
                     {userAvatar ? (
@@ -3559,8 +3559,8 @@ ${result.analysis.risks || "N/A"}
                         }`}
                         ref={profileViewerRef}
                       >
-                        <div className="w-72 h-72 rounded-full bg-white/20 backdrop-blur-xl shadow-2xl border-2 border-white/30 flex flex-col items-center justify-center p-8">
-                          <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-white/50 shadow-lg mb-4 bg-white">
+                        <div className="w-72 h-72 rounded-full bg-[#1E90FF]/20 backdrop-blur-xl shadow-2xl border-2 border-[#1E90FF]/30 flex flex-col items-center justify-center p-8">
+                          <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-[#1E90FF]/50 shadow-lg mb-4 bg-white">
                             <img
                               src={userAvatar}
                               alt="Profile Picture"
