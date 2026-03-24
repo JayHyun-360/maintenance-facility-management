@@ -1001,9 +1001,7 @@ export default function AdminDashboardClient({
   const handleDeleteAvatar = async () => {
     if (!profile || !profile.avatar_url) return;
 
-    const confirmed = window.confirm(
-      "Are you sure you want to delete your profile picture?",
-    );
+    const confirmed = window.confirm("Do you want to delete this picture?");
     if (!confirmed) return;
 
     try {
@@ -1022,6 +1020,7 @@ export default function AdminDashboardClient({
         .eq("id", profile.id);
 
       setProfile({ ...profile, avatar_url: null });
+      setShowProfileViewer(false);
       router.refresh();
     } catch (error) {
       console.error("Delete avatar error:", error);
@@ -3584,9 +3583,9 @@ ${result.analysis.risks || "N/A"}
                     className={`w-10 h-10 ${isDark ? "bg-white/20" : "bg-white/20"} backdrop-blur-sm rounded-full flex items-center justify-center border-2 ${isDark ? "border-white/30" : "border-white/30"} transition-all duration-300 hover:scale-110 ${isDark ? "hover:bg-white/30" : "hover:bg-white/30"} overflow-hidden`}
                     title="Click to view profile picture"
                   >
-                    {userAvatar ? (
+                    {profile?.avatar_url || userAvatar ? (
                       <img
-                        src={userAvatar}
+                        src={profile?.avatar_url || userAvatar || ""}
                         alt="Profile"
                         className="w-full h-full object-cover"
                         onError={(e) => {
@@ -3600,7 +3599,7 @@ ${result.analysis.risks || "N/A"}
 
                     <span
                       className={`text-lg font-bold text-white ${
-                        userAvatar ? "hidden" : ""
+                        profile?.avatar_url || userAvatar ? "hidden" : ""
                       }`}
                     >
                       {profile?.full_name?.charAt(0).toUpperCase() || "?"}
@@ -3609,14 +3608,15 @@ ${result.analysis.risks || "N/A"}
                     <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
                   </button>
 
-                  {/* Profile Viewer Modal - moved outside button */}
-                  {showProfileViewer && userAvatar && (
+                  {/* Profile Viewer Modal - shows uploaded avatar or Google avatar */}
+                  {showProfileViewer && (profile?.avatar_url || userAvatar) && (
                     <div
                       className={`fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300 ${
                         showProfileViewer
                           ? "opacity-100"
                           : "opacity-0 pointer-events-none"
                       }`}
+                      onClick={() => setShowProfileViewer(false)}
                     >
                       <div
                         className={`relative transform transition-all duration-300 ${
@@ -3625,13 +3625,14 @@ ${result.analysis.risks || "N/A"}
                             : "scale-95 opacity-0 pointer-events-none"
                         }`}
                         ref={profileViewerRef}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <div
                           className={`w-72 h-72 rounded-full ${isDark ? "bg-[#3B85C6]/20" : "bg-white/20"} backdrop-blur-xl shadow-2xl border-2 ${isDark ? "border-[#3B85C6]/30" : "border-white/30"} flex flex-col items-center justify-center p-8`}
                         >
                           <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-[#3B85C6]/50 shadow-lg mb-4 bg-white">
                             <img
-                              src={userAvatar}
+                              src={profile?.avatar_url || userAvatar || ""}
                               alt="Profile Picture"
                               className="w-full h-full object-contain"
                             />
@@ -3645,6 +3646,29 @@ ${result.analysis.risks || "N/A"}
                             {profile?.visual_role} - Administrator
                           </p>
                         </div>
+
+                        {/* Delete button */}
+                        {profile?.avatar_url && (
+                          <button
+                            onClick={handleDeleteAvatar}
+                            className="absolute bottom-0 right-0 bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-lg transition-colors"
+                            title="Delete avatar"
+                          >
+                            <svg
+                              className="w-5 h-5"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              />
+                            </svg>
+                          </button>
+                        )}
                       </div>
                     </div>
                   )}
@@ -5994,27 +6018,6 @@ ${result.analysis.risks || "N/A"}
                       disabled={uploadingAvatar}
                     />
                   </label>
-                  {profile?.avatar_url && (
-                    <button
-                      onClick={handleDeleteAvatar}
-                      className={`absolute top-0 right-0 ${isDark ? "bg-red-500 hover:bg-red-600" : "bg-red-500 hover:bg-red-600"} text-white p-1 rounded-full transition-colors shadow-md`}
-                      title="Delete avatar"
-                    >
-                      <svg
-                        className="w-3.5 h-3.5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </button>
-                  )}
                 </div>
 
                 {uploadingAvatar && (
