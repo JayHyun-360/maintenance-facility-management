@@ -4,6 +4,7 @@ import AdminDashboardClient from "./AdminDashboardClient";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import type { Profile, MaintenanceRequest } from "@/types/database";
 
+// Admin dashboard page
 interface RequestWithProfile extends MaintenanceRequest {
   profiles: Profile | null;
   requester_name?: string;
