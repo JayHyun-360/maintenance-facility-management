@@ -2246,7 +2246,7 @@ export default function UserDashboardClient({
                     />
                   </svg>
                   <input
-                    id="avatar-upload-sidebar"
+                    id="avatar-upload"
                     type="file"
                     accept="image/*"
                     className="hidden"

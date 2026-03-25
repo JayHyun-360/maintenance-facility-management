@@ -49,6 +49,7 @@ export default async function UserDashboard() {
     department: null,
     is_anonymous: false,
     theme_preference: "light" as const,
+    avatar_url: null,
     created_at: profile?.created_at || "",
   };
 
