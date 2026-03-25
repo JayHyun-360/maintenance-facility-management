@@ -2012,6 +2012,7 @@ export default function UserDashboardClient({
                 className={`text-xs truncate ${isDark ? "text-white" : "text-green-600/70"}`}
               >
                 <div>Stay updated with your</div>
+                <div>latest activities</div>
               </div>
             </div>
           </div>
