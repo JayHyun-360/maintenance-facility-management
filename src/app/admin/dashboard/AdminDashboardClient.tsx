@@ -1014,17 +1014,13 @@ export default function AdminDashboardClient({
         .list(userId + "/avatar/", { limit: 10 });
       console.log("List files result:", { listData, listError });
 
-      // Extract file path from URL for storage deletion
-      const urlParts = profile.avatar_url.split(
-        "/storage/v1/object/public/avatars/",
-      );
-      console.log("Admin Avatar URL parts:", urlParts);
-      if (urlParts.length > 1) {
-        const fileName = urlParts[1];
-        console.log("Admin deleting file from storage:", fileName);
+      // Delete all files found in the avatar folder
+      if (listData && listData.length > 0) {
+        const filesToDelete = listData.map((f) => `${userId}/avatar/${f.name}`);
+        console.log("Deleting files:", filesToDelete);
         const { data: deleteData, error: storageError } = await supabase.storage
           .from("avatars")
-          .remove([fileName]);
+          .remove(filesToDelete);
         console.log("Admin Storage delete result:", {
           deleteData,
           storageError,
