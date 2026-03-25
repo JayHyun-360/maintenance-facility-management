@@ -1101,7 +1101,7 @@ export default function UserDashboardClient({
                             boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
                           }}
                         >
-                          <div className="w-60 h-60 rounded-full overflow-hidden border-4 border-white/30 shadow-lg mb-4 bg-white">
+                          <div className="w-64 h-64 rounded-full overflow-hidden border-4 border-white/30 shadow-lg mb-4 bg-white">
                             <img
                               src={userAvatar || ""}
                               alt="Profile Picture"
