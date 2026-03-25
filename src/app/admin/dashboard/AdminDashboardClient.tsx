@@ -1006,6 +1006,14 @@ export default function AdminDashboardClient({
     if (!confirmed) return;
 
     try {
+      // First, list files in the user's folder to see what's there
+      const userId = profile.id;
+      console.log("Listing files for user:", userId);
+      const { data: listData, error: listError } = await supabase.storage
+        .from("avatars")
+        .list(userId + "/avatar/", { limit: 10 });
+      console.log("List files result:", { listData, listError });
+
       // Extract file path from URL for storage deletion
       const urlParts = profile.avatar_url.split(
         "/storage/v1/object/public/avatars/",
