@@ -1648,6 +1648,37 @@ export default function AdminDashboardClient({
       return;
     }
 
+    // First, get the request to find photos
+    const { data: request } = await (
+      supabase.from("maintenance_requests") as any
+    )
+      .select("photos")
+      .eq("id", requestId)
+      .single();
+
+    // Delete photos from storage if any exist
+    if (request?.photos && request.photos.length > 0) {
+      const filesToDelete = request.photos
+        .map((url: string) => {
+          // Extract file path from URL
+          const parts = url.split(
+            "/storage/v1/object/public/maintenance-requests-photos/",
+          );
+          return parts[1] || url;
+        })
+        .filter(Boolean);
+
+      if (filesToDelete.length > 0) {
+        console.log("Deleting photos from storage:", filesToDelete);
+        const { error: storageError } = await supabase.storage
+          .from("maintenance-requests-photos")
+          .remove(filesToDelete);
+        if (storageError) {
+          console.error("Error deleting photos:", storageError);
+        }
+      }
+    }
+
     const { error: deleteError } = await (
       supabase.from("maintenance_requests") as any
     )
