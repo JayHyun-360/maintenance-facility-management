@@ -91,9 +91,21 @@ export async function createUserProfile(formData: {
       };
     }
 
-    // Insert new profile
-    const { error: insertError } = await supabase.from("profiles").insert({
-      id: userId, // Use id as PRIMARY KEY
+    // Insert new profile - use upsert to handle potential trigger race conditions
+    // The trigger might have partially created a profile, so we use upsert to be safe
+    console.log("=== PROFILE INSERT/UPSERT ATTEMPT ===");
+    console.log("User ID:", userId);
+    console.log("Full Name:", formData.fullName);
+    console.log("Database Role:", formData.databaseRole);
+    console.log(
+      "Visual Role:",
+      formData.databaseRole === "admin" ? "Staff" : formData.visualRole,
+    );
+    console.log("Is Anonymous:", isAnonymousUser);
+    console.log("Theme Preference:", "system");
+
+    const insertData = {
+      id: userId,
       full_name: formData.fullName,
       database_role: formData.databaseRole,
       visual_role:
@@ -103,10 +115,19 @@ export async function createUserProfile(formData: {
       department:
         formData.databaseRole === "admin" ? null : formData.department,
       is_anonymous: isAnonymousUser,
-      theme_preference: "system",
-    });
+      theme_preference: "system" as const,
+    };
+
+    console.log("Insert Data:", JSON.stringify(insertData, null, 2));
+
+    // Use upsert instead of insert to handle potential trigger race conditions
+    const { error: insertError } = await supabase
+      .from("profiles")
+      .upsert(insertData, { onConflict: "id" });
 
     if (insertError) {
+      console.error("=== PROFILE INSERT ERROR ===");
+      console.error("Error details:", JSON.stringify(insertError, null, 2));
       return {
         error: `Failed to create profile: ${insertError.message}`,
         success: false,
