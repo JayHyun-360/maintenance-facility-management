@@ -246,17 +246,21 @@ export default function UserDashboardClient({
     if (!confirmed) return;
 
     try {
-      // Extract file path from URL for storage deletion
-      const urlParts = profile.avatar_url.split(
-        "/storage/v1/object/public/avatars/",
-      );
-      console.log("Avatar URL parts:", urlParts);
-      if (urlParts.length > 1) {
-        const fileName = urlParts[1];
-        console.log("Deleting file from storage:", fileName);
+      // First, list files in the user's folder to see what's there
+      const userId = profile.id;
+      console.log("Listing files for user:", userId);
+      const { data: listData, error: listError } = await supabase.storage
+        .from("avatars")
+        .list(userId + "/avatar/", { limit: 10 });
+      console.log("List files result:", { listData, listError });
+
+      // Delete all files found in the avatar folder
+      if (listData && listData.length > 0) {
+        const filesToDelete = listData.map((f) => `${userId}/avatar/${f.name}`);
+        console.log("Deleting files:", filesToDelete);
         const { data: deleteData, error: storageError } = await supabase.storage
           .from("avatars")
-          .remove([fileName]);
+          .remove(filesToDelete);
         console.log("Storage delete result:", { deleteData, storageError });
         if (storageError) {
           console.error("Storage delete error:", storageError);
