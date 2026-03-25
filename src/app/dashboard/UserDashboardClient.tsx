@@ -250,21 +250,29 @@ export default function UserDashboardClient({
       const urlParts = profile.avatar_url.split(
         "/storage/v1/object/public/avatars/",
       );
+      console.log("Avatar URL parts:", urlParts);
       if (urlParts.length > 1) {
         const fileName = urlParts[1];
-        const { error: storageError } = await supabase.storage
+        console.log("Deleting file from storage:", fileName);
+        const { data: deleteData, error: storageError } = await supabase.storage
           .from("avatars")
           .remove([fileName]);
+        console.log("Storage delete result:", { deleteData, storageError });
         if (storageError) {
           console.error("Storage delete error:", storageError);
         }
       }
 
       // Update profile to remove avatar_url
+      console.log(
+        "Updating profile to remove avatar_url for user:",
+        profile.id,
+      );
       const { error: updateError } = await (supabase.from("profiles") as any)
         .update({ avatar_url: null })
         .eq("id", profile.id);
 
+      console.log("Database update error:", updateError);
       if (updateError) {
         console.error("Database update error:", updateError);
         alert(`Failed to update database: ${updateError.message}`);
