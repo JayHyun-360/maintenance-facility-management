@@ -846,6 +846,12 @@ export default function UserDashboardClient({
   };
 
   const handleGuestSignOut = async () => {
+    if (!profile?.id) {
+      await supabase.auth.signOut();
+      window.location.href = "/login";
+      return;
+    }
+
     // Delete the guest profile before signing out
     const { error: deleteError } = await supabase
       .from("profiles")
