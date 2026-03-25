@@ -75,6 +75,8 @@ export default function UserDashboardClient({
 
   const [confirmType, setConfirmType] = useState<"admin" | "user" | null>(null);
 
+  const [showSignOutConfirm, setShowSignOutConfirm] = useState(false);
+
   const [notifications, setNotifications] = useState<any[]>([]);
 
   const [announcements, setAnnouncements] = useState<any[]>([]);
@@ -833,23 +835,25 @@ export default function UserDashboardClient({
   };
 
   const handleSignOut = async () => {
-    // Check if user is a guest
+    // Check if user is a guest - show UI modal instead of browser confirm
     if (profile?.is_anonymous) {
-      const confirmed = confirm(
-        "Are you sure you want to sign out?\n\nOnce signed out, you'll lose access to your temporary account and your profile will be deleted.\n\nNote: Your maintenance requests will be preserved but will no longer be associated with an account.",
-      );
+      setShowSignOutConfirm(true);
+      return;
+    }
 
-      if (!confirmed) return;
+    await supabase.auth.signOut();
+    window.location.href = "/login";
+  };
 
-      // Delete the guest profile before signing out
-      const { error: deleteError } = await supabase
-        .from("profiles")
-        .delete()
-        .eq("id", profile.id);
+  const handleGuestSignOut = async () => {
+    // Delete the guest profile before signing out
+    const { error: deleteError } = await supabase
+      .from("profiles")
+      .delete()
+      .eq("id", profile.id);
 
-      if (deleteError) {
-        console.error("Error deleting guest profile:", deleteError);
-      }
+    if (deleteError) {
+      console.error("Error deleting guest profile:", deleteError);
     }
 
     await supabase.auth.signOut();
@@ -2662,7 +2666,6 @@ export default function UserDashboardClient({
       </>
 
       {/* Confirmation Dialog */}
-
       {showConfirm && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div
@@ -2705,6 +2708,85 @@ export default function UserDashboardClient({
                 }`}
               >
                 {loading ? "Switching..." : "Confirm"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Guest Sign Out Confirmation Modal */}
+      {showSignOutConfirm && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+          <div
+            className={`rounded-xl shadow-xl p-8 max-w-md w-full ${isDark ? "bg-gray-800" : "bg-white"}`}
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div
+                className={`p-2 rounded-full ${isDark ? "bg-red-900/30" : "bg-red-100"}`}
+              >
+                <svg
+                  className={`w-6 h-6 ${isDark ? "text-red-400" : "text-red-600"}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                  />
+                </svg>
+              </div>
+              <h4
+                className={`text-lg font-bold ${isDark ? "text-white" : "text-gray-900"}`}
+              >
+                Sign Out
+              </h4>
+            </div>
+
+            <p className={`mb-6 ${isDark ? "text-gray-300" : "text-gray-600"}`}>
+              Are you sure you want to sign out?
+            </p>
+
+            <div
+              className={`p-4 rounded-lg mb-6 ${isDark ? "bg-yellow-900/20 border border-yellow-700/50" : "bg-yellow-50 border border-yellow-200"}`}
+            >
+              <p
+                className={`text-sm ${isDark ? "text-yellow-300" : "text-yellow-800"}`}
+              >
+                Once signed out, you'll lose access to your temporary account
+                and your profile will be deleted.
+              </p>
+              <p
+                className={`text-sm mt-2 ${isDark ? "text-gray-400" : "text-gray-600"}`}
+              >
+                Note: Your maintenance requests will be preserved but will no
+                longer be associated with an account.
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowSignOutConfirm(false)}
+                className={`flex-1 px-4 py-2 rounded-lg transition-colors ${
+                  isDark
+                    ? "bg-gray-700 text-white hover:bg-gray-600"
+                    : "text-gray-700 bg-gray-100 hover:bg-gray-200"
+                }`}
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleGuestSignOut}
+                className={`flex-1 px-4 py-2 text-white rounded-lg transition-colors ${
+                  isDark
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-red-500 hover:bg-red-600"
+                }`}
+              >
+                Sign Out
               </button>
             </div>
           </div>
