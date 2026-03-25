@@ -3682,47 +3682,62 @@ ${result.analysis.risks || "N/A"}
                         ref={profileViewerRef}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <div
-                          className={`w-72 h-72 rounded-full ${isDark ? "bg-[#3B85C6]/20" : "bg-white/20"} backdrop-blur-xl shadow-2xl border-2 ${isDark ? "border-[#3B85C6]/30" : "border-white/30"} flex flex-col items-center justify-center p-8`}
-                        >
-                          <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-[#3B85C6]/50 shadow-lg mb-4 bg-white">
-                            <img
-                              src={profile?.avatar_url || userAvatar || ""}
-                              alt="Profile Picture"
-                              className="w-full h-full object-contain"
-                            />
-                          </div>
-
-                          <h3 className="font-header font-semibold text-white text-lg text-center">
-                            {profile?.full_name}
-                          </h3>
-
-                          <p className="text-sm text-white/80 text-center">
-                            {profile?.visual_role} - Administrator
-                          </p>
-                        </div>
-
-                        {/* Delete button */}
-                        {profile?.avatar_url && (
-                          <button
-                            onClick={handleDeleteAvatar}
-                            className="absolute bottom-0 right-0 bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-lg transition-colors"
-                            title="Delete avatar"
-                          >
-                            <svg
-                              className="w-5 h-5"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
+                        {/* If user has uploaded avatar, show full view. If only Google avatar, show circle modal */}
+                        {profile?.avatar_url ? (
+                          <>
+                            <div
+                              className={`w-80 h-80 rounded-2xl ${isDark ? "bg-[#3B85C6]/20" : "bg-white/20"} backdrop-blur-xl shadow-2xl border-2 ${isDark ? "border-[#3B85C6]/30" : "border-white/30"} flex flex-col items-center justify-center p-4 overflow-hidden`}
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                              <div className="w-full h-full rounded-xl overflow-hidden shadow-lg bg-white">
+                                <img
+                                  src={profile?.avatar_url || ""}
+                                  alt="Profile Picture"
+                                  className="w-full h-full object-contain"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Delete button */}
+                            <button
+                              onClick={handleDeleteAvatar}
+                              className="absolute bottom-2 right-2 bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-lg transition-colors"
+                              title="Delete avatar"
+                            >
+                              <svg
+                                className="w-5 h-5"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                />
+                              </svg>
+                            </button>
+                          </>
+                        ) : (
+                          <div
+                            className={`w-72 h-72 rounded-full ${isDark ? "bg-[#3B85C6]/20" : "bg-white/20"} backdrop-blur-xl shadow-2xl border-2 ${isDark ? "border-[#3B85C6]/30" : "border-white/30"} flex flex-col items-center justify-center p-8`}
+                          >
+                            <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-[#3B85C6]/50 shadow-lg mb-4 bg-white">
+                              <img
+                                src={userAvatar || ""}
+                                alt="Profile Picture"
+                                className="w-full h-full object-cover"
                               />
-                            </svg>
-                          </button>
+                            </div>
+
+                            <h3 className="font-header font-semibold text-white text-lg text-center">
+                              {profile?.full_name}
+                            </h3>
+
+                            <p className="text-sm text-white/80 text-center">
+                              {profile?.visual_role} - Administrator
+                            </p>
+                          </div>
                         )}
                       </div>
                     </div>
@@ -6022,7 +6037,7 @@ ${result.analysis.risks || "N/A"}
                 {/* Profile Photo */}
                 <div className="relative mb-4">
                   <div
-                    className={`w-20 h-20 rounded-full ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30" : "bg-gray-200 border-white"} border-4 shadow-lg overflow-hidden flex items-center justify-center`}
+                    className={`w-24 h-24 rounded-full ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30" : "bg-gray-200 border-white"} border-4 shadow-lg overflow-hidden flex items-center justify-center`}
                   >
                     {profile?.avatar_url || userAvatar ? (
                       <img
