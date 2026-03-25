@@ -3686,9 +3686,16 @@ ${result.analysis.risks || "N/A"}
                         {profile?.avatar_url ? (
                           <>
                             <div
-                              className={`w-80 h-80 rounded-2xl ${isDark ? "bg-[#3B85C6]/20" : "bg-white/20"} backdrop-blur-xl shadow-2xl border-2 ${isDark ? "border-[#3B85C6]/30" : "border-white/30"} flex flex-col items-center justify-center p-4 overflow-hidden`}
+                              className={`w-96 h-96 rounded-3xl ${isDark ? "bg-[#3B85C6]/10" : "bg-white/10"} backdrop-blur-2xl shadow-2xl border border-white/20 flex flex-col items-center justify-center p-6 overflow-hidden`}
+                              style={{
+                                background: isDark
+                                  ? "linear-gradient(135deg, rgba(59, 133, 198, 0.15) 0%, rgba(15, 34, 51, 0.8) 100%)"
+                                  : "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%)",
+                                boxShadow:
+                                  "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                              }}
                             >
-                              <div className="w-full h-full rounded-xl overflow-hidden shadow-lg bg-white">
+                              <div className="w-full h-full rounded-2xl overflow-hidden shadow-lg bg-white/50">
                                 <img
                                   src={profile?.avatar_url || ""}
                                   alt="Profile Picture"
@@ -3700,7 +3707,7 @@ ${result.analysis.risks || "N/A"}
                             {/* Delete button */}
                             <button
                               onClick={handleDeleteAvatar}
-                              className="absolute bottom-2 right-2 bg-red-500 hover:bg-red-600 text-white p-3 rounded-full shadow-lg transition-colors"
+                              className="absolute bottom-4 right-4 bg-red-500/80 hover:bg-red-600 text-white p-4 rounded-full shadow-lg transition-all hover:scale-110 backdrop-blur-sm"
                               title="Delete avatar"
                             >
                               <svg
@@ -3720,9 +3727,15 @@ ${result.analysis.risks || "N/A"}
                           </>
                         ) : (
                           <div
-                            className={`w-72 h-72 rounded-full ${isDark ? "bg-[#3B85C6]/20" : "bg-white/20"} backdrop-blur-xl shadow-2xl border-2 ${isDark ? "border-[#3B85C6]/30" : "border-white/30"} flex flex-col items-center justify-center p-8`}
+                            className={`w-80 h-80 rounded-full ${isDark ? "bg-[#3B85C6]/10" : "bg-white/10"} backdrop-blur-2xl shadow-2xl border border-white/20 flex flex-col items-center justify-center p-8`}
+                            style={{
+                              background: isDark
+                                ? "linear-gradient(135deg, rgba(59, 133, 198, 0.15) 0%, rgba(15, 34, 51, 0.8) 100%)"
+                                : "linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.05) 100%)",
+                              boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+                            }}
                           >
-                            <div className="w-56 h-56 rounded-full overflow-hidden border-3 border-[#3B85C6]/50 shadow-lg mb-4 bg-white">
+                            <div className="w-60 h-60 rounded-full overflow-hidden border-4 border-white/30 shadow-lg mb-4 bg-white">
                               <img
                                 src={userAvatar || ""}
                                 alt="Profile Picture"
@@ -3730,7 +3743,7 @@ ${result.analysis.risks || "N/A"}
                               />
                             </div>
 
-                            <h3 className="font-header font-semibold text-white text-lg text-center">
+                            <h3 className="font-header font-semibold text-white text-xl text-center">
                               {profile?.full_name}
                             </h3>
 
@@ -6037,7 +6050,7 @@ ${result.analysis.risks || "N/A"}
                 {/* Profile Photo */}
                 <div className="relative mb-4">
                   <div
-                    className={`w-24 h-24 rounded-full ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30" : "bg-gray-200 border-white"} border-4 shadow-lg overflow-hidden flex items-center justify-center`}
+                    className={`w-32 h-32 rounded-full ${isDark ? "bg-[#0F2233] border-[#3B85C6]/30" : "bg-gray-200 border-white"} border-4 shadow-lg overflow-hidden flex items-center justify-center`}
                   >
                     {profile?.avatar_url || userAvatar ? (
                       <img

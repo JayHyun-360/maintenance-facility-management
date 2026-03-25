@@ -4,6 +4,7 @@ import UserDashboardClient from "./UserDashboardClient";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import type { Profile, MaintenanceRequest } from "@/types/database";
 import type { Theme } from "@/contexts/ThemeContext";
+import { getHighResGoogleAvatar } from "@/lib/utils";
 
 // User dashboard page - displays maintenance request form and user's requests
 // ThemeProvider wraps the client component for theme context
@@ -73,11 +74,12 @@ export default async function UserDashboard() {
     requestCount: requests?.length,
   });
 
-  // Extract avatar URL from Google metadata if available
-  const userAvatar =
+  // Extract avatar URL from Google metadata if available (high-resolution)
+  const userAvatar = getHighResGoogleAvatar(
     session.user.user_metadata?.avatar_url ||
-    session.user.user_metadata?.picture ||
-    null;
+      session.user.user_metadata?.picture ||
+      null,
+  );
 
   // Pass to client component for interactivity
   return (

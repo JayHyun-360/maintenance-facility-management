@@ -4,6 +4,7 @@ import AdminDashboardClient from "./AdminDashboardClient";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import type { Profile, MaintenanceRequest } from "@/types/database";
 import type { Theme } from "@/contexts/ThemeContext";
+import { getHighResGoogleAvatar } from "@/lib/utils";
 
 // Admin dashboard page
 interface RequestWithProfile extends MaintenanceRequest {
@@ -91,8 +92,9 @@ export default async function AdminDashboard({ searchParams }: PageProps) {
     .eq("id", session.user.id)
     .single();
 
-  // Get user avatar from user_metadata
-  const userAvatar = session.user.user_metadata?.avatar_url || null;
+  // Get user avatar from user_metadata (high-resolution)
+  const userAvatar =
+    getHighResGoogleAvatar(session.user.user_metadata?.avatar_url) || null;
 
   // Calculate stats
   const initialStats = {
