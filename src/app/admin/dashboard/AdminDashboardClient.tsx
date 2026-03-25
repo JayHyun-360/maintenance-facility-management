@@ -1015,9 +1015,15 @@ export default function AdminDashboardClient({
       }
 
       // Update profile to remove avatar_url
-      await (supabase.from("profiles") as any)
+      const { error: updateError } = await (supabase.from("profiles") as any)
         .update({ avatar_url: null })
         .eq("id", profile.id);
+
+      if (updateError) {
+        console.error("Database update error:", updateError);
+        alert(`Failed to update database: ${updateError.message}`);
+        return;
+      }
 
       setProfile({ ...profile, avatar_url: null });
       setShowProfileViewer(false);

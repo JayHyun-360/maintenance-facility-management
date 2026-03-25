@@ -198,19 +198,27 @@ export default function UserDashboardClient({
 
     try {
       const fileName = `${profile.id}/avatar/${Date.now()}-${file.name}`;
+      console.log("Uploading avatar with filename:", fileName);
       const { error: uploadError } = await supabase.storage
         .from("avatars")
         .upload(fileName, file);
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error("Storage upload error:", uploadError);
+        throw uploadError;
+      }
 
       const {
         data: { publicUrl },
       } = supabase.storage.from("avatars").getPublicUrl(fileName);
+      console.log("Got public URL:", publicUrl);
 
-      await (supabase.from("profiles") as any)
+      const { error: updateError } = await (supabase.from("profiles") as any)
         .update({ avatar_url: publicUrl })
         .eq("id", profile.id);
+
+      console.log("Database update error:", updateError);
+      if (updateError) throw updateError;
 
       setProfile({ ...profile, avatar_url: publicUrl });
       setAvatarPreview(null);
@@ -228,7 +236,11 @@ export default function UserDashboardClient({
 
   // Delete avatar handler
   const handleDeleteAvatar = async () => {
-    if (!profile || !profile.avatar_url) return;
+    console.log("Delete avatar clicked, profile:", profile);
+    if (!profile || !profile.avatar_url) {
+      console.log("Early return - no profile or avatar_url");
+      return;
+    }
 
     const confirmed = window.confirm("Do you want to delete this picture?");
     if (!confirmed) return;
@@ -240,13 +252,24 @@ export default function UserDashboardClient({
       );
       if (urlParts.length > 1) {
         const fileName = urlParts[1];
-        await supabase.storage.from("avatars").remove([fileName]);
+        const { error: storageError } = await supabase.storage
+          .from("avatars")
+          .remove([fileName]);
+        if (storageError) {
+          console.error("Storage delete error:", storageError);
+        }
       }
 
       // Update profile to remove avatar_url
-      await (supabase.from("profiles") as any)
+      const { error: updateError } = await (supabase.from("profiles") as any)
         .update({ avatar_url: null })
         .eq("id", profile.id);
+
+      if (updateError) {
+        console.error("Database update error:", updateError);
+        alert(`Failed to update database: ${updateError.message}`);
+        return;
+      }
 
       setProfile({ ...profile, avatar_url: null });
       setShowProfileViewer(false);
