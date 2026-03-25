@@ -999,6 +999,7 @@ export default function AdminDashboardClient({
 
   // Delete avatar handler
   const handleDeleteAvatar = async () => {
+    console.log("Admin delete avatar clicked, profile:", profile);
     if (!profile || !profile.avatar_url) return;
 
     const confirmed = window.confirm("Do you want to delete this picture?");
@@ -1009,16 +1010,29 @@ export default function AdminDashboardClient({
       const urlParts = profile.avatar_url.split(
         "/storage/v1/object/public/avatars/",
       );
+      console.log("Admin Avatar URL parts:", urlParts);
       if (urlParts.length > 1) {
         const fileName = urlParts[1];
-        await supabase.storage.from("avatars").remove([fileName]);
+        console.log("Admin deleting file from storage:", fileName);
+        const { data: deleteData, error: storageError } = await supabase.storage
+          .from("avatars")
+          .remove([fileName]);
+        console.log("Admin Storage delete result:", {
+          deleteData,
+          storageError,
+        });
       }
 
       // Update profile to remove avatar_url
+      console.log(
+        "Admin updating profile to remove avatar_url for user:",
+        profile.id,
+      );
       const { error: updateError } = await (supabase.from("profiles") as any)
         .update({ avatar_url: null })
         .eq("id", profile.id);
 
+      console.log("Admin Database update error:", updateError);
       if (updateError) {
         console.error("Database update error:", updateError);
         alert(`Failed to update database: ${updateError.message}`);
